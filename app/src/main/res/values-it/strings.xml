@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello_world">Ciao mondo!</string>
+    <string name="hello">Ciao, %1$s!</string>
 </resources>

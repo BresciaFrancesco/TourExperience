@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Ciao, %1$s!</string>
+    <string name="language">Lingua</string>
+    <string name="profile">Profilo</string>
 </resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Home -->
+    <item
+        android:id="@+id/home"
+        android:title="@string/home"
+        android:icon="@drawable/home"/>
+
+    <!-- History -->
+    <item
+        android:id="@+id/history"
+        android:title="@string/visits_history"
+        android:titleCondensed="@string/visits_history"
+        android:icon="@drawable/history"/>
+
+    <!-- Favorites -->
+    <item
+        android:id="@+id/favorites"
+        android:title="@string/favorites"
+        android:icon="@drawable/favorites"/>
+
+    <!-- Game statistics -->
+    <item
+        android:id="@+id/game_statistics"
+        android:title="@string/game_statistics"
+        android:titleCondensed="@string/game_statistics"
+        android:icon="@drawable/game"/>
+</menu>

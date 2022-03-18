@@ -2,16 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:title="@string/language"
+    <!-- Language -->
+    <item
         android:id="@+id/language"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/language_icon" />
+        android:title="@string/language"
+        android:icon="@drawable/language_icon"
+        app:showAsAction="ifRoom"/>
 
-    <item android:title="@string/profile"
-        android:id="@+id/profile"
-        android:orderInCategory="100"
-        app:showAsAction="always"
-        android:icon="@drawable/profile_pic" />
-
+    <!-- Profile -->
+    <item
+        android:id="@+id/profile_pic"
+        android:title="@string/profile"
+        android:icon="@drawable/profile_pic"
+        app:showAsAction="always"/>
 </menu>

@@ -3,4 +3,8 @@
     <string name="hello">Hello, %1$s!</string>
     <string name="language">Language</string>
     <string name="profile">Profile</string>
+    <string name="home" translatable="false">Home</string>
+    <string name="visits_history">Visits history</string>
+    <string name="favorites">Favorites</string>
+    <string name="game_statistics">Game statistics</string>
 </resources>

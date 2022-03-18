@@ -3,4 +3,7 @@
     <string name="hello">Ciao, %1$s!</string>
     <string name="language">Lingua</string>
     <string name="profile">Profilo</string>
+    <string name="visits_history">Cronologia percorsi</string>
+    <string name="favorites">Preferiti</string>
+    <string name="game_statistics">Statistiche giochi</string>
 </resources>

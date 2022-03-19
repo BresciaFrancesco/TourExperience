@@ -4,7 +4,10 @@
     <string name="language">Language</string>
     <string name="profile">Profile</string>
     <string name="home" translatable="false">Home</string>
-    <string name="visits_history">Visits history</string>
+    <string name="visits_history">Routes history</string>
     <string name="favorites">Favorites</string>
     <string name="game_statistics">Game statistics</string>
+    <string name="search_hint">Rome, Egyptian museum, …</string>
+    <string name="find_cultural_site">Find a cultural site</string>
+    <string name="search_description">Discover and follow the routes\nyou like best!</string>
 </resources>

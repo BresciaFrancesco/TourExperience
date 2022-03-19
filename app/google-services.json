@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1085403597926",
+    "project_id": "tour-experience",
+    "storage_bucket": "tour-experience.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085403597926:android:a0c98ea868e6356378b1a7",
+        "android_client_info": {
+          "package_name": "it.uniba.sms2122.tourexperience"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1085403597926-u7dmls76oua93psmajtr7o2r229iofp1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzGTUCqQloFu9xXnEd_U86C5wPnatyNyI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1085403597926-u7dmls76oua93psmajtr7o2r229iofp1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

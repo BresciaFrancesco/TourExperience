@@ -12,7 +12,7 @@
     <!-- Profile -->
     <item
         android:id="@+id/profile_pic"
-        android:title="@string/profile"
         android:icon="@drawable/profile_pic"
+        android:title="@string/profile"
         app:showAsAction="always"/>
 </menu>

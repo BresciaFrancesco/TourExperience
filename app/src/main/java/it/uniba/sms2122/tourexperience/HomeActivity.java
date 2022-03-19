@@ -1,9 +1,13 @@
 package it.uniba.sms2122.tourexperience;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
 import java.util.Objects;
 
@@ -24,4 +28,26 @@ public class HomeActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.home, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int itemId = item.getItemId();
+
+        switch (itemId){
+
+            case R.id.profile_pic:
+
+                Intent openProfileIntent = new Intent(this, ProfileActivity.class);
+                startActivity(openProfileIntent);
+                return  true;
+
+            case R.id.language:
+
+                //code for language setting
+
+            default:
+                return super.onOptionsItemSelected(item);}
+        }
+
 }

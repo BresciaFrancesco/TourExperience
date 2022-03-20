@@ -10,4 +10,11 @@
     <string name="search_hint">Rome, Egyptian museum, …</string>
     <string name="find_cultural_site">Find a cultural site</string>
     <string name="search_description">Discover and follow the routes\nyou like best!</string>
+    <string name="modifyProfile">Modify</string>
+    <string name="confirmModifyProfile">Confirm</string>
+    <string name="emailLabelProfile">Email</string>
+    <string name="nameLabelProfile">Name</string>
+    <string name="surnameLabelProfile">Surname</string>
+    <string name="birthLabelProfile">Date of birth</string>
+    <string name="residenceLabelProfile">Residence</string>
 </resources>

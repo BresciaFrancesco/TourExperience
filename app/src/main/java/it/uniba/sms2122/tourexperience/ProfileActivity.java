@@ -90,6 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }else if (ProfileDataModifyButton.getText() == getString(R.string.confirmModifyProfile)) {
 
                     ProfileDataModifyButton.setText(getString(R.string.modifyProfile));
+                    setProfileDataFieldDisabled();
                 }
 
 

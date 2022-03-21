@@ -1,6 +1,21 @@
 <resources>
     <string name="app_name" translatable="false">TourExperience</string>
     <string name="hello">Hello, %1$s!</string>
+    <string name="enter_email">Enter email</string>
+    <string name="enter_password">Enter your password</string>
+    <string name="repeat_password">Repeat your password</string>
+    <string name="registration">Registration</string>
+    <string name="enter_name">Enter your name</string>
+    <string name="enter_surname">Enter your surname</string>
+    <string name="enter_date_birth">Enter your birth date</string>
+    <string name="msg_psw_without_space">Your password cannot contain spaces </string>
+    <string name="msg_different_psw">Your passwords do not match</string>
+    <string name="psw_too_short">Password field has less than , %1$d characters</string>
+    <string name="field_empty">%1$s field is empty </string>
+    <string name="field_too_long">%1$s field contains more than, %2$d characters</string>
+    <string name="valid_number">Enter a valid number</string>
+    <string name="correct_age">The age should be between, %1$d and, %2$d</string>
+    <string name="valid_email">Enter a valid email</string>
     <string name="language">Language</string>
     <string name="profile">Profile</string>
     <string name="home" translatable="false">Home</string>
@@ -17,5 +32,10 @@
     <string name="surnameLabelProfile">Surname</string>
     <string name="birthLabelProfile">Date of birth</string>
     <string name="residenceLabelProfile">Residence</string>
+    <string name="click_here">Click here</string>
     <string name="favorites_routes">Favorites routes</string>
+    <string name="failed_registration">Failed registration</string>
+    <string name="success_registration">Success registration</string>
+    <string name="sign_up">Sign up</string>
+    <string name="next">Next</string>
 </resources>

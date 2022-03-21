@@ -24,6 +24,11 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <style name="RegistrationTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeColor">#296D98</item>
+        <item name="boxStrokeWidth">1dp</item>
+    </style>
+
     <!-- inizio stili di prova -->
     <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>

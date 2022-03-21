@@ -10,6 +10,7 @@
     <string name="find_cultural_site">Trova un sito culturale</string>
     <string name="search_description">Scopri e segui i percorsi\nche più ti piacciono!</string>
     <string name="modifyProfile">Modifica</string>
+    <string name="confirmModifyProfile">Conferma</string>
     <string name="emailLabelProfile">Email</string>
     <string name="nameLabelProfile">Nome</string>
     <string name="surnameLabelProfile">Cognome</string>

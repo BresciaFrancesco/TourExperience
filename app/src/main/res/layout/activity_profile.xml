@@ -56,8 +56,7 @@
                 android:inputType="textEmailAddress"
                 android:text="Name"
                 android:textSize="18dp"
-                android:textColor="@color/black"
-                sep/>
+                android:textColor="@color/black" />
 
         </TableRow>
 

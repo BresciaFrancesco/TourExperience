@@ -8,12 +8,12 @@
 
     <!-- Bottom navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_menu"
-        />
+        app:menu="@menu/bottom_nav_menu" />
 
     <!-- Search -->
     <TextView
@@ -52,7 +52,29 @@
         app:layout_constraintRight_toRightOf="parent"
         />
 
-    <!-- Scrollable fragment -->
-    
+    <!-- Scrollable favorites -->
+    <FrameLayout
+        android:id="@+id/favorites_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/top_rounded"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintTop_toBottomOf="@id/search_description_text_view"
+        android:layout_marginTop="20dp">
 
+        <TextView
+            android:id="@+id/favorites_title"
+            style="@style/heading_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:text="@string/favorites_routes"
+            android:textColor="@color/white" />
+
+        <!-- Recycle view -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favorites_recycle_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,6 +7,7 @@
         <entry key="app/src/main/res/drawable/button_back.xml" value="0.1175" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.249" />
         <entry key="app/src/main/res/drawable/rounded_drawable.xml" value="0.1175" />
+        <entry key="app/src/main/res/drawable/top_rounded.xml" value="0.184" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35625" />

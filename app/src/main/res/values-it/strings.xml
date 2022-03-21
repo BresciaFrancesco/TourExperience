@@ -16,4 +16,5 @@
     <string name="surnameLabelProfile">Cognome</string>
     <string name="birthLabelProfile">Data di nascita</string>
     <string name="residenceLabelProfile">Residenza</string>
+    <string name="favorites_routes">Percorsi preferiti</string>
 </resources>

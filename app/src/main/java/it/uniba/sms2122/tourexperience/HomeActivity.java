@@ -1,17 +1,25 @@
 package it.uniba.sms2122.tourexperience;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
+
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity {
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +29,10 @@ public class HomeActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle(title);
 
         setContentView(R.layout.activity_home);
+
+        recyclerView = findViewById(R.id.favorites_recycle_view);
+
+        // TODO Da qui vanno prese le info da mostrare sui percorsi favoriti
     }
 
     @Override

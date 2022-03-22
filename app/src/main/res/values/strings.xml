@@ -38,4 +38,5 @@
     <string name="success_registration">Success registration</string>
     <string name="sign_up">Sign up</string>
     <string name="next">Next</string>
+    <string name="credentials_not_accepted">Email and password are not allowed</string>
 </resources>

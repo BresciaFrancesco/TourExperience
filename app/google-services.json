@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1085403597926",
+    "firebase_url": "https://tour-experience-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "tour-experience",
     "storage_bucket": "tour-experience.appspot.com"
   },

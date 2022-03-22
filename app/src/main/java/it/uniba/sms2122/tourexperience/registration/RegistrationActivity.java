@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,6 +16,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import it.uniba.sms2122.tourexperience.LoginActivity;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.User;
 
@@ -79,17 +82,25 @@ public class RegistrationActivity extends AppCompatActivity {
                 dbReference.setValue(user).addOnCompleteListener(taskUserValuesSet -> {
                     if (taskUserValuesSet.isSuccessful()) {
                         Toast.makeText(this, R.string.success_registration, Toast.LENGTH_LONG).show();
-                        fAuth.signOut(); // sembra che l'utente effettui il login automaticamente dopo la registrazione
+                        fAuth.signOut();
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        startActivity(intent);
                         finish();
                     }
                     else {
-                        Toast.makeText(this, "come stai", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, R.string.failed_registration, Toast.LENGTH_LONG).show();
                         fbUser.delete();
                     }
                 });
             }
             else {
-                Toast.makeText(this, "ciao", Toast.LENGTH_LONG).show();
+                if(task.getException().toString().contains("com.google.firebase.auth.FirebaseAuthInvalidCredentialsException")){
+                    Toast.makeText(this, R.string.credentials_not_accepted, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, R.string.failed_registration, Toast.LENGTH_LONG).show();
+                }
+                findViewById(R.id.idProgressBarReg).setVisibility(View.GONE);
+                onBackPressed();
             }
         });
     }

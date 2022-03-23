@@ -32,6 +32,7 @@ public class DatePickerDialogTheme extends DialogFragment implements DatePickerD
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
         date = getActivity().findViewById(R.id.idEdtRegDateBirth);
+        month += 1;
         date.setText(day + " / " + month + " / " + year );
     }
 }

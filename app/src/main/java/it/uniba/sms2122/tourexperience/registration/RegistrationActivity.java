@@ -42,7 +42,7 @@ public class RegistrationActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Fragment firstPage = new RegistrationFragmentFirstPage();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.setReorderingAllowed(true);
+            transaction.setReorderingAllowed(true);  //ottimizza i cambiamenti di stato dei fragment in modo che le animazioni funzionino correttammente
             transaction.add(R.id.container_fragments_registration, firstPage);
             transaction.commit();
         }

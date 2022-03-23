@@ -15,11 +15,12 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".ProfileActivity"
+            android:name=".profile.ProfileActivity"
             android:exported="false"
             android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".HomeActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing"
             android:exported="false">
         </activity>
         <activity

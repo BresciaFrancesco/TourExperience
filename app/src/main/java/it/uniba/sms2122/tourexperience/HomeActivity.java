@@ -18,6 +18,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.Objects;
 
+import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
+
 public class HomeActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 

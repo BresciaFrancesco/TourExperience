@@ -1,16 +1,20 @@
-package it.uniba.sms2122.tourexperience;
+package it.uniba.sms2122.tourexperience.profile;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DialogFragment;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TableLayout;
-import android.widget.TextView;
 
 import java.util.Objects;
+
+import it.uniba.sms2122.tourexperience.R;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -23,7 +27,9 @@ public class ProfileActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setTitle(title);
 
         setClickListenerOnProfileDataModifyButton();
+        setClickListenerOnCalendarIcon();
     }
+
 
     /**
      * Funzione che rende editabili i campi per la modifica dei dati utente
@@ -46,6 +52,9 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         }
+
+        ImageButton profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
+        profileDataPickerBtn.setEnabled(true);
     }
 
     /**
@@ -69,12 +78,20 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         }
+
+        //disabilito anche il pulsante per il datePicker
+        ImageButton profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
+        profileDataPickerBtn.setEnabled(false);
     }
 
     /**
      * funzione per settare il click sul pulsante di modifica profilo
      */
     public void setClickListenerOnProfileDataModifyButton() {
+
+        //disabilito il pulsante per il datePicker poiche da xml l'attributo non viene correttamente letto
+        ImageButton profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
+        profileDataPickerBtn.setEnabled(false);
 
         Button ProfileDataModifyButton = findViewById(R.id.btnModify);
 
@@ -87,7 +104,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                     ProfileDataModifyButton.setText(getString(R.string.confirmModifyProfile));
                     setProfileDataFieldEnable();
-                }else if (ProfileDataModifyButton.getText() == getString(R.string.confirmModifyProfile)) {
+
+                } else if (ProfileDataModifyButton.getText() == getString(R.string.confirmModifyProfile)) {
 
                     ProfileDataModifyButton.setText(getString(R.string.modifyProfile));
                     setProfileDataFieldDisabled();
@@ -97,4 +115,24 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    /**
+     * funzione per triggerare il pulsante per far apparire il dataPicker
+     */
+    public void setClickListenerOnCalendarIcon() {
+
+        ImageButton profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
+
+        profileDataPickerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DialogFragment datePicker = new ProfileDataPicker();
+                datePicker.show(getFragmentManager(), "datePicker");
+            }
+        });
+
+    }
+
 }

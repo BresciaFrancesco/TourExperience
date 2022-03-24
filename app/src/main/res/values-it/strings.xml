@@ -39,4 +39,8 @@
     <string name="sign_up">Registrati</string>
     <string name="next">Avanti</string>
     <string name="credentials_not_accepted">Email e password inserite non sono accettabili</string>
+    <string name="name_not_valid">Nome non valido</string>
+    <string name="surname_not_valid">Cognome non valido</string>
+    <string name="email_not_valid">Email non valido</string>
+    <string name="bithDate_not_valid">Data di nascita non valida</string>
 </resources>

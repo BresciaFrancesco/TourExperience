@@ -53,8 +53,30 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
 
+        //abilito l'input per la data di nascita
         ImageButton profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
         profileDataPickerBtn.setEnabled(true);
+        //abilito l'input per la data di nascita
+        EditText birthDateEditField = findViewById(R.id.editFieldBirth);
+        birthDateEditField.setEnabled(true);
+    }
+
+    /**
+     * funzione per triggerare il pulsante per far apparire il dataPicker
+     */
+    public void setClickListenerOnCalendarIcon() {
+
+        ImageButton profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
+
+        profileDataPickerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DialogFragment datePicker = new ProfileDataPicker();
+                datePicker.show(getFragmentManager(), "datePicker");
+            }
+        });
+
     }
 
     /**
@@ -82,6 +104,9 @@ public class ProfileActivity extends AppCompatActivity {
         //disabilito anche il pulsante per il datePicker
         ImageButton profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
         profileDataPickerBtn.setEnabled(false);
+        //diabilito l'input per la data di nascita
+        EditText birthDateEditField = findViewById(R.id.editFieldBirth);
+        birthDateEditField.setEnabled(false);
     }
 
     /**
@@ -107,8 +132,12 @@ public class ProfileActivity extends AppCompatActivity {
 
                 } else if (ProfileDataModifyButton.getText() == getString(R.string.confirmModifyProfile)) {
 
-                    ProfileDataModifyButton.setText(getString(R.string.modifyProfile));
-                    setProfileDataFieldDisabled();
+                    if (validateChangedData()) {
+                        ProfileDataModifyButton.setText(getString(R.string.modifyProfile));
+                        setProfileDataFieldDisabled();
+                    }
+
+
                 }
 
 
@@ -118,21 +147,39 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     /**
-     * funzione per triggerare il pulsante per far apparire il dataPicker
+     * funzione che si occupa di validare le modifiche effettuate dall'utente
+     *
+     * @return true se la validazione di tutti i campi è andata a buon fine, false altrimenti
      */
-    public void setClickListenerOnCalendarIcon() {
+    public boolean validateChangedData() {
 
-        ImageButton profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
+        boolean flag;
 
-        profileDataPickerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        EditText emailEditField = findViewById(R.id.editFieldEmail);
+        flag = ProfileDataChangeValidation.validateEmail(emailEditField, getString(R.string.email_not_valid));
+        if (flag == false) {
+            return false;
+        }
 
-                DialogFragment datePicker = new ProfileDataPicker();
-                datePicker.show(getFragmentManager(), "datePicker");
-            }
-        });
+        EditText nameEditField = findViewById(R.id.editFieldName);
+        flag = ProfileDataChangeValidation.validateGenericText(nameEditField, getString(R.string.name_not_valid));
+        if (flag == false) {
+            return false;
+        }
 
+        EditText surnameEditField = findViewById(R.id.editFieldSurname);
+        flag = ProfileDataChangeValidation.validateGenericText(surnameEditField, getString(R.string.surname_not_valid));
+        if (flag == false) {
+            return false;
+        }
+
+        EditText birthDateEditField = findViewById(R.id.editFieldBirth);
+        flag = ProfileDataChangeValidation.validateDate(birthDateEditField, getString(R.string.bithDate_not_valid));
+        if (flag == false) {
+            return false;
+        }
+
+        return true;
     }
 
 }

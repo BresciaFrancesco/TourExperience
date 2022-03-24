@@ -39,4 +39,8 @@
     <string name="sign_up">Sign up</string>
     <string name="next">Next</string>
     <string name="credentials_not_accepted">Email and password are not allowed</string>
+    <string name="name_not_valid">Name not valid</string>
+    <string name="surname_not_valid">Surname not valid</string>
+    <string name="email_not_valid">Email not valid</string>
+    <string name="bithDate_not_valid">Birth date not valid</string>
 </resources>

@@ -34,13 +34,13 @@
     <string name="residenceLabelProfile">Residence</string>
     <string name="click_here">Clicca qui</string>
     <string name="favorites_routes">Favorites routes</string>
-    <string name="failed_registration">Registrazione fallita</string>
-    <string name="success_registration">Registrazione eseguita con successo</string>
-    <string name="sign_up">Registrati</string>
-    <string name="next">Avanti</string>
-    <string name="credentials_not_accepted">Email e password inserite non sono accettabili</string>
-    <string name="name_not_valid">Nome non valido</string>
-    <string name="surname_not_valid">Cognome non valido</string>
-    <string name="email_not_valid">Email non valido</string>
-    <string name="bithDate_not_valid">Data di nascita non valida</string>
+    <string name="failed_registration">Failed registration</string>
+    <string name="success_registration">Success registration</string>
+    <string name="sign_up">Sign up</string>
+    <string name="next">Next</string>
+    <string name="credentials_not_accepted">Email and password are not allowed</string>
+    <string name="name_not_valid">Name not valid</string>
+    <string name="surname_not_valid">Surname not valid</string>
+    <string name="email_not_valid">Email not valid</string>
+    <string name="bithDate_not_valid">Birth date not valid</string>
 </resources>

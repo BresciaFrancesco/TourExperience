@@ -51,14 +51,12 @@ public class RegistrationActivity extends AppCompatActivity {
     // Gestisce il pulsante "back" nella action bar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home: // gestisce il pulsante di back
-                // API 5+ solution
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            // API 5+ solution
+            onBackPressed();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     public void nextFragment(Bundle bundle) {

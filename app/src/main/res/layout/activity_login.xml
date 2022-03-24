@@ -70,8 +70,7 @@
         android:layout_marginEnd="25dp"
         android:background="@drawable/button_back"
         android:text="Accedi"
-        android:textAllCaps="false"
-        />
+        android:textAllCaps="false" />
 
     <!-- TextView crea nuovo account -->
     <TextView

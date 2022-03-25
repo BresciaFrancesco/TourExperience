@@ -34,7 +34,7 @@
     <string name="surnameLabelProfile">Surname</string>
     <string name="birthLabelProfile">Date of birth</string>
     <string name="residenceLabelProfile">Residence</string>
-    <string name="click_here">Clicca qui</string>
+    <string name="click_here">Click here</string>
     <string name="favorites_routes">Favorites routes</string>
     <string name="failed_registration">Failed registration</string>
     <string name="success_registration">Success registration</string>

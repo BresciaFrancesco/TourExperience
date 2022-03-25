@@ -21,7 +21,7 @@
             android:layout_marginLeft="120dp"
             android:background="@drawable/textview_border"
             android:checkMarkTint="#B60D0D"
-            android:foreground="@mipmap/checkbox"
+            android:foreground="@drawable/checkbox"
             android:paddingHorizontal="5dp"
             android:text="  "
             android:textColor="@color/black"
@@ -33,7 +33,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
             android:paddingHorizontal="5dp"
-            android:src="@mipmap/next_black" />
+            android:src="@drawable/next_black" />
 
         <TextView
             android:id="@+id/phaseTwo"
@@ -116,7 +116,7 @@
             android:id="@+id/idEdtRegDateBirth"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="140dp"
+            android:layout_marginEnd="90dp"
             android:clickable="false"
             android:ems="10"
             android:enabled="false"
@@ -127,16 +127,15 @@
             android:textSize="14sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/idBtnSetDate"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
+    <ImageView
+        android:id="@+id/idImgSetDate"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:layout_below="@id/idTILRegSurname"
         android:layout_alignEnd="@id/idTILRegDateBirth"
-        android:layout_marginTop="56dp"
-        android:layout_marginEnd="5dp"
-        android:background="@drawable/button_shape"
-        android:text="@string/click_here" />
+        android:layout_marginTop="41dp"
+        android:layout_marginEnd="10dp"
+        android:foreground="@drawable/calendar"/>
 
     <ProgressBar
         android:id="@+id/idProgressBarReg"

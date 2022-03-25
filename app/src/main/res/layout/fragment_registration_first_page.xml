@@ -31,7 +31,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
             android:paddingHorizontal="5dp"
-            android:src="@mipmap/next_black" />
+            android:src="@drawable/next_black" />
 
         <TextView
             android:id="@+id/phaseTwo"

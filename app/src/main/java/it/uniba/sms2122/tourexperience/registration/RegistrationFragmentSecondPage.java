@@ -1,7 +1,5 @@
 package it.uniba.sms2122.tourexperience.registration;
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -23,7 +22,8 @@ public class RegistrationFragmentSecondPage extends Fragment {
 
     private TextInputEditText name;
     private TextInputEditText surname;
-    private Button date;
+    private TextInputEditText date;
+    private ImageView imgDate;
     private Button btnEnd;
     private ProgressBar progressBar;
     private RegistrationActivity mainActivity;
@@ -41,12 +41,12 @@ public class RegistrationFragmentSecondPage extends Fragment {
 
         name = view.findViewById(R.id.idEdtRegName);
         surname = view.findViewById(R.id.idEdtRegSurname);
-        date = view.findViewById(R.id.idBtnSetDate);
+        imgDate = view.findViewById(R.id.idImgSetDate);
         progressBar = view.findViewById(R.id.idProgressBarReg);
         btnEnd = view.findViewById(R.id.idBtnRegSecondPage);
         mainActivity = (RegistrationActivity) getActivity();
 
-        date.setOnClickListener(view1 -> {
+        imgDate.setOnClickListener(view1 -> {
             DialogFragment dialogFragment = new DatePickerDialogTheme();
             dialogFragment.show(getChildFragmentManager(), "MyTheme");
         });

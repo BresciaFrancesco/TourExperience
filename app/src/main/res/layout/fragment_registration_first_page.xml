@@ -18,7 +18,7 @@
             android:id="@+id/phaseOne"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="130dp"
+            android:layout_marginLeft="120dp"
             android:background="@drawable/textview_border"
             android:paddingHorizontal="5dp"
             android:text="1"
@@ -26,15 +26,12 @@
             android:textColorHint="@color/black"
             android:textSize="22sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
             android:paddingHorizontal="5dp"
-            android:text="->"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            android:textSize="27sp" />
+            android:src="@mipmap/next_black" />
 
         <TextView
             android:id="@+id/phaseTwo"

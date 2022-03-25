@@ -15,7 +15,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="140dp"
         android:layout_marginEnd="20dp"
-        android:hint="Indirizzo e-mail"
+        android:hint="@string/indirizzo_e_mail"
         android:padding="5dp"
         android:textColorHint="@color/heading_gray"
         app:hintTextColor="@color/heading_gray">
@@ -42,7 +42,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="20dp"
-        android:hint="Password"
+        android:hint="@string/password"
         android:padding="5dp"
         android:textColorHint="@color/heading_gray"
         app:hintTextColor="@color/heading_gray">
@@ -69,7 +69,7 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="25dp"
         android:background="@drawable/button_back"
-        android:text="Accedi"
+        android:text="@string/accedi"
         android:textAllCaps="false" />
 
     <!-- TextView crea nuovo account -->
@@ -81,7 +81,22 @@
         android:layout_marginTop="40dp"
         android:gravity="center"
         android:padding="10dp"
-        android:text="Sei un nuovo utente? Registrati"
+        android:text="@string/crea_nuovo_account"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/heading_gray"
+        android:textSize="18sp" />
+
+    <!-- TextView guest login -->
+    <TextView
+        android:id="@+id/idTVGuestLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idTVNewUser"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/accedi_guest"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/heading_gray"

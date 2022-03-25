@@ -49,4 +49,9 @@
     <string name="failed_to_log">Failed to log</string>
     <string name="username_required">Username required</string>
     <string name="password_required">Password required</string>
+    <string name="indirizzo_e_mail">E-mail address</string>
+    <string name="password">Password</string>
+    <string name="accedi">Login</string>
+    <string name="crea_nuovo_account">Create a new account</string>
+    <string name="accedi_guest">Login as guest</string>
 </resources>

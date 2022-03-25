@@ -41,6 +41,7 @@ public class RegistrationFragmentSecondPage extends Fragment {
 
         name = view.findViewById(R.id.idEdtRegName);
         surname = view.findViewById(R.id.idEdtRegSurname);
+        date = view.findViewById(R.id.idEdtRegDateBirth);
         imgDate = view.findViewById(R.id.idImgSetDate);
         progressBar = view.findViewById(R.id.idProgressBarReg);
         btnEnd = view.findViewById(R.id.idBtnRegSecondPage);

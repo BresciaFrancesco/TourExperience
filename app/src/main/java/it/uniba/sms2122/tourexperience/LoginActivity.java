@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         registerTxt = findViewById(R.id.idTVNewUser);
         fAuth = FirebaseAuth.getInstance();
 
-        // Apre activity registrazione
+        // Apre RegistrationActivity
         registerTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,14 +62,14 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()) {
                                 progressBar.setVisibility(View.GONE);
-                                Toast.makeText(LoginActivity.this, "Accesso eseguito", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, R.string.logged_in, Toast.LENGTH_SHORT).show();
                                 Intent i = new Intent(LoginActivity.this, HomeActivity.class);
                                 startActivity(i);
                                 finish(); // Non si può tornare indietro con il pulsane Back
                             }
                             else {
                                 progressBar.setVisibility(View.GONE);
-                                Toast.makeText(LoginActivity.this, "Accesso fallito", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, R.string.failed_to_log, Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -80,13 +80,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean checkCredentials(String username, String password) {
         if(username.isEmpty()) {
-            usernameEdit.setError("Username required");
+            String username_required = Integer.toString(R.string.username_required);
+            usernameEdit.setError(username_required);
             usernameEdit.requestFocus();
             progressBar.setVisibility(View.GONE);
             return false;
         }
         if(password.isEmpty()) {
-            passwordEdit.setError("Password required");
+            String password_required = Integer.toString(R.string.password_required);
+            passwordEdit.setError(password_required);
             passwordEdit.requestFocus();
             progressBar.setVisibility(View.GONE);
             return false;

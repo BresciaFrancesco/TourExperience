@@ -44,4 +44,8 @@
     <string name="surname_not_valid">Cognome non valido</string>
     <string name="email_not_valid">Email non valida</string>
     <string name="bithDate_not_valid">Data di nascita non valida</string>
+    <string name="logged_in">Accesso eseguito</string>
+    <string name="failed_to_log">Accesso fallito</string>
+    <string name="username_required">Username richiesto</string>
+    <string name="password_required">Password richiesta</string>
 </resources>

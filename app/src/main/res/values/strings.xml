@@ -45,4 +45,8 @@
     <string name="surname_not_valid">Surname not valid</string>
     <string name="email_not_valid">Email not valid</string>
     <string name="bithDate_not_valid">Birth date not valid</string>
+    <string name="logged_in">Logged in</string>
+    <string name="failed_to_log">Failed to log</string>
+    <string name="username_required">Username required</string>
+    <string name="password_required">Password required</string>
 </resources>

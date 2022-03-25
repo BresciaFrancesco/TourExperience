@@ -1,6 +1,13 @@
 <resources>
-    <string name="welcome1_description">Scopri le opere che più ami in giro per il mondo!</string>
-    <string name="welcome1_content_description">Un uomo sta guardando un quadro</string>
+    <string-array name="welcome_descriptions">
+        <item>Scopri le opere che più ami in giro per il mondo!</item>
+        <item>Visualizza le informazioni sulle opere tramite un semplice QR code!</item>
+        <item>Divertiti con tanti fantastici mini-giochi!</item>
+        <item>Accedi all\'applicazione per usufruire di tantissime funzionalità</item>
+    </string-array>
+    <string name="skip">Salta</string>
+    <string name="later">Più tardi</string>
+    <string name="go_to_login">Vai al Login</string>
     <string name="hello">Ciao, %1$s!</string>
     <string name="enter_email">Inserisci l\'email</string>
     <string name="enter_password">Inserisci la password</string>

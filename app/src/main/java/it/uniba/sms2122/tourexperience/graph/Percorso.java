@@ -1,9 +1,10 @@
 package it.uniba.sms2122.tourexperience.graph;
 
-import android.util.Log;
-
 import java.util.Map;
+import java.util.Set;
 
+import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
+import it.uniba.sms2122.tourexperience.graph.exception.GraphRunTimeException;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 
 
@@ -15,6 +16,8 @@ public class Percorso {
     /** Puntatore alla stanza corrente all'interno del grafo.
      *  Inizialmente, punta alla stanza di partenza del percorso. */
     private String idStanzaCorrente;
+
+    private Set<String> stanzeVisitate;
 
 
     /**
@@ -36,20 +39,23 @@ public class Percorso {
      *                 a quella corrente
      *
      * @return un oggetto della classe Stanza o null
+     *
+     * @throws GraphRunTimeException se il percorso salvato è sbagliato o manca il
+     *                               collegamento tra stanze richiesto
      */
-    public Stanza moveTo(String idStanza) {
+    public Stanza moveTo(String idStanza) throws GraphException, GraphRunTimeException {
+        Vertex currVertex = mapStanze.get(idStanzaCorrente);
         try {
-            Vertex currVertex = mapStanze.get(idStanzaCorrente);
-            Stanza stanza = null;
-            if (currVertex.containsEdge(idStanza)) {
-                idStanzaCorrente = idStanza;
-                stanza = mapStanze.get(idStanza).getStanza();
+            if (!currVertex.containsEdge(idStanza)) {
+                throw new GraphException("La stanza con ID: "
+                        + idStanza
+                        + " non è collegata alla stanza corrente o è inesistente.");
             }
-            return stanza;
+            idStanzaCorrente = idStanza;
+            return mapStanze.get(idStanza).getStanza();
         }
-        catch (NullPointerException e) {
-            Log.e("NullPointerException", "Percorso::moveTo");
-            return null;
+        catch (NullPointerException err) {
+            throw new GraphRunTimeException("Il percorso è errato!", err);
         }
     }
 

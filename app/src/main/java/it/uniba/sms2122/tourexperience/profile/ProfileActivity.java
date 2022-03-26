@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 
 import java.util.Objects;
@@ -54,7 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         //abilito l'input per la data di nascita
-        ImageButton profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
+        ImageView profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
         profileDataPickerBtn.setEnabled(true);
         //abilito l'input per la data di nascita
         EditText birthDateEditField = findViewById(R.id.editFieldBirth);
@@ -66,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
      */
     public void setClickListenerOnCalendarIcon() {
 
-        ImageButton profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
+        ImageView profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
 
         profileDataPickerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +103,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         //disabilito anche il pulsante per il datePicker
-        ImageButton profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
+        ImageView profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
         profileDataPickerBtn.setEnabled(false);
         //diabilito l'input per la data di nascita
         EditText birthDateEditField = findViewById(R.id.editFieldBirth);
@@ -115,7 +116,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void setClickListenerOnProfileDataModifyButton() {
 
         //disabilito il pulsante per il datePicker poiche da xml l'attributo non viene correttamente letto
-        ImageButton profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
+        ImageView profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
         profileDataPickerBtn.setEnabled(false);
 
         Button ProfileDataModifyButton = findViewById(R.id.btnModify);

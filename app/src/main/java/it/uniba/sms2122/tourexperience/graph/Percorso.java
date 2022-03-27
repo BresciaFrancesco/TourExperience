@@ -51,19 +51,21 @@ public class Percorso {
      * Quando si cambia stanza, la stanza appena lasciata verrà aggiunta al set di
      * stanze visitate.
      * Se il flag "tornareIndietro" è false e "idStanza" fa riferimento ad una stanza
-     * già visitata, verrà sollevata un'eccezione GraphException
+     * già visitata, verrà sollevata un'eccezione GraphException.
      *
      * @param idStanza identificativo univoco di una stanza adiacente
-     *                 a quella corrente
+     *                 a quella corrente.
      *
-     * @return la stanza con id "idStanza"
+     * @return la stanza con id "idStanza".
      *
-     * @throws GraphRunTimeException se il percorso salvato è sbagliato o manca il
-     *                               collegamento tra stanze richiesto
+     * @throws GraphRunTimeException se il percorso salvato è sbagliato.
+     *
+     * @throws GraphException se si sta cercando di visitare una stanza già visitata
+     *                        (ed è vietato) oppure se manca manca il collegamento
+     *                        tra stanze richiesto.
      */
     public Stanza moveTo(String idStanza) throws GraphException, GraphRunTimeException {
         Vertex currVertex = mapStanze.get(idStanzaCorrente);
-        Stanza stanza;
         try {
             if (!currVertex.containsEdge(idStanza)) {
                 throw new GraphException("La stanza con ID: " + idStanza
@@ -72,7 +74,7 @@ public class Percorso {
             if (!tornareIndietro && stanzeVisitate.contains(idStanza)) {
                 throw new GraphException("Non è possibile visitare stanze già visitate in precedenza.");
             }
-            stanza = mapStanze.get(idStanza).getStanza();
+            Stanza stanza = mapStanze.get(idStanza).getStanza();
             stanzeVisitate.add(idStanzaCorrente);
             idStanzaCorrente = idStanza;
             return stanza;

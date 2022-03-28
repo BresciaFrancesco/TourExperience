@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 
+import it.uniba.sms2122.tourexperience.BuildConfig;
 import it.uniba.sms2122.tourexperience.HomeActivity;
 import it.uniba.sms2122.tourexperience.LoginActivity;
 import it.uniba.sms2122.tourexperience.R;
@@ -27,8 +28,6 @@ public class WelcomeActivity extends FragmentActivity implements BottomWelcomeFr
     private final ArrayList<Drawable> images = new ArrayList<Drawable>(); // Le immagini da mostrare
     private String[] descriptions;
     private BottomWelcomeFragment bottomWelcomeFragment;
-    private static final String SHARED_PREFS = "shared_preferences";
-    private static final String FIRST_OPENING_KEY = "isFirstOpening";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +89,9 @@ public class WelcomeActivity extends FragmentActivity implements BottomWelcomeFr
     }
 
     private void changeSharedPrefs() {
-        SharedPreferences prefs = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(BuildConfig.SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(FIRST_OPENING_KEY, false);
+        editor.putBoolean(BuildConfig.SP_FIRST_OPENING, false);
         editor.apply();
     }
 

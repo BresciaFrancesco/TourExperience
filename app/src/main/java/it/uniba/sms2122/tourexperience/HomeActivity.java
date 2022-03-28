@@ -26,21 +26,18 @@ import it.uniba.sms2122.tourexperience.welcome.WelcomeActivity;
 public class HomeActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 
-    private static final String SHARED_PREFS = "shared_preferences";
-    private static final String FIRST_OPENING_KEY = "isFirstOpening";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Check sulla prima apertura
-        SharedPreferences prefs = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        if(!prefs.contains(FIRST_OPENING_KEY)) {
+        SharedPreferences prefs = getSharedPreferences(BuildConfig.SHARED_PREFS, MODE_PRIVATE);
+        if(!prefs.contains(BuildConfig.SP_FIRST_OPENING)) {
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(FIRST_OPENING_KEY, true);
+            editor.putBoolean(BuildConfig.SP_FIRST_OPENING, true);
             editor.apply();
         }
-        if(prefs.getBoolean(FIRST_OPENING_KEY, true)) {
+        if(prefs.getBoolean(BuildConfig.SP_FIRST_OPENING, true)) {
             startActivity(new Intent(this, WelcomeActivity.class));
             finish();
             return;

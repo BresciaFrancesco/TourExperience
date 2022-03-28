@@ -14,6 +14,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Custom field
+        buildConfigField("String", "SHARED_PREFS", "\"tour_experience_shared_preferences\"")
+        buildConfigField("String", "SP_FIRST_OPENING", "\"isFirstOpening\"")
     }
 
     buildTypes {

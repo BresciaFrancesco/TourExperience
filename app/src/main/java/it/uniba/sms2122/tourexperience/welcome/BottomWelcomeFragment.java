@@ -22,15 +22,25 @@ import it.uniba.sms2122.tourexperience.R;
  * Fragment per comandare le schermate di benvenuto
  */
 public class BottomWelcomeFragment extends Fragment implements View.OnClickListener {
-    private WelcomeActivity welcomeActivity;
+    private OnChangePageListener listener;
     private FloatingActionButton fab;
     private TextView skip, later;
     private Button loginBtn;
 
+    /**
+     * Interfaccia di comunicazione tra il fragment e l'activity ospitante
+     */
+    public interface OnChangePageListener {
+        void nextPage();
+        void lastPage();
+        void goToLogin();
+        void goToHome();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        welcomeActivity = (WelcomeActivity) getActivity();
+        listener = (OnChangePageListener) getActivity();
     }
 
     @Override
@@ -42,6 +52,7 @@ public class BottomWelcomeFragment extends Fragment implements View.OnClickListe
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         skip = (TextView) view.findViewById(R.id.skip_text_view);
         loginBtn = (Button) view.findViewById(R.id.goto_login_btn);
@@ -50,25 +61,56 @@ public class BottomWelcomeFragment extends Fragment implements View.OnClickListe
         fab.setOnClickListener(this::fabClickEvent);
         skip.setOnClickListener(this::skipOnClickEvent);
         loginBtn.setOnClickListener(this::goToLogin);
+        later.setOnClickListener(this::goToHome);
     }
 
-    private void goToLogin(View view) {
-        welcomeActivity.goToLogin();
+    /**
+     * Imposta lo stato del fragment in base alla pagina mostrata.
+     * Se è l'ultima pagina, mostra i pulsanti per passare alla pagina di login
+     * @param actualPage Il numero di pagina attuale
+     * @param lastPage Il numero dell'ultima pagina
+     */
+    public void setStateByPage(int actualPage, int lastPage) {
+        if(actualPage == lastPage) {
+            fab.setVisibility(View.INVISIBLE);
+            skip.setVisibility(View.GONE);
+            later.setVisibility(View.VISIBLE);
+            loginBtn.setVisibility(View.VISIBLE);
+        }
+        else if(!fab.isShown()) {
+            later.setVisibility(View.GONE);
+            loginBtn.setVisibility(View.INVISIBLE);
+            fab.setVisibility(View.VISIBLE);
+            skip.setVisibility(View.VISIBLE);
+        }
     }
 
+    /**
+     * Listener del floating action button
+     * @param view
+     */
     private void fabClickEvent(View view) {
-        welcomeActivity.nextPage();
+        listener.nextPage();
     }
 
+    /**
+     * Listener del pulsante di skip
+     * @param view
+     */
     private void skipOnClickEvent(View view) {
-        welcomeActivity.lastPage();
+        listener.lastPage();
     }
 
-    public void setLastPage() {
-        fab.setVisibility(View.INVISIBLE);
-        skip.setVisibility(View.GONE);
-        later.setVisibility(View.VISIBLE);
-        loginBtn.setVisibility(View.VISIBLE);
+    /**
+     * Listener del pulsante di login per passare direttamente alla pagina di login
+     * @param view
+     */
+    private void goToLogin(View view) {
+        listener.goToLogin();
+    }
+
+    private void goToHome(View view) {
+        listener.goToHome();
     }
 
     @Override

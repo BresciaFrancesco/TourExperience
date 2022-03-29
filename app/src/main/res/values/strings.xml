@@ -56,9 +56,10 @@
     <string name="failed_to_log">Failed to log</string>
     <string name="username_required">Username required</string>
     <string name="password_required">Password required</string>
-    <string name="indirizzo_e_mail">E-mail address</string>
+    <string name="email_address">E-mail address</string>
     <string name="password">Password</string>
-    <string name="accedi">Login</string>
-    <string name="crea_nuovo_account">Create a new account</string>
-    <string name="accedi_guest">Login as guest</string>
+    <string name="login">Login</string>
+    <string name="create_new_account">Create a new account</string>
+    <string name="login_guest">Login as guest</string>
+    <string name="unacceptable_date_birth">Unacceptable date of birth (min 12 years old)</string>
 </resources>

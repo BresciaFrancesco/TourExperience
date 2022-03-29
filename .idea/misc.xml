@@ -3,22 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable-anydpi/favorites.xml" value="0.316" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable/button_shape.xml" value="0.1935" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable/textview_border.xml" value="0.1935" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/activity_home.xml" value="0.18541666666666667" />
+        <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/activity_login.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/activity_registration.xml" value="0.18541666666666667" />
-        <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/fragment_registration_first_page.xml" value="0.18541666666666667" />
-        <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/fragment_registration_second_page.xml" value="0.264" />
-        <entry key="app/src/main/res/drawable-anydpi/next.xml" value="0.168" />
+        <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/fragment_registration_first_page.xml" value="0.4" />
+        <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/fragment_registration_second_page.xml" value="0.4" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.249" />
         <entry key="app/src/main/res/drawable/button_back.xml" value="0.1175" />
-        <entry key="app/src/main/res/drawable/button_shape.xml" value="0.168" />
-        <entry key="app/src/main/res/drawable/default_dot.xml" value="0.168" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.249" />
         <entry key="app/src/main/res/drawable/ic_museum.xml" value="0.168" />
         <entry key="app/src/main/res/drawable/rounded_drawable.xml" value="0.1175" />
-        <entry key="app/src/main/res/drawable/selected_dot.xml" value="0.168" />
-        <entry key="app/src/main/res/drawable/tab_selector.xml" value="0.168" />
         <entry key="app/src/main/res/drawable/top_rounded.xml" value="0.184" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.1" />
@@ -33,7 +30,6 @@
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.24375" />
         <entry key="app/src/main/res/menu/bottom_nav_view.xml" value="0.24375" />
         <entry key="app/src/main/res/menu/home.xml" value="0.25" />
-        <entry key="app/src/main/res/menu/selected_dot.xml" value="0.24375" />
       </map>
     </option>
   </component>

@@ -55,9 +55,10 @@
     <string name="failed_to_log">Accesso fallito</string>
     <string name="username_required">Username richiesto</string>
     <string name="password_required">Password richiesta</string>
-    <string name="indirizzo_e_mail">Indirizzo e-mail</string>
+    <string name="email_address">Indirizzo e-mail</string>
     <string name="password">Password</string>
-    <string name="accedi">Accedi</string>
-    <string name="crea_nuovo_account">Crea un nuovo account</string>
-    <string name="accedi_guest">Accedi come guest</string>
+    <string name="login">Accedi</string>
+    <string name="create_new_account">Crea un nuovo account</string>
+    <string name="login_guest">Accedi come guest</string>
+    <string name="unacceptable_date_birth">Data di nascita non accettabile (min 12 anni)</string>
 </resources>

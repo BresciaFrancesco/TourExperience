@@ -1,0 +1,55 @@
+CREATE TABLE MUSEO(
+	CODICE INTEGER PRIMARY KEY AUTOINCREMENT,
+	NOME CHAR(50) NOT NULL,
+	CITTA CHAR(50) NOT NULL,
+	DESCRIZIONE CHAR(500) NOT NULL,
+	VALUTAZIONE_MEDIA DOUBLE DEFAULT 0,
+	CHECK(VALUTAZIONE_MEDIA BETWEEN 0 AND 5),
+	UNIQUE(NOME,CITTA)
+);
+
+CREATE TABLE STANZA(
+	CODICE INTEGER PRIMARY KEY AUTOINCREMENT,
+	MUSEO INT REFERENCES MUSEO(CODICE) NOT NULL,
+	NOME CHAR(50) NOT NULL,
+	UNIQUE(MUSEO,NOME)
+);
+
+CREATE TABLE OPERA(
+	CODICE INTEGER PRIMARY KEY AUTOINCREMENT,
+	STANZA INT REFERENCES STANZA(CODICE) NOT NULL,
+	NOME CHAR(50) NOT NULL,
+	DESCRIZIONE CHAR(500) NOT NULL,
+	UNIQUE(STANZA,NOME)
+);
+
+CREATE TABLE STANZE_CONNESSE(
+	STANZA1 INTEGER REFERENCES STANZA(CODICE) NOT NULL,
+	STANZA2 INTEGER REFERENCES STANZA(CODICE) NOT NULL,
+	PRIMARY KEY(STANZA1,STANZA2)
+);
+
+INSERT INTO MUSEO(NOME,CITTA,VALUTAZIONE_MEDIA,DESCRIZIONE) VALUES ('Musei Vaticani','Roma',4.5,
+	'I Musei Vaticani sono il museo nazionale della Città del Vaticano, in Roma. Fondati da papa Giulio II nel XVI secolo, occupano gran parte del vasto cortile del Belvedere e sono una delle raccolte d''arte più grandi del mondo, dal momento che espongono l''enorme collezione di opere d''arte accumulata nei secoli dai papi: la Cappella Sistina e gli appartamenti papali affrescati da Michelangelo e Raffaello sono parte delle opere che i visitatori possono ammirare nel loro percorso.');
+
+INSERT INTO STANZA(MUSEO,NOME) VALUES (1,'Cappella Sistina');
+INSERT INTO STANZA(MUSEO,NOME) VALUES (1,'Stanze di Raffaello');
+INSERT INTO STANZA(MUSEO,NOME) VALUES (1,'Pinacoteca');
+INSERT INTO STANZA(MUSEO,NOME) VALUES (1,'Museo Egizio');
+INSERT INTO STANZA(MUSEO,NOME) VALUES (1,'Museo Etrusco');
+INSERT INTO STANZA(MUSEO,NOME) VALUES (1,'Museo Pio Cristiano');
+INSERT INTO STANZA(MUSEO,NOME) VALUES (1,'Museo Gregoriano Profano');
+INSERT INTO STANZA(MUSEO,NOME) VALUES (1,'Galleria degli Arazzi');
+
+INSERT INTO OPERA(STANZA,NOME,DESCRIZIONE) VALUES (1,'Viaggio di Mosè in Egitto',
+	'Il "Viaggio di Mosè in Egitto", attribuito al Perugino, rappresenta il momento in cui Mosè prese sua moglie e i figli, li fece salire sopra un asino e si dispose a tornare in Egitto, portando in mano la verga datagli da Dio (Esodo 4,20). Ma durante il viaggio – e qui il dipinto si discosta dal racconto biblico – venne fermato da un angelo che gli ordinò la circoncisione del secondogenito (a destra).');
+INSERT INTO OPERA(STANZA,NOME,DESCRIZIONE) VALUES (1,'Prove di Mosè',
+	'Il riquadro con le "Prove di Mosè", opera del Botticelli e della sua bottega. È uno dei più complessi, per il sommarsi di diversi episodi: a destra, l''uccisione di un egiziano che aveva percosso un ebreo, la fuga nel paese di Madian, l''incontro con alcune fanciulle locali e l''abbeveramento del loro gregge, l''apparizione del Signore da un cespuglio di fuoco (a sinistra) e, in alto al centro, l''apparizione di Dio che invita Mosè a togliersi le scarpe al Suo cospetto (Esodo 2,11-20 e 3,1-6). Da notare le due splendide figure femminili in primo piano, tipicamente botticelliane.');
+INSERT INTO OPERA(STANZA,NOME,DESCRIZIONE) VALUES (1,'Passaggio del Mar Rosso',
+	'Il "Passaggio del Mar Rosso" è attribuito al pittore Biagio d''Antonio (1446-1516). Mosè ed il suo popolo, in fuga dall''Egitto, inseguiti dall''esercito del Faraone, riescono a passare il Mar Rosso perché Dio fa ritirare davanti a loro le acque; queste si richiudono sopra gli Egiziani inseguitori che, in questo modo, muoiono insieme ai loro cavalli (Esodo 14,23-30). In basso a sinistra, una donna suona un inno di ringraziamento al Signore (Esodo 15,1-20).');
+INSERT INTO OPERA(STANZA,NOME,DESCRIZIONE) VALUES (1,'Consegna delle Tavole della Legge',
+	'La "Consegna delle Tavole della Legge", attribuito a Cosimo Rosselli, illustra il racconto biblico del vitello d''oro: Mosè era asceso al Monte Sinai per ricevere le Tavole della Legge (Esodo 23,12-15), e gli Ebrei, non vedendolo tornare, si radunarono intorno al sacerdote Aronne; quindi raccolsero anelli e oggetti d''oro e foggiarono un vitello da porre sopra un altare per adorarlo. Quando Mosè scese dal Monte con le due Tavole della Legge, vedendo la sua gente che aveva contravvenuto al divieto di rappresentare immagini sacre, le spezzò adirato (Esodo 32,1-19).');
+INSERT INTO OPERA(STANZA,NOME,DESCRIZIONE) VALUES (1,'Castigo di Core, Datan e Abiron',
+	'Il "Castigo di Core, Datan e Abiron", del Botticelli, si riferisce alla rivolta contro il Signore, durante il viaggio verso la terra promessa, da parte degli Ebrei, che lamentavano le cattive condizioni di vita cui erano stati costretti da Mosè; ma Dio li punì facendo aprire all''improvviso sotto i loro piedi la terra, che li inghiottì con tutti i loro averi (Numeri 16). Da notare, sullo sfondo della scena, l''Arco di Costantino a Roma.');
+INSERT INTO OPERA(STANZA,NOME,DESCRIZIONE) VALUES (1,'Testamento e morte di Mosè',
+	'Nel "Testamento e morte di Mosè" del Signorelli sono rappresentati più episodi: a destra, Mosè impartisce la sua benedizione ai figli di Israele (Deuteronomio 33) e, a sinistra, cede la verga del comando a Giosuè. In alto: al centro, l''angelo che indica la terra promessa e, a sinistra, la morte di Mosè.');

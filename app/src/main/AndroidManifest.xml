@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.uniba.sms2122.tourexperience">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,19 +12,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TourExperience">
         <activity
+            android:name=".musei.SceltaMusei"
+            android:exported="false" />
+        <activity
             android:name=".LoginActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".profile.ProfileActivity"
             android:exported="false"
             android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".HomeActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

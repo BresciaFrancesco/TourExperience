@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../../../../layout/custom_preview.xml" value="0.17291666666666666" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable/button_shape.xml" value="0.1935" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable/textview_border.xml" value="0.1935" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/activity_home.xml" value="0.18541666666666667" />
@@ -23,7 +24,7 @@
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35625" />
-        <entry key="app/src/main/res/layout/activity_profile.xml" value="0.10625" />
+        <entry key="app/src/main/res/layout/activity_profile.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_registration.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/activity_welcome.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/app_bar.xml" value="0.35625" />

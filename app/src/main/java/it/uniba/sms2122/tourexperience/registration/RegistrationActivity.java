@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import it.uniba.sms2122.tourexperience.LoginActivity;
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.model.User;
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -70,13 +72,13 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     public void registration(Bundle bundle) {
-        fAuth.createUserWithEmailAndPassword(bundle.getString("email"), bundle.getString("password"))
+        /*fAuth.createUserWithEmailAndPassword(bundle.getString("email"), bundle.getString("password"))
                 .addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 final FirebaseUser fbUser = fAuth.getCurrentUser();
                 String userID = fbUser.getUid();
                 dbReference = FirebaseDatabase.getInstance("https://tour-experience-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users").child(userID);
-                User user = new User(bundle.getString("name"), bundle.getString("surname"), bundle.getString("dateBirth"));
+                User user = new User(bundle.getString("email"), bundle.getString("name"), bundle.getString("surname"), bundle.getString("dateBirth"));
                 dbReference.setValue(user).addOnCompleteListener(taskUserValuesSet -> {
                     if (taskUserValuesSet.isSuccessful()) {
                         Toast.makeText(this, R.string.success_registration, Toast.LENGTH_LONG).show();
@@ -100,7 +102,21 @@ public class RegistrationActivity extends AppCompatActivity {
                 findViewById(R.id.idProgressBarReg).setVisibility(View.GONE);
                 onBackPressed();
             }
-        });
+        });*/
+        UserHolder userHolder = UserHolder.getInstance();
+        UserHolder.Result result = userHolder.register(bundle.getString("email"), bundle.getString("password"), bundle.getString("name"), bundle.getString("surname"), bundle.getString("dateBirth"),
+                () -> {
+                    Toast.makeText(this, R.string.success_registration, Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                },
+                () -> {
+                    Toast.makeText(this, R.string.failed_registration, Toast.LENGTH_LONG).show();
+                    findViewById(R.id.idProgressBarReg).setVisibility(View.GONE);
+                    onBackPressed();
+                });
+
     }
 
     public CheckRegistration getChecker() {

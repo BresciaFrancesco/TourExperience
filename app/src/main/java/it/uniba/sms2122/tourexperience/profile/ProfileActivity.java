@@ -3,8 +3,10 @@ package it.uniba.sms2122.tourexperience.profile;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -13,11 +15,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Objects;
 
+import it.uniba.sms2122.tourexperience.LoginActivity;
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.holders.UserHolder;
+import it.uniba.sms2122.tourexperience.model.User;
 
 public class ProfileActivity extends AppCompatActivity {
+    private User user;
+    private UserHolder userHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +38,27 @@ public class ProfileActivity extends AppCompatActivity {
 
         setClickListenerOnProfileDataModifyButton();
         setClickListenerOnCalendarIcon();
+
+        userHolder = UserHolder.getInstance();
+        userHolder.getUser(
+                (user) -> {
+                    ((EditText) findViewById(R.id.editFieldEmail)).setText(user.getEmail());
+                    ((EditText) findViewById(R.id.editFieldName)).setText(user.getName());
+                    ((EditText) findViewById(R.id.editFieldSurname)).setText(user.getSurname());
+                    ((EditText) findViewById(R.id.editFieldBirth)).setText(user.getDateBirth());
+                },
+                () -> { }
+        );
+
+        ((Button) findViewById(R.id.btnLogout)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth fa = FirebaseAuth.getInstance();
+                fa.signOut();
+                startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+                finish();
+            }
+        });
     }
 
 

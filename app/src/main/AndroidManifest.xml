@@ -14,6 +14,10 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".profile.ProfileActivity"
@@ -23,10 +27,7 @@
             android:name=".HomeActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity
             android:name=".registration.RegistrationActivity"

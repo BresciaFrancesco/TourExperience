@@ -103,8 +103,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });*/
-        UserHolder userHolder = UserHolder.getInstance();
-        UserHolder.Result result = userHolder.register(bundle.getString("email"), bundle.getString("password"), bundle.getString("name"), bundle.getString("surname"), bundle.getString("dateBirth"),
+        UserHolder.getInstance().register(bundle.getString("email"), bundle.getString("password"), bundle.getString("name"), bundle.getString("surname"), bundle.getString("dateBirth"),
                 () -> {
                     Toast.makeText(this, R.string.success_registration, Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(this, LoginActivity.class);

@@ -87,35 +87,33 @@ public class UserHolder {
      * @param failure
      * @return
      */
-    public Result register(String email, String password, String name, String surname, String dateBirth, SuccessListener success, FailureListener failure) {
-        Task<AuthResult> task = firebaseAuth.createUserWithEmailAndPassword(email, password);
+    public void register(String email, String password, String name, String surname, String dateBirth, SuccessListener success, FailureListener failure) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    final FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+                    String userID = currentUser.getUid();
 
-        while(!task.isComplete());
+                    DatabaseReference actualReference = reference.child(userID);
 
-        if (task.isSuccessful()) {
-            final FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-            String userID = currentUser.getUid();
-
-            DatabaseReference actualReference = reference.child(userID);
-
-            actualReference.setValue(new User(email, name, surname, dateBirth)).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()) {
-                        result.setSuccessful(true);
-                        success.doSuccess();
-                    } else {
-                        result.setSuccessful(false);
-                        firebaseAuth.getCurrentUser().delete();
-                        failure.doFail();
-                    }
+                    actualReference.setValue(new User(email, name, surname, dateBirth)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> taskUserValueSet) {
+                            if (taskUserValueSet.isSuccessful()) {
+                                result.setSuccessful(true);
+                                success.doSuccess();
+                            } else {
+                                firebaseAuth.getCurrentUser().delete();
+                                failure.doFail();
+                            }
+                        }
+                    });
+                } else {
+                    failure.doFail();
                 }
-            });
-        } else {
-            result.setSuccessful(false);
-        }
-
-        return result;
+            }
+        });
     }
 
     /**

@@ -20,11 +20,14 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import java.util.Objects;
 import java.util.Set;
 
+import it.uniba.sms2122.tourexperience.holders.UserHolder;
+import it.uniba.sms2122.tourexperience.model.User;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
 import it.uniba.sms2122.tourexperience.welcome.WelcomeActivity;
 
 public class HomeActivity extends AppCompatActivity {
     RecyclerView recyclerView;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +46,16 @@ public class HomeActivity extends AppCompatActivity {
             return;
         }
 
-        String title = getString(R.string.hello, "Francesco");  //TODO inserire nome vero
-        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
+        // Prendo l'utente per il nome
+        UserHolder userHolder = UserHolder.getInstance();
+        userHolder.getUser(
+                (user) -> {
+                    String title = getString(R.string.hello, user.getName());
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(title);
+                },
+                () -> { }
+        );
+        getString(R.string.hello, "Francesco");
 
         setContentView(R.layout.activity_home);
 

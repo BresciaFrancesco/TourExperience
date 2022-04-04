@@ -30,19 +30,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Check sulla prima apertura
-        SharedPreferences prefs = getSharedPreferences(BuildConfig.SHARED_PREFS, MODE_PRIVATE);
-        if(!prefs.contains(BuildConfig.SP_FIRST_OPENING)) {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean(BuildConfig.SP_FIRST_OPENING, true);
-            editor.apply();
-        }
-        if(prefs.getBoolean(BuildConfig.SP_FIRST_OPENING, true)) {
-            startActivity(new Intent(this, WelcomeActivity.class));
-            finish();
-            return;
-        }
-
         String title = getString(R.string.hello, "Francesco");  //TODO inserire nome vero
         Objects.requireNonNull(getSupportActionBar()).setTitle(title);
 

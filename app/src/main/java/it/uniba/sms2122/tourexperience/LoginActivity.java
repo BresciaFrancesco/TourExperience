@@ -1,15 +1,15 @@
 package it.uniba.sms2122.tourexperience;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,45 +19,41 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
-import it.uniba.sms2122.tourexperience.registration.RegistrationActivity;
+import it.uniba.sms2122.tourexperience.registration.CheckCredentials;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private TextInputEditText usernameEdit,passwordEdit;
+    private CheckCredentials checker;
+    private TextInputEditText emailEdit,passwordEdit;
     private Button loginBtn;
     private ProgressBar progressBar;
-    private TextView registerTxt;
+    private ActionBar actionBar;
     private FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        usernameEdit = findViewById(R.id.idEdtUserName);
+        emailEdit = findViewById(R.id.idEdtUserName);
         passwordEdit = findViewById(R.id.idEdtPassword);
         loginBtn = findViewById(R.id.idBtnLogin);
         progressBar = findViewById(R.id.idPBLoading);
-        registerTxt = findViewById(R.id.idTVNewUser);
         fAuth = FirebaseAuth.getInstance();
 
-        // Apre RegistrationActivity
-        registerTxt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(LoginActivity.this, RegistrationActivity.class);
-                startActivity(i);
-            }
-        });
+        checker = new CheckCredentials();
+
+        actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(R.string.login);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
-                String username = usernameEdit.getText().toString();
+                String email = emailEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
-                if(checkCredentials(username,password)) {
-                    fAuth.signInWithEmailAndPassword(username,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                if(checker.checkEmail(emailEdit,LoginActivity.this) && checker.checkPassword(passwordEdit,LoginActivity.this)) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    fAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()) {
@@ -78,33 +74,13 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private boolean checkCredentials(String username, String password) {
-        if(username.isEmpty()) {
-            String username_required = Integer.toString(R.string.username_required);
-            usernameEdit.setError(username_required);
-            usernameEdit.requestFocus();
-            progressBar.setVisibility(View.GONE);
-            return false;
-        }
-        if(password.isEmpty()) {
-            String password_required = Integer.toString(R.string.password_required);
-            passwordEdit.setError(password_required);
-            passwordEdit.requestFocus();
-            progressBar.setVisibility(View.GONE);
-            return false;
-        }
-        return true;
-    }
-
-    // Controlla se l'utente è già autenticato quando si apre l'app
     @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser user = fAuth.getCurrentUser();
-        if(user != null) {
-            Intent i = new Intent(LoginActivity.this, HomeActivity.class);
-            startActivity(i);
-            this.finish(); // Non posso tornare all'intent precedente
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            // API 5+ solution
+            onBackPressed();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 }

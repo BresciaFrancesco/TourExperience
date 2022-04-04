@@ -65,8 +65,12 @@ public class RegistrationFragmentSecondPage extends Fragment {
         String txtSurname = surname.getText().toString();
         String txtDate = date.getText().toString();
 
-        CheckRegistration checker = mainActivity.getChecker();
+        CheckCredentials checker = mainActivity.getChecker();
         if (!checker.checkGenericStringGeneral("name", name,30,txtName,mainActivity)) return;
+
+        if (!checker.checkGenericStringGeneral("surname", surname,30,txtSurname,mainActivity)) return;
+
+        if (!checker.checkGenericStringGeneral("date", date,30,txtDate,mainActivity)) return;
 
         Bundle bundle = getArguments();
         bundle.putString("name", txtName);

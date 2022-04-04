@@ -68,48 +68,18 @@
         android:layout_marginStart="25dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="25dp"
-        android:background="@drawable/button_back"
+        android:background="@drawable/button_shape"
         android:text="@string/login"
-        android:textAllCaps="false" />
-
-    <!-- TextView crea nuovo account -->
-    <TextView
-        android:id="@+id/idTVNewUser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/idBtnLogin"
-        android:layout_marginTop="40dp"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="@string/create_new_account"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textColor="@color/heading_gray"
-        android:textSize="18sp" />
-
-    <!-- TextView guest login -->
-    <TextView
-        android:id="@+id/idTVGuestLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/idTVNewUser"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="@string/login_guest"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textColor="@color/heading_gray"
-        android:textSize="18sp" />
+        android:textAllCaps="true" />
 
     <!-- ProgressBar -->
     <ProgressBar
         android:id="@+id/idPBLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/idTVNewUser"
+        android:layout_below="@id/idBtnLogin"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:indeterminate="true"
         android:indeterminateDrawable="@drawable/progress_back"
         android:visibility="gone" />

@@ -9,9 +9,9 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import it.uniba.sms2122.tourexperience.R;
 
-public class CheckRegistration{
+public class CheckCredentials {
 
-    public static final int MAX_STRING_AGE = 3;
+    public static final int MAX_DATE = 15;
     public static final int MAX_PASSWORD = 30;
     public static final int MIN_PASSWORD = 8;
     public static final int SPACE = 32;
@@ -44,6 +44,26 @@ public class CheckRegistration{
             toast.setGravity(Gravity.TOP, 0, 200); // y340 bottom
             toast.show();
             return false;
+        }
+        return true;
+    }
+
+    public boolean checkPassword(TextInputEditText firstPassword, Activity activity) {
+        String txtPassword = firstPassword.getText().toString();
+        if (!checkGenericStringGeneral("password", firstPassword, MAX_PASSWORD, txtPassword, activity))
+            return false;
+        final int len = txtPassword.length();
+        if (len < MIN_PASSWORD) {
+            firstPassword.setError(activity.getString(R.string.psw_too_short,MIN_PASSWORD));
+            firstPassword.requestFocus();
+            return false;
+        }
+        for (int i = 0; i < len; i++) {
+            if (txtPassword.charAt(i) == SPACE) {
+                firstPassword.setError(activity.getString(R.string.msg_psw_without_space));
+                firstPassword.requestFocus();
+                return false;
+            }
         }
         return true;
     }

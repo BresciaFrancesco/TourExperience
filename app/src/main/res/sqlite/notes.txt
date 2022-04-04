@@ -1,6 +1,0 @@
-Comandi utili da linea di comando:
-.open database.db (Carica il database)
-.tables (Visualizza tutte le tabelle)
-.schema (Visualizza lo schema del database)
-.mode box (Modalità visualizzazione tabelle nel formato box)
-.quit (Esce dal terminale di sqlite)

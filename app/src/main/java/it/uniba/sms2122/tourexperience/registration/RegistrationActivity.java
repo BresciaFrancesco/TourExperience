@@ -22,7 +22,7 @@ import it.uniba.sms2122.tourexperience.model.User;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    private CheckRegistration checker;
+    private CheckCredentials checker;
     private ActionBar actionBar;
     private FirebaseAuth fAuth;
     private DatabaseReference dbReference;
@@ -32,7 +32,7 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        checker = new CheckRegistration();
+        checker = new CheckCredentials();
         actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true); // abilita il pulsante "back" nella action bar
         actionBar.setTitle(R.string.registration);
@@ -65,7 +65,7 @@ public class RegistrationActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setReorderingAllowed(true);
         transaction.replace(R.id.container_fragments_registration, secondPage);
-        transaction.addToBackStack(null);
+        transaction.addToBackStack("RegistrationFragmentFirstPage");
         transaction.commit();
     }
 
@@ -92,9 +92,12 @@ public class RegistrationActivity extends AppCompatActivity {
                 });
             }
             else {
-                if(task.getException().toString().contains("com.google.firebase.auth.FirebaseAuthInvalidCredentialsException")){
+                String taskException = task.getException().toString();
+                if(taskException.contains("com.google.firebase.auth.FirebaseAuthInvalidCredentialsException")){
                     Toast.makeText(this, R.string.credentials_not_accepted, Toast.LENGTH_LONG).show();
-                } else {
+                } else if(taskException.contains("com.google.firebase.auth.FirebaseAuthUserCollisionException")){
+                    Toast.makeText(this, R.string.email_already_use, Toast.LENGTH_LONG).show();
+                } else{
                     Toast.makeText(this, R.string.failed_registration, Toast.LENGTH_LONG).show();
                 }
                 findViewById(R.id.idProgressBarReg).setVisibility(View.GONE);
@@ -103,7 +106,7 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
-    public CheckRegistration getChecker() {
+    public CheckCredentials getChecker() {
         return checker;
     }
 }

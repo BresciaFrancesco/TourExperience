@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -48,7 +47,7 @@ public class RegistrationFragmentFirstPage extends Fragment {
         String txtEmail = email.getText().toString();
         String txtPsw = psw.getText().toString();
 
-        CheckRegistration checker = mainActivity.getChecker();
+        CheckCredentials checker = mainActivity.getChecker();
         if (!checker.checkEmail(this.email, mainActivity)) return;
         if (!checker.checkPassword(psw, rPsw, mainActivity)) return;
 

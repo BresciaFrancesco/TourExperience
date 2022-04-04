@@ -6,14 +6,15 @@ public class Opera {
     private String id;
     private String nome;
     private String descrizione;
-
+    private String percorsoImg;
 
     public Opera() {}
 
-    public Opera(String id, String nome, String descrizione) {
+    public Opera(String id, String nome, String descrizione, String percorsoImg) {
         this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
+        this.percorsoImg = percorsoImg;
     }
 
     public String getId() {
@@ -40,4 +41,11 @@ public class Opera {
         this.descrizione = descrizione;
     }
 
+    public String getPercorsoImg() {
+        return percorsoImg;
+    }
+
+    public void setPercorsoImg(String percorsoImg) {
+        this.percorsoImg = percorsoImg;
+    }
 }

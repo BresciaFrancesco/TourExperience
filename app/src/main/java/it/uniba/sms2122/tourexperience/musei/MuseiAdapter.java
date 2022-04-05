@@ -13,17 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.model.Museo;
 
 
 public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> {
-    ArrayList courseImg, courseName;
-    Context context;
+    private ArrayList<Museo> listaMusei;
+    private Context context;
 
     // Constructor for initialization
-    public MuseiAdapter(Context context, ArrayList courseImg, ArrayList courseName) {
+    public MuseiAdapter(Context context, ArrayList<Museo> listaMusei) {
         this.context = context;
-        this.courseImg = courseImg;
-        this.courseName = courseName;
+        this.listaMusei = listaMusei;
     }
 
     @NonNull
@@ -40,17 +40,15 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     // Binding data to the into specified position
     @Override
     public void onBindViewHolder(@NonNull MuseiAdapter.ViewHolder holder, int position) {
-        // TypeCast Object to int type
-        int res = (int) courseImg.get(position);
-        holder.images.setImageResource(res);
-        holder.text.setText((String) courseName.get(position));
+        holder.images.setImageURI(listaMusei.get(position).getFileUri());
+        holder.text.setText(listaMusei.get(position).getNome());
     }
 
     @Override
     public int getItemCount() {
         // Returns number of items
         // currently available in Adapter
-        return courseImg.size();
+        return listaMusei.size();
     }
 
     // Initializing the Views
@@ -60,8 +58,8 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
 
         public ViewHolder(View view) {
             super(view);
-            images = (ImageView) view.findViewById(R.id.icona_item_lista);
-            text = (TextView) view.findViewById(R.id.nome_item_lista);
+            images = view.findViewById(R.id.icona_item_lista);
+            text = view.findViewById(R.id.nome_item_lista);
 
             // click di un item
 //            view.setOnClickListener(_view -> {

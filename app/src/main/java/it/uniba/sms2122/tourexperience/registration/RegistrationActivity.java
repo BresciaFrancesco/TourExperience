@@ -110,8 +110,12 @@ public class RegistrationActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 },
-                () -> {
-                    Toast.makeText(this, R.string.failed_registration, Toast.LENGTH_LONG).show();
+                (String errorMsg) -> {
+                    if(errorMsg.contains("com.google.firebase.auth.FirebaseAuthInvalidCredentialsException")) {
+                        Toast.makeText(this, R.string.credentials_not_accepted, Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(this, R.string.failed_registration, Toast.LENGTH_LONG).show();
+                    }
                     findViewById(R.id.idProgressBarReg).setVisibility(View.GONE);
                     onBackPressed();
                 });

@@ -15,66 +15,14 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import it.uniba.sms2122.tourexperience.model.User;
 
-public class UserHolder {
-    private static final String URI = "https://tour-experience-default-rtdb.europe-west1.firebasedatabase.app";
-    private static final String USER_TABLE = "Users";
-
+public class UserHolder extends AbstractHolder{
     private static final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private static final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(URI);
     private static DatabaseReference reference;
+    private static final String TABLE_NAME = "Users";
 
     private static UserHolder instance;
-    private Result result;
 
     private User user;
-
-    /**
-     * Interfacce per le lambda expression
-     */
-    public interface SuccessListener {
-        void doSuccess();
-    }
-
-    public interface SuccessDataListener {
-        void doSuccess(User user);
-    }
-
-    public interface FailureListener {
-        void doFail();
-    }
-
-    /**
-     * Classe per i risultati delle esecuzioni (forse è da cancellare)
-     */
-    public class Result {
-        private boolean isSuccessful;
-        private String resultError;
-
-        public Result(boolean isSuccessful) {
-            this.isSuccessful = isSuccessful;
-        }
-
-        public Result() {
-            isSuccessful = false;
-        }
-
-        public void setSuccessful(boolean isSuccessful) {
-            this.isSuccessful = isSuccessful;
-        }
-
-        public void setSuccessful(boolean isSuccessful, String error) {
-            this.isSuccessful = isSuccessful;
-            this.resultError = error;
-        }
-
-        public String getError() {
-            return resultError;
-        }
-
-        public boolean isSuccessful() {
-            return isSuccessful;
-        }
-    }
 
     /**
      * Registrazione
@@ -87,30 +35,27 @@ public class UserHolder {
      * @param failure
      * @return
      */
-    public void register(String email, String password, String name, String surname, String dateBirth, SuccessListener success, FailureListener failure) {
+    public void register(String email, String password, String name, String surname, String dateBirth, SuccessListener success, FailureDataListener failure) {
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    final FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-                    String userID = currentUser.getUid();
-
+                    final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                    String userID = firebaseUser.getUid();
                     DatabaseReference actualReference = reference.child(userID);
-
                     actualReference.setValue(new User(email, name, surname, dateBirth)).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> taskUserValueSet) {
                             if (taskUserValueSet.isSuccessful()) {
-                                result.setSuccessful(true);
                                 success.doSuccess();
                             } else {
                                 firebaseAuth.getCurrentUser().delete();
-                                failure.doFail();
+                                failure.doFail(taskUserValueSet.getException()!=null? taskUserValueSet.getException().toString() : "");
                             }
                         }
                     });
                 } else {
-                    failure.doFail();
+                    failure.doFail(task.getException()!=null? task.getException().toString() : "");
                 }
             }
         });
@@ -148,15 +93,14 @@ public class UserHolder {
     }
 
     public static UserHolder getInstance() {
-        if(instance!=null) {
-            return instance;
+        if(instance==null) {
+            instance = new UserHolder();
         }
-        instance = new UserHolder();
         return instance;
     }
 
     private UserHolder() {
-        result = new Result(false);
-        reference = firebaseDatabase.getReference(USER_TABLE);
+        super();
+        reference = firebaseDatabase.getReference(TABLE_NAME);
     }
 }

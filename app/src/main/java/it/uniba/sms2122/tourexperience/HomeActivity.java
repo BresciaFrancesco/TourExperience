@@ -11,16 +11,25 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 import java.util.Set;
 
+import it.uniba.sms2122.tourexperience.model.User;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
 import it.uniba.sms2122.tourexperience.welcome.WelcomeActivity;
 
@@ -31,9 +40,14 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences prefs = getSharedPreferences("MySharedPreferences", MODE_PRIVATE);
-
-        String title = getString(R.string.hello, prefs.getString("NAME",""));
+        String nameUser = "", title;
+        Bundle extras = getIntent().getExtras();
+        if(extras != null)
+            nameUser = extras.getString("nameUser");
+        if(nameUser != null)
+            title = getString(R.string.hello, nameUser);
+        else
+            title = getString(R.string.hello, "");
         Objects.requireNonNull(getSupportActionBar()).setTitle(title);
 
         setContentView(R.layout.activity_home);

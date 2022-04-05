@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     private ActionBar actionBar;
 
     private FirebaseAuth fAuth;
-    private DatabaseReference dbReference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,6 @@ public class LoginActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()) {
 
-                                getUserFromFirebase(email, password);
                                 progressBar.setVisibility(View.GONE);
                                 Toast.makeText(LoginActivity.this, R.string.logged_in, Toast.LENGTH_SHORT).show();
 
@@ -90,34 +89,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private void getUserFromFirebase(String email, String password) {
-
-        ValueEventListener listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-
-                //Non faccio il controllo che esistano già per gestire il caso in cui faccia il login con altro account oltre a quello creato con la registrazione
-                SharedPreferences prefs = getSharedPreferences("MySharedPreferences", MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("EMAIL", email);
-                editor.putString("PASSWORD", password);
-                editor.putString("NAME", user.getName());
-                editor.commit();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.w("loadUser:onCancelled", error.toException());
-            }
-        };
-
-        final FirebaseUser fbUser = fAuth.getCurrentUser();
-        String userID = fbUser.getUid();
-        dbReference = FirebaseDatabase.getInstance("https://tour-experience-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users").child(userID);
-        dbReference.addValueEventListener(listener);
     }
 
     @Override

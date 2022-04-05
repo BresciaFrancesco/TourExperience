@@ -5,6 +5,12 @@ public class User {
     private String surname;
     private String dateBirth;
 
+    public User(){
+        name = null;
+        surname = null;
+        dateBirth = null;
+    }
+
     public User(String name, String surname, String dateBirth) {
         this.name = name;
         this.surname = surname;

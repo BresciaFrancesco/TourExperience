@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,7 +31,9 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String title = getString(R.string.hello, "Francesco");  //TODO inserire nome vero
+        SharedPreferences prefs = getSharedPreferences("MySharedPreferences", MODE_PRIVATE);
+
+        String title = getString(R.string.hello, prefs.getString("NAME",""));
         Objects.requireNonNull(getSupportActionBar()).setTitle(title);
 
         setContentView(R.layout.activity_home);
@@ -64,7 +67,13 @@ public class HomeActivity extends AppCompatActivity {
                 //code for language setting
 
             default:
-                return super.onOptionsItemSelected(item);}
+                return super.onOptionsItemSelected(item);
         }
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+    }
 }

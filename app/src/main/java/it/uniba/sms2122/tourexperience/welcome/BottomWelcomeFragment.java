@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import it.uniba.sms2122.tourexperience.R;
 
@@ -24,8 +23,8 @@ import it.uniba.sms2122.tourexperience.R;
 public class BottomWelcomeFragment extends Fragment implements View.OnClickListener {
     private OnChangePageListener listener;
     private FloatingActionButton fab;
-    private TextView skip, later;
-    private Button loginBtn;
+    private TextView skip;
+    private Button welcomeBtn;
 
     /**
      * Interfaccia di comunicazione tra il fragment e l'activity ospitante
@@ -33,8 +32,7 @@ public class BottomWelcomeFragment extends Fragment implements View.OnClickListe
     public interface OnChangePageListener {
         void nextPage();
         void lastPage();
-        void goToLogin();
-        void goToHome();
+        void goToMain();
     }
 
     @Override
@@ -55,13 +53,11 @@ public class BottomWelcomeFragment extends Fragment implements View.OnClickListe
 
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         skip = (TextView) view.findViewById(R.id.skip_text_view);
-        loginBtn = (Button) view.findViewById(R.id.goto_login_btn);
-        later = (TextView) view.findViewById(R.id.later_text_view);
+        welcomeBtn = (Button) view.findViewById(R.id.welcome_btn);
 
         fab.setOnClickListener(this::fabClickEvent);
         skip.setOnClickListener(this::skipOnClickEvent);
-        loginBtn.setOnClickListener(this::goToLogin);
-        later.setOnClickListener(this::goToHome);
+        welcomeBtn.setOnClickListener(this::goToMain);
     }
 
     /**
@@ -74,12 +70,10 @@ public class BottomWelcomeFragment extends Fragment implements View.OnClickListe
         if(actualPage == lastPage) {
             fab.setVisibility(View.INVISIBLE);
             skip.setVisibility(View.GONE);
-            later.setVisibility(View.VISIBLE);
-            loginBtn.setVisibility(View.VISIBLE);
+            welcomeBtn.setVisibility(View.VISIBLE);
         }
         else if(!fab.isShown()) {
-            later.setVisibility(View.GONE);
-            loginBtn.setVisibility(View.INVISIBLE);
+            welcomeBtn.setVisibility(View.INVISIBLE);
             fab.setVisibility(View.VISIBLE);
             skip.setVisibility(View.VISIBLE);
         }
@@ -102,15 +96,11 @@ public class BottomWelcomeFragment extends Fragment implements View.OnClickListe
     }
 
     /**
-     * Listener del pulsante di login per passare direttamente alla pagina di login
+     * Listener del pulsante di login per passare direttamente alla MainActivity
      * @param view
      */
-    private void goToLogin(View view) {
-        listener.goToLogin();
-    }
-
-    private void goToHome(View view) {
-        listener.goToHome();
+    private void goToMain(View view) {
+        listener.goToMain();
     }
 
     @Override

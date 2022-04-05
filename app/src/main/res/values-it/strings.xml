@@ -7,8 +7,8 @@
     </string-array>
     <string name="skip">Salta</string>
     <string name="later">Più tardi</string>
-    <string name="go_to_login">Vai al Login</string>
-    <string name="hello">Ciao, %1$s!</string>
+    <string name="welcome">Benvenuto</string>
+    <string name="hello">Ciao %1$s!</string>
     <string name="enter_email">Inserisci l\'email</string>
     <string name="enter_password">Inserisci la password</string>
     <string name="repeat_password">Ripeti la password</string>

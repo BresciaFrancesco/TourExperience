@@ -3,10 +3,14 @@ package it.uniba.sms2122.tourexperience.registration;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.transition.Slide;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -16,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import it.uniba.sms2122.tourexperience.BuildConfig;
 import it.uniba.sms2122.tourexperience.LoginActivity;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.User;
@@ -61,16 +66,22 @@ public class RegistrationActivity extends AppCompatActivity {
 
     public void nextFragment(Bundle bundle) {
         Fragment secondPage = new RegistrationFragmentSecondPage();
+
         secondPage.setArguments(bundle);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setReorderingAllowed(true);
+        transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
         transaction.replace(R.id.container_fragments_registration, secondPage);
-        transaction.addToBackStack("RegistrationFragmentFirstPage");
+        transaction.addToBackStack(null);
         transaction.commit();
+
     }
 
     public void registration(Bundle bundle) {
-        fAuth.createUserWithEmailAndPassword(bundle.getString("email"), bundle.getString("password"))
+        String email = bundle.getString("email");
+        String password = bundle.getString("password");
+
+        fAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 final FirebaseUser fbUser = fAuth.getCurrentUser();
@@ -104,6 +115,12 @@ public class RegistrationActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
 
     public CheckCredentials getChecker() {

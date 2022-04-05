@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -28,11 +29,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewGuest;
     private ActionBar actionBar;
     private FirebaseAuth fAuth;
+    private ActivityOptions options;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        automaticLogin();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         // Check sulla prima apertura
         //TODO aggiungeere le shared preference per salvare email e password una volta fatto il login ed non passare più dalla main activity
@@ -51,34 +55,38 @@ public class MainActivity extends AppCompatActivity {
         btnLogin = (Button) findViewById(R.id.idBtnMainLogin);
         btnRegistration = (Button) findViewById(R.id.idBtnMainRegistration);
         textViewGuest = (TextView) findViewById(R.id.idTextViewGuest);
-
         setOnClickListenerBtnLogin();
         setOnClickListenerBtnRegistration();
         setOnClickListenerTextViewGuest();
 
+
+        options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
         actionBar = getSupportActionBar();
         actionBar.setTitle("Tour Experience");
-
-        fAuth = FirebaseAuth.getInstance();
     }
 
     // Controlla se l'utente è già autenticato quando si apre l'app
-    @Override
-    protected void onStart() {
-        super.onStart();
+    private void automaticLogin() {
+        fAuth = FirebaseAuth.getInstance();
+        SharedPreferences prefs = getSharedPreferences("MySharedPreferences", MODE_PRIVATE);
+        String email = prefs.getString("EMAIL",null);
+        String password = prefs.getString("PASSWORD",null);
 
-        //TODO cambiare i parametri del metodo
-        fAuth.signInWithEmailAndPassword("francesco@gmaiul.com ","ciao12345").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                //TODO fare i controlli che l'account sia effettivamente registrato sul database
-                if(task.isSuccessful()) {
-                    Intent i = new Intent(MainActivity.this, HomeActivity.class);
-                    startActivity(i);
-                    finish(); // Non si può tornare indietro con il pulsane Back
+        if (email != null && password != null) {
+            fAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    //TODO fare i controlli che l'account sia effettivamente registrato sul database
+                    if(task.isSuccessful()) {
+                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                        startActivity(intent, options.toBundle());
+                        finish(); // Non si può tornare indietro con il pulsane Back
+                    }
                 }
-            }
-        });
+            });
+        }
+
+
     }
 
     private void setOnClickListenerBtnLogin() {
@@ -86,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
+                startActivity(intent, options.toBundle());
             }
         });
     }
@@ -96,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
-                startActivity(intent);
+                startActivity(intent, options.toBundle());
             }
         });
     }
@@ -105,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
         textViewGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, HomeActivity.class);
-                startActivity(i);
+                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                startActivity(intent, options.toBundle());
             }
         });
     }

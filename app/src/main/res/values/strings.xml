@@ -8,8 +8,8 @@
     </string-array>
     <string name="skip">Skip</string>
     <string name="later">I prefer to log in later</string>
-    <string name="go_to_login">Go to Login</string>
-    <string name="hello">Hello, %1$s!</string>
+    <string name="welcome">Welcome</string>
+    <string name="hello">Hello %1$s!</string>
     <string name="enter_email">Enter email</string>
     <string name="enter_password">Enter your password</string>
     <string name="repeat_password">Repeat your password</string>
@@ -53,7 +53,7 @@
     <string name="email_not_valid">Email not valid</string>
     <string name="bithDate_not_valid">Birth date not valid</string>
     <string name="logged_in">Logged in</string>
-    <string name="failed_to_log">Failed to log</string>
+    <string name="failed_to_log">Failed log in</string>
     <string name="username_required">Username required</string>
     <string name="password_required">Password required</string>
     <string name="email_address">E-mail address</string>

@@ -39,6 +39,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
 
         String nameUser = "", title;
         Bundle extras = getIntent().getExtras();
@@ -49,8 +50,6 @@ public class HomeActivity extends AppCompatActivity {
         else
             title = getString(R.string.hello, "");
         Objects.requireNonNull(getSupportActionBar()).setTitle(title);
-
-        setContentView(R.layout.activity_home);
 
         recyclerView = findViewById(R.id.favorites_recycle_view);
 

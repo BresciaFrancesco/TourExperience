@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnRegistration;
     private TextView textViewGuest;
     private ActionBar actionBar;
+
     private FirebaseAuth fAuth;
     private ActivityOptions options;
 
@@ -46,14 +47,15 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser fbUser = fAuth.getCurrentUser();
 
         if (fbUser != null) {
+            getSupportActionBar().hide();
             String userID = fbUser.getUid();
             DatabaseReference dbReference = FirebaseDatabase.getInstance("https://tour-experience-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users").child(userID);
             dbReference.get().addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
                     Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                     intent.putExtra("nameUser", task.getResult().getValue(User.class).getName());
-                    finish(); // Non si può tornare indietro con il pulsane Back
                     startActivity(intent);
+                    finish(); // Non si può tornare indietro con il pulsane Back
                 }
             });
 

@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import it.uniba.sms2122.tourexperience.BuildConfig;
 import it.uniba.sms2122.tourexperience.LoginActivity;
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.model.User;
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -78,43 +79,27 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     public void registration(Bundle bundle) {
-        String email = bundle.getString("email");
-        String password = bundle.getString("password");
-
-        fAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                final FirebaseUser fbUser = fAuth.getCurrentUser();
-                String userID = fbUser.getUid();
-                dbReference = FirebaseDatabase.getInstance("https://tour-experience-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users").child(userID);
-                User user = new User(bundle.getString("email"), bundle.getString("name"), bundle.getString("surname"), bundle.getString("dateBirth"));
-                dbReference.setValue(user).addOnCompleteListener(taskUserValuesSet -> {
-                    if (taskUserValuesSet.isSuccessful()) {
-                        Toast.makeText(this, R.string.success_registration, Toast.LENGTH_LONG).show();
-                        fAuth.signOut();
-                        Intent intent = new Intent(this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
+        UserHolder userHolder = UserHolder.getInstance();
+        userHolder.register(bundle.getString("email"), bundle.getString("password"), bundle.getString("name"), bundle.getString("surname"), bundle.getString("dateBirth"),
+                () -> {
+                    Toast.makeText(this, R.string.success_registration, Toast.LENGTH_LONG).show();
+                    fAuth.signOut();
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                },
+                (String errorMsg) -> {
+                    if(errorMsg.contains("com.google.firebase.auth.FirebaseAuthInvalidCredentialsException")) {
+                        Toast.makeText(this, R.string.credentials_not_accepted, Toast.LENGTH_LONG).show();
+                    }
+                    else if(errorMsg.contains("com.google.firebase.auth.FirebaseAuthUserCollisionException")) {
+                        Toast.makeText(this, R.string.email_already_use, Toast.LENGTH_LONG).show();
                     }
                     else {
                         Toast.makeText(this, R.string.failed_registration, Toast.LENGTH_LONG).show();
-                        fbUser.delete();
                     }
-                });
-            }
-            else {
-                String taskException = task.getException().toString();
-                if(taskException.contains("com.google.firebase.auth.FirebaseAuthInvalidCredentialsException")){
-                    Toast.makeText(this, R.string.credentials_not_accepted, Toast.LENGTH_LONG).show();
-                } else if(taskException.contains("com.google.firebase.auth.FirebaseAuthUserCollisionException")){
-                    Toast.makeText(this, R.string.email_already_use, Toast.LENGTH_LONG).show();
-                } else{
-                    Toast.makeText(this, R.string.failed_registration, Toast.LENGTH_LONG).show();
                 }
-                findViewById(R.id.idProgressBarReg).setVisibility(View.GONE);
-                onBackPressed();
-            }
-        });
+        );
     }
 
     @Override

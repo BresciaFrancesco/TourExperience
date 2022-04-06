@@ -101,6 +101,27 @@ public class UserHolder extends AbstractHolder{
     }
 
     /**
+     * Effettua l'update dell'oggetto user solamente se questo e' stato modificato.
+     * @param success Interfaccia per realizzare il metodo di successo (realizzabile con una lambda expression)
+     * @param failure Interfaccia per realizzare il metodo di fallimento (realizzabile con una lambda expression)
+     */
+    public void updateIfDirty(SuccessListener success, FailureDataListener failure) {
+        if(user!=null && user.isDirty()) {
+            DatabaseReference actualReference = reference.child(TABLE_NAME);
+            actualReference.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()) {
+                        success.doSuccess();
+                    } else {
+                        failure.doFail(task.getException()==null? "" : task.getException().toString());
+                    }
+                }
+            });
+        }
+    }
+
+    /**
      * Restituisce l'unica istanza di {@link UserHolder}.
      * @return L'istanza di {@link UserHolder}
      */

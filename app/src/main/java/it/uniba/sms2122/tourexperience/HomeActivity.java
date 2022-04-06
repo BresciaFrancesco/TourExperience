@@ -29,11 +29,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Objects;
 import java.util.Set;
 
+import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.model.User;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
 import it.uniba.sms2122.tourexperience.welcome.WelcomeActivity;
 
 public class HomeActivity extends AppCompatActivity {
+    private UserHolder userHolder;
+    private User user;
     RecyclerView recyclerView;
 
     @Override
@@ -41,15 +44,14 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        String nameUser = "", title;
-        Bundle extras = getIntent().getExtras();
-        if(extras != null)
-            nameUser = extras.getString("nameUser");
-        if(nameUser != null)
-            title = getString(R.string.hello, nameUser);
-        else
-            title = getString(R.string.hello, "");
-        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
+        userHolder = UserHolder.getInstance();
+        userHolder.getUser(
+                (user) -> {
+                    String title = getString(R.string.hello, user.getName());
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(title);
+                },
+                () -> {}
+        );
 
         recyclerView = findViewById(R.id.favorites_recycle_view);
 

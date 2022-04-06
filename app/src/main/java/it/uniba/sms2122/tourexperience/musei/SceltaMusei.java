@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.firebase.storage.FirebaseStorage;
@@ -27,6 +28,7 @@ import it.uniba.sms2122.tourexperience.utility.LocalFileMuseoManager;
 
 public class SceltaMusei extends AppCompatActivity {
 
+    private SearchView searchView;
     private ActionBar actionBar;
     private RecyclerView recyclerView;
     private List<Museo> listaMusei;
@@ -36,6 +38,8 @@ public class SceltaMusei extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scelta_musei);
+
+        searchView = findViewById(R.id.searchviewMusei);
 
         // Action Bar
         actionBar = getSupportActionBar();
@@ -84,6 +88,19 @@ public class SceltaMusei extends AppCompatActivity {
         MuseiAdapter adapter = new MuseiAdapter(this, listaMusei);
         // Setting Adapter to RecyclerView
         recyclerView.setAdapter(adapter);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -125,8 +142,8 @@ public class SceltaMusei extends AppCompatActivity {
     }
 
     /**
-     * Metodo di test per effettuare il download la prima volta di alcuni musei
-     * da firebase e salvarli in locale.
+     * Metodo di test per effettuare il download la prima volta di
+     * due musei da firebase e salvarli in locale.
      */
     private void test_downloadImageAndSaveInLocalStorage() {
         ArrayList<String> musei = new ArrayList<>();

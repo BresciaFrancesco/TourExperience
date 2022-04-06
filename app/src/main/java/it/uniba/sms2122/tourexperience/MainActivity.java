@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
             dbReference.get().addOnCompleteListener(task -> {
                 if(task.isSuccessful()){
                     Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                    intent.putExtra("nameUser", task.getResult().getValue(User.class).getName());
                     startActivity(intent);
                     finish(); // Non si può tornare indietro con il pulsane Back
                 }

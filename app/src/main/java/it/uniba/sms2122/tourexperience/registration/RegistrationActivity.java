@@ -87,7 +87,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 final FirebaseUser fbUser = fAuth.getCurrentUser();
                 String userID = fbUser.getUid();
                 dbReference = FirebaseDatabase.getInstance("https://tour-experience-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users").child(userID);
-                User user = new User(bundle.getString("name"), bundle.getString("surname"), bundle.getString("dateBirth"));
+                User user = new User(bundle.getString("email"), bundle.getString("name"), bundle.getString("surname"), bundle.getString("dateBirth"));
                 dbReference.setValue(user).addOnCompleteListener(taskUserValuesSet -> {
                     if (taskUserValuesSet.isSuccessful()) {
                         Toast.makeText(this, R.string.success_registration, Toast.LENGTH_LONG).show();

@@ -25,6 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
+import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.model.User;
 import it.uniba.sms2122.tourexperience.registration.RegistrationActivity;
 import it.uniba.sms2122.tourexperience.welcome.WelcomeActivity;
@@ -36,82 +39,72 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewGuest;
     private ActionBar actionBar;
 
-    private FirebaseAuth fAuth;
+    private UserHolder userHolder;
     private ActivityOptions options;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        fAuth = FirebaseAuth.getInstance();
-        FirebaseUser fbUser = fAuth.getCurrentUser();
+        userHolder = UserHolder.getInstance();
+        userHolder.getUser(
+                (user) -> {
+                    getSupportActionBar().hide();
 
-        if (fbUser != null) {
-            getSupportActionBar().hide();
+                    Intent intent = new Intent(this, HomeActivity.class);
+                    startActivity(intent);
+                    supportFinishAfterTransition(); // Non si può tornare indietro con il pulsane Back
+                },
+                () -> {
+                    // Check sulla prima apertura
+                    SharedPreferences prefs = getSharedPreferences(BuildConfig.SHARED_PREFS, MODE_PRIVATE);
+                    if(!prefs.contains(BuildConfig.SP_FIRST_OPENING)) {
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putBoolean(BuildConfig.SP_FIRST_OPENING, true);
+                        editor.apply();
+                    }
+                    if(prefs.getBoolean(BuildConfig.SP_FIRST_OPENING, true)) {
+                        startActivity(new Intent(this, WelcomeActivity.class));
+                        finish();
+                        return;
+                    }
 
-            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-            startActivity(intent);
-            supportFinishAfterTransition(); // Non si può tornare indietro con il pulsane Back
+                    setContentView(R.layout.activity_main);
 
-        }else{
-            setContentView(R.layout.activity_main);
-
-            // Check sulla prima apertura
-            //TODO aggiungeere le shared preference per salvare email e password una volta fatto il login ed non passare più dalla main activity
-            SharedPreferences prefs = getSharedPreferences(BuildConfig.SHARED_PREFS, MODE_PRIVATE);
-            if(!prefs.contains(BuildConfig.SP_FIRST_OPENING)) {
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean(BuildConfig.SP_FIRST_OPENING, true);
-                editor.apply();
-            }
-            if(prefs.getBoolean(BuildConfig.SP_FIRST_OPENING, true)) {
-                startActivity(new Intent(this, WelcomeActivity.class));
-                finish();
-                return;
-            }
-
-            btnLogin = (Button) findViewById(R.id.idBtnMainLogin);
-            btnRegistration = (Button) findViewById(R.id.idBtnMainRegistration);
-            textViewGuest = (TextView) findViewById(R.id.idTextViewGuest);
-            setOnClickListenerBtnLogin();
-            setOnClickListenerBtnRegistration();
-            setOnClickListenerTextViewGuest();
+                    btnLogin = (Button) findViewById(R.id.idBtnMainLogin);
+                    btnRegistration = (Button) findViewById(R.id.idBtnMainRegistration);
+                    textViewGuest = (TextView) findViewById(R.id.idTextViewGuest);
+                    setOnClickListenerBtnLogin();
+                    setOnClickListenerBtnRegistration();
+                    setOnClickListenerTextViewGuest();
 
 
-            options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
-            actionBar = getSupportActionBar();
-            actionBar.setTitle("Tour Experience");
-        }
-
+                    options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
+                    actionBar = getSupportActionBar();
+                    actionBar.setTitle("Tour Experience");
+                }
+        );
     }
 
     private void setOnClickListenerBtnLogin() {
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent, options.toBundle());
-            }
+        btnLogin.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent, options.toBundle());
         });
     }
 
     private void setOnClickListenerBtnRegistration() {
-        btnRegistration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
-                startActivity(intent, options.toBundle());
-            }
+        btnRegistration.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
+            startActivity(intent, options.toBundle());
         });
     }
 
     private void setOnClickListenerTextViewGuest() {
-        textViewGuest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                startActivity(intent, options.toBundle());
-            }
+        textViewGuest.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(intent, options.toBundle());
+            finish();
         });
     }
 }

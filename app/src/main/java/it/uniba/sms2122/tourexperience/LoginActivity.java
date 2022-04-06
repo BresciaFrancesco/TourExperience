@@ -60,33 +60,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setOnClickListenerLoginBtn() {
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = emailEdit.getText().toString();
-                String password = passwordEdit.getText().toString();
+        loginBtn.setOnClickListener(view -> {
+            String email = emailEdit.getText().toString();
+            String password = passwordEdit.getText().toString();
 
-                if(checker.checkEmail(emailEdit,LoginActivity.this) && checker.checkPassword(passwordEdit,LoginActivity.this)) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    fAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()) {
+            if(checker.checkEmail(emailEdit,LoginActivity.this) && checker.checkPassword(passwordEdit,LoginActivity.this)) {
+                progressBar.setVisibility(View.VISIBLE);
+                fAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
 
-                                progressBar.setVisibility(View.GONE);
-                                Toast.makeText(LoginActivity.this, R.string.logged_in, Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(LoginActivity.this, R.string.logged_in, Toast.LENGTH_SHORT).show();
 
-                                Intent i = new Intent(LoginActivity.this, HomeActivity.class);
-                                startActivity(i);
-                                finishAffinity(); // Non si può tornare indietro con il pulsane Back
-                            }
-                            else {
-                                progressBar.setVisibility(View.GONE);
-                                Toast.makeText(LoginActivity.this, R.string.failed_to_log, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
+                        Intent i = new Intent(LoginActivity.this, HomeActivity.class);
+                        startActivity(i);
+                        finishAffinity(); // Non si può tornare indietro con il pulsane Back
+                    }
+                    else {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(LoginActivity.this, R.string.failed_to_log, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }

@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Objects;
 import java.util.Set;
 
+import it.uniba.sms2122.tourexperience.holders.AbstractHolder;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.model.User;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
@@ -36,16 +37,12 @@ import it.uniba.sms2122.tourexperience.welcome.WelcomeActivity;
 
 public class HomeActivity extends AppCompatActivity {
     private UserHolder userHolder;
-    private User user;
     RecyclerView recyclerView;
-    private FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        fAuth = FirebaseAuth.getInstance();
-        FirebaseUser fbUser = fAuth.getCurrentUser();
+        setContentView(R.layout.activity_home);
 
         userHolder = UserHolder.getInstance();
         userHolder.getUser(
@@ -55,39 +52,6 @@ public class HomeActivity extends AppCompatActivity {
                 },
                 () -> {}
         );
-
-
-
-
-
-        if(fbUser != null){
-            String userID = fbUser.getUid();
-            DatabaseReference dbReference = FirebaseDatabase.getInstance("https://tour-experience-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users").child(userID);
-            dbReference.get().addOnCompleteListener(task -> {
-                if(task.isSuccessful()){
-                    String nameUser = task.getResult().getValue(User.class).getName();
-                    String title = "";
-
-                    if(nameUser != null) {
-                        title = getString(R.string.hello, nameUser);
-                    }
-                    Objects.requireNonNull(getSupportActionBar()).setTitle(title);
-
-                }
-            });
-        }
-
-        setContentView(R.layout.activity_home);
-
-
-
-
-
-
-
-
-
-
 
         recyclerView = findViewById(R.id.favorites_recycle_view);
 

@@ -35,21 +35,33 @@ import it.uniba.sms2122.tourexperience.welcome.WelcomeActivity;
 
 public class HomeActivity extends AppCompatActivity {
     RecyclerView recyclerView;
+    private FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
 
-        String nameUser = "", title;
-        Bundle extras = getIntent().getExtras();
-        if(extras != null)
-            nameUser = extras.getString("nameUser");
-        if(nameUser != null)
-            title = getString(R.string.hello, nameUser);
-        else
-            title = getString(R.string.hello, "");
-        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
+        fAuth = FirebaseAuth.getInstance();
+        FirebaseUser fbUser = fAuth.getCurrentUser();
+
+        if(fbUser != null){
+            String userID = fbUser.getUid();
+            DatabaseReference dbReference = FirebaseDatabase.getInstance("https://tour-experience-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users").child(userID);
+            dbReference.get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    String nameUser = task.getResult().getValue(User.class).getName();
+                    String title = "";
+
+                    if(nameUser != null) {
+                        title = getString(R.string.hello, nameUser);
+                    }
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(title);
+
+                }
+            });
+        }
+
+        setContentView(R.layout.activity_home);
 
         recyclerView = findViewById(R.id.favorites_recycle_view);
 

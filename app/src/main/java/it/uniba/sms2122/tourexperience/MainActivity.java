@@ -48,16 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (fbUser != null) {
             getSupportActionBar().hide();
-            String userID = fbUser.getUid();
-            DatabaseReference dbReference = FirebaseDatabase.getInstance("https://tour-experience-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users").child(userID);
-            dbReference.get().addOnCompleteListener(task -> {
-                if(task.isSuccessful()){
-                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                    intent.putExtra("nameUser", task.getResult().getValue(User.class).getName());
-                    startActivity(intent);
-                    finish(); // Non si può tornare indietro con il pulsane Back
-                }
-            });
+
+            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+            startActivity(intent);
+            supportFinishAfterTransition(); // Non si può tornare indietro con il pulsane Back
 
         }else{
             setContentView(R.layout.activity_main);
@@ -117,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                 startActivity(intent, options.toBundle());
+                finish();
             }
         });
     }

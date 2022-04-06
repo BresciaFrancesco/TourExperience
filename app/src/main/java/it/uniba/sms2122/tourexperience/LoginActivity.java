@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                 Intent i = new Intent(LoginActivity.this, HomeActivity.class);
                                 startActivity(i);
-                                finish(); // Non si può tornare indietro con il pulsane Back
+                                finishAffinity(); // Non si può tornare indietro con il pulsane Back
                             }
                             else {
                                 progressBar.setVisibility(View.GONE);

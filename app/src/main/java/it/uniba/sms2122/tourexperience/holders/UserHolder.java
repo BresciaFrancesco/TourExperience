@@ -93,6 +93,14 @@ public class UserHolder extends AbstractHolder{
     }
 
     /**
+     * Effettua il logout
+     */
+    public void logout() {
+        firebaseAuth.signOut();
+        user = null;
+    }
+
+    /**
      * Restituisce l'unica istanza di {@link UserHolder}.
      * @return L'istanza di {@link UserHolder}
      */

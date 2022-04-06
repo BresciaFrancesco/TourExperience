@@ -25,6 +25,7 @@ import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.model.User;
 
 public class ProfileActivity extends AppCompatActivity {
+    private UserHolder userHolder;
     private User user;
 
     @Override
@@ -32,7 +33,8 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        UserHolder.getInstance().getUser(
+        userHolder = UserHolder.getInstance();
+        userHolder.getUser(
                 (user) -> {
                     ((EditText) findViewById(R.id.editFieldEmail)).setText(user.getEmail());
                     ((EditText) findViewById(R.id.editFieldName)).setText(user.getName());
@@ -106,7 +108,7 @@ public class ProfileActivity extends AppCompatActivity {
         findViewById(R.id.btnLogout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
+                userHolder.logout();
                 startActivity(new Intent(ProfileActivity.this, MainActivity.class));
                 finish();
             }

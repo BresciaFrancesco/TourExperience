@@ -112,6 +112,7 @@ public class UserHolder extends AbstractHolder{
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()) {
+                        user.setDirty(false);
                         success.doSuccess();
                     } else {
                         failure.doFail(task.getException()==null? "" : task.getException().toString());

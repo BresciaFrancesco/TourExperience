@@ -169,6 +169,4 @@
             android:text="@string/sign_up"
             android:textAllCaps="true" />
     </LinearLayout>
-
-
 </RelativeLayout>

@@ -1,7 +1,5 @@
 package it.uniba.sms2122.tourexperience.holders;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -15,6 +13,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import it.uniba.sms2122.tourexperience.model.User;
 
+/**
+ * @author Catignano Francesco
+ */
 public class UserHolder extends AbstractHolder{
     private static final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private static DatabaseReference reference;
@@ -25,15 +26,14 @@ public class UserHolder extends AbstractHolder{
     private User user;
 
     /**
-     * Registrazione
-     * @param email
-     * @param password
-     * @param name
-     * @param surname
-     * @param dateBirth
-     * @param success
-     * @param failure
-     * @return
+     * Crea l'utente registrandolo su Firebase
+     * @param email L'email dell'utente
+     * @param password La password
+     * @param name Il nome dell'utente
+     * @param surname Il cognome dell'utente
+     * @param dateBirth La data di nascita dell'utente
+     * @param success Interfaccia per realizzare il metodo di successo (realizzabile con una lambda expression)
+     * @param failure Interfaccia per realizzare il metodo di fallimento (realizzabile con una lambda expression)
      */
     public void register(String email, String password, String name, String surname, String dateBirth, SuccessListener success, FailureDataListener failure) {
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -62,7 +62,7 @@ public class UserHolder extends AbstractHolder{
     }
 
     /**
-     * Ottenimento dell'utente
+     * Restituisce l'utente prendendolo eventualmente da Firebase
      * @return
      */
     public void getUser(SuccessDataListener success, FailureListener failure) {
@@ -79,7 +79,7 @@ public class UserHolder extends AbstractHolder{
                     if(task.isSuccessful() && task.getResult().exists()) {
                         DataSnapshot dataSnapshot = task.getResult();
                         user = new User(
-                                (String) dataSnapshot.child("email").getValue(),
+                                currentUser.getEmail(),
                                 (String) dataSnapshot.child("name").getValue(),
                                 (String) dataSnapshot.child("surname").getValue(),
                                 (String) dataSnapshot.child("dateBirth").getValue()
@@ -92,6 +92,10 @@ public class UserHolder extends AbstractHolder{
         failure.doFail();
     }
 
+    /**
+     * Restituisce l'unica istanza di {@link UserHolder}.
+     * @return L'istanza di {@link UserHolder}
+     */
     public static UserHolder getInstance() {
         if(instance==null) {
             instance = new UserHolder();
@@ -99,6 +103,9 @@ public class UserHolder extends AbstractHolder{
         return instance;
     }
 
+    /*
+     * Costruttore privato di UserHolder per applicare il pattern singleton.
+     */
     private UserHolder() {
         super();
         reference = firebaseDatabase.getReference(TABLE_NAME);

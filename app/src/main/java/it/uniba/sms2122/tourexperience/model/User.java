@@ -1,5 +1,7 @@
 package it.uniba.sms2122.tourexperience.model;
 
+import com.google.firebase.database.Exclude;
+
 public class User {
     private String email;
     private String name;
@@ -13,6 +15,7 @@ public class User {
         this.dateBirth = dateBirth;
     }
 
+    @Exclude
     public String getEmail() {
         return email;
     }

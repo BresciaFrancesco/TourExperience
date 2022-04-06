@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText usernameEdit,passwordEdit;
     private Button loginBtn;
     private ProgressBar progressBar;
-    private TextView registerTxt;
+    private TextView registerTxt, loginGuest;
     private FirebaseAuth fAuth;
 
     @Override
@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         usernameEdit = findViewById(R.id.idEdtUserName);
         passwordEdit = findViewById(R.id.idEdtPassword);
         loginBtn = findViewById(R.id.idBtnLogin);
+        loginGuest = findViewById(R.id.idTVGuestLogin);
         progressBar = findViewById(R.id.idPBLoading);
         registerTxt = findViewById(R.id.idTVNewUser);
         fAuth = FirebaseAuth.getInstance();
@@ -74,6 +75,14 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+
+        loginGuest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                finish();
             }
         });
     }

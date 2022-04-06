@@ -55,7 +55,6 @@ public class HomeActivity extends AppCompatActivity {
                 },
                 () -> { }
         );
-        getString(R.string.hello, "Francesco");
 
         setContentView(R.layout.activity_home);
 

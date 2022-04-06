@@ -63,4 +63,5 @@
     <string name="login_guest">Login as guest</string>
     <string name="unacceptable_date_birth">Unacceptable date of birth (min 12 years old)</string>
     <string name="email_already_use">Email already in use by another account</string>
+    <string name="logout" translatable="false">Logout</string>
 </resources>

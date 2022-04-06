@@ -29,11 +29,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Objects;
 import java.util.Set;
 
+import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.model.User;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
 import it.uniba.sms2122.tourexperience.welcome.WelcomeActivity;
 
 public class HomeActivity extends AppCompatActivity {
+    private UserHolder userHolder;
+    private User user;
     RecyclerView recyclerView;
     private FirebaseAuth fAuth;
 
@@ -43,6 +46,19 @@ public class HomeActivity extends AppCompatActivity {
 
         fAuth = FirebaseAuth.getInstance();
         FirebaseUser fbUser = fAuth.getCurrentUser();
+
+        userHolder = UserHolder.getInstance();
+        userHolder.getUser(
+                (user) -> {
+                    String title = getString(R.string.hello, user.getName());
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(title);
+                },
+                () -> {}
+        );
+
+
+
+
 
         if(fbUser != null){
             String userID = fbUser.getUid();
@@ -62,6 +78,16 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_home);
+
+
+
+
+
+
+
+
+
+
 
         recyclerView = findViewById(R.id.favorites_recycle_view);
 

@@ -32,7 +32,9 @@
             android:parentActivityName=".HomeActivity" />
         <activity
             android:name=".HomeActivity"
-            android:exported="true"/>
+            android:exported="true"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing">
+        </activity>
         <activity
             android:name=".registration.RegistrationActivity"
             android:exported="false" />

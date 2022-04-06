@@ -52,12 +52,7 @@ public class RegistrationFragmentSecondPage extends Fragment {
             dialogFragment.show(getChildFragmentManager(), "MyTheme");
         });
 
-        btnEnd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                registration(view);
-            }
-        });
+        btnEnd.setOnClickListener(view2 -> registration(view2));
     }
 
     private void registration(View view) {

@@ -30,21 +30,11 @@
         android:layout_marginStart="40dp"
         android:layout_gravity="center_vertical" />
 
-    <TextView
-        android:id="@+id/later_text_view"
-        android:text="@string/later"
-        android:visibility="invisible"
-        android:textSize="20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/fab"
-        app:layout_constraintBottom_toBottomOf="@id/fab"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="40dp" />
-
     <Button
-        android:id="@+id/goto_login_btn"
-        android:text="@string/go_to_login"
+        android:id="@+id/welcome_btn"
+        android:text="@string/welcome"
+        android:textColor="@color/white"
+        android:background="@drawable/button_shape"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="@id/fab"

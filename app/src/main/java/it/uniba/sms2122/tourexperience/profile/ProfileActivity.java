@@ -3,6 +3,7 @@ package it.uniba.sms2122.tourexperience.profile;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
@@ -13,22 +14,42 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Objects;
 
+import it.uniba.sms2122.tourexperience.MainActivity;
 import it.uniba.sms2122.tourexperience.R;
 
+import it.uniba.sms2122.tourexperience.holders.UserHolder;
+import it.uniba.sms2122.tourexperience.model.User;
+
 public class ProfileActivity extends AppCompatActivity {
+    private UserHolder userHolder;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        userHolder = UserHolder.getInstance();
+        userHolder.getUser(
+                (user) -> {
+                    ((EditText) findViewById(R.id.editFieldEmail)).setText(user.getEmail());
+                    ((EditText) findViewById(R.id.editFieldName)).setText(user.getName());
+                    ((EditText) findViewById(R.id.editFieldSurname)).setText(user.getSurname());
+                    ((EditText) findViewById(R.id.editFieldBirth)).setText(user.getDateBirth());
+                },
+                () -> {}
+        );
+
         String title = getString(R.string.profile);  //TODO inserire nome vero
         Objects.requireNonNull(getSupportActionBar()).setTitle(title);
 
         setClickListenerOnProfileDataModifyButton();
         setClickListenerOnCalendarIcon();
+        setClickListenerOnLogoutButton();
     }
 
 
@@ -78,6 +99,20 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    /**
+     * funzione per triggerare il pulsante per fare il logout
+     */
+    private void setClickListenerOnLogoutButton() {
+        findViewById(R.id.btnLogout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                userHolder.logout();
+                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                finish();
+            }
+        });
     }
 
     /**

@@ -1,48 +1,29 @@
 package it.uniba.sms2122.tourexperience.model;
 
+import android.net.Uri;
+
 public class Museo {
-
-    private int id;
     private String nome;
-    private String citta;
-    private double valutazioneMedia;
+    private Uri fileUri;
 
-    public Museo(int id, String nome, String citta, double valutazioneMedia) {
-        this.id = id;
+    public Museo(String nome, String filePath) {
         this.nome = nome;
-        this.citta = citta;
-        this.valutazioneMedia = valutazioneMedia;
-    }
-
-    public int getId() {
-        return id;
+        this.fileUri = Uri.parse(filePath);
     }
 
     public String getNome() {
         return nome;
     }
 
-    public String getCitta() {
-        return citta;
-    }
-
-    public double getValutazioneMedia() {
-        return valutazioneMedia;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setNome(String nome) {
         this.nome = nome;
     }
 
-    public void setCitta(String citta) {
-        this.citta = citta;
+    public Uri getFileUri() {
+        return fileUri;
     }
 
-    public void setValutazioneMedia(double valutazioneMedia) {
-        this.valutazioneMedia = valutazioneMedia;
+    public void setFileUri(Uri fileUri) {
+        this.fileUri = fileUri;
     }
 }

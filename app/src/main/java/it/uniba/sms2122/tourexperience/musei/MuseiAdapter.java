@@ -11,17 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.Museo;
 
 
 public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> {
-    private ArrayList<Museo> listaMusei;
+    private List<Museo> listaMusei;
     private Context context;
 
     // Constructor for initialization
-    public MuseiAdapter(Context context, ArrayList<Museo> listaMusei) {
+    public MuseiAdapter(Context context, List<Museo> listaMusei) {
         this.context = context;
         this.listaMusei = listaMusei;
     }

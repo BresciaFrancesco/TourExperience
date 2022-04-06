@@ -32,6 +32,7 @@
     <string name="museums">Museums</string>
     <string name="game_statistics">Game statistics</string>
     <string name="search_hint">Rome, Egyptian museum, …</string>
+    <string name="search_museums">Search museums by name</string>
     <string name="find_cultural_site">Find a cultural site</string>
     <string name="search_description">Discover and follow the routes\nyou like best!</string>
     <string name="modifyProfile">Modify</string>

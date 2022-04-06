@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".musei.SceltaMusei">
 
+    <SearchView
+        android:id="@+id/searchview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50dp"
+        android:focusable="false"
+        android:iconifiedByDefault="false"
+        android:queryHint="@string/search_museums"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewMusei"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <!--RecyclerView: contiene la lista dei musei-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewMusei"

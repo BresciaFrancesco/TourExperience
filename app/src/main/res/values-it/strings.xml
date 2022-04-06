@@ -28,7 +28,7 @@
     <string name="profile">Profilo</string>
     <string name="home" translatable="false">Home</string>
     <string name="visits_history">Cronologia percorsi</string>
-    <string name="favorites">Preferiti</string>
+    <string name="museums">Musei</string>
     <string name="game_statistics">Statistiche giochi</string>
     <string name="search_hint">Roma, Museo egizio, …</string>
     <string name="find_cultural_site">Trova un sito culturale</string>

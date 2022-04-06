@@ -60,6 +60,9 @@ public class SceltaMusei extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        if (listaMusei.isEmpty()) {
+            listaMusei.add(new Museo("Non ci sono musei", ""));
+        }
 
         // Sending reference and data to Adapter
         MuseiAdapter adapter = new MuseiAdapter(this, listaMusei);

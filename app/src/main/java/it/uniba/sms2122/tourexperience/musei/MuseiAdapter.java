@@ -40,7 +40,13 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     // Binding data to the into specified position
     @Override
     public void onBindViewHolder(@NonNull MuseiAdapter.ViewHolder holder, int position) {
-        holder.images.setImageURI(listaMusei.get(position).getFileUri());
+        String fileUri = listaMusei.get(position).getFileUri().toString();
+        if (fileUri.isEmpty()) {
+            holder.images.setImageResource(R.drawable.ic_baseline_error_24);
+        }
+        else {
+            holder.images.setImageURI(listaMusei.get(position).getFileUri());
+        }
         holder.text.setText(listaMusei.get(position).getNome());
     }
 

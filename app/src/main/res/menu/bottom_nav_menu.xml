@@ -14,11 +14,11 @@
         android:titleCondensed="@string/visits_history"
         android:icon="@drawable/history"/>
 
-    <!-- Favorites -->
+    <!-- Museums -->
     <item
-        android:id="@+id/favorites"
-        android:title="@string/favorites"
-        android:icon="@drawable/favorites"/>
+        android:id="@+id/museums"
+        android:title="@string/museums"
+        android:icon="@drawable/ic_baseline_museum_24"/>
 
     <!-- Game statistics -->
     <item

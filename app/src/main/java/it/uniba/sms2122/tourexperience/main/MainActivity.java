@@ -2,6 +2,8 @@ package it.uniba.sms2122.tourexperience.main;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -20,7 +22,7 @@ import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
 
 public class MainActivity extends AppCompatActivity {
     private UserHolder userHolder;
-    RecyclerView recyclerView;
+    private FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;
 
     @Override
@@ -36,11 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 },
                 () -> {}
         );
-
-        recyclerView = findViewById(R.id.favorites_recycle_view);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-
-        // TODO Da qui vanno prese le info da mostrare sui percorsi favoriti
     }
 
     @Override
@@ -50,7 +48,10 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch(item.getItemId()) {
                 case R.id.home:
-
+                    fragmentManager.beginTransaction()
+                            .setReorderingAllowed(true)
+                            .replace(R.id.content_fragment_container_view, HomeFragment.class, null)
+                            .commit();
                     return true;
                 case R.id.history:
 

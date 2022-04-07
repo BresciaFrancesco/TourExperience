@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
+import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.registration.RegistrationActivity;
 import it.uniba.sms2122.tourexperience.welcome.WelcomeActivity;
 

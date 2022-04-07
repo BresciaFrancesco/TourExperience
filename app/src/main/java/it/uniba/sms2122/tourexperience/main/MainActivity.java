@@ -1,4 +1,4 @@
-package it.uniba.sms2122.tourexperience;
+package it.uniba.sms2122.tourexperience.main;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
 
+import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.musei.SceltaMusei;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;

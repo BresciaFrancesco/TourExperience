@@ -29,9 +29,9 @@
         <activity
             android:name=".profile.ProfileActivity"
             android:exported="false"
-            android:parentActivityName=".HomeActivity" />
+            android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing">
         </activity>

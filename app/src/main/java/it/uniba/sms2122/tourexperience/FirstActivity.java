@@ -33,7 +33,7 @@ public class FirstActivity extends AppCompatActivity {
                 (user) -> {
                     getSupportActionBar().hide();
 
-                    Intent intent = new Intent(this, HomeActivity.class);
+                    Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
                     supportFinishAfterTransition(); // Non si può tornare indietro con il pulsane Back
                 },
@@ -84,7 +84,7 @@ public class FirstActivity extends AppCompatActivity {
 
     private void setOnClickListenerTextViewGuest() {
         textViewGuest.setOnClickListener(view -> {
-            Intent intent = new Intent(FirstActivity.this, HomeActivity.class);
+            Intent intent = new Intent(FirstActivity.this, MainActivity.class);
             startActivity(intent, options.toBundle());
             finish();
         });

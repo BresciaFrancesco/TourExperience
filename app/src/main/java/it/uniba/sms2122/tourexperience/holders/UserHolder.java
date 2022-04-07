@@ -63,11 +63,11 @@ public class UserHolder extends AbstractHolder{
 
     /**
      * Restituisce l'utente prendendolo eventualmente da Firebase
-     * @return
      */
     public void getUser(SuccessDataListener success, FailureListener failure) {
         if(user != null) {
             success.doSuccess(user);
+            return;
         }
 
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();

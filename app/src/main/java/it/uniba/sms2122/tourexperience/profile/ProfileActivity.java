@@ -4,21 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DialogFragment;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import java.util.Objects;
 
-import it.uniba.sms2122.tourexperience.MainActivity;
+import it.uniba.sms2122.tourexperience.FirstActivity;
 import it.uniba.sms2122.tourexperience.R;
 
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
@@ -109,7 +105,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 userHolder.logout();
-                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                startActivity(new Intent(ProfileActivity.this, FirstActivity.class));
                 finish();
             }
         });

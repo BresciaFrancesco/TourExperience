@@ -14,4 +14,6 @@
     <color name="main_blue_variant">#FF163D67</color>
     <color name="heading_gray">#293133</color>
     <color name="main_red">#FFA01E2B</color>
+    <color name="rating_star_on">#FFC107</color>
+    <color name="rating_star_off">#DDDDDC</color>
 </resources>

@@ -62,4 +62,9 @@
     <style name="Theme.TourExperience.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
     <!-- fine stili di prova -->
 
+    <style name="RatingBar" parent="Theme.TourExperience">
+        <item name="colorControlActivated">@color/rating_star_on</item>
+        <item name="colorControlNormal">@color/rating_star_off</item>
+    </style>
+
 </resources>

@@ -1,7 +1,5 @@
 package it.uniba.sms2122.tourexperience.profile;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,7 +7,8 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,12 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-
-import java.util.Objects;
 
 
 import it.uniba.sms2122.tourexperience.FirstActivity;
@@ -36,13 +31,26 @@ import it.uniba.sms2122.tourexperience.model.User;
 public class ProfileActivity extends AppCompatActivity {
     private UserHolder userHolder;
     private User userIstance;
+    Map<String, String> oldDataGui;
+    Button profileDataModifyButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        initUserProfileData();
 
+        setClickListenerOnProfileDataModifyButton();
+        setClickListenerOnCalendarIcon();
+        setClickListenerOnLogoutButton();
+    }
+
+
+    /**
+     * funzione per inizializzare i reali dati utente quindi farli visualizzare sull'activity
+     */
+    public void initUserProfileData() {
         //prendo l'utente attualmente loggato
         userHolder = UserHolder.getInstance();
         userHolder.getUser(
@@ -52,13 +60,7 @@ public class ProfileActivity extends AppCompatActivity {
                 () -> {
                 });
 
-
-        //saveUserPassword();
-
         setDynamicUserData();
-        setClickListenerOnProfileDataModifyButton();
-        setClickListenerOnCalendarIcon();
-        setClickListenerOnLogoutButton();
     }
 
     /**
@@ -117,24 +119,25 @@ public class ProfileActivity extends AppCompatActivity {
         ImageView profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
         profileDataPickerBtn.setEnabled(false);
 
-        Button ProfileDataModifyButton = findViewById(R.id.btnModify);
+        profileDataModifyButton = findViewById(R.id.btnModify);
 
-        ProfileDataModifyButton.setOnClickListener(new View.OnClickListener() {
+        profileDataModifyButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
 
-                if (ProfileDataModifyButton.getText() == getString(R.string.modifyProfile)) {
+                if (profileDataModifyButton.getText() == getString(R.string.modifyProfile)) {//click per modificare
 
-                    ProfileDataModifyButton.setText(getString(R.string.confirmModifyProfile));
+                    saveOldProfileDataGui();
+                    profileDataModifyButton.setText(getString(R.string.confirmModifyProfile));
                     setProfileDataFieldEnable();
 
-                } else if (ProfileDataModifyButton.getText() == getString(R.string.confirmModifyProfile)) {
+                } else if (profileDataModifyButton.getText() == getString(R.string.confirmModifyProfile)) {//click per confermare le modifiche
 
                     if (validateChangedData()) {
-                        ProfileDataModifyButton.setText(getString(R.string.modifyProfile));
-                        showConfirmPasswordAlertDialog();
-                        //updateProfileData(getNewProfileData());
+
+                        showConfirmPasswordAlertDialog(getString(R.string.insert_password_for_confirm_title), getString(R.string.insert_password_for_confirm_body));
+                        profileDataModifyButton.setText(getString(R.string.modifyProfile));
                         setProfileDataFieldDisabled();
                     }
 
@@ -144,6 +147,41 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+
+    /**
+     * funzione che si occupa di leggere i dati attualmente presenti sul profilo cosi de eventualemente ripristinari in seguito e erroir di modifica
+     *
+     * @return i nuovi dati modificati dall'utent
+     */
+    private void saveOldProfileDataGui() {
+
+        oldDataGui = new HashMap<String, String>();
+
+        oldDataGui.put("email", ((EditText) findViewById(R.id.editFieldEmail)).getText().toString());
+        oldDataGui.put("name", ((EditText) findViewById(R.id.editFieldName)).getText().toString());
+        oldDataGui.put("surname", ((EditText) findViewById(R.id.editFieldSurname)).getText().toString());
+        oldDataGui.put("birthDate", ((EditText) findViewById(R.id.editFieldBirth)).getText().toString());
+    }
+
+
+    /**
+     * funzione che si occupa re ripristinare i vacchi dati utente sull'activity profilo
+     */
+    public void restoreOldDataGui() {
+
+        String mail = oldDataGui.get("email");
+        ((EditText)findViewById(R.id.editFieldEmail)).setText(mail);
+
+        String name = oldDataGui.get("name");
+        ((EditText)findViewById(R.id.editFieldName)).setText(name);
+
+        String surname = oldDataGui.get("surname");
+        ((EditText)findViewById(R.id.editFieldSurname)).setText(surname);
+
+        String birthDate = oldDataGui.get("birthDate");
+        ((EditText)findViewById(R.id.editFieldBirth)).setText(birthDate);
     }
 
     /**
@@ -242,13 +280,20 @@ public class ProfileActivity extends AppCompatActivity {
         //aggiorno il db
         userHolder.updateIfDirty(
                 () -> {
-                    Toast.makeText(this, R.string.profile_change_success, Toast.LENGTH_LONG);
+                    Toast t = Toast.makeText(this, R.string.profile_change_success, Toast.LENGTH_LONG);
+                    t.setGravity(Gravity.CENTER, 0, 0);
+                    t.show();
                 },
                 (errorMsg) -> {
 
+                    //messaggio di errore
+                    Toast t = Toast.makeText(this, R.string.profile_change_error, Toast.LENGTH_LONG);
+                    t.setGravity(Gravity.CENTER, 0, 0);
+                    t.show();
 
-                    Toast.makeText(this, R.string.profile_change_error, Toast.LENGTH_LONG);
-                    setDynamicUserData();//ripristino i dati iniziali
+                    //ripristino grafico dei vecchi dati
+                    restoreOldDataGui();
+
 
                 }
         );
@@ -256,8 +301,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     /**
      * funzione per mostrare un alertdialog per far inserire la password al fine di confermare i cambiamenti
+     *
+     * @param title
+     * @param bodyText
      */
-    public void showConfirmPasswordAlertDialog() {
+    public void showConfirmPasswordAlertDialog(String title, String bodyText) {
 
         final EditText inputPassword = new EditText(this);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -267,16 +315,22 @@ public class ProfileActivity extends AppCompatActivity {
         inputPassword.setPadding(15, 0, 5, 20);
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage(getString(R.string.insert_password_for_confirm_body));
-        alert.setTitle(getString(R.string.insert_password_for_confirm_title));
+        alert.setTitle(title);
+        alert.setMessage(bodyText);
         alert.setView(inputPassword);
 
         alert.setView(inputPassword);
 
         alert.setPositiveButton(R.string.insert_password_for_confirm_button, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                UserPasswordManager.setPassword(inputPassword.getText().toString());
-                updateProfileData(getNewProfileData());
+
+                if (!TextUtils.isEmpty(inputPassword.getText())) {
+                    UserPasswordManager.setPassword(inputPassword.getText().toString());
+                    updateProfileData(getNewProfileData());
+                } else {
+                    showConfirmPasswordAlertDialog(getString(R.string.password_required), getString(R.string.insert_password_for_confirm_body));
+
+                }
             }
         });
 

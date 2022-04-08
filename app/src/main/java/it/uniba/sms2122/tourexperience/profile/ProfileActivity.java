@@ -2,9 +2,11 @@ package it.uniba.sms2122.tourexperience.profile;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,17 +15,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
-<<<<<<< HEAD
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-=======
+
 import java.util.Objects;
->>>>>>> a178b1f435d60c7117480a583378893d24d6f4fa
+
 
 import it.uniba.sms2122.tourexperience.FirstActivity;
 import it.uniba.sms2122.tourexperience.R;
@@ -47,10 +49,11 @@ public class ProfileActivity extends AppCompatActivity {
                 (user) -> {
                     userIstance = user;
                 },
-                () -> {});
+                () -> {
+                });
 
 
-        saveUserPassword();
+        //saveUserPassword();
 
         setDynamicUserData();
         setClickListenerOnProfileDataModifyButton();
@@ -130,7 +133,8 @@ public class ProfileActivity extends AppCompatActivity {
 
                     if (validateChangedData()) {
                         ProfileDataModifyButton.setText(getString(R.string.modifyProfile));
-                        updateProfileData(getNewProfileData());
+                        showConfirmPasswordAlertDialog();
+                        //updateProfileData(getNewProfileData());
                         setProfileDataFieldDisabled();
                     }
 
@@ -244,9 +248,40 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                     Toast.makeText(this, R.string.profile_change_error, Toast.LENGTH_LONG);
+                    setDynamicUserData();//ripristino i dati iniziali
 
                 }
         );
+    }
+
+    /**
+     * funzione per mostrare un alertdialog per far inserire la password al fine di confermare i cambiamenti
+     */
+    public void showConfirmPasswordAlertDialog() {
+
+        final EditText inputPassword = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        inputPassword.setLayoutParams(lp);
+        inputPassword.setPadding(15, 0, 5, 20);
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setMessage(getString(R.string.insert_password_for_confirm_body));
+        alert.setTitle(getString(R.string.insert_password_for_confirm_title));
+        alert.setView(inputPassword);
+
+        alert.setView(inputPassword);
+
+        alert.setPositiveButton(R.string.insert_password_for_confirm_button, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                UserPasswordManager.setPassword(inputPassword.getText().toString());
+                updateProfileData(getNewProfileData());
+            }
+        });
+
+
+        alert.show();
     }
 
     /**
@@ -276,8 +311,4 @@ public class ProfileActivity extends AppCompatActivity {
         profileDataPickerBtn.setEnabled(false);
     }
 
-    void saveUserPassword(){
-
-        this.userIstance.setPassword(SaveUserPasswordMiddleClass.getSavedUserPassword());
-    }
 }

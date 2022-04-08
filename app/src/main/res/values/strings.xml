@@ -68,4 +68,7 @@
     <string name="string_or">or</string>
     <string name="profile_change_success">Profile edit successfully</string>
     <string name="profile_change_error">Profile edit error</string>
+    <string name="insert_password_for_confirm_title">Insert password</string>
+    <string name="insert_password_for_confirm_body">Insert password for confirm your change</string>
+    <string name="insert_password_for_confirm_button">Confirm</string>
 </resources>

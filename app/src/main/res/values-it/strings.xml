@@ -66,4 +66,7 @@
     <string name="string_or">o</string>
     <string name="profile_change_success">Cambiamento avvenuto con successo</string>
     <string name="profile_change_error">Errore durante i cambiamenti</string>
+    <string name="insert_password_for_confirm_title">Inserire password</string>
+    <string name="insert_password_for_confirm_body">Inserire password per confermare i cambiamenti</string>
+    <string name="insert_password_for_confirm_button">Conferma</string>
 </resources>

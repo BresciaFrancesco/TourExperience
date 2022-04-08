@@ -11,7 +11,6 @@ public class User {
     private String name;
     private String surname;
     private String dateBirth;
-    private String password;
 
     private boolean isDirty = false;
 
@@ -71,12 +70,5 @@ public class User {
         isDirty = dirty;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }
 

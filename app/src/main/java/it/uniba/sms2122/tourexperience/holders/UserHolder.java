@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.Console;
 
 import it.uniba.sms2122.tourexperience.model.User;
+import it.uniba.sms2122.tourexperience.profile.UserPasswordManager;
 
 /**
  * @author Catignano Francesco
@@ -124,7 +125,7 @@ public class UserHolder extends AbstractHolder {
     public void updateIfDirty(SuccessListener success, FailureDataListener failure) {
         if (user != null && user.isDirty()) {
             //riautenticazione utente poiche firebase per operazioni delicate quali cambio email,password o dati di auth in genere richiede la riautenticazione
-            AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), "password");
+            AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), UserPasswordManager.getPassword().toString());
             currentUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -147,7 +148,8 @@ public class UserHolder extends AbstractHolder {
                                             if (task.isSuccessful()) {//se si è riusciti a cambiare anche l'username
 
                                                 //si cambiano il resto dei campi
-                                                DatabaseReference actualReference = reference.child(TABLE_NAME);
+                                                DatabaseReference actualReference = reference.child(currentUser.getUid());
+                                                //actualReference.
                                                 actualReference.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {

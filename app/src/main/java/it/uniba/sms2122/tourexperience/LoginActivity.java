@@ -14,11 +14,7 @@ import android.widget.Toast;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 
-<<<<<<< HEAD
-import it.uniba.sms2122.tourexperience.profile.SaveUserPasswordMiddleClass;
-=======
 import it.uniba.sms2122.tourexperience.main.MainActivity;
->>>>>>> a178b1f435d60c7117480a583378893d24d6f4fa
 import it.uniba.sms2122.tourexperience.registration.CheckCredentials;
 
 public class LoginActivity extends AppCompatActivity {
@@ -55,8 +51,6 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(view -> {
             String email = emailEdit.getText().toString();
             String password = passwordEdit.getText().toString();
-
-            SaveUserPasswordMiddleClass.setSavedUserPassword(password);//password salvata per eventuatli modifiche del pofilo
 
             if(checker.checkEmail(emailEdit,LoginActivity.this) && checker.checkPassword(passwordEdit,LoginActivity.this)) {
                 progressBar.setVisibility(View.VISIBLE);

@@ -18,9 +18,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import java.util.ArrayList;
 
 import it.uniba.sms2122.tourexperience.BuildConfig;
-import it.uniba.sms2122.tourexperience.HomeActivity;
-import it.uniba.sms2122.tourexperience.LoginActivity;
-import it.uniba.sms2122.tourexperience.MainActivity;
+import it.uniba.sms2122.tourexperience.FirstActivity;
 import it.uniba.sms2122.tourexperience.R;
 
 public class WelcomeActivity extends FragmentActivity implements BottomWelcomeFragment.OnChangePageListener {
@@ -76,7 +74,7 @@ public class WelcomeActivity extends FragmentActivity implements BottomWelcomeFr
     @Override
     public void goToMain() {
         changeSharedPrefs();
-        Intent toLogin = new Intent(this, MainActivity.class);
+        Intent toLogin = new Intent(this, FirstActivity.class);
         startActivity(toLogin);
         finish();
     }

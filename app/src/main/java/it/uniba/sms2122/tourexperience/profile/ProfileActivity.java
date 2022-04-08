@@ -16,12 +16,16 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
+<<<<<<< HEAD
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+=======
+import java.util.Objects;
+>>>>>>> a178b1f435d60c7117480a583378893d24d6f4fa
 
-import it.uniba.sms2122.tourexperience.MainActivity;
+import it.uniba.sms2122.tourexperience.FirstActivity;
 import it.uniba.sms2122.tourexperience.R;
 
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
@@ -94,7 +98,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 userHolder.logout();
-                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                startActivity(new Intent(ProfileActivity.this, FirstActivity.class));
                 finish();
             }
         });

@@ -1,54 +1,34 @@
-package it.uniba.sms2122.tourexperience;
+package it.uniba.sms2122.tourexperience.main;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
-import java.util.Set;
 
-import it.uniba.sms2122.tourexperience.holders.AbstractHolder;
+import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
-import it.uniba.sms2122.tourexperience.model.User;
 import it.uniba.sms2122.tourexperience.musei.SceltaMusei;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
-import it.uniba.sms2122.tourexperience.welcome.WelcomeActivity;
 
-public class HomeActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
     private UserHolder userHolder;
-    RecyclerView recyclerView;
+    private FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_main);
 
         userHolder = UserHolder.getInstance();
         userHolder.getUser(
@@ -58,11 +38,7 @@ public class HomeActivity extends AppCompatActivity {
                 },
                 () -> {}
         );
-
-        recyclerView = findViewById(R.id.favorites_recycle_view);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
-
-        // TODO Da qui vanno prese le info da mostrare sui percorsi favoriti
     }
 
     @Override
@@ -72,7 +48,10 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch(item.getItemId()) {
                 case R.id.home:
-
+                    fragmentManager.beginTransaction()
+                            .setReorderingAllowed(true)
+                            .replace(R.id.content_fragment_container_view, HomeFragment.class, null)
+                            .commit();
                     return true;
                 case R.id.history:
 

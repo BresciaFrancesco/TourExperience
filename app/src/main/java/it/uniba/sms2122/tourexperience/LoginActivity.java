@@ -14,7 +14,11 @@ import android.widget.Toast;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 
+<<<<<<< HEAD
 import it.uniba.sms2122.tourexperience.profile.SaveUserPasswordMiddleClass;
+=======
+import it.uniba.sms2122.tourexperience.main.MainActivity;
+>>>>>>> a178b1f435d60c7117480a583378893d24d6f4fa
 import it.uniba.sms2122.tourexperience.registration.CheckCredentials;
 
 public class LoginActivity extends AppCompatActivity {
@@ -62,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(LoginActivity.this, R.string.logged_in, Toast.LENGTH_SHORT).show();
 
-                        Intent i = new Intent(LoginActivity.this, HomeActivity.class);
+                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(i);
                         finishAffinity(); // Non si può tornare indietro con il pulsane Back
                     }

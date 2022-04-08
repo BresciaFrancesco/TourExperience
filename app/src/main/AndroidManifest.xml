@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TourExperience">
         <activity
-            android:name=".MainActivity"
+            android:name=".FirstActivity"
             android:exported="true"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing">
             <intent-filter>
@@ -29,9 +29,9 @@
         <activity
             android:name=".profile.ProfileActivity"
             android:exported="false"
-            android:parentActivityName=".HomeActivity" />
+            android:parentActivityName=".main.MainActivity" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".main.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing">
         </activity>

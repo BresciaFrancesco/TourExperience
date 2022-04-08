@@ -56,7 +56,6 @@
                 android:layout_weight="1"
                 android:enabled="false"
                 android:inputType="textEmailAddress"
-                android:text="Name"
                 android:textColor="@color/black"
                 android:textSize="18dp" />
 
@@ -191,30 +190,56 @@
             android:layout_marginBottom="2dp"
             android:layout_weight="1.0"
             android:clipChildren="true"
-            android:gravity="center_vertical|right">
+            android:gravity="center">
 
 
-            <Button
-                android:id="@+id/btnLogout"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp"
-                android:background="@drawable/button_shape"
-                android:text="@string/logout"
-                android:translationY="-15dp" />
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btnModify"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp"
-                android:background="@drawable/button_shape"
-                android:text="@string/modifyProfile"
-                android:translationY="-15dp" />
+                <Button
+                    android:id="@+id/btnModify"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/button_shape"
+                    android:text="@string/modifyProfile"
+                    android:translationY="-15dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_weight="1"
+                        android:text="@string/string_or"
+                        android:textAlignment="textEnd"/>
+
+                    <TextView
+                        android:id="@+id/btnLogout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_weight="1"
+                        android:text="@string/logout"
+                        android:textColor="@color/main_red"
+                        android:textAlignment="textStart"
+                        android:textSize="18dp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
 
         </TableRow>
 

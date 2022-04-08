@@ -64,9 +64,13 @@ public class ProfileDataChangeValidation {
      */
     public static boolean validateDate(EditText viewToValidate, String errorTxt) {
 
-        String regExp = "^^\\d{1,2}\\/\\d{1,2}\\/\\d{4}$";
+        String regExp = "^^\\d{1,2}\\ / \\d{1,2}\\ / \\d{4}$";
+        String regExp2 = "^^\\d{1,2}\\/\\d{1,2}\\/\\d{4}$";
 
-        return genericlValidator(viewToValidate, regExp, errorTxt);
+        if(genericlValidator(viewToValidate, regExp, errorTxt) || genericlValidator(viewToValidate, regExp2, errorTxt))
+            return true;
+        else
+            return false;
 
     }
 

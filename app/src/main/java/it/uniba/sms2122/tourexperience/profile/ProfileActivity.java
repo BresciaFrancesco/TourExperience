@@ -1,22 +1,25 @@
 package it.uniba.sms2122.tourexperience.profile;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DialogFragment;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.Objects;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import it.uniba.sms2122.tourexperience.MainActivity;
 import it.uniba.sms2122.tourexperience.R;
@@ -26,62 +29,43 @@ import it.uniba.sms2122.tourexperience.model.User;
 
 public class ProfileActivity extends AppCompatActivity {
     private UserHolder userHolder;
-    private User user;
+    private User userIstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+
+        //prendo l'utente attualmente loggato
         userHolder = UserHolder.getInstance();
         userHolder.getUser(
                 (user) -> {
-                    ((EditText) findViewById(R.id.editFieldEmail)).setText(user.getEmail());
-                    ((EditText) findViewById(R.id.editFieldName)).setText(user.getName());
-                    ((EditText) findViewById(R.id.editFieldSurname)).setText(user.getSurname());
-                    ((EditText) findViewById(R.id.editFieldBirth)).setText(user.getDateBirth());
+                    userIstance = user;
                 },
-                () -> {}
-        );
+                () -> {});
 
-        String title = getString(R.string.profile);  //TODO inserire nome vero
-        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
 
+        saveUserPassword();
+
+        setDynamicUserData();
         setClickListenerOnProfileDataModifyButton();
         setClickListenerOnCalendarIcon();
         setClickListenerOnLogoutButton();
     }
 
-
     /**
-     * Funzione che rende editabili i campi per la modifica dei dati utente
+     * Funzione che setta i valori dinamici reali dell'utente da far visualizzare sull'activity profilo
      */
-    public void setProfileDataFieldEnable() {
+    public void setDynamicUserData() {
 
-        TableLayout tableLayoutProfileActivity = findViewById(R.id.tableLayoutProfileActivity);//selezione il table layout
+        ((EditText) findViewById(R.id.editFieldEmail)).setText(userIstance.getEmail());
+        ((EditText) findViewById(R.id.editFieldName)).setText(userIstance.getName());
+        ((EditText) findViewById(R.id.editFieldSurname)).setText(userIstance.getSurname());
+        ((EditText) findViewById(R.id.editFieldBirth)).setText(userIstance.getDateBirth());
 
-        for (int i = 0; i < tableLayoutProfileActivity.getChildCount(); i++) {//per ogni riga nel layout
-
-            ViewGroup row = (ViewGroup) tableLayoutProfileActivity.getChildAt(i); //seleziono la singola riga interne alla riga
-
-            for (int j = 0; j < row.getChildCount(); j++) {//per ogni riga all'interno dell tablelayout
-
-                View v = row.getChildAt(j);
-
-                if (v instanceof EditText) {
-
-                    v.setEnabled(true);
-                }
-            }
-        }
-
-        //abilito l'input per la data di nascita
-        ImageView profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
-        profileDataPickerBtn.setEnabled(true);
-        //abilito l'input per la data di nascita
-        EditText birthDateEditField = findViewById(R.id.editFieldBirth);
-        birthDateEditField.setEnabled(true);
     }
+
 
     /**
      * funzione per triggerare il pulsante per far apparire il dataPicker
@@ -105,6 +89,7 @@ public class ProfileActivity extends AppCompatActivity {
      * funzione per triggerare il pulsante per fare il logout
      */
     private void setClickListenerOnLogoutButton() {
+
         findViewById(R.id.btnLogout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,35 +100,6 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Funzione che rende non editabili i campi per la modifica dei dati utente
-     */
-    public void setProfileDataFieldDisabled() {
-
-        TableLayout tableLayoutProfileActivity = findViewById(R.id.tableLayoutProfileActivity);//selezione il table layout
-
-        for (int i = 0; i < tableLayoutProfileActivity.getChildCount(); i++) {//per ogni riga nel layout
-
-            ViewGroup row = (ViewGroup) tableLayoutProfileActivity.getChildAt(i); //seleziono la singola riga interne alla riga
-
-            for (int j = 0; j < row.getChildCount(); j++) {//per ogni riga all'interno dell tablelayout
-
-                View v = row.getChildAt(j);
-
-                if (v instanceof EditText) {
-
-                    v.setEnabled(false);
-                }
-            }
-        }
-
-        //disabilito anche il pulsante per il datePicker
-        ImageView profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
-        profileDataPickerBtn.setEnabled(false);
-        //diabilito l'input per la data di nascita
-        EditText birthDateEditField = findViewById(R.id.editFieldBirth);
-        birthDateEditField.setEnabled(false);
-    }
 
     /**
      * funzione per settare il click sul pulsante di modifica profilo
@@ -170,6 +126,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     if (validateChangedData()) {
                         ProfileDataModifyButton.setText(getString(R.string.modifyProfile));
+                        updateProfileData(getNewProfileData());
                         setProfileDataFieldDisabled();
                     }
 
@@ -181,6 +138,32 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Funzione che rende editabili i campi per la modifica dei dati utente
+     */
+    public void setProfileDataFieldEnable() {
+
+        TableLayout tableLayoutProfileActivity = findViewById(R.id.tableLayoutProfileActivity);//selezione il table layout
+
+        for (int i = 0; i < tableLayoutProfileActivity.getChildCount(); i++) {//per ogni riga nel layout
+
+            ViewGroup row = (ViewGroup) tableLayoutProfileActivity.getChildAt(i); //seleziono la singola riga interne alla riga
+
+            for (int j = 0; j < row.getChildCount(); j++) {//per ogni riga all'interno dell tablelayout
+
+                View v = row.getChildAt(j);
+
+                if (v instanceof EditText) {
+
+                    v.setEnabled(true);
+                }
+            }
+        }
+
+        //abilito l'input per la data di nascita
+        ImageView profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
+        profileDataPickerBtn.setEnabled(true);
+    }
 
     /**
      * funzione che si occupa di validare le modifiche effettuate dall'utente
@@ -218,4 +201,79 @@ public class ProfileActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * funzione che si occupa di leggere i dati che sono stati modificati dall'utente
+     *
+     * @return i nuovi dati modificati dall'utent
+     */
+    private HashMap<String, String> getNewProfileData() {
+
+        Map<String, String> newData = new HashMap<String, String>();
+
+        newData.put("email", ((EditText) findViewById(R.id.editFieldEmail)).getText().toString());
+        newData.put("name", ((EditText) findViewById(R.id.editFieldName)).getText().toString());
+        newData.put("surname", ((EditText) findViewById(R.id.editFieldSurname)).getText().toString());
+        newData.put("birthDate", ((EditText) findViewById(R.id.editFieldBirth)).getText().toString());
+
+        return (HashMap<String, String>) newData;
+
+    }
+
+    /**
+     * funzione che si occupa di aggiornare sul db i dati madoficati dall'utente
+     *
+     * @param newProfileData
+     */
+    private void updateProfileData(Map<String, String> newProfileData) {
+
+        userIstance.setEmail(newProfileData.get("email"));
+        userIstance.setName(newProfileData.get("name"));
+        userIstance.setSurname(newProfileData.get("surname"));
+        userIstance.setDateBirth(newProfileData.get("birthDate"));
+
+        //aggiorno il db
+        userHolder.updateIfDirty(
+                () -> {
+                    Toast.makeText(this, R.string.profile_change_success, Toast.LENGTH_LONG);
+                },
+                (errorMsg) -> {
+
+
+                    Toast.makeText(this, R.string.profile_change_error, Toast.LENGTH_LONG);
+
+                }
+        );
+    }
+
+    /**
+     * Funzione che rende non editabili i campi per la modifica dei dati utente
+     */
+    public void setProfileDataFieldDisabled() {
+
+        TableLayout tableLayoutProfileActivity = findViewById(R.id.tableLayoutProfileActivity);//selezione il table layout
+
+        for (int i = 0; i < tableLayoutProfileActivity.getChildCount(); i++) {//per ogni riga nel layout
+
+            ViewGroup row = (ViewGroup) tableLayoutProfileActivity.getChildAt(i); //seleziono la singola riga interne alla riga
+
+            for (int j = 0; j < row.getChildCount(); j++) {//per ogni riga all'interno dell tablelayout
+
+                View v = row.getChildAt(j);
+
+                if (v instanceof EditText) {
+
+                    v.setEnabled(false);
+                }
+            }
+        }
+
+        //disabilito anche il pulsante per il datePicker
+        ImageView profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
+        profileDataPickerBtn.setEnabled(false);
+    }
+
+    void saveUserPassword(){
+
+        this.userIstance.setPassword(SaveUserPasswordMiddleClass.getSavedUserPassword());
+    }
 }

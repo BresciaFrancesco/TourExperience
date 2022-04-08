@@ -44,7 +44,7 @@ public class ProfileDataPicker extends DialogFragment implements DatePickerDialo
 
         EditText dateBirthInputeditField = getActivity().findViewById(R.id.editFieldBirth);
 
-        dateBirthInputeditField.setText(day + "/" + (month += 1) + "/" + year);
+        dateBirthInputeditField.setText(day + " / " + (month += 1) + " / " + year);
 
     }
 }

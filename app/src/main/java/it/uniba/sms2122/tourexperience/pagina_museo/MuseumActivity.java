@@ -1,13 +1,11 @@
-package it.uniba.sms2122.tourexperience.museum;
+package it.uniba.sms2122.tourexperience.pagina_museo;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.widget.TextView;
 
-import it.uniba.sms2122.tourexperience.DataBaseHelper;
 import it.uniba.sms2122.tourexperience.R;
 
 public class MuseumActivity extends AppCompatActivity {
@@ -26,8 +24,5 @@ public class MuseumActivity extends AppCompatActivity {
         viewPager.setAdapter(viewPagerAdapter);
 
         textView = findViewById(R.id.museum_description);
-        DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
-
-        textView.setText(dataBaseHelper.loadHandler());
     }
 }

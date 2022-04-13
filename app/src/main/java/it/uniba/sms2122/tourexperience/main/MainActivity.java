@@ -17,7 +17,7 @@ import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
-import it.uniba.sms2122.tourexperience.musei.SceltaMusei;
+import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,16 +48,22 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch(item.getItemId()) {
                 case R.id.home:
+                    bottomNavigationView.setItemActiveIndicatorEnabled(true);
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
-                            .replace(R.id.content_fragment_container_view, HomeFragment.class, null)
+                            .setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right,R.anim.slide_in_right,R.anim.slide_out_left)
                             .commit();
                     return true;
                 case R.id.history:
 
                     return true;
                 case R.id.museums:
-                    startActivity(new Intent(this, SceltaMusei.class));
+                    fragmentManager.beginTransaction()
+                            .setReorderingAllowed(true)
+                            .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
+                            .replace(R.id.content_fragment_container_view, SceltaMuseiFragment.class, null)
+                            .commit();
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.museums);
                     return true;
                 case R.id.game_statistics:
 
@@ -98,7 +104,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        int count = getFragmentManager().getBackStackEntryCount();
+        if (count == 0)
+            super.onBackPressed();
+
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+    }
+
+    public void replaceSceltaMuseiFragment(Bundle bundle){
+        //passare al SceltaMuseiFragment
+        fragmentManager.beginTransaction()
+                .setReorderingAllowed(true)
+                .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
+                .replace(R.id.content_fragment_container_view, SceltaMuseiFragment.class, bundle)
+                .commit();
     }
 }

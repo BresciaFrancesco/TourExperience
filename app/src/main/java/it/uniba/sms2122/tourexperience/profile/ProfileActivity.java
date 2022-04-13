@@ -7,7 +7,9 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.text.method.PasswordTransformationMethod;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -308,6 +310,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void showConfirmPasswordAlertDialog(String title, String bodyText) {
 
         final EditText inputPassword = new EditText(this);
+        inputPassword.setTransformationMethod(PasswordTransformationMethod.getInstance()); //metodo per nascondere la password inserita
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);

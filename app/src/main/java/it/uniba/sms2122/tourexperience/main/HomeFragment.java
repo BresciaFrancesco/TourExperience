@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.Museo;
-import it.uniba.sms2122.tourexperience.musei.SceltaMusei;
+import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 
 /**
  * Fragment per la schermata Home
@@ -105,9 +105,9 @@ public class HomeFragment extends Fragment {
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     String string = autoCompleteTextView.getText().toString();
 
-                    Intent intent = new Intent(getContext(), SceltaMusei.class);
-                    intent.putExtra("search",string);
-                    startActivity(intent);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("search",string);
+                    ((MainActivity) getActivity()).replaceSceltaMuseiFragment(bundle);
                 }
             });
         }

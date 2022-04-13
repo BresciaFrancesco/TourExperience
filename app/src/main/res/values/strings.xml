@@ -71,4 +71,6 @@
     <string name="insert_password_for_confirm_title">Insert password</string>
     <string name="insert_password_for_confirm_body">Insert password for confirm your change</string>
     <string name="insert_password_for_confirm_button">Confirm</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,19 +1,20 @@
 package it.uniba.sms2122.tourexperience.musei;
 
+import android.app.ActionBar;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.SearchView;
+
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -26,8 +27,12 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.utility.LocalFileMuseoManager;
 
-
-public class SceltaMusei extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link SceltaMuseiFragment} factory method to
+ * create an instance of this fragment.
+ */
+public class SceltaMuseiFragment extends Fragment {
 
     private SearchView searchView;
     private ActionBar actionBar;
@@ -35,29 +40,16 @@ public class SceltaMusei extends AppCompatActivity {
     private List<Museo> listaMusei;
     private LocalFileMuseoManager localFileManager;
 
+    public SceltaMuseiFragment() {
+        // Required empty public constructor
+    }
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scelta_musei);
-
-        searchView = findViewById(R.id.searchviewMusei);
-
-        // Action Bar
-        actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(R.string.museums);
-
-        recyclerView = findViewById(R.id.recyclerViewMusei);
-        // Setting the layout as linear layout for vertical orientation
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        localFileManager = new LocalFileMuseoManager(getApplicationContext().getFilesDir().toString());
     }
 
-
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
 
         createLocalDirectory();
@@ -66,18 +58,17 @@ public class SceltaMusei extends AppCompatActivity {
         //test_downloadImageAndSaveInLocalStorage();
     }
 
-
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-
-        String search = getIntent().getStringExtra("search");
 
         if (listaMusei == null) {
             try {
                 listaMusei = localFileManager.getListMusei();
-                if(!search.isEmpty())
+                String search = getActivity().getIntent().getStringExtra("search");
+                if(!(search == null)){
                     listaMusei = searchData(listaMusei,search);
+                }
             }
             catch (IOException e) {
                 Log.e("SCELTA_MUSEI_ERROR", "Lista musei non caricata.");
@@ -90,7 +81,7 @@ public class SceltaMusei extends AppCompatActivity {
         }
 
         // Sending reference and data to Adapter
-        MuseiAdapter adapter = new MuseiAdapter(this, listaMusei);
+        MuseiAdapter adapter = new MuseiAdapter(getContext(), listaMusei);
         // Setting Adapter to RecyclerView
         recyclerView.setAdapter(adapter);
 
@@ -109,7 +100,26 @@ public class SceltaMusei extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_scelta_musei, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        searchView = view.findViewById(R.id.searchviewMusei);
+
+        recyclerView = view.findViewById(R.id.recyclerViewMusei);
+        // Setting the layout as linear layout for vertical orientation
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        localFileManager = new LocalFileMuseoManager(getContext().getFilesDir().toString());
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         ArrayList<String> nomiMusei = new ArrayList<>();
         ArrayList<String> cittaMusei = new ArrayList<>();
         ArrayList<String> tipologieMusei = new ArrayList<>();
@@ -128,32 +138,26 @@ public class SceltaMusei extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+    public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
         listaMusei = new ArrayList<>();
-        ArrayList<String> nomiMusei = savedInstanceState.getStringArrayList("nomi_musei");
-        ArrayList<String> cittaMusei = savedInstanceState.getStringArrayList("citta_musei");
-        ArrayList<String> tipologieMusei = savedInstanceState.getStringArrayList("tipologie_musei");
-        ArrayList<String> uriImmagini = savedInstanceState.getStringArrayList("immagini_musei");
-        for (int i = 0; i < nomiMusei.size(); i++) {
-            listaMusei.add(new Museo(
-                    nomiMusei.get(i),
-                    cittaMusei.get(i),
-                    tipologieMusei.get(i),
-                    uriImmagini.get(i)
-            ));
-        }
-        super.onRestoreInstanceState(savedInstanceState);
-    }
 
-
-    private void createLocalDirectory() {
-        File directory = new File(getApplicationContext().getFilesDir(), "Museums");
-        if (directory == null || !directory.exists()) {
-            if (directory.mkdir())
-                Log.v("CREATE_DIRECTORY_Museums", "Created now!");
-            else
-                Log.e("CREATE_DIRECTORY_Museums", "Error!");
+        if(savedInstanceState != null)
+        {
+            ArrayList<String> nomiMusei = savedInstanceState.getStringArrayList("nomi_musei");
+            ArrayList<String> cittaMusei = savedInstanceState.getStringArrayList("citta_musei");
+            ArrayList<String> tipologieMusei = savedInstanceState.getStringArrayList("tipologie_musei");
+            ArrayList<String> uriImmagini = savedInstanceState.getStringArrayList("immagini_musei");
+            for (int i = 0; i < nomiMusei.size(); i++) {
+                listaMusei.add(new Museo(
+                        nomiMusei.get(i),
+                        cittaMusei.get(i),
+                        tipologieMusei.get(i),
+                        uriImmagini.get(i)
+                ));
+            }
         }
+
+        super.onViewStateRestored(savedInstanceState);
     }
 
     /**
@@ -165,7 +169,7 @@ public class SceltaMusei extends AppCompatActivity {
         musei.add("Louvre");
         musei.add("Hermitage");
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        File fullPath = new File(getApplicationContext().getFilesDir() + "/Museums");
+        File fullPath = new File(getContext().getFilesDir() + "/Museums");
 
         for (String museo : musei) {
             String filePath = museo+"/"+museo+".png";
@@ -181,6 +185,16 @@ public class SceltaMusei extends AppCompatActivity {
             }).addOnFailureListener(exception -> {
                 Log.e("CARICAMENTO", filePath+" NON caricato.");
             });
+        }
+    }
+
+    private void createLocalDirectory() {
+        File directory = new File(getContext().getFilesDir(), "Museums");
+        if (directory == null || !directory.exists()) {
+            if (directory.mkdir())
+                Log.v("CREATE_DIRECTORY_Museums", "Created now!");
+            else
+                Log.e("CREATE_DIRECTORY_Museums", "Error!");
         }
     }
 

@@ -7,6 +7,7 @@ import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -28,11 +29,19 @@ public class FirstActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_first);
+
+        btnLogin = (Button) findViewById(R.id.idBtnMainLogin);
+        btnRegistration = (Button) findViewById(R.id.idBtnMainRegistration);
+        textViewGuest = (TextView) findViewById(R.id.idTextViewGuest);
 
         userHolder = UserHolder.getInstance();
         userHolder.getUser(
                 (user) -> {
-                    getSupportActionBar().hide();
+                    btnLogin.setVisibility(View.GONE);
+                    btnRegistration.setVisibility(View.GONE);
+                    textViewGuest.setVisibility(View.GONE);
+                    findViewById(R.id.idImgLogo).setVisibility(View.GONE);
 
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
@@ -52,11 +61,6 @@ public class FirstActivity extends AppCompatActivity {
                         return;
                     }
 
-                    setContentView(R.layout.activity_first);
-
-                    btnLogin = (Button) findViewById(R.id.idBtnMainLogin);
-                    btnRegistration = (Button) findViewById(R.id.idBtnMainRegistration);
-                    textViewGuest = (TextView) findViewById(R.id.idTextViewGuest);
                     setOnClickListenerBtnLogin();
                     setOnClickListenerBtnRegistration();
                     setOnClickListenerTextViewGuest();

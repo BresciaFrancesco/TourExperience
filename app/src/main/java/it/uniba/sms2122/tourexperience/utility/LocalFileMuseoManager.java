@@ -31,7 +31,7 @@ public class LocalFileMuseoManager extends LocalFileManager {
                 if (!Files.isDirectory(path)) continue;
                 String nomeMuseo = path.getFileName().toString();
                 listaMusei.add(new Museo(
-                        nomeMuseo,
+                        nomeMuseo,"","",
                         generalPath + nomeMuseo + "/" + nomeMuseo + ".png"
                 ));
             }

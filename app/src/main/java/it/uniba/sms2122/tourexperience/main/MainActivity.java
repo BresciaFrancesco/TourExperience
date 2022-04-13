@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
                             .setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right,R.anim.slide_in_right,R.anim.slide_out_left)
+                            .replace(R.id.content_fragment_container_view, HomeFragment.class, null)
                             .commit();
                     return true;
                 case R.id.history:

@@ -22,9 +22,9 @@
 
     <!-- Scrollable favorites -->
     <FrameLayout
-        android:id="@+id/favorites_layout"
+        android:id="@+id/museums_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/top_rounded"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/searchviewMusei"

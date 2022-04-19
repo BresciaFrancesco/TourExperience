@@ -6,10 +6,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -114,11 +118,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void replaceSceltaMuseiFragment(Bundle bundle){
+        SceltaMuseiFragment sceltaMuseiFragment = new SceltaMuseiFragment();
+        sceltaMuseiFragment.setArguments(bundle);
+
         //passare al SceltaMuseiFragment
         fragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
                 .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
-                .replace(R.id.content_fragment_container_view, SceltaMuseiFragment.class, bundle)
+                .replace(R.id.content_fragment_container_view, sceltaMuseiFragment)
                 .commit();
+    }
+
+    public static void hideKeyboard(Context ctx) {
+        InputMethodManager inputManager = (InputMethodManager) ctx
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // check if no view has focus:
+        View v = ((Activity) ctx).getCurrentFocus();
+        if (v == null)
+            return;
+
+        inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 }

@@ -40,24 +40,6 @@ public class SceltaMuseiFragment extends Fragment {
     private List<Museo> listaMusei;
     private LocalFileMuseoManager localFileManager;
 
-    public SceltaMuseiFragment() {
-        // Required empty public constructor
-    }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        createLocalDirectory();
-
-        // METODO DI TEST, USARE SOLO UNA VOLTA E POI ELIMINARE
-        //test_downloadImageAndSaveInLocalStorage();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -108,6 +90,12 @@ public class SceltaMuseiFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        createLocalDirectory();
+
+        // METODO DI TEST, USARE SOLO UNA VOLTA E POI ELIMINARE
+        test_downloadImageAndSaveInLocalStorage();
+
         searchView = view.findViewById(R.id.searchviewMusei);
 
         recyclerView = view.findViewById(R.id.recyclerViewMusei);
@@ -172,18 +160,31 @@ public class SceltaMuseiFragment extends Fragment {
         File fullPath = new File(getContext().getFilesDir() + "/Museums");
 
         for (String museo : musei) {
-            String filePath = museo+"/"+museo+".png";
-            StorageReference islandRef = storage.getReference("Museums").child(filePath);
+            String filePathImmagine = museo+"/"+museo+".png";
+            String filePathInfo = museo+"/"+"Info.json";
+
+            // Ottengo il riferimento su Firebase dell'immagine del museo e del file Info.json
+            StorageReference rifImmagine = storage.getReference("Museums").child(filePathImmagine);
+            StorageReference rifInfo = storage.getReference("Museums").child(filePathInfo);
 
             File dir = new File(fullPath, museo);
             if (!dir.exists())
                 dir.mkdir();
-            File localFile = new File(fullPath, filePath);
 
-            islandRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
-                Log.v("CARICAMENTO", filePath+" caricato!");
+
+            File localFileImmagine = new File(fullPath, filePathImmagine);
+            File localFileInfo = new File(fullPath, filePathInfo);
+
+            rifImmagine.getFile(localFileImmagine).addOnSuccessListener(taskSnapshot -> {
+                Log.v("CARICAMENTO IMMAGINE", filePathImmagine+" caricato!");
             }).addOnFailureListener(exception -> {
-                Log.e("CARICAMENTO", filePath+" NON caricato.");
+                Log.e("CARICAMENTO IMMAGINE", filePathImmagine+" NON caricato.");
+            });
+
+            rifInfo.getFile(localFileInfo).addOnSuccessListener(taskSnapshot -> {
+                Log.v("CARICAMENTO INFO", filePathInfo+" caricato!");
+            }).addOnFailureListener(exception -> {
+                Log.e("CARICAMENTO INFO", filePathInfo+" NON caricato.");
             });
         }
     }

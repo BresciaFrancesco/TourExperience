@@ -44,12 +44,15 @@ public class SceltaMuseiFragment extends Fragment {
 
     @Override
     public void onResume() {
-
         super.onResume();
 
         try {
             listaMusei = localFileManager.getListMusei();
 
+            // TEST
+            for (Museo museo : listaMusei) {
+                Log.v("Info Museo", museo.toString());
+            }
 
             Bundle bundle = this.getArguments();
 
@@ -101,7 +104,7 @@ public class SceltaMuseiFragment extends Fragment {
         createLocalDirectory();
 
         // METODO DI TEST, USARE SOLO UNA VOLTA E POI ELIMINARE
-        test_downloadImageAndSaveInLocalStorage();
+        //test_downloadImageAndSaveInLocalStorage();
 
         searchView = view.findViewById(R.id.searchviewMusei);
 

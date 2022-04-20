@@ -30,6 +30,12 @@
         <item name="boxStrokeWidth">1dp</item>
     </style>
 
+    <!-- imageView con bordi arrotondati -->
+    <style name="roundedImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+    </style>
+
     <!-- inizio stili di prova -->
     <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>

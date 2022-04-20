@@ -58,10 +58,10 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/routes_recycle_view"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:orientation="vertical"
-                android:padding="5dp"
+                android:padding="20dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </LinearLayout>
 

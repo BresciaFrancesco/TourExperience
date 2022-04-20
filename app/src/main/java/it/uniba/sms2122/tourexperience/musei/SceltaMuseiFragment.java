@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.utility.LocalFileMuseoManager;
 
@@ -60,24 +62,26 @@ public class SceltaMuseiFragment extends Fragment {
 
     @Override
     public void onResume() {
+
         super.onResume();
 
-        if (listaMusei == null) {
-            try {
-                listaMusei = localFileManager.getListMusei();
-                String search = getActivity().getIntent().getStringExtra("search");
-                if(!(search == null)){
-                    listaMusei = searchData(listaMusei,search);
-                }
+        try {
+            listaMusei = localFileManager.getListMusei();
+
+
+            Bundle bundle = this.getArguments();
+
+            if ((bundle != null)) {
+                listaMusei = searchData(listaMusei, bundle.getString("search"));
             }
-            catch (IOException e) {
-                Log.e("SCELTA_MUSEI_ERROR", "Lista musei non caricata.");
-                listaMusei = new ArrayList<>();
-                e.printStackTrace();
-            }
+        } catch (IOException e) {
+            Log.e("SCELTA_MUSEI_ERROR", "Lista musei non caricata.");
+            listaMusei = new ArrayList<>();
+            e.printStackTrace();
         }
+
         if (listaMusei.isEmpty()) {
-            listaMusei.add(new Museo("Non ci sono musei", "","",""));
+            listaMusei.add(new Museo(getContext().getResources().getString((R.string.no_result)), "","",""));
         }
 
         // Sending reference and data to Adapter
@@ -102,6 +106,9 @@ public class SceltaMuseiFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.hideKeyboard(getContext());
+
         return inflater.inflate(R.layout.fragment_scelta_musei, container, false);
     }
 

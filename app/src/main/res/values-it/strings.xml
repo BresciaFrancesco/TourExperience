@@ -69,4 +69,5 @@
     <string name="insert_password_for_confirm_title">Inserire password</string>
     <string name="insert_password_for_confirm_body">Inserire password per confermare i cambiamenti</string>
     <string name="insert_password_for_confirm_button">Conferma</string>
+    <string name="no_result">Nessun risultato</string>
 </resources>

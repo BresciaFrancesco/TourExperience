@@ -15,7 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -37,10 +40,17 @@ import it.uniba.sms2122.tourexperience.utility.LocalFileMuseoManager;
 public class SceltaMuseiFragment extends Fragment {
 
     private SearchView searchView;
-    private ActionBar actionBar;
     private RecyclerView recyclerView;
     private List<Museo> listaMusei;
     private LocalFileMuseoManager localFileManager;
+
+    // Make sure to use the FloatingActionButton for all the FABs
+    private FloatingActionButton mAddFab, localStorageFab, cloudFab;
+    // These are taken to make visible and invisible along with FABs
+    private TextView localStorageTxtView, cloudTxtView;
+    // to check whether sub FAB buttons are visible or not.
+    private Boolean isAllFabsVisible;
+
 
     @Override
     public void onResume() {
@@ -55,7 +65,7 @@ public class SceltaMuseiFragment extends Fragment {
                 listaMusei = searchData(listaMusei, bundle.getString("search"));
             }
         } catch (IOException e) {
-            Log.e("SCELTA_MUSEI_ERROR", "Lista musei non caricata.");
+            Log.e("SceltaMuseiFragment", "SCELTA_MUSEI_ERROR: Lista musei non caricata.");
             listaMusei = new ArrayList<>();
             e.printStackTrace();
         }
@@ -71,10 +81,7 @@ public class SceltaMuseiFragment extends Fragment {
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
+            public boolean onQueryTextSubmit(String query) {return false;}
             @Override
             public boolean onQueryTextChange(String newText) {
                 adapter.getFilter().filter(newText);
@@ -96,7 +103,7 @@ public class SceltaMuseiFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        createLocalDirectory();
+        createLocalMuseumsDirectoryIfNotExists();
 
         // METODO DI TEST, USARE SOLO UNA VOLTA E POI ELIMINARE
         //test_downloadImageAndSaveInLocalStorage();
@@ -109,10 +116,82 @@ public class SceltaMuseiFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         localFileManager = new LocalFileMuseoManager(getContext().getFilesDir().toString());
+
+        setAllTheReference(view);
+
+        // We will make all the FABs and action name texts
+        // visible only when Parent FAB button is clicked So
+        // we have to handle the Parent FAB button first, by
+        // using setOnClickListener you can see below
+        mAddFab.setOnClickListener(view2 -> {
+            if (!isAllFabsVisible) {
+
+                // when isAllFabsVisible becomes true make all the action name
+                // texts and FABs VISIBLE.
+                localStorageFab.show();
+                cloudFab.show();
+                cloudTxtView.setVisibility(View.VISIBLE);
+                localStorageTxtView.setVisibility(View.VISIBLE);
+
+                // make the boolean variable true as we have set the sub FABs
+                // visibility to GONE
+                isAllFabsVisible = true;
+            } else {
+                // when isAllFabsVisible becomes true make all the action name
+                // texts and FABs GONE.
+                localStorageFab.hide();
+                cloudFab.hide();
+                cloudTxtView.setVisibility(View.GONE);
+                localStorageTxtView.setVisibility(View.GONE);
+
+                // make the boolean variable false as we have set the sub FABs
+                // visibility to GONE
+                isAllFabsVisible = false;
+            }
+        });
+
+        localStorageFab.setOnClickListener(view2 ->
+                Log.v("FAB", "cliccato")
+        );
+
+        cloudFab.setOnClickListener(view2 ->
+                Log.v("FAB", "cliccato")
+        );
     }
+
+    /**
+     * Imposta solo i riferimenti per il fragment.
+     * @param view
+     */
+    private void setAllTheReference(View view) {
+        // Register all the FABs with their IDs
+        // This FAB button is the Parent
+        mAddFab = view.findViewById(R.id.add_fab);
+        // FAB button
+        localStorageFab = view.findViewById(R.id.fab_import_from_localstorage);
+        cloudFab = view.findViewById(R.id.fab_import_from_cloud);
+
+        // Also register the action name text, of all the FABs.
+        localStorageTxtView = view.findViewById(R.id.txtview_import_from_localstorage);
+        cloudTxtView = view.findViewById(R.id.txtview_download_from_cloud);
+
+        // TODO modificare le stringhe delle text view del FAB adattandole alla lingua
+
+        // Now set all the FABs and all the action name texts as GONE
+        localStorageFab.setVisibility(View.GONE);
+        cloudFab.setVisibility(View.GONE);
+        localStorageTxtView.setVisibility(View.GONE);
+        cloudTxtView.setVisibility(View.GONE);
+
+        // make the boolean variable as false, as all the
+        // action name texts and all the sub FABs are invisible
+        isAllFabsVisible = false;
+    }
+
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.v("SceltaMuseiFragment", "chiamato onSaveInstanceState()");
         ArrayList<String> nomiMusei = new ArrayList<>();
         ArrayList<String> cittaMusei = new ArrayList<>();
         ArrayList<String> tipologieMusei = new ArrayList<>();
@@ -132,24 +211,24 @@ public class SceltaMuseiFragment extends Fragment {
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
+        Log.v("SceltaMuseiFragment", "chiamato onViewStateRestored()");
         listaMusei = new ArrayList<>();
-
-        if(savedInstanceState != null)
+        if(savedInstanceState != null && !savedInstanceState.isEmpty())
         {
+            Log.v("SceltaMuseiFragment", "chiamato onViewStateRestored() -> savedInstanceState != null");
             ArrayList<String> nomiMusei = savedInstanceState.getStringArrayList("nomi_musei");
             ArrayList<String> cittaMusei = savedInstanceState.getStringArrayList("citta_musei");
             ArrayList<String> tipologieMusei = savedInstanceState.getStringArrayList("tipologie_musei");
             ArrayList<String> uriImmagini = savedInstanceState.getStringArrayList("immagini_musei");
             for (int i = 0; i < nomiMusei.size(); i++) {
                 listaMusei.add(new Museo(
-                        nomiMusei.get(i),
-                        cittaMusei.get(i),
-                        tipologieMusei.get(i),
-                        uriImmagini.get(i)
+                    nomiMusei.get(i),
+                    cittaMusei.get(i),
+                    tipologieMusei.get(i),
+                    uriImmagini.get(i)
                 ));
             }
         }
-
         super.onViewStateRestored(savedInstanceState);
     }
 
@@ -194,7 +273,11 @@ public class SceltaMuseiFragment extends Fragment {
         }
     }
 
-    private void createLocalDirectory() {
+    /**
+     * Controlla se la Directory "Museums" è già presente nel FileSystem locale.
+     * Se non è presente, la crea.
+     */
+    private void createLocalMuseumsDirectoryIfNotExists() {
         File directory = new File(getContext().getFilesDir(), "Museums");
         if (directory == null || !directory.exists()) {
             if (directory.mkdir())

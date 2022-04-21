@@ -49,11 +49,6 @@ public class SceltaMuseiFragment extends Fragment {
         try {
             listaMusei = localFileManager.getListMusei();
 
-            // TEST
-            for (Museo museo : listaMusei) {
-                Log.v("Info Museo", museo.toString());
-            }
-
             Bundle bundle = this.getArguments();
 
             if ((bundle != null)) {
@@ -213,8 +208,9 @@ public class SceltaMuseiFragment extends Fragment {
         List<Museo> returnList = new ArrayList<>();
 
         for(Museo museum : museums){
-            if(museum.getNome().equals(string) || museum.getCitta().equals(string) || museum.getTipologia().equals(string))
+            if(museum.getNome().equals(string) || museum.getCitta().equals(string) || museum.getTipologia().equals(string)){
                 returnList.add(museum);
+            }
         }
 
         return returnList;

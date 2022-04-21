@@ -1,7 +1,9 @@
 package it.uniba.sms2122.tourexperience.musei;
 
 import android.content.Context;
+import android.media.Image;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +49,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     // Binding data to the into specified position
     @Override
     public void onBindViewHolder(@NonNull MuseiAdapter.ViewHolder holder, int position) {
+        Log.v("MuseiAdapter", "chiamato onBindViewHolder()");
         String fileUri = listaMusei.get(position).getFileUri();
         if (fileUri.isEmpty()) {
             holder.images.setImageResource(R.drawable.ic_baseline_error_24);

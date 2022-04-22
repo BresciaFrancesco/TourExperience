@@ -7,7 +7,9 @@
         <entry key="..\:/Users/Utente/AppData/Local/Android/Sdk/platforms/android-31/data/res/layout/simple_list_item_1.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable-anydpi/favorites.xml" value="0.316" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable/button_shape.xml" value="0.1935" />
+        <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable/default_dot.xml" value="0.2845" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable/ic_baseline_error_24.xml" value="0.284" />
+        <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable/tab_selector.xml" value="0.2845" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable/textview_border.xml" value="0.1935" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable/top_rounded.xml" value="0.1935" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/activity_first.xml" value="0.3625" />
@@ -21,7 +23,7 @@
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/activity_start.xml" value="0.3625" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/activity_welcome.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/fragment_bottom_welcome.xml" value="0.18541666666666667" />
-        <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/fragment_home.xml" value="0.1" />
+        <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/fragment_home.xml" value="0.4" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/fragment_registration_first_page.xml" value="0.4" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/fragment_registration_second_page.xml" value="0.4" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/layout/fragment_scelta_musei.xml" value="0.2" />

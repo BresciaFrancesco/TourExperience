@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.Objects;
 
@@ -50,28 +52,27 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
-            switch(item.getItemId()) {
+            switch (item.getItemId()) {
                 case R.id.home:
                     bottomNavigationView.setItemActiveIndicatorEnabled(true);
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
-                            .setCustomAnimations(R.anim.slide_in_left,R.anim.slide_out_right,R.anim.slide_in_right,R.anim.slide_out_left)
+                            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.content_fragment_container_view, HomeFragment.class, null)
                             .commit();
                     return true;
                 case R.id.history:
-
                     return true;
                 case R.id.museums:
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
-                            .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                             .replace(R.id.content_fragment_container_view, SceltaMuseiFragment.class, null)
+                            .addToBackStack("SceltaMuseiFragment")
                             .commit();
-                    Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.museums);
+                    Objects.requireNonNull(MainActivity.this.getSupportActionBar()).setTitle(R.string.museums);
                     return true;
                 case R.id.game_statistics:
-
                     return true;
                 default:
                     return false;
@@ -107,25 +108,62 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Funzione utile a gestire la pressione del pulsante back in modo tale che quando viene premuto il pulsante non venga chiusa l'app ma si scorra a ritroso
+     * scorrendo tra i vari fragment visitati dall'ultimo sino alla home
+     */
     @Override
     public void onBackPressed() {
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        int count = getFragmentManager().getBackStackEntryCount();
-        if (count == 0)
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        if(!getTopFragment())
             super.onBackPressed();
 
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+    }
+
+    /**
+     * Funzione untile a individuare se ci sono entry all'interno del backstack
+     * Se c'è solo una entry setta il focus sull'icona della home
+     * Altrimenti verifica quale sia il penultimo fragment attivato e ne attiva l'icona corrispondente
+     * @return Restuisce false se non ci sono entry, altrimenti esegue le varie operazioni e restituisce true
+     */
+    private boolean getTopFragment() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            return false;
+        }
+
+        if(getSupportFragmentManager().getBackStackEntryCount() == 1){
+            bottomNavigationView.getMenu().getItem(0).setChecked(true);
+        } else{
+            String fragmentTag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 2).getName();
+            switch (fragmentTag){
+                case "HomeFragment":
+                    bottomNavigationView.getMenu().getItem(0).setChecked(true);
+                    break;
+                case "SceltaMuseiFragment":
+                    bottomNavigationView.getMenu().getItem(2).setChecked(true);
+                    break;
+
+                    //TODO da aggiornare lo switch con casi per i fragment riguardanti la history e le statistiche e verificare che funziona
+            }
+        }
+
+        return true;
+
     }
 
     public void replaceSceltaMuseiFragment(Bundle bundle){
         SceltaMuseiFragment sceltaMuseiFragment = new SceltaMuseiFragment();
         sceltaMuseiFragment.setArguments(bundle);
 
+        bottomNavigationView.getMenu().getItem(2).setChecked(true);
         //passare al SceltaMuseiFragment
         fragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
                 .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
                 .replace(R.id.content_fragment_container_view, sceltaMuseiFragment)
+                .addToBackStack(null)
                 .commit();
     }
 

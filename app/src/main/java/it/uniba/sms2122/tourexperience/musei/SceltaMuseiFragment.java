@@ -1,12 +1,10 @@
 package it.uniba.sms2122.tourexperience.musei;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
@@ -31,6 +28,7 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.utility.LocalFileMuseoManager;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,11 +55,25 @@ public class SceltaMuseiFragment extends Fragment {
         super.onResume();
 
         try {
-            listaMusei = localFileManager.getListMusei();
+            if (listaMusei == null || listaMusei.isEmpty()) {
+                if (cacheMuseums.isEmpty()) {
+                    listaMusei = localFileManager.getListMusei();
+                    if (listaMusei.isEmpty()) {
+                        Log.v("CACHE_MUSEI", "cache e lista musei vuoti");
+                        listaMusei = new ArrayList<>();
+                    }
+                    else {
+                        Log.v("CACHE_MUSEI", "musei recuperati da locale e inseriti nella cache");
+                        replaceMuseumsInCache(listaMusei);
+                    }
+                } else {
+                    Log.v("CACHE_MUSEI", "musei recuperati dalla cache");
+                    listaMusei = getAllCachedMuseums();
+                }
+            } else Log.v("CACHE_MUSEI", "musei giò presenti in memoria");
 
             Bundle bundle = this.getArguments();
-
-            if ((bundle != null)) {
+            if (bundle != null) {
                 listaMusei = searchData(listaMusei, bundle.getString("search"));
             }
         } catch (IOException e) {
@@ -71,7 +83,7 @@ public class SceltaMuseiFragment extends Fragment {
         }
 
         if (listaMusei.isEmpty()) {
-            listaMusei.add(new Museo(getContext().getResources().getString((R.string.no_result)), "","",""));
+            listaMusei.add(new Museo(getContext().getResources().getString(R.string.no_result), "","",""));
         }
 
         // Sending reference and data to Adapter

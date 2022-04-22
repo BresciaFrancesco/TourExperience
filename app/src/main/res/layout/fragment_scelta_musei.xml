@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".musei.SceltaMuseiFragment">
 
     <SearchView
@@ -19,43 +20,55 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <!-- Scrollable favorites -->
-    <FrameLayout
-        android:id="@+id/museums_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/top_rounded"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchviewMusei"
-        android:layout_marginTop="20dp">
-
-        <!--RecyclerView: contiene la lista dei musei-->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewMusei"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="70dp"/>
-    </FrameLayout>
-
     <!--This will be the parent Floating Action Button-->
     <!--After the implementation the Floating Action Button
          at the bottom right corner-->
     <!--After clicking the above button the following two buttons
         will pop up. So this button is considered as parent FAB-->
+    <!--minHeight="800dp": when the items in the list are few, the
+        FrameLayout adapt his height to the number of the items.
+        This isn't good for the layout, so I set the minimum height
+        to 800dp, in this way the FrameLayout is always as big as
+        the display and 800dp should be enough even for bigger display,
+        without underflow of the size-->
+    <FrameLayout
+        android:id="@+id/museums_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="55dp"
+        android:minHeight="800dp"
+        android:background="@drawable/top_rounded"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchviewMusei"
+        app:layout_constraintVertical_bias="1.0">
+
+        <!--RecyclerView: contiene la lista dei musei-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMusei"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="38dp"
+            android:scrollbars="vertical"
+            app:layoutManager="LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </FrameLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="70dp"
         android:src="@drawable/ic_baseline_add_24"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <!--Floating action button for add alarm-->
     <!--Make sure that you are constraining this
@@ -69,18 +82,19 @@
         app:layout_constraintBottom_toTopOf="@+id/add_fab"
         app:layout_constraintEnd_toEndOf="@+id/add_fab"
         app:layout_constraintStart_toStartOf="@+id/add_fab"
-        app:srcCompat="@drawable/ic_baseline_add_to_home_screen_24" />
+        app:srcCompat="@drawable/ic_baseline_add_to_home_screen_24"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <!--Action name text for the add alarm button-->
     <!--Make sure that you are constraining this Text to
         the add Alarm FAB button-->
     <TextView
         android:id="@+id/txtview_import_from_localstorage"
+        android:theme="@style/LabelStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="Import from local"
-        android:background="@color/browser_actions_divider_color"
+        android:text="@string/import_paths_from_local"
         app:layout_constraintBottom_toBottomOf="@+id/fab_import_from_localstorage"
         app:layout_constraintEnd_toStartOf="@+id/fab_import_from_localstorage"
         app:layout_constraintTop_toTopOf="@+id/fab_import_from_localstorage" />
@@ -97,18 +111,19 @@
         app:layout_constraintBottom_toTopOf="@+id/fab_import_from_localstorage"
         app:layout_constraintEnd_toEndOf="@+id/fab_import_from_localstorage"
         app:layout_constraintStart_toStartOf="@+id/fab_import_from_localstorage"
-        app:srcCompat="@drawable/ic_baseline_cloud_download_24" />
+        app:srcCompat="@drawable/ic_baseline_cloud_download_24"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <!--Action name text for the add person button-->
     <!--Make sure that you are constraining this Text
         to the add Person FAB button-->
     <TextView
         android:id="@+id/txtview_download_from_cloud"
+        android:theme="@style/LabelStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="Download from cloud"
-        android:background="@color/browser_actions_divider_color"
+        android:text="@string/import_paths_from_internet"
         app:layout_constraintBottom_toBottomOf="@+id/fab_import_from_cloud"
         app:layout_constraintEnd_toStartOf="@+id/fab_import_from_cloud"
         app:layout_constraintTop_toTopOf="@+id/fab_import_from_cloud" />

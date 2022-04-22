@@ -70,4 +70,6 @@
     <string name="insert_password_for_confirm_body">Inserire password per confermare i cambiamenti</string>
     <string name="insert_password_for_confirm_button">Conferma</string>
     <string name="no_result">Nessun risultato</string>
+    <string name="import_paths_from_internet">Importa da Internet</string>
+    <string name="import_paths_from_local">Importa da locale</string>
 </resources>

@@ -73,4 +73,6 @@
     <string name="insert_password_for_confirm_button">Confirm</string>
     <string name="no_result">No results</string>
     <string name="empty_phrase" translatable="false"></string>
+    <string name="import_paths_from_internet">Import from Internet</string>
+    <string name="import_paths_from_local">Import from local</string>
 </resources>

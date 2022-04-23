@@ -1,9 +1,6 @@
 package it.uniba.sms2122.tourexperience.graph;
 
-import com.google.gson.annotations.Expose;
-
 import java.util.Map;
-import java.util.Set;
 
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphRunTimeException;
@@ -31,10 +28,6 @@ public class Percorso {
 
     /** Nome del museo che contiene questo percorso. */
     private String nomeMuseo;
-
-
-
-
 
     // ------------------------------ Metodi ------------------------------ //
 

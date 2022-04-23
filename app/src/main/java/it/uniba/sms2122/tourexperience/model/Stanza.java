@@ -7,15 +7,17 @@ public class Stanza {
 
     private String id;
     private String nome;
+    private String descrizione;
     private Map<String, Opera> opere;
 
 
     public Stanza() {}
 
-    public Stanza(String id, String nome, Map<String, Opera> opere) {
+    public Stanza(String id, String nome, String descrizione, Map<String, Opera> opere) {
         this.id = id;
         this.nome = nome;
         this.opere = opere;
+        this.descrizione = descrizione;
     }
 
     public String getId() {
@@ -42,4 +44,11 @@ public class Stanza {
         this.opere = opere;
     }
 
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
 }

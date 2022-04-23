@@ -18,6 +18,9 @@ import java.util.List;
 
 import it.uniba.sms2122.tourexperience.model.Museo;
 
+/**
+ * Classe che gestisce tutti salvati nel filesystem locale relativi ai musei.
+ */
 public class LocalFileMuseoManager extends LocalFileManager {
 
     public LocalFileMuseoManager(String generalPath) {
@@ -25,7 +28,13 @@ public class LocalFileMuseoManager extends LocalFileManager {
         super.generalPath += "Museums/";
     }
 
-
+    /**
+     * Ritorna la lista di musei prelevata dal filesystem locale.
+     * Recupera i file di ogni museo e crea gli oggetti corrispondenti
+     * inserendoli in una lista.
+     * @return lista dei musei presenti nel filesystem.
+     * @throws IOException
+     */
     public List<Museo> getListMusei() throws IOException {
         Log.v("LocalFileMuseoManager", "chiamato getListMusei()");
         List<Museo> listaMusei = new ArrayList<>();

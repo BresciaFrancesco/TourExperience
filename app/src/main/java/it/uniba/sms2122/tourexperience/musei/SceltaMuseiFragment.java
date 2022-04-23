@@ -187,8 +187,6 @@ public class SceltaMuseiFragment extends Fragment {
         localStorageTxtView = view.findViewById(R.id.txtview_import_from_localstorage);
         cloudTxtView = view.findViewById(R.id.txtview_download_from_cloud);
 
-        // TODO modificare le stringhe delle text view del FAB adattandole alla lingua
-
         // Now set all the FABs and all the action name texts as GONE
         localStorageFab.setVisibility(View.GONE);
         cloudFab.setVisibility(View.GONE);

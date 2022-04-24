@@ -16,8 +16,11 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
@@ -42,6 +45,7 @@ public class SceltaMuseiFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<Museo> listaMusei;
     private LocalFileMuseoManager localFileManager;
+    private FirebaseStorage firebaseStorage;
 
     // Make sure to use the FloatingActionButton for all the FABs
     private FloatingActionButton mAddFab, localStorageFab, cloudFab;
@@ -50,6 +54,12 @@ public class SceltaMuseiFragment extends Fragment {
     // to check whether sub FAB buttons are visible or not.
     private Boolean isAllFabsVisible;
 
+    /**
+     * Istanzia la lista dei musei, recuperando i musei dal filesystem
+     * locale o dalla cache. Se recuperati dal filesystem, vengono
+     * inseriti nella cache.
+     * @throws IOException
+     */
     private void createListMuseums() throws IOException {
         if (listaMusei == null || listaMusei.isEmpty()) {
             if (cacheMuseums.isEmpty()) {
@@ -124,6 +134,7 @@ public class SceltaMuseiFragment extends Fragment {
         // METODO DI TEST, USARE SOLO UNA VOLTA E POI ELIMINARE
         //test_downloadImageAndSaveInLocalStorage();
 
+        firebaseStorage = FirebaseStorage.getInstance();
         searchView = view.findViewById(R.id.searchviewMusei);
 
         recyclerView = view.findViewById(R.id.recyclerViewMusei);
@@ -155,6 +166,9 @@ public class SceltaMuseiFragment extends Fragment {
             );
             MainActivity activity = (MainActivity) getActivity();
             activity.getSupportActionBar().setTitle(R.string.museums_cloud_import);
+
+            getListaPercorsiFromCloudStorage();
+
             recyclerView.setAdapter(null);
             mAddFab.setOnClickListener(view3 -> {
                 try { createListMuseums(); }
@@ -197,6 +211,9 @@ public class SceltaMuseiFragment extends Fragment {
         }
     }
 
+    /**
+     * Nasconde i pulsanti FAB opzionali.
+     */
     private void hideFabOptions() {
         // when isAllFabsVisible becomes true make all the action name
         // texts and FABs GONE.
@@ -208,6 +225,32 @@ public class SceltaMuseiFragment extends Fragment {
         // visibility to GONE
         isAllFabsVisible = false;
     }
+
+
+    private void getListaPercorsiFromCloudStorage() {
+        StorageReference listRef = firebaseStorage.getReference().child("Museums");
+        listRef.listAll().addOnSuccessListener(listResult -> {
+            StringBuilder builder = new StringBuilder();
+            for (StorageReference folder : listResult.getPrefixes()) {
+                builder.append(folder.getName()).append(":\n");
+                folder.listAll()
+                        .addOnSuccessListener(listPercorsi -> {
+                            // TODO: NON FUNZIONA, ritorna questo errore: W/NetworkRequest: No App Check token for request.
+                    for (StorageReference fileJson : listPercorsi.getItems()) {
+                        builder.append(fileJson.getName()).append(" ");
+                    }
+                    builder.append("\n");
+                })
+                .addOnFailureListener(fail -> {
+                    Log.e("ERROR", fail.toString());
+                });
+            }
+            Log.v("RISULTATO", builder.toString());
+        }).addOnFailureListener(error -> {
+            Log.e("ERROR", error.toString());
+        });
+    }
+
 
     /**
      * Imposta solo i riferimenti per il fragment.

@@ -1,7 +1,6 @@
 package it.uniba.sms2122.tourexperience.pagina_museo;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -10,7 +9,7 @@ import android.widget.TextView;
 
 import it.uniba.sms2122.tourexperience.R;
 
-public class MuseumActivity extends AppCompatActivity {
+public class MuseoActivity extends AppCompatActivity {
 
     ViewPager viewPager;
     TextView textView;
@@ -23,7 +22,7 @@ public class MuseumActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_museum);
+        setContentView(R.layout.activity_museo);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewPager = (ViewPager)findViewById(R.id.museum_viewpager);

@@ -1,5 +1,6 @@
 package it.uniba.sms2122.tourexperience.musei;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -49,28 +50,31 @@ public class SceltaMuseiFragment extends Fragment {
     // to check whether sub FAB buttons are visible or not.
     private Boolean isAllFabsVisible;
 
+    private void createListMuseums() throws IOException {
+        if (listaMusei == null || listaMusei.isEmpty()) {
+            if (cacheMuseums.isEmpty()) {
+                listaMusei = localFileManager.getListMusei();
+                if (listaMusei.isEmpty()) {
+                    Log.v("CACHE_MUSEI", "cache e lista musei vuoti");
+                    listaMusei = new ArrayList<>();
+                }
+                else {
+                    Log.v("CACHE_MUSEI", "musei recuperati da locale e inseriti nella cache");
+                    replaceMuseumsInCache(listaMusei);
+                }
+            } else {
+                Log.v("CACHE_MUSEI", "musei recuperati dalla cache");
+                listaMusei = getAllCachedMuseums();
+            }
+        } else Log.v("CACHE_MUSEI", "musei giò presenti in memoria");
+    }
 
     @Override
     public void onResume() {
         super.onResume();
 
         try {
-            if (listaMusei == null || listaMusei.isEmpty()) {
-                if (cacheMuseums.isEmpty()) {
-                    listaMusei = localFileManager.getListMusei();
-                    if (listaMusei.isEmpty()) {
-                        Log.v("CACHE_MUSEI", "cache e lista musei vuoti");
-                        listaMusei = new ArrayList<>();
-                    }
-                    else {
-                        Log.v("CACHE_MUSEI", "musei recuperati da locale e inseriti nella cache");
-                        replaceMuseumsInCache(listaMusei);
-                    }
-                } else {
-                    Log.v("CACHE_MUSEI", "musei recuperati dalla cache");
-                    listaMusei = getAllCachedMuseums();
-                }
-            } else Log.v("CACHE_MUSEI", "musei giò presenti in memoria");
+            createListMuseums();
 
             Bundle bundle = this.getArguments();
             if (bundle != null) {
@@ -135,40 +139,74 @@ public class SceltaMuseiFragment extends Fragment {
         // visible only when Parent FAB button is clicked So
         // we have to handle the Parent FAB button first, by
         // using setOnClickListener you can see below
-        mAddFab.setOnClickListener(view2 -> {
-            if (!isAllFabsVisible) {
+        mAddFab.setOnClickListener(this::listenerFabMusei);
 
-                // when isAllFabsVisible becomes true make all the action name
-                // texts and FABs VISIBLE.
-                localStorageFab.show();
-                cloudFab.show();
-                cloudTxtView.setVisibility(View.VISIBLE);
-                localStorageTxtView.setVisibility(View.VISIBLE);
-
-                // make the boolean variable true as we have set the sub FABs
-                // visibility to GONE
-                isAllFabsVisible = true;
-            } else {
-                // when isAllFabsVisible becomes true make all the action name
-                // texts and FABs GONE.
-                localStorageFab.hide();
-                cloudFab.hide();
-                cloudTxtView.setVisibility(View.GONE);
-                localStorageTxtView.setVisibility(View.GONE);
-
-                // make the boolean variable false as we have set the sub FABs
-                // visibility to GONE
-                isAllFabsVisible = false;
-            }
+        localStorageFab.setOnClickListener(view2 -> {
+            Log.v("FAB", "cliccato LOCAL");
         });
 
-        localStorageFab.setOnClickListener(view2 ->
-                Log.v("FAB", "cliccato")
-        );
+        cloudFab.setOnClickListener(view2 -> {
+            Log.v("FAB", "cliccato CLOUD");
+            hideFabOptions();
+            mAddFab.setImageResource(R.drawable.ic_baseline_close_24);
+            mAddFab.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                            getResources().getColor(R.color.main_red, null))
+            );
+            MainActivity activity = (MainActivity) getActivity();
+            activity.getSupportActionBar().setTitle(R.string.museums_cloud_import);
+            recyclerView.setAdapter(null);
+            mAddFab.setOnClickListener(view3 -> {
+                try { createListMuseums(); }
+                catch (IOException e) {
+                    Log.e("SceltaMuseiFragment", "SCELTA_MUSEI_ERROR: Lista musei non caricata da FAB.");
+                    listaMusei = new ArrayList<>();
+                    listaMusei.add(new Museo(getContext().getResources().getString(R.string.no_result), "","",""));
+                    e.printStackTrace();
+                }
+                MuseiAdapter adapter = new MuseiAdapter(getContext(), listaMusei);
+                recyclerView.setAdapter(adapter);
+                mAddFab.setImageResource(R.drawable.ic_baseline_add_24);
+                mAddFab.setOnClickListener(this::listenerFabMusei);
+                mAddFab.setBackgroundTintList(
+                        ColorStateList.valueOf(
+                                getResources().getColor(R.color.mtrl_fab_button_default, null))
+                );
+                activity.getSupportActionBar().setTitle(R.string.museums);
+            });
+        });
+    }
 
-        cloudFab.setOnClickListener(view2 ->
-                Log.v("FAB", "cliccato")
-        );
+    /**
+     * Permette di aprire e chiudere gli altri FAB a partire da quello principale.
+     * @param view
+     */
+    private void listenerFabMusei(View view) {
+        if (!isAllFabsVisible) {
+            // when isAllFabsVisible becomes true make all the action name
+            // texts and FABs VISIBLE.
+            localStorageFab.show();
+            cloudFab.show();
+            cloudTxtView.setVisibility(View.VISIBLE);
+            localStorageTxtView.setVisibility(View.VISIBLE);
+            // make the boolean variable true as we have set the sub FABs
+            // visibility to GONE
+            isAllFabsVisible = true;
+        } else {
+            hideFabOptions();
+        }
+    }
+
+    private void hideFabOptions() {
+        // when isAllFabsVisible becomes true make all the action name
+        // texts and FABs GONE.
+        localStorageFab.hide();
+        cloudFab.hide();
+        cloudTxtView.setVisibility(View.GONE);
+        localStorageTxtView.setVisibility(View.GONE);
+        // make the boolean variable false as we have set the sub FABs
+        // visibility to GONE
+        isAllFabsVisible = false;
     }
 
     /**

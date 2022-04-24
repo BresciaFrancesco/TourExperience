@@ -30,6 +30,7 @@
     <string name="home" translatable="false">Home</string>
     <string name="visits_history">Routes history</string>
     <string name="museums">Museums</string>
+    <string name="museums_cloud_import">Select Path to import</string>
     <string name="game_statistics">Game statistics</string>
     <string name="search_hint">Rome, Egyptian museum, …</string>
     <string name="search_museums">Search museums by name or city...</string>

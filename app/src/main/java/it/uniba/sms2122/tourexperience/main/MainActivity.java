@@ -2,6 +2,7 @@ package it.uniba.sms2122.tourexperience.main;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.app.Activity;
@@ -21,13 +22,12 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
-import static it.uniba.sms2122.tourexperience.main.MainFragmentPosition.*;
+
 
 public class MainActivity extends AppCompatActivity {
     private UserHolder userHolder;
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;
-    private MainFragmentPosition whereiam = HOME;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,25 +49,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment f = fragmentManager.findFragmentById(R.id.content_fragment_container_view);
             switch (item.getItemId()) {
                 case R.id.home:
-                    if (whereiam.equals(HOME)) return false;
+                    if (f instanceof HomeFragment) return false;
                     bottomNavigationView.setItemActiveIndicatorEnabled(true);
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
                             .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.content_fragment_container_view, HomeFragment.class, null)
                             .commit();
-
-                    whereiam = HOME;
                     return true;
                 case R.id.history:
-                    if (whereiam.equals(HISTORY)) return false;
-                    // Inserire qui il codice per cambiare fragment
-                    whereiam = HISTORY;
+
                     return true;
                 case R.id.museums:
-                    if (whereiam.equals(MUSEUMS)) return false;
+                    if (f instanceof SceltaMuseiFragment) return false;
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
                             .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
@@ -75,12 +72,9 @@ public class MainActivity extends AppCompatActivity {
                             .addToBackStack("SceltaMuseiFragment")
                             .commit();
                     Objects.requireNonNull(MainActivity.this.getSupportActionBar()).setTitle(R.string.museums);
-                    whereiam = MUSEUMS;
                     return true;
                 case R.id.game_statistics:
-                    if (whereiam.equals(GAME_STATISTICS)) return false;
-                    // Inserire qui il codice per cambiare fragment
-                    whereiam = GAME_STATISTICS;
+
                     return true;
                 default:
                     return false;
@@ -173,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.content_fragment_container_view, sceltaMuseiFragment)
                 .addToBackStack(null)
                 .commit();
-        whereiam = MUSEUMS;
     }
 
     public static void hideKeyboard(Context ctx) {

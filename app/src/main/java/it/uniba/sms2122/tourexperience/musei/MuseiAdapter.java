@@ -1,5 +1,6 @@
 package it.uniba.sms2122.tourexperience.musei;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.Image;
 import android.net.Uri;
@@ -47,17 +48,19 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     }
 
     // Binding data to the into specified position
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MuseiAdapter.ViewHolder holder, int position) {
         Log.v("MuseiAdapter", "chiamato onBindViewHolder()");
         String fileUri = listaMusei.get(position).getFileUri();
+        String nomeCitta = listaMusei.get(position).getNome() + "\n" + listaMusei.get(position).getCitta();
         if (fileUri.isEmpty()) {
             holder.images.setImageResource(R.drawable.ic_baseline_error_24);
         }
         else {
             holder.images.setImageURI(Uri.parse(listaMusei.get(position).getFileUri()));
         }
-        holder.text.setText(listaMusei.get(position).getNome());
+        holder.text.setText(nomeCitta);
     }
 
     @Override
@@ -67,6 +70,11 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         return listaMusei.size();
     }
 
+    /**
+     * Esegue la ricerca filtrando la lista. La ricerca avviene per nome
+     * e per città del museo.
+     * @return oggetti Filter.
+     */
     @Override
     public Filter getFilter() {
         Filter filter = new Filter() {
@@ -82,7 +90,12 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
                     List<Museo> resultData = new ArrayList<>();
 
                     for (Museo museo : listaMuseiFiltered) {
+                        // Filtro per nome
                         if (museo.getNome().toLowerCase().contains(searchChr)) {
+                            resultData.add(museo);
+                        }
+                        // se il nome non combacia, provo a filtrare per città
+                        else if (museo.getCitta().toLowerCase().contains(searchChr)) {
                             resultData.add(museo);
                         }
                     }

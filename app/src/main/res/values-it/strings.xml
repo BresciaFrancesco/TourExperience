@@ -73,4 +73,17 @@
     <string name="import_paths_from_internet">Importa da Internet</string>
     <string name="import_paths_from_local">Importa da locale</string>
     <string name="camera_permission_required">È necessario accedere alla camera per scannerizzare il codice QR</string>
+
+    <!-- Modificare le scritte -->
+    <string name="permission_required_title">Richiesta permesso</string>
+    <string name="permission_required_body">
+        Gentile utente, il permesso serve per forza perché si,
+        dammelo o non potrai usare questa funzionalità, grazie.
+    </string>
+    <string name="permission_denied_title">Permesso negato</string>
+    <string name="permission_denied_body">
+        Gentile utente, avendo negato il permesso all\'applicazione
+        non potrai accedere a questa funzionalità, ma potrai continuare
+        comunque ad utilizzare le altre funzionalità
+    </string>
 </resources>

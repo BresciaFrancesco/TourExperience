@@ -47,7 +47,7 @@ public class QRScannerFragment extends Fragment {
                         //activity.getFragmentManager().beginTransaction().remove().commitAllowingStateLoss();
                     }
                 });
-                getParentFragmentManager().beginTransaction().remove(getParentFragmentManager().findFragmentById(R.id.QRscannerFragment)).commit();
+                //getParentFragmentManager().beginTransaction().remove(getParentFragmentManager().findFragmentById(R.id.QRscannerFragment)).commit();
             }
         });
         scannerView.setOnClickListener(new View.OnClickListener() {

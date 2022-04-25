@@ -5,12 +5,12 @@ public class Opera {
 
     private String id;
     private String nome;
-    private String descrizione;
     private String percorsoImg;
+    private String descrizione;
 
     public Opera() {}
 
-    public Opera(String id, String nome, String descrizione, String percorsoImg) {
+    public Opera(String id, String nome, String percorsoImg, String descrizione) {
         this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;

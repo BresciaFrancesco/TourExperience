@@ -230,25 +230,15 @@ public class SceltaMuseiFragment extends Fragment {
     private void getListaPercorsiFromCloudStorage() {
         StorageReference listRef = firebaseStorage.getReference().child("Museums");
         listRef.listAll().addOnSuccessListener(listResult -> {
-            StringBuilder builder = new StringBuilder();
             for (StorageReference folder : listResult.getPrefixes()) {
-                builder.append(folder.getName()).append(":\n");
-                folder.listAll()
-                        .addOnSuccessListener(listPercorsi -> {
-                            // TODO: NON FUNZIONA, ritorna questo errore: W/NetworkRequest: No App Check token for request.
+                folder.child("Percorsi").listAll().addOnSuccessListener(listPercorsi -> {
                     for (StorageReference fileJson : listPercorsi.getItems()) {
-                        builder.append(fileJson.getName()).append(" ");
+                        Log.v("PERCORSI_FIREBASE", fileJson.getPath());
                     }
-                    builder.append("\n");
                 })
-                .addOnFailureListener(fail -> {
-                    Log.e("ERROR", fail.toString());
-                });
+                .addOnFailureListener(fail -> Log.e("ERROR", fail.toString()));
             }
-            Log.v("RISULTATO", builder.toString());
-        }).addOnFailureListener(error -> {
-            Log.e("ERROR", error.toString());
-        });
+        }).addOnFailureListener(error -> Log.e("ERROR", error.toString()));
     }
 
 

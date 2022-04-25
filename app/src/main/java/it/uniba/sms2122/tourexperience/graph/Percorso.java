@@ -23,9 +23,6 @@ public class Percorso {
     /** Puntatore alla stanza finale del percorso. */
     private String idStanzaFinale;
 
-    /** Id univoco del museo che contiene questo percorso. */
-    private String idMuseo;
-
     /** Nome del museo che contiene questo percorso. */
     private String nomeMuseo;
 

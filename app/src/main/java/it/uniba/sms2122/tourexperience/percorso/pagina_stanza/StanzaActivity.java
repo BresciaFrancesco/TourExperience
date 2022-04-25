@@ -1,4 +1,4 @@
-package it.uniba.sms2122.tourexperience.pagina_stanza;
+package it.uniba.sms2122.tourexperience.percorso.pagina_stanza;
 
 import androidx.appcompat.app.AppCompatActivity;
 

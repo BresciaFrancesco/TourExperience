@@ -1,4 +1,4 @@
-package it.uniba.sms2122.tourexperience.pagina_museo;
+package it.uniba.sms2122.tourexperience.percorso.pagina_museo;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,9 +14,9 @@ import it.uniba.sms2122.tourexperience.R;
 
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder> {
 
-    Context context;
-    String[] names;
-    int[] images;
+    private Context context;
+    private String[] names;
+    private int[] images;
 
     public RecycleViewAdapter(Context context, String[] names, int[] images) {
         this.context = context;

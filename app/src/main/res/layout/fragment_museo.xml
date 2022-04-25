@@ -4,11 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".pagina_museo.MuseoActivity">
+        tools:context=".percorso.pagina_museo.MuseoFragment">
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/museum_viewpager"
@@ -64,6 +63,5 @@
                 android:padding="20dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

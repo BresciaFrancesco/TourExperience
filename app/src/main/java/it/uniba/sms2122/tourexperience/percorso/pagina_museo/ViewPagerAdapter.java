@@ -1,4 +1,4 @@
-package it.uniba.sms2122.tourexperience.pagina_museo;
+package it.uniba.sms2122.tourexperience.percorso.pagina_museo;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -3,11 +3,11 @@
     package="it.uniba.sms2122.tourexperience">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false"/>
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -16,6 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TourExperience">
+        <activity
+            android:name=".percorso.PercorsoActivity"
+            android:exported="false" />
         <activity
             android:name=".FirstActivity"
             android:exported="true"

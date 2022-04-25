@@ -1,6 +1,7 @@
 package it.uniba.sms2122.tourexperience.musei;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,14 +11,19 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 import it.uniba.sms2122.tourexperience.model.Museo;
 
 
@@ -119,6 +125,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView images;
         TextView text;
+        private final static FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
 
         public ViewHolder(View view, boolean flagMusei) {
             super(view);
@@ -138,6 +145,24 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
 
         private void listenerForPercorsi(View view) {
             Log.v("CLICK", "listenerForPercorsi cliccato");
+            String[] percorso0_museo1 = text.getText().toString().split("\n");
+            new AlertDialog.Builder(view.getContext())
+                .setTitle(R.string.importa + " " + percorso0_museo1[0])
+                .setMessage(R.string.importa_msg + " " + percorso0_museo1[1] + "?")
+                .setIcon(R.drawable.ic_baseline_cloud_download_24)
+                .setPositiveButton(R.string.SI, (dialog, whichButton) -> {
+                    Toast.makeText(view.getContext(), "Work in progress...", Toast.LENGTH_SHORT).show();
+                    if (cacheMuseums.get(percorso0_museo1[1]) == null &&
+                            cacheMuseums.get(percorso0_museo1[1].toLowerCase()) == null) {
+                        // Il museo non è presente nello storage locale,
+                        // va importato e salvato insieme al percorso scelto.
+                        // Successivamente va il nuovo museo va salvato nella cache
+                    }
+                    else {
+                        // Il museo è già presente nello storage locale
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null).show();
         }
     }
 

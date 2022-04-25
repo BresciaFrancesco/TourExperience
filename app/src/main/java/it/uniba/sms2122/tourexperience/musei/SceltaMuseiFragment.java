@@ -257,11 +257,6 @@ public class SceltaMuseiFragment extends Fragment {
     }
 
 
-    private void checkMuseumExistenceInLocalStorage(String nomeMuseo) {
-
-    }
-
-
     /**
      * Imposta solo i riferimenti per il fragment.
      * @param view

@@ -90,4 +90,7 @@
         non potrai accedere a questa funzionalità, ma potrai continuare
         comunque ad utilizzare le altre funzionalità
     </string>
+    <string name="importa">Import</string>
+    <string name="importa_msg">Do you really want to import this path of the museum</string>
+    <string name="SI">Yes</string>
 </resources>

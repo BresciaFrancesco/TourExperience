@@ -87,4 +87,7 @@
         non potrai accedere a questa funzionalità, ma potrai continuare
         comunque ad utilizzare le altre funzionalità
     </string>
+    <string name="importa">Importa</string>
+    <string name="importa_msg">Vuoi davvero importare questo percorso del museo</string>
+    <string name="SI">Si</string>
 </resources>

@@ -1,8 +1,6 @@
 package it.uniba.sms2122.tourexperience.musei;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.media.Image;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,12 +26,14 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     private List<Museo> listaMusei;
     private List<Museo> listaMuseiFiltered;
     private Context context;
+    private boolean flagMusei;
 
     // Constructor for initialization
-    public MuseiAdapter(Context context, List<Museo> listaMusei) {
+    public MuseiAdapter(Context context, List<Museo> listaMusei, boolean flagMusei) {
         this.context = context;
         this.listaMusei = listaMusei;
         this.listaMuseiFiltered = listaMusei;
+        this.flagMusei = flagMusei;
     }
 
     @NonNull
@@ -44,20 +44,21 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
 
         // Passing view to ViewHolder
-        return new ViewHolder(view);
+        return new ViewHolder(view, flagMusei);
     }
 
     // Binding data to the into specified position
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MuseiAdapter.ViewHolder holder, int position) {
         Log.v("MuseiAdapter", "chiamato onBindViewHolder()");
         String fileUri = listaMusei.get(position).getFileUri();
         String nomeCitta = listaMusei.get(position).getNome() + "\n" + listaMusei.get(position).getCitta();
         if (fileUri.isEmpty()) {
-            holder.images.setImageResource(R.drawable.ic_baseline_error_24);
-        }
-        else {
+            if (flagMusei)
+                holder.images.setImageResource(R.drawable.ic_baseline_error_24);
+            else
+                holder.images.setImageResource(R.drawable.ic_baseline_museum_24);
+        } else {
             holder.images.setImageURI(Uri.parse(listaMusei.get(position).getFileUri()));
         }
         holder.text.setText(nomeCitta);
@@ -119,15 +120,25 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         ImageView images;
         TextView text;
 
-        public ViewHolder(View view) {
+        public ViewHolder(View view, boolean flagMusei) {
             super(view);
             images = view.findViewById(R.id.icona_item_lista);
             text = view.findViewById(R.id.nome_item_lista);
 
             // click di un item
-//            view.setOnClickListener(_view -> {
-//
-//            });
+            if (flagMusei)
+                view.setOnClickListener(this::listenerForMusei);
+            else
+                view.setOnClickListener(this::listenerForPercorsi);
+        }
+
+        private void listenerForMusei(View view) {
+            Log.v("CLICK", "listenerForMusei cliccato");
+        }
+
+        private void listenerForPercorsi(View view) {
+            Log.v("CLICK", "listenerForPercorsi cliccato");
         }
     }
+
 }

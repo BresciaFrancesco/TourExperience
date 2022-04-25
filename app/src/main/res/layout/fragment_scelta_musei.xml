@@ -128,4 +128,17 @@
         app:layout_constraintEnd_toStartOf="@+id/fab_import_from_cloud"
         app:layout_constraintTop_toTopOf="@+id/fab_import_from_cloud" />
 
+    <!-- ProgressBar -->
+    <ProgressBar
+        android:id="@+id/idPBLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/progress_back"
+        app:layout_constraintBottom_toBottomOf="@+id/museums_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/museums_layout"
+        android:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

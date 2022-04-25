@@ -147,10 +147,10 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
             Log.v("CLICK", "listenerForPercorsi cliccato");
             String[] percorso0_museo1 = text.getText().toString().split("\n");
             new AlertDialog.Builder(view.getContext())
-                .setTitle(R.string.importa + " " + percorso0_museo1[0])
-                .setMessage(R.string.importa_msg + " " + percorso0_museo1[1] + "?")
+                .setTitle(view.getContext().getString(R.string.importa) + " " + percorso0_museo1[0])
+                .setMessage(view.getContext().getString(R.string.importa_msg) + " " + percorso0_museo1[1] + "?")
                 .setIcon(R.drawable.ic_baseline_cloud_download_24)
-                .setPositiveButton(R.string.SI, (dialog, whichButton) -> {
+                .setPositiveButton(view.getContext().getString(R.string.SI), (dialog, whichButton) -> {
                     Toast.makeText(view.getContext(), "Work in progress...", Toast.LENGTH_SHORT).show();
                     if (cacheMuseums.get(percorso0_museo1[1]) == null &&
                             cacheMuseums.get(percorso0_museo1[1].toLowerCase()) == null) {

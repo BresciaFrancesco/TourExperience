@@ -137,6 +137,7 @@ public class SceltaMuseiFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        localFileManager = new LocalFileMuseoManager(getContext().getFilesDir().toString());
         localFileManager.createLocalDirectoryIfNotExists(getContext().getFilesDir(), "Museums");
 
         // METODO DI TEST, USARE SOLO UNA VOLTA E POI ELIMINARE
@@ -150,8 +151,6 @@ public class SceltaMuseiFragment extends Fragment {
         // Setting the layout as linear layout for vertical orientation
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-
-        localFileManager = new LocalFileMuseoManager(getContext().getFilesDir().toString());
 
         setAllTheReference(view);
 

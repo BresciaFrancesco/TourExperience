@@ -188,19 +188,19 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         private void downloadAll(final String nomeMuseo, final Context context) {
             // Il museo non è presente nello storage locale,
             // va importato e salvato insieme al percorso scelto.
-            // Successivamente va il nuovo museo va salvato nella cache
+            // Successivamente il nuovo museo va salvato nella cache
             StorageReference storage = firebaseStorage.getReference("Museums/" + nomeMuseo);
             storage.listAll().addOnSuccessListener(listResult -> {
                 if (!listResult.getPrefixes().isEmpty() && !listResult.getItems().isEmpty()) {
                     Log.v("DOWNLOAD_MUSEO", "Non Vuoto");
-                    MuseoLocalStorageDTO dto = localFileManager
+                    /*MuseoLocalStorageDTO dto = localFileManager
                             .createMuseoDirWithFiles(context.getFilesDir(), nomeMuseo);
 
                     dto.getInfo().ifPresent(info -> storage.child("Info.json").getFile(info)
                             .addOnFailureListener(e -> Log.v("ERROR_info", e.getMessage())));
 
                     dto.getImmaginePrincipale().ifPresent(immagine -> storage.child(nomeMuseo + ".png").getFile(immagine)
-                            .addOnFailureListener(e -> Log.v("ERROR_immagine_principale", e.getMessage())));
+                            .addOnFailureListener(e -> Log.v("ERROR_immagine_principale", e.getMessage())));*/
 
 //                    dto.getStanzeDir().ifPresent(stanzeDir -> storage.child("Stanze").getFile(stanzeDir)
 //                            .addOnFailureListener(e -> Log.v("ERROR_stanzeDir", e.getMessage())));

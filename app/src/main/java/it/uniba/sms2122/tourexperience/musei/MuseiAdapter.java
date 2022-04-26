@@ -17,10 +17,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -171,47 +179,105 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
                 .setNegativeButton(android.R.string.no, null).show();
         }
 
+        /**
+         * Esegue il download e salvataggio in locale del percorso selezionato e,
+         * nel caso il museo corrispondente non fosse presente in locale, scarica
+         * e salva in locale anche tutte le altre informazioni del museo.
+         * @param nomePercorso
+         * @param nomeMuseo
+         * @param context
+         */
         private void downloadMuseoPercorso(final String nomePercorso,
                                  final String nomeMuseo,
                                  final Context context) {
-            if (cacheMuseums.get(nomeMuseo) != null ||
-                    cacheMuseums.get(nomeMuseo.toLowerCase()) != null) {
-                // il museo esiste già, dobbiamo scaricare solo il percorso
-                // Si dà per scontato che tutti i file e le cartelle, come Percorsi, Stanze,
-                // le opere, le immagini e i json sono già tutti presenti.
-            }
-            else {
-                downloadAll(nomeMuseo, context);
+            if (cacheMuseums.get(nomeMuseo) == null &&
+                    cacheMuseums.get(nomeMuseo.toLowerCase()) == null) {
+                downloadAll(nomePercorso, nomeMuseo, context);
+            } else {
+                downloadPercorso(nomePercorso, nomeMuseo, context);
             }
         }
 
-        private void downloadAll(final String nomeMuseo, final Context context) {
-            // Il museo non è presente nello storage locale,
-            // va importato e salvato insieme al percorso scelto.
-            // Successivamente il nuovo museo va salvato nella cache
+        /**
+         * Esegue il download e salvataggio in locale di un museo e tutte
+         * le informazioni ad esso associato, tranne i file json dei percorsi.
+         * @param nomeMuseo
+         * @param context
+         */
+        private void downloadAll(final String nomePercorso,
+                                 final String nomeMuseo,
+                                 final Context context) {
             StorageReference storage = firebaseStorage.getReference("Museums/" + nomeMuseo);
             storage.listAll().addOnSuccessListener(listResult -> {
                 if (!listResult.getPrefixes().isEmpty() && !listResult.getItems().isEmpty()) {
                     Log.v("DOWNLOAD_MUSEO", "Non Vuoto");
-                    /*MuseoLocalStorageDTO dto = localFileManager
+
+                    // Creo i riferimenti alle cartelle e i files principali
+                    MuseoLocalStorageDTO dto = localFileManager
                             .createMuseoDirWithFiles(context.getFilesDir(), nomeMuseo);
 
-                    dto.getInfo().ifPresent(info -> storage.child("Info.json").getFile(info)
-                            .addOnFailureListener(e -> Log.v("ERROR_info", e.getMessage())));
+                    // Scarico l'immagine principale del museo
+                    dto.getImmaginePrincipale().ifPresent(immagine ->
+                    storage.child(nomeMuseo + ".png").getFile(immagine)
+                    .addOnFailureListener(e -> Log.v("ERROR_immagine_principale", e.getMessage()))
+                    .addOnSuccessListener(taskSnapImage -> {
+                        // Scarico il json di info del museo
+                        // La creazione del file Info.json del museo, avviene solo dopo
+                        // la creazione dell'immagine principale
+                        dto.getInfo().ifPresent(info -> storage.child("Info.json").getFile(info)
+                        .addOnFailureListener(e -> Log.v("ERROR_info", e.getMessage()))
+                        .addOnSuccessListener(taskSnapshot -> {
+                            try ( Reader reader = new FileReader(info) ) {
+                                Museo museo = new Gson().fromJson(reader , Museo.class);
+                                museo.setFileUri(context.getFilesDir().toString()
+                                        + "/Museums/" + museo.getNome()
+                                        + "/" + museo.getNome()
+                                        + ".png");
+                                cacheMuseums.put(nomeMuseo, museo);
+                                Log.v("CACHE", nomeMuseo + " scaricato e cachato correttamente");
+                            } catch (IOException | JsonSyntaxException | JsonIOException e) {
+                                e.printStackTrace();
+                            }
+                        }));
+                    }));
 
-                    dto.getImmaginePrincipale().ifPresent(immagine -> storage.child(nomeMuseo + ".png").getFile(immagine)
-                            .addOnFailureListener(e -> Log.v("ERROR_immagine_principale", e.getMessage())));*/
+                    // TODO per ora scarico solo i file json delle varie stanze
+                    // Scarico tutte le cartelle delle stanze con i file json delle stanze
+                    dto.getStanzeDir().ifPresent(stanzeDir -> {
+                        storage.child("Stanze").listAll().addOnSuccessListener(listStanze -> {
+                            for (StorageReference dirStanza : listStanze.getPrefixes()) {
+                                File dirStanzaLocale = localFileManager
+                                        .createLocalDirectoryIfNotExists(stanzeDir, dirStanza.getName());
+                                File jsonStanza = new File(
+                                        dirStanzaLocale, "Info_stanza.json");
+                                dirStanza.child("Info_stanza.json").getFile(jsonStanza)
+                                .addOnFailureListener(e -> Log.e("ERROR_Info_stanza.json", e.getMessage()));
+                            }
+                        }).addOnFailureListener(e -> Log.e("ERROR_stanze", e.getMessage()));
+                    });
 
-//                    dto.getStanzeDir().ifPresent(stanzeDir -> storage.child("Stanze").getFile(stanzeDir)
-//                            .addOnFailureListener(e -> Log.v("ERROR_stanzeDir", e.getMessage())));
-                    // download cartella stanze e tutti i suoi file in modo ricorsivo
+                    downloadPercorso(nomePercorso, nomeMuseo, context);
                 }
                 else {
                     Log.e("DOWNLOAD_MUSEO",
-                            String.format("museo %s non esistente nello storage in cloud",
-                                    nomeMuseo));
+                            String.format("museo %s non esistente nello storage in cloud", nomeMuseo));
                 }
             }).addOnFailureListener(error -> Log.e("DOWNLOAD_MUSEO", error.getMessage()));
+        }
+
+        private void downloadPercorso(final String nomePercorso,
+                                      final String nomeMuseo,
+                                      Context context) {
+            final String prefix = "Museums/" + nomeMuseo + "/Percorsi/";
+            Log.v("PERCORSO", nomePercorso);
+            StorageReference filePercorso = firebaseStorage.getReference(prefix + nomePercorso + ".json");
+            File dirPercorsi = localFileManager.createLocalDirectoryIfNotExists(
+                    context.getFilesDir(), "Museums/" + nomeMuseo + "/Percorsi");
+            File jsonPercorso = new File(dirPercorsi, nomePercorso+".json");
+            filePercorso.getFile(jsonPercorso)
+            .addOnFailureListener(e -> Log.e("DOWNLOAD_PERCORSO", e.getMessage()))
+            .addOnSuccessListener(taskSnapshot ->
+                    Log.v("DOWNLOAD_PERCORSO", "Download del percorso eseguito correttamente"));
         }
     }
 

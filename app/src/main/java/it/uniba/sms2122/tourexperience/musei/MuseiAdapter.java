@@ -18,13 +18,18 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
+
+import it.uniba.sms2122.tourexperience.model.DTO.MuseoLocalStorageDTO;
 import it.uniba.sms2122.tourexperience.model.Museo;
+import it.uniba.sms2122.tourexperience.utility.LocalFileMuseoManager;
 
 
 public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> implements Filterable {
@@ -40,6 +45,10 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         this.listaMusei = listaMusei;
         this.listaMuseiFiltered = listaMusei;
         this.flagMusei = flagMusei;
+    }
+
+    public void addMuseo(Museo museo) {
+        listaMusei.add(museo);
     }
 
     @NonNull
@@ -123,14 +132,18 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
 
     // Initializing the Views
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView images;
-        TextView text;
+        ImageView images; // provare privato
+        TextView text;    // provare privato
         private final static FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        private static LocalFileMuseoManager localFileManager = null;
 
         public ViewHolder(View view, boolean flagMusei) {
             super(view);
             images = view.findViewById(R.id.icona_item_lista);
             text = view.findViewById(R.id.nome_item_lista);
+            if (localFileManager == null) { // come se fosse final
+                localFileManager = new LocalFileMuseoManager(view.getContext().getFilesDir().toString());
+            }
 
             // click di un item
             if (flagMusei)
@@ -146,23 +159,59 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         private void listenerForPercorsi(View view) {
             Log.v("CLICK", "listenerForPercorsi cliccato");
             String[] percorso0_museo1 = text.getText().toString().split("\n");
-            new AlertDialog.Builder(view.getContext())
-                .setTitle(view.getContext().getString(R.string.importa) + " " + percorso0_museo1[0])
-                .setMessage(view.getContext().getString(R.string.importa_msg) + " " + percorso0_museo1[1] + "?")
+            Context context = view.getContext();
+            new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.importa) + " " + percorso0_museo1[0])
+                .setMessage(context.getString(R.string.importa_msg) + " " + percorso0_museo1[1] + "?")
                 .setIcon(R.drawable.ic_baseline_cloud_download_24)
-                .setPositiveButton(view.getContext().getString(R.string.SI), (dialog, whichButton) -> {
-                    Toast.makeText(view.getContext(), "Work in progress...", Toast.LENGTH_SHORT).show();
-                    if (cacheMuseums.get(percorso0_museo1[1]) == null &&
-                            cacheMuseums.get(percorso0_museo1[1].toLowerCase()) == null) {
-                        // Il museo non è presente nello storage locale,
-                        // va importato e salvato insieme al percorso scelto.
-                        // Successivamente va il nuovo museo va salvato nella cache
-                    }
-                    else {
-                        // Il museo è già presente nello storage locale
-                    }
+                .setPositiveButton(context.getString(R.string.SI), (dialog, whichButton) -> {
+                    Toast.makeText(context, "Work in progress...", Toast.LENGTH_SHORT).show();
+                    downloadMuseoPercorso(percorso0_museo1[0], percorso0_museo1[1], context);
                 })
                 .setNegativeButton(android.R.string.no, null).show();
+        }
+
+        private void downloadMuseoPercorso(final String nomePercorso,
+                                 final String nomeMuseo,
+                                 final Context context) {
+            if (cacheMuseums.get(nomeMuseo) != null ||
+                    cacheMuseums.get(nomeMuseo.toLowerCase()) != null) {
+                // il museo esiste già, dobbiamo scaricare solo il percorso
+                // Si dà per scontato che tutti i file e le cartelle, come Percorsi, Stanze,
+                // le opere, le immagini e i json sono già tutti presenti.
+            }
+            else {
+                downloadAll(nomeMuseo, context);
+            }
+        }
+
+        private void downloadAll(final String nomeMuseo, final Context context) {
+            // Il museo non è presente nello storage locale,
+            // va importato e salvato insieme al percorso scelto.
+            // Successivamente va il nuovo museo va salvato nella cache
+            StorageReference storage = firebaseStorage.getReference("Museums/" + nomeMuseo);
+            storage.listAll().addOnSuccessListener(listResult -> {
+                if (!listResult.getPrefixes().isEmpty() && !listResult.getItems().isEmpty()) {
+                    Log.v("DOWNLOAD_MUSEO", "Non Vuoto");
+                    MuseoLocalStorageDTO dto = localFileManager
+                            .createMuseoDirWithFiles(context.getFilesDir(), nomeMuseo);
+
+                    dto.getInfo().ifPresent(info -> storage.child("Info.json").getFile(info)
+                            .addOnFailureListener(e -> Log.v("ERROR_info", e.getMessage())));
+
+                    dto.getImmaginePrincipale().ifPresent(immagine -> storage.child(nomeMuseo + ".png").getFile(immagine)
+                            .addOnFailureListener(e -> Log.v("ERROR_immagine_principale", e.getMessage())));
+
+//                    dto.getStanzeDir().ifPresent(stanzeDir -> storage.child("Stanze").getFile(stanzeDir)
+//                            .addOnFailureListener(e -> Log.v("ERROR_stanzeDir", e.getMessage())));
+                    // download cartella stanze e tutti i suoi file in modo ricorsivo
+                }
+                else {
+                    Log.e("DOWNLOAD_MUSEO",
+                            String.format("museo %s non esistente nello storage in cloud",
+                                    nomeMuseo));
+                }
+            }).addOnFailureListener(error -> Log.e("DOWNLOAD_MUSEO", error.getMessage()));
         }
     }
 

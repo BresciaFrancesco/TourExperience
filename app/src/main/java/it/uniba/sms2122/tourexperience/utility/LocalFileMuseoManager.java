@@ -78,19 +78,16 @@ public class LocalFileMuseoManager extends LocalFileManager {
     }
 
     public MuseoLocalStorageDTO createMuseoDirWithFiles(final File filesDir, final String nomeMuseo) {
-        final String prefix = "Museums/" + nomeMuseo;
+        final String prefix = "Museums/" + nomeMuseo + "/";
         File museoDir = createLocalDirectoryIfNotExists(filesDir, prefix);
         File stanzeDir = createLocalDirectoryIfNotExists(filesDir,
-                prefix + "/Stanze");
-        File percorsiDir = createLocalDirectoryIfNotExists(filesDir,
-                prefix + "/Percorsi");
+                prefix + "Stanze");
         File info = new File(filesDir, prefix + "Info.json");
         File immagine = new File(filesDir, prefix + nomeMuseo + ".png");
 
         return MuseoLocalStorageDTO.newBuilder()
                 .setMuseoDir(museoDir)
                 .setStanzeDir(stanzeDir)
-                .setPercorsiDir(percorsiDir)
                 .setInfo(info)
                 .setImmaginePrincipale(immagine);
     }

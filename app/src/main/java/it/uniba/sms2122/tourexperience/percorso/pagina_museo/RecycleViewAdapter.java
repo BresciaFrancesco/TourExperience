@@ -11,17 +11,27 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.musei.MuseiAdapter;
 
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder> {
 
     private Context context;
     private String[] names;
     private int[] images;
+    private RecycleViewAdapter.onItemClickListner onItemClickListner;
 
     public RecycleViewAdapter(Context context, String[] names, int[] images) {
         this.context = context;
         this.names = names;
         this.images = images;
+    }
+
+    public void setOnItemClickListner(RecycleViewAdapter.onItemClickListner onItemClickListner) {
+        this.onItemClickListner = onItemClickListner;
+    }
+
+    public interface onItemClickListner{
+        void onClick(String str);//pass your object types.
     }
 
     @NonNull
@@ -36,6 +46,13 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.textview.setText(names[position]);
         holder.imageView.setImageResource(images[position]);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListner.onClick(Integer.toString(holder.getAbsoluteAdapterPosition()));
+            }
+        });
     }
 
     @Override

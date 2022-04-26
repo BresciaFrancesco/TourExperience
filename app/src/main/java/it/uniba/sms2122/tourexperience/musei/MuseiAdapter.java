@@ -1,8 +1,10 @@
 package it.uniba.sms2122.tourexperience.musei;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.storage.FirebaseStorage;
@@ -27,6 +30,7 @@ import java.util.List;
 import it.uniba.sms2122.tourexperience.R;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
+import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.model.DTO.MuseoLocalStorageDTO;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.utility.LocalFileMuseoManager;
@@ -38,6 +42,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     private List<Museo> listaMuseiFiltered;
     private Context context;
     private boolean flagMusei;
+    private onItemClickListner onItemClickListner;
 
     // Constructor for initialization
     public MuseiAdapter(Context context, List<Museo> listaMusei, boolean flagMusei) {
@@ -47,8 +52,8 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         this.flagMusei = flagMusei;
     }
 
-    public void addMuseo(Museo museo) {
-        listaMusei.add(museo);
+    public void setOnItemClickListner(MuseiAdapter.onItemClickListner onItemClickListner) {
+        this.onItemClickListner = onItemClickListner;
     }
 
     @NonNull
@@ -77,6 +82,13 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
             holder.images.setImageURI(Uri.parse(listaMusei.get(position).getFileUri()));
         }
         holder.text.setText(nomeCitta);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListner.onClick(Integer.toString(holder.getAbsoluteAdapterPosition()));
+            }
+        });
     }
 
     @Override
@@ -130,6 +142,10 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         return filter;
     }
 
+    public interface onItemClickListner{
+        void onClick(String str);//pass your object types.
+    }
+
     // Initializing the Views
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView images; // provare privato
@@ -154,6 +170,14 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
 
         private void listenerForMusei(View view) {
             Log.v("CLICK", "listenerForMusei cliccato");
+
+            MainActivity mainActivity = new MainActivity();
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", getAbsoluteAdapterPosition());
+            Log.i("BUNDLE", bundle.toString());
+            mainActivity.startPercorsoActivity(bundle);
+
+
         }
 
         private void listenerForPercorsi(View view) {

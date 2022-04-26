@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -108,6 +109,17 @@ public class SceltaMuseiFragment extends Fragment {
         MuseiAdapter adapter = new MuseiAdapter(getContext(), listaMusei, true);
         // Setting Adapter to RecyclerView
         recyclerView.setAdapter(adapter);
+
+        adapter.notifyDataSetChanged();
+        adapter.setOnItemClickListner(new MuseiAdapter.onItemClickListner() {
+            @Override
+            public void onClick(String str) {
+                System.out.println(str);
+                Bundle bundle = new Bundle();
+                bundle.putString("position", str);
+                ((MainActivity) getActivity()).startPercorsoActivity(bundle);
+            }
+        });
 
         attachQueryTextListener(adapter);
     }

@@ -9,15 +9,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.main.MainActivity;
+import it.uniba.sms2122.tourexperience.musei.MuseiAdapter;
+import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MuseoFragment#newInstance} factory method to
+ * Use the {@link MuseoFragment} factory method to
  * create an instance of this fragment.
  */
 public class MuseoFragment extends Fragment {
@@ -51,5 +55,16 @@ public class MuseoFragment extends Fragment {
 
         RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(),names,images);
         recycleView.setAdapter(adapter);
+
+        adapter.notifyDataSetChanged();
+        adapter.setOnItemClickListner(new RecycleViewAdapter.onItemClickListner() {
+            @Override
+            public void onClick(String str) {
+                System.out.println(str);
+                Bundle bundle = new Bundle();
+                bundle.putString("position", str);
+                ((PercorsoActivity) getActivity()).nextPercorsoFragment(bundle);
+            }
+        });
     }
 }

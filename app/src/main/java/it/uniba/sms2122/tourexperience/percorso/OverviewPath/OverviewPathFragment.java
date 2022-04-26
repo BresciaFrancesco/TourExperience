@@ -50,10 +50,8 @@ public class OverviewPathFragment extends Fragment {
         inflater.findViewById(R.id.startPathButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                //code for set data of bundle
                 PercorsoActivity parentActivity = (PercorsoActivity) getActivity();
-                parentActivity.nextPercorsoFragment(bundle);
+                parentActivity.nextStanzeFragment();
             }
         });
     }

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import java.util.Objects;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
+import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
 
 
@@ -167,6 +169,14 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.content_fragment_container_view, sceltaMuseiFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    public void startPercorsoActivity(Bundle bundle){
+        ActivityOptions options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
+
+        Intent intent = new Intent(this, PercorsoActivity.class);
+        intent.putExtra("position",bundle);
+        startActivity(intent, options.toBundle());
     }
 
     public static void hideKeyboard(Context ctx) {

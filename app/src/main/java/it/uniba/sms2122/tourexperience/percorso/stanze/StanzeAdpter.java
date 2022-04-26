@@ -40,7 +40,9 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
     public int getItemCount() {
         // Returns number of items
         // currently available in Adapter
-        return stanzaList.size();
+        //TODO togliere il commento
+        //return stanzaList.size();
+        return 0;
     }
 
     @Override

@@ -137,7 +137,8 @@ public class SceltaMuseiFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        createLocalMuseumsDirectoryIfNotExists();
+        localFileManager = new LocalFileMuseoManager(getContext().getFilesDir().toString());
+        localFileManager.createLocalDirectoryIfNotExists(getContext().getFilesDir(), "Museums");
 
         // METODO DI TEST, USARE SOLO UNA VOLTA E POI ELIMINARE
         //test_downloadImageAndSaveInLocalStorage();
@@ -150,8 +151,6 @@ public class SceltaMuseiFragment extends Fragment {
         // Setting the layout as linear layout for vertical orientation
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-
-        localFileManager = new LocalFileMuseoManager(getContext().getFilesDir().toString());
 
         setAllTheReference(view);
 
@@ -365,20 +364,6 @@ public class SceltaMuseiFragment extends Fragment {
             }).addOnFailureListener(exception -> {
                 Log.e("CARICAMENTO INFO", filePathInfo+" NON caricato.");
             });
-        }
-    }
-
-    /**
-     * Controlla se la Directory "Museums" è già presente nel FileSystem locale.
-     * Se non è presente, la crea.
-     */
-    private void createLocalMuseumsDirectoryIfNotExists() {
-        File directory = new File(getContext().getFilesDir(), "Museums");
-        if (directory == null || !directory.exists()) {
-            if (directory.mkdir())
-                Log.v("CREATE_DIRECTORY_Museums", "Created now!");
-            else
-                Log.e("CREATE_DIRECTORY_Museums", "Error!");
         }
     }
 

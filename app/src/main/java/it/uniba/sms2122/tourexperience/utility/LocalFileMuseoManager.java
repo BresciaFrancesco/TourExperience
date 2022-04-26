@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -16,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.uniba.sms2122.tourexperience.model.DTO.MuseoLocalStorageDTO;
 import it.uniba.sms2122.tourexperience.model.Museo;
 
 /**
@@ -57,6 +59,40 @@ public class LocalFileMuseoManager extends LocalFileManager {
             }
         }
         return listaMusei;
+    }
+
+
+    /**
+     * Crea una directory nel filesystem locale, nel path specificato come parametro,
+     * se non esiste già.
+     */
+    public File createLocalDirectoryIfNotExists(final File filesDir, final String pathFileWithFile) {
+        File directory = new File(filesDir, pathFileWithFile);
+        if (directory == null || !directory.exists()) {
+            if (directory.mkdir())
+                Log.v("CREATE_DIRECTORY: " + pathFileWithFile, "Created now!");
+            else
+                Log.e("CREATE_DIRECTORY: " + pathFileWithFile, "Error!");
+        }
+        return directory;
+    }
+
+    public MuseoLocalStorageDTO createMuseoDirWithFiles(final File filesDir, final String nomeMuseo) {
+        final String prefix = "Museums/" + nomeMuseo;
+        File museoDir = createLocalDirectoryIfNotExists(filesDir, prefix);
+        File stanzeDir = createLocalDirectoryIfNotExists(filesDir,
+                prefix + "/Stanze");
+        File percorsiDir = createLocalDirectoryIfNotExists(filesDir,
+                prefix + "/Percorsi");
+        File info = new File(filesDir, prefix + "Info.json");
+        File immagine = new File(filesDir, prefix + nomeMuseo + ".png");
+
+        return MuseoLocalStorageDTO.newBuilder()
+                .setMuseoDir(museoDir)
+                .setStanzeDir(stanzeDir)
+                .setPercorsiDir(percorsiDir)
+                .setInfo(info)
+                .setImmaginePrincipale(immagine);
     }
 
 }

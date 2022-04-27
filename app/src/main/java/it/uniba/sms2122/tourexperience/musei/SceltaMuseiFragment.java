@@ -11,15 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
@@ -29,7 +26,6 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
@@ -102,7 +98,7 @@ public class SceltaMuseiFragment extends Fragment {
         }
 
         if (listaMusei.isEmpty()) {
-            listaMusei.add(new Museo(getContext().getResources().getString(R.string.no_result), "","",""));
+            listaMusei.add(new Museo(getContext().getResources().getString(R.string.no_result)));
         }
 
         // Sending reference and data to Adapter
@@ -196,8 +192,8 @@ public class SceltaMuseiFragment extends Fragment {
                 mAddFab.setImageResource(R.drawable.ic_baseline_add_24);
                 mAddFab.setOnClickListener(this::listenerFabMusei);
                 mAddFab.setBackgroundTintList(
-                        ColorStateList.valueOf(
-                                getResources().getColor(R.color.mtrl_fab_button_default, null))
+                    ColorStateList.valueOf(
+                        getResources().getColor(R.color.mtrl_fab_button_default, null))
                 );
                 activity.getSupportActionBar().setTitle(R.string.museums);
             });
@@ -237,10 +233,27 @@ public class SceltaMuseiFragment extends Fragment {
 
 
     private void getListaPercorsiFromCloudStorage() {
-        listaMusei = new ArrayList<>();
+        if (!cachePercorsi.isEmpty()) {
+            Log.v("IMPORT_CLOUD", "with cache cachePercorsi.");
+            MuseiAdapter adapterPercorsi = new MuseiAdapter(
+                    null,
+                    cachePercorsi,
+                    false
+            );
+            recyclerView.setAdapter(adapterPercorsi);
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
         StorageReference listRef = firebaseStorage.getReference().child("Museums");
         listRef.listAll().addOnSuccessListener(listResult -> {
-            Log.v("IMPORT_CLOUD", "start...");
+            Log.v("IMPORT_CLOUD", "start download...");
+            MuseiAdapter adapterPercorsi = new MuseiAdapter(
+                    null,
+                    new ArrayList<>(),
+                    false
+            );
+            recyclerView.setAdapter(adapterPercorsi);
+            progressBar.setVisibility(View.GONE);
             for (StorageReference folder : listResult.getPrefixes()) {
                 String nomeMuseo = folder.getName();
                 Task<ListResult> task = folder.child("Percorsi").listAll();
@@ -248,20 +261,17 @@ public class SceltaMuseiFragment extends Fragment {
                 if (task.isSuccessful()) {
                     for (StorageReference fileJson : task.getResult().getItems()) {
                         String nomePercorso = fileJson.getName();
-                        listaMusei.add(new Museo(
+                        Museo museo = new Museo(
                                 nomePercorso.substring(0, nomePercorso.length()-5),
-                                nomeMuseo.replace("_", " "),
-                                "", ""
-                        ));
+                                nomeMuseo
+                        );
+                        adapterPercorsi.addMuseum(museo);
                     }
                 } else Log.e("IMPORT_CLOUD", "Task is not succesfull");
             }
-            // Qui listaMusei contiene i percorsi presi da firebase
-            MuseiAdapter adapterPercorsi = new MuseiAdapter(null, listaMusei, false);
-            recyclerView.setAdapter(adapterPercorsi);
-            progressBar.setVisibility(View.GONE);
             attachQueryTextListener(adapterPercorsi);
-            Log.v("IMPORT_CLOUD", "finish...");
+            replacePercorsiInCache(adapterPercorsi.getListaMusei());
+            Log.v("IMPORT_CLOUD", "finish download...");
         }).addOnFailureListener(error -> Log.e("IMPORT_CLOUD", error.toString()));
     }
 
@@ -305,7 +315,7 @@ public class SceltaMuseiFragment extends Fragment {
             nomiMusei.add(listaMusei.get(i).getNome());
             cittaMusei.add(listaMusei.get(i).getCitta());
             tipologieMusei.add(listaMusei.get(i).getTipologia());
-            uriImmagini.add(listaMusei.get(i).getFileUri().toString());
+            uriImmagini.add(listaMusei.get(i).getFileUri());
         }
         outState.putStringArrayList("nomi_musei", nomiMusei);
         outState.putStringArrayList("citta_musei", cittaMusei);

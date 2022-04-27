@@ -6,6 +6,20 @@ public class Museo {
     private String tipologia;
     private String fileUri;
 
+    public Museo(String nome) {
+        this.nome = nome;
+        this.citta = "";
+        this.tipologia = "";
+        this.fileUri = "";
+    }
+
+    public Museo(String nome, String citta) {
+        this.nome = nome;
+        this.citta = citta;
+        this.tipologia = "";
+        this.fileUri = "";
+    }
+
     public Museo(String nome, String citta, String tipologia, String fileUri) {
         this.nome = nome;
         this.citta = citta;

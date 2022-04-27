@@ -1,10 +1,7 @@
 package it.uniba.sms2122.tourexperience.musei;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +10,11 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
@@ -33,6 +26,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
@@ -56,7 +50,9 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         if (mainActivity == null) {
             mainActivity = activity;
         }
-        this.listaMusei = listaMusei;
+        if (listaMusei == null) {
+            this.listaMusei = new ArrayList<>();
+        } else this.listaMusei = listaMusei;
         this.listaMuseiFiltered = listaMusei;
         this.flagMusei = flagMusei;
     }
@@ -143,10 +139,24 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         return filter;
     }
 
-    // Initializing the Views
+    /**
+     * Permette di aggiungere musei alla lista dinamicamente.
+     * @param museo nuovo museo da aggiungere alla lista.
+     */
+    public void addMuseum(Museo museo) {
+        listaMusei.add(museo);
+    }
+
+    public List<Museo> getListaMusei() {
+        return listaMusei;
+    }
+
+    /**
+     * Classe che inizializza la View. Rappresenta un elemento della lista.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView images; // provare privato
-        TextView text;    // provare privato
+        private ImageView images;
+        private TextView text;
         private final static FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         private static LocalFileMuseoManager localFileManager = null;
         private static MainActivity mainActivity = null;

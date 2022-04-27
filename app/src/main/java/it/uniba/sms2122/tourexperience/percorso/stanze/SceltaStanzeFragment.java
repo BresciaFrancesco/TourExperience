@@ -1,6 +1,6 @@
 package it.uniba.sms2122.tourexperience.percorso.stanze;
 
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getAllCachedMuseums;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 import android.net.Uri;
 import android.os.Bundle;

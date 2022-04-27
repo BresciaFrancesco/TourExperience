@@ -106,24 +106,19 @@ public class SceltaMuseiFragment extends Fragment {
         }
 
         // Sending reference and data to Adapter
-        MuseiAdapter adapter = new MuseiAdapter(getContext(), listaMusei, true);
+        MuseiAdapter adapter = new MuseiAdapter((MainActivity) getActivity(), listaMusei, true);
         // Setting Adapter to RecyclerView
         recyclerView.setAdapter(adapter);
-
-        adapter.notifyDataSetChanged();
-        adapter.setOnItemClickListner(new MuseiAdapter.onItemClickListner() {
-            @Override
-            public void onClick(String str) {
-                System.out.println(str);
-                Bundle bundle = new Bundle();
-                bundle.putString("position", str);
-                ((MainActivity) getActivity()).startPercorsoActivity(bundle);
-            }
-        });
 
         attachQueryTextListener(adapter);
     }
 
+    /**
+     * Collega un listener alla barra di ricerca. In particolare
+     * il listener che collega permette di filtrare la lista
+     * presente nella recyclerView.
+     * @param adapter adapter da utilizzate per il filtraggio.
+     */
     private void attachQueryTextListener(MuseiAdapter adapter) {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -188,11 +183,14 @@ public class SceltaMuseiFragment extends Fragment {
             );
             MainActivity activity = (MainActivity) getActivity();
             activity.getSupportActionBar().setTitle(R.string.museums_cloud_import);
+
             // Ottiene da firebase tutti i percorsi
             getListaPercorsiFromCloudStorage();
+
+            // Il FAB torna allo stato iniziale e la lista di musei torna a contenere i musei presenti in cache
             mAddFab.setOnClickListener(view3 -> {
                 listaMusei = getAllCachedMuseums();
-                MuseiAdapter adapterMusei = new MuseiAdapter(getContext(), listaMusei, true);
+                MuseiAdapter adapterMusei = new MuseiAdapter((MainActivity) getActivity(), listaMusei, true);
                 recyclerView.setAdapter(adapterMusei);
                 attachQueryTextListener(adapterMusei);
                 mAddFab.setImageResource(R.drawable.ic_baseline_add_24);
@@ -259,7 +257,7 @@ public class SceltaMuseiFragment extends Fragment {
                 } else Log.e("IMPORT_CLOUD", "Task is not succesfull");
             }
             // Qui listaMusei contiene i percorsi presi da firebase
-            MuseiAdapter adapterPercorsi = new MuseiAdapter(getContext(), listaMusei, false);
+            MuseiAdapter adapterPercorsi = new MuseiAdapter(null, listaMusei, false);
             recyclerView.setAdapter(adapterPercorsi);
             progressBar.setVisibility(View.GONE);
             attachQueryTextListener(adapterPercorsi);

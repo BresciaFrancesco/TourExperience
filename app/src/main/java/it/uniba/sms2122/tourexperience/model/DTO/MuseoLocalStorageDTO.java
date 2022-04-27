@@ -6,7 +6,6 @@ import java.util.Optional;
 public class MuseoLocalStorageDTO {
     private Optional<File> museoDir = Optional.empty();
     private Optional<File> stanzeDir = Optional.empty();
-    private Optional<File> percorsiDir = Optional.empty();
     private Optional<File> info = Optional.empty();
     private Optional<File> immaginePrincipale = Optional.empty();
 
@@ -26,11 +25,6 @@ public class MuseoLocalStorageDTO {
         return this;
     }
 
-    public MuseoLocalStorageDTO setPercorsiDir(File percorsiDir) {
-        this.percorsiDir = Optional.ofNullable(percorsiDir);
-        return this;
-    }
-
     public MuseoLocalStorageDTO setInfo(File info) {
         this.info = Optional.ofNullable(info);
         return this;
@@ -41,16 +35,8 @@ public class MuseoLocalStorageDTO {
         return this;
     }
 
-    public Optional<File> getMuseoDir() {
-        return museoDir;
-    }
-
     public Optional<File> getStanzeDir() {
         return stanzeDir;
-    }
-
-    public Optional<File> getPercorsiDir() {
-        return percorsiDir;
     }
 
     public Optional<File> getInfo() {

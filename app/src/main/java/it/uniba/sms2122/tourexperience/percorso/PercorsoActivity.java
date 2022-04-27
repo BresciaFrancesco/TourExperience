@@ -2,7 +2,6 @@ package it.uniba.sms2122.tourexperience.percorso;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
@@ -12,10 +11,11 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
 import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 public class PercorsoActivity extends AppCompatActivity {
 
-    private String positionMuseumSelected;
+    private String nomeMuseo;
     private String positionPercorsoSelected;
 
     @Override
@@ -24,7 +24,9 @@ public class PercorsoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_percorso);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        positionMuseumSelected = getIntent().getStringExtra("position");
+        nomeMuseo = getIntent().getStringExtra("nome_museo");
+
+        // cacheMuseums.get(nomeMuseo); // per ottenere l'oggetto Museo, basta fare così
 
         if (savedInstanceState == null) {
             Fragment firstPage = new MuseoFragment();

@@ -48,20 +48,17 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
 
     private List<Museo> listaMusei;
     private List<Museo> listaMuseiFiltered;
-    private Context context;
     private boolean flagMusei;
-    private onItemClickListner onItemClickListner;
+    private static MainActivity mainActivity = null;
 
     // Constructor for initialization
-    public MuseiAdapter(Context context, List<Museo> listaMusei, boolean flagMusei) {
-        this.context = context;
+    public MuseiAdapter(final MainActivity activity, List<Museo> listaMusei, boolean flagMusei) {
+        if (mainActivity == null) {
+            mainActivity = activity;
+        }
         this.listaMusei = listaMusei;
         this.listaMuseiFiltered = listaMusei;
         this.flagMusei = flagMusei;
-    }
-
-    public void setOnItemClickListner(MuseiAdapter.onItemClickListner onItemClickListner) {
-        this.onItemClickListner = onItemClickListner;
     }
 
     @NonNull
@@ -70,9 +67,12 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         // Inflating the Layout(Instantiates list_item.xml
         // layout file into View object)
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
-
         // Passing view to ViewHolder
-        return new ViewHolder(view, flagMusei);
+        ViewHolder vh = new ViewHolder(view, flagMusei);
+        if (flagMusei) {
+            vh.addMainActivity(mainActivity);
+        }
+        return vh;
     }
 
     // Binding data to the into specified position
@@ -90,13 +90,6 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
             holder.images.setImageURI(Uri.parse(listaMusei.get(position).getFileUri()));
         }
         holder.text.setText(nomeCitta);
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onItemClickListner.onClick(Integer.toString(holder.getAbsoluteAdapterPosition()));
-            }
-        });
     }
 
     @Override
@@ -150,16 +143,13 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         return filter;
     }
 
-    public interface onItemClickListner{
-        void onClick(String str);//pass your object types.
-    }
-
     // Initializing the Views
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView images; // provare privato
         TextView text;    // provare privato
         private final static FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         private static LocalFileMuseoManager localFileManager = null;
+        private static MainActivity mainActivity = null;
 
         public ViewHolder(View view, boolean flagMusei) {
             super(view);
@@ -176,25 +166,26 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
                 view.setOnClickListener(this::listenerForPercorsi);
         }
 
+        public void addMainActivity(final MainActivity activity) {
+            if (mainActivity == null) {
+                mainActivity = activity;
+            }
+        }
+
         private void listenerForMusei(View view) {
-            Log.v("CLICK", "listenerForMusei cliccato");
-
-            MainActivity mainActivity = new MainActivity();
-            Bundle bundle = new Bundle();
-            bundle.putInt("position", getAbsoluteAdapterPosition());
-            Log.i("BUNDLE", bundle.toString());
-            mainActivity.startPercorsoActivity(bundle);
-
-
+            if (mainActivity == null) {
+                Log.e("listenerForMusei", "mainActivity è null, ma non dovrebbe esserlo!");
+                return;
+            }
+            mainActivity.startPercorsoActivity(text.getText().toString().split("\n")[0].trim());
         }
 
         private void listenerForPercorsi(View view) {
-            Log.v("CLICK", "listenerForPercorsi cliccato");
             String[] percorso0_museo1 = text.getText().toString().split("\n");
             Context context = view.getContext();
             new AlertDialog.Builder(context)
-                .setTitle(context.getString(R.string.importa) + " " + percorso0_museo1[0])
-                .setMessage(context.getString(R.string.importa_msg) + " " + percorso0_museo1[1] + "?")
+                .setTitle(context.getString(R.string.importa) + " " + percorso0_museo1[0].trim())
+                .setMessage(context.getString(R.string.importa_msg) + " " + percorso0_museo1[1].trim() + "?")
                 .setIcon(R.drawable.ic_baseline_cloud_download_24)
                 .setPositiveButton(context.getString(R.string.SI), (dialog, whichButton) -> {
                     downloadMuseoPercorso(percorso0_museo1[0], percorso0_museo1[1], context);
@@ -301,12 +292,13 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
             Log.v("PERCORSO", nomePercorso);
             StorageReference filePercorso = firebaseStorage.getReference(prefix + nomePercorso + ".json");
             File dirPercorsi = localFileManager.createLocalDirectoryIfNotExists(
-                    context.getFilesDir(), "Museums/" + nomeMuseo + "/Percorsi");
+                    context.getFilesDir(), prefix);
             File jsonPercorso = new File(dirPercorsi, nomePercorso+".json");
             filePercorso.getFile(jsonPercorso)
             .addOnFailureListener(e -> Log.e("DOWNLOAD_PERCORSO", e.getMessage()))
             .addOnSuccessListener(taskSnapshot ->
-                    Log.v("DOWNLOAD_PERCORSO", "Download del percorso eseguito correttamente"));
+                Log.v("DOWNLOAD_PERCORSO",
+                    String.format("Download del percorso %s eseguito correttamente", nomePercorso)));
         }
     }
 

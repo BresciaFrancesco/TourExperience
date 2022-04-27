@@ -80,8 +80,7 @@ public class LocalFileMuseoManager extends LocalFileManager {
     public MuseoLocalStorageDTO createMuseoDirWithFiles(final File filesDir, final String nomeMuseo) {
         final String prefix = "Museums/" + nomeMuseo + "/";
         File museoDir = createLocalDirectoryIfNotExists(filesDir, prefix);
-        File stanzeDir = createLocalDirectoryIfNotExists(filesDir,
-                prefix + "Stanze");
+        File stanzeDir = createLocalDirectoryIfNotExists(filesDir,prefix + "Stanze");
         File info = new File(filesDir, prefix + "Info.json");
         File immagine = new File(filesDir, prefix + nomeMuseo + ".png");
 

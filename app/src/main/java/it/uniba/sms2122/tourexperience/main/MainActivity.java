@@ -171,11 +171,15 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    public void startPercorsoActivity(Bundle bundle){
+    /**
+     * Passa alla prossima activity e le fornisce il nome del museo selezionato.
+     * @param nomeMuseo nome del museo selezionato, da passare alla prossima activity.
+     */
+    public void startPercorsoActivity(String nomeMuseo){
         ActivityOptions options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
 
         Intent intent = new Intent(this, PercorsoActivity.class);
-        intent.putExtra("position",bundle);
+        intent.putExtra("nome_museo", nomeMuseo);
         startActivity(intent, options.toBundle());
     }
 

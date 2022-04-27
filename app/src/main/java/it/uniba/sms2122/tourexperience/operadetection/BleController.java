@@ -12,6 +12,11 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+
 import it.uniba.sms2122.tourexperience.model.Opera;
 
 
@@ -24,28 +29,56 @@ public class BleController {
     private static final String TAG = BleController.class.getSimpleName();
 
     private Context context;
+    private Map<String, Opera> operas;
+    private DistanceDetection.OnDetectionListener onDetectionListener;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothLeScanner scanner;
-    private static BleController bleController;
+    private final HashMap<String, Queue<DistanceRecord>> distanceRecords;
+    private DistanceDetection distanceDetection;
 
     /* Attributo che contiene il metodo di callback che verrà eseguito quando ogni volta che lo scan trova un risultato. */
     private final ScanCallback scanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
+
+            // Ottengo i dati dalla scansione
             int rssi = result.getRssi() + RSSI_CALIBRATION;
             int tx = result.getTxPower();
             String rawData = getRawData(result);
             String museumId = getMuseumId(rawData);
             String operaId = museumId + getMajor(rawData) + getMinor(rawData);
+
+            // Inserisco l'oggetto DistanceRecord nella coda
+            synchronized (distanceRecords) {
+                if(operas.containsKey(operaId)) {
+                    Queue<DistanceRecord> queue;
+                    if(distanceRecords.containsKey(operaId)) {
+                        queue = distanceRecords.get(operaId);
+                    } else {
+                        queue = new LinkedList<>();
+                        distanceRecords.put(operaId, queue);
+                    }
+                    DistanceRecord distanceRecord = new DistanceRecord(operas.get(operaId), estimateDistance(rssi, tx));
+                    queue.add(distanceRecord);
+                }
+            }
         }
     };
 
-    /*
-     * Costruttore privato per la realizzazione del pattern singleton
+    /**
+     * Costruttore della classe BleController.
+     * @param context Il contesto.
+     * @param operas Le opere in una determinata stanza.
+     * @param onDetectionListener Il listener che eseguirà il metodo onOperaDetected. È possibile realizzarlo mediante lambda expression.
      */
-    private BleController(Context context) {
+    public BleController(Context context, Map<String, Opera> operas, DistanceDetection.OnDetectionListener onDetectionListener) {
         this.context = context;
+        this.operas = operas;
+        this.onDetectionListener = onDetectionListener;
+        distanceRecords = new HashMap<>();
+
+        // Inizializzazione del bluetooth
         BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
         scanner = bluetoothAdapter.getBluetoothLeScanner();
@@ -56,7 +89,9 @@ public class BleController {
      * Lo scan è sempre attivo. Per fermarlo, chiamare il metodo {@code stopLeScan()}.
      */
     public void startLeScan() {
-        // TODO Qui parte il thread per capire ogni 4 secondi se il dispositivo è vicino all'opera
+        // Il thread viene startato quando viene istanziato l'oggetto distanceDetection
+        distanceDetection = new DistanceDetection(distanceRecords, onDetectionListener);
+
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
             scanner.startScan(scanCallback);
         } else {
@@ -68,24 +103,14 @@ public class BleController {
      * Metodo per fermare lo scan dei dispositivi con il Bluetooth Low Energy. È consigliabile chiamare questo metodo all'interno del metodo di callback {@code onPause()}
      */
     public void stopLeScan() {
-        // TODO Qui bisogna stoppare il thread
+        // Interrompo l'esecuzione del thread
+        distanceDetection.t.interrupt();
+
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
             scanner.stopScan(scanCallback);
         } else {
             Log.e(TAG, "Non è possibile stoppare lo scan in quanto non sono stati garantiti i permessi per BLUETOOTH_SCAN");
         }
-    }
-
-    /**
-     * Metodo per ottenere l'unica istanza di BleController
-     * @param context Un'istanza del contesto dell'activity
-     * @return L'unica istanza di BleController
-     */
-    public static BleController getInstance(Context context) {
-        if(bleController==null) {
-            bleController = new BleController(context);
-        }
-        return bleController;
     }
 
     /**

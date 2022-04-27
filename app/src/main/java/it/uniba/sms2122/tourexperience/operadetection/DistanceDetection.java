@@ -1,5 +1,7 @@
 package it.uniba.sms2122.tourexperience.operadetection;
 
+import android.util.Log;
+
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +15,11 @@ import it.uniba.sms2122.tourexperience.model.Opera;
  * @author Catignano Francesco
  */
 public class DistanceDetection implements Runnable {
-    public static final int TIME_FOR_DETECTION = 4;
+    private static final String TAG = DistanceDetection.class.getSimpleName();
+    private static final int TIME_FOR_DETECTION = 4;
     private static final double MIN_DISTANCE = 0.5;
+
+    public Thread t;
 
     private HashMap<String, Queue<DistanceRecord>> distanceRecords;
     private TreeSet<Opera> operasDetected;
@@ -23,23 +28,37 @@ public class DistanceDetection implements Runnable {
     public DistanceDetection(HashMap<String, Queue<DistanceRecord>> distanceRecords, OnDetectionListener onDetectionListener) {
         this.distanceRecords = distanceRecords;
         this.onDetectionListener = onDetectionListener;
+
+        t = new Thread(this);
+        t.start();
     }
 
     @Override
     public synchronized void run() {
-        for(Map.Entry<String, Queue<DistanceRecord>> entry : distanceRecords.entrySet()) {
-            Queue<DistanceRecord> queue = entry.getValue();
+        while(!t.isInterrupted()) {
+            if(!distanceRecords.isEmpty()) {
+                for(Map.Entry<String, Queue<DistanceRecord>> entry : distanceRecords.entrySet()) {
+                    Queue<DistanceRecord> queue = entry.getValue();
+                    // Pulisco la coda da tutti i record più vecchi di 4 secondi (non contano nella media)
+                    if(!queue.isEmpty()) {
+                        queue.removeIf(distanceRecord -> distanceRecord.getTimestamp().getSecond() < (LocalTime.now().getSecond() - TIME_FOR_DETECTION));
 
-            if(!queue.isEmpty()) {
-                queue.removeIf(distanceRecord -> distanceRecord.getTimestamp().getSecond() < (LocalTime.now().getSecond()) - TIME_FOR_DETECTION);
-                double avg = distanceAverage(queue);
-
-                if(avg != -1 && avg < MIN_DISTANCE)
-                    operasDetected.add(queue.peek().getOpera());
+                        double avg = distanceAverage(queue);
+                        if(avg != -1 && avg < MIN_DISTANCE)
+                            operasDetected.add(queue.peek().getOpera());
+                    }
+                }
+                if(!operasDetected.isEmpty()) {
+                    onDetectionListener.onOperasDetected(operasDetected);
+                }
             }
-        }
-        if(!operasDetected.isEmpty()) {
-            onDetectionListener.onOperasDetected(operasDetected);
+
+            // Stoppo il thread per 4 secondi
+            try {
+                Thread.sleep(TIME_FOR_DETECTION*1000);
+            } catch (InterruptedException e) {
+                Log.e(TAG, e.getMessage());
+            }
         }
     }
 

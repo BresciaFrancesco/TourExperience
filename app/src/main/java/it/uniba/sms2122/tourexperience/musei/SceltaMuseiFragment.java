@@ -242,6 +242,7 @@ public class SceltaMuseiFragment extends Fragment {
             );
             recyclerView.setAdapter(adapterPercorsi);
             progressBar.setVisibility(View.GONE);
+            attachQueryTextListener(adapterPercorsi);
             return;
         }
         StorageReference listRef = firebaseStorage.getReference().child("Museums");

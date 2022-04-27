@@ -1,13 +1,11 @@
 package it.uniba.sms2122.tourexperience.percorso.OverviewPath;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,6 +28,7 @@ public class OverviewPathFragment extends Fragment {
     ImageView pathPicture;
     TextView pathName;
     TextView pathDescription;
+    Button startPathButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,7 +46,9 @@ public class OverviewPathFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        inflater.findViewById(R.id.startPathButton).setOnClickListener(new View.OnClickListener() {
+        startPathButton = inflater.findViewById(R.id.startPathButton);
+
+        startPathButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 PercorsoActivity parentActivity = (PercorsoActivity) getActivity();
@@ -56,6 +57,9 @@ public class OverviewPathFragment extends Fragment {
         });
     }
 
+    /**
+     * Funzione che si occupa di settare i reali valori dinamici delle viste che formano questa fragment
+     */
     private void setDynamicValuesOnView(){
 
         pathPicture = inflater.findViewById(R.id.pathPicture);

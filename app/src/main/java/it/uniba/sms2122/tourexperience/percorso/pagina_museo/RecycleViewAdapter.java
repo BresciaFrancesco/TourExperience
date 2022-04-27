@@ -18,20 +18,13 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     private Context context;
     private String[] names;
     private int[] images;
-    private RecycleViewAdapter.onItemClickListner onItemClickListner;
+
+    private RecycleViewAdapter.onItemClickListener onItemClickListener;
 
     public RecycleViewAdapter(Context context, String[] names, int[] images) {
         this.context = context;
         this.names = names;
         this.images = images;
-    }
-
-    public void setOnItemClickListner(RecycleViewAdapter.onItemClickListner onItemClickListner) {
-        this.onItemClickListner = onItemClickListner;
-    }
-
-    public interface onItemClickListner{
-        void onClick(String str);//pass your object types.
     }
 
     @NonNull
@@ -46,11 +39,10 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.textview.setText(names[position]);
         holder.imageView.setImageResource(images[position]);
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onItemClickListner.onClick(Integer.toString(holder.getAbsoluteAdapterPosition()));
+                onItemClickListener.onClick(Integer.toString(holder.getAbsoluteAdapterPosition()));
             }
         });
     }
@@ -60,7 +52,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         return names.length;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView textview;
         ImageView imageView;
@@ -70,5 +62,13 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             textview = itemView.findViewById(R.id.nameRoute);
             imageView = itemView.findViewById(R.id.imageRoute);
         }
+    }
+
+    public void setOnItemClickListener(RecycleViewAdapter.onItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    public interface onItemClickListener{
+        void onClick(String str);
     }
 }

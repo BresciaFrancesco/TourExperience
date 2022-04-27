@@ -1,5 +1,6 @@
 package it.uniba.sms2122.tourexperience.percorso.pagina_museo;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -53,11 +54,13 @@ public class MuseoFragment extends Fragment {
 
         recycleView = view.findViewById(R.id.routes_recycle_view);
 
+        // Settare i dati per i percorsi qui, prima di creare l'adapter
+
         RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(),names,images);
         recycleView.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
-        adapter.setOnItemClickListner(new RecycleViewAdapter.onItemClickListner() {
+        adapter.setOnItemClickListener(new RecycleViewAdapter.onItemClickListener() {
             @Override
             public void onClick(String str) {
                 System.out.println(str);

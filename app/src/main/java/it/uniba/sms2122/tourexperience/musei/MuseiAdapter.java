@@ -164,7 +164,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
             images = view.findViewById(R.id.icona_item_lista);
             text = view.findViewById(R.id.nome_item_lista);
             if (importPercorsi == null) {
-                importPercorsi = new ImportPercorsi(view.getContext().getFilesDir());
+                importPercorsi = new ImportPercorsi(view.getContext());
             }
             // click di un item
             if (flagMusei)

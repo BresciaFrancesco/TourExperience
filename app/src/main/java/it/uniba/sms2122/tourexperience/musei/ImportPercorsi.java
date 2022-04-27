@@ -2,8 +2,11 @@ package it.uniba.sms2122.tourexperience.musei;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
@@ -19,19 +22,24 @@ import it.uniba.sms2122.tourexperience.model.DTO.MuseoLocalStorageDTO;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.utility.LocalFileMuseoManager;
 
-public class ImportPercorsi {
+public class ImportPercorsi implements Runnable {
 
     private final static FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
     private static LocalFileMuseoManager localFileManager = null;
+    private final Context context;
     private final File filesDir;
-    private final String filesDirStr;
+    private static Back backToMuseumsList;
 
-    public ImportPercorsi(final File filesDir) {
-        this.filesDir = filesDir;
-        this.filesDirStr = filesDir.toString();
+    public ImportPercorsi(final Context context) {
+        this.context = context;
+        this.filesDir = context.getFilesDir();
         if (localFileManager == null) {
-            localFileManager = new LocalFileMuseoManager(this.filesDirStr);
+            localFileManager = new LocalFileMuseoManager(filesDir.toString());
         }
+    }
+
+    public static void setBackToMuseumsList(Back back) {
+        backToMuseumsList = back;
     }
 
     /**
@@ -78,7 +86,7 @@ public class ImportPercorsi {
                         .addOnSuccessListener(taskSnapshot -> {
                             try ( Reader reader = new FileReader(info) ) {
                                 Museo museo = new Gson().fromJson(reader , Museo.class);
-                                museo.setFileUri(filesDirStr
+                                museo.setFileUri(filesDir.toString()
                                         + "/Museums/" + museo.getNome()
                                         + "/" + museo.getNome()
                                         + ".png");
@@ -121,14 +129,35 @@ public class ImportPercorsi {
      */
     public void downloadPercorso(final String nomePercorso, final String nomeMuseo) {
         final String prefix = "Museums/" + nomeMuseo + "/Percorsi/";
-        Log.v("PERCORSO", nomePercorso);
         StorageReference filePercorso = firebaseStorage.getReference(prefix + nomePercorso + ".json");
         File dirPercorsi = localFileManager.createLocalDirectoryIfNotExists(filesDir, prefix);
         File jsonPercorso = new File(dirPercorsi, nomePercorso+".json");
         filePercorso.getFile(jsonPercorso)
         .addOnFailureListener(e -> Log.e("DOWNLOAD_PERCORSO", e.getMessage()))
-        .addOnSuccessListener(taskSnapshot ->
+        .addOnSuccessListener(taskSnapshot -> {
+            cachePercorsiInLocale.add(String.format("%s_%s", nomeMuseo, nomePercorso));
+            // Eseguo in un altro thread la rimozione del percorso dalla cache
+            new Thread(() -> cachePercorsi.remove(new Museo(nomePercorso, nomeMuseo))).start();
+            if (backToMuseumsList != null) backToMuseumsList.back(null);
             Log.v("DOWNLOAD_PERCORSO",
-                String.format("Download del percorso %s eseguito correttamente", nomePercorso)));
+                String.format("Download del percorso %s eseguito correttamente", nomePercorso));
+            Toast.makeText(context,
+                nomePercorso + ", del museo " + nomeMuseo + ", scaricato correttamente!",
+                Toast.LENGTH_LONG).show();
+        });
+    }
+
+    /**
+     * Metodo da eseguire su un altro Thread.
+     */
+    @Override
+    public void run() {
+        try {
+            localFileManager.getPercorsiInLocale();
+        } catch (IOException e) {
+            Log.e("THREAD_Cache_Percorsi_Locale",
+                    "Problemi nella lettura dei file o delle cartelle");
+            e.printStackTrace();
+        }
     }
 }

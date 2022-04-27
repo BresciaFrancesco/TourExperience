@@ -115,7 +115,7 @@ public class SceltaMuseiFragment extends Fragment {
      * presente nella recyclerView.
      * @param adapter adapter da utilizzate per il filtraggio.
      */
-    private void attachQueryTextListener(MuseiAdapter adapter) {
+    public void attachQueryTextListener(MuseiAdapter adapter) {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {return false;}
@@ -140,8 +140,12 @@ public class SceltaMuseiFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        localFileManager = new LocalFileMuseoManager(getContext().getFilesDir().toString());
-        localFileManager.createLocalDirectoryIfNotExists(getContext().getFilesDir(), "Museums");
+        File filesDir = view.getContext().getFilesDir();
+        // Riempio una cache apposita con i nomi dei percorsi presenti in locale
+        new Thread(new ImportPercorsi(view.getContext())).start();
+
+        localFileManager = new LocalFileMuseoManager(filesDir.toString());
+        localFileManager.createLocalDirectoryIfNotExists(filesDir, "Museums");
 
         // METODO DI TEST, USARE SOLO UNA VOLTA E POI ELIMINARE
         //test_downloadImageAndSaveInLocalStorage();
@@ -179,14 +183,12 @@ public class SceltaMuseiFragment extends Fragment {
             );
             MainActivity activity = (MainActivity) getActivity();
             activity.getSupportActionBar().setTitle(R.string.museums_cloud_import);
-
-            // Ottiene da firebase tutti i percorsi
-            getListaPercorsiFromCloudStorage();
-
+            Back backToMuseumsList = new BackToMuseumsList(
+                    activity, this, recyclerView, mAddFab);
             // Il FAB torna allo stato iniziale e la lista di musei torna a contenere i musei presenti in cache
-            mAddFab.setOnClickListener(view3 -> {
+            mAddFab.setOnClickListener(/*view3 -> {
                 listaMusei = getAllCachedMuseums();
-                MuseiAdapter adapterMusei = new MuseiAdapter((MainActivity) getActivity(), listaMusei, true);
+                MuseiAdapter adapterMusei = new MuseiAdapter(activity, listaMusei, true);
                 recyclerView.setAdapter(adapterMusei);
                 attachQueryTextListener(adapterMusei);
                 mAddFab.setImageResource(R.drawable.ic_baseline_add_24);
@@ -196,7 +198,13 @@ public class SceltaMuseiFragment extends Fragment {
                         getResources().getColor(R.color.mtrl_fab_button_default, null))
                 );
                 activity.getSupportActionBar().setTitle(R.string.museums);
-            });
+            }*/backToMuseumsList::back);
+
+            // Impostando questo oggetto in ImportPercorsi, potrò evocare il suo metodo back
+            // per tornare allo stato precedente come se avessi cliccato il pulsante
+            ImportPercorsi.setBackToMuseumsList(backToMuseumsList);
+            // Ottiene da firebase tutti i percorsi
+            getListaPercorsiFromCloudStorage();
         });
     }
 
@@ -204,7 +212,7 @@ public class SceltaMuseiFragment extends Fragment {
      * Permette di aprire e chiudere gli altri FAB a partire da quello principale.
      * @param view
      */
-    private void listenerFabMusei(View view) {
+    public void listenerFabMusei(View view) {
         if (!isAllFabsVisible) {
             // when isAllFabsVisible becomes true make all the action name
             // texts and FABs VISIBLE.
@@ -262,11 +270,11 @@ public class SceltaMuseiFragment extends Fragment {
                 if (task.isSuccessful()) {
                     for (StorageReference fileJson : task.getResult().getItems()) {
                         String nomePercorso = fileJson.getName();
-                        Museo museo = new Museo(
-                                nomePercorso.substring(0, nomePercorso.length()-5),
-                                nomeMuseo
-                        );
-                        adapterPercorsi.addMuseum(museo);
+                        nomePercorso = nomePercorso.substring(0, nomePercorso.length()-5);
+                        // Se il percorso è già presente in locale, non mostrarlo all'utente
+                        if (cachePercorsiInLocale.contains(
+                                String.format("%s_%s", nomeMuseo, nomePercorso))) continue;
+                        adapterPercorsi.addMuseum(new Museo(nomePercorso, nomeMuseo));
                     }
                 } else Log.e("IMPORT_CLOUD", "Task is not succesfull");
             }
@@ -398,5 +406,13 @@ public class SceltaMuseiFragment extends Fragment {
         }
 
         return returnList;
+    }
+
+    public void setListaMusei(List<Museo> listaMusei) {
+        this.listaMusei = listaMusei;
+    }
+
+    public List<Museo> getListaMusei() {
+        return listaMusei;
     }
 }

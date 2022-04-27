@@ -2,6 +2,7 @@ package it.uniba.sms2122.tourexperience.cache;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +26,9 @@ public class CacheMuseums {
      *  rappresentati solo da 2 stringhe, nome del percorsi e nome del
      *  museo). */
     public final static List<Museo> cachePercorsi = new ArrayList<>();
+
+
+    public final static Set<String> cachePercorsiInLocale = new HashSet<>();
 
     /** Costruttore privato perché la classe non è istanziabile */
     private CacheMuseums() {}

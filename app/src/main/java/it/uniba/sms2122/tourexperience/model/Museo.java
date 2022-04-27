@@ -1,5 +1,7 @@
 package it.uniba.sms2122.tourexperience.model;
 
+import androidx.annotation.Nullable;
+
 public class Museo {
     private String nome;
     private String citta;
@@ -54,5 +56,14 @@ public class Museo {
                 .append(", Tipologia: ").append(this.tipologia)
                 .append(", URI: ").append(this.fileUri)
                 .toString();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof Museo)) return false;
+        Museo m = (Museo) obj;
+        if (!m.getNome().equals(this.getNome())) return false;
+        return m.getCitta().equals(this.getCitta());
     }
 }

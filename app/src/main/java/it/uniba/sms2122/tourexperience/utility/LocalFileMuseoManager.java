@@ -15,10 +15,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import it.uniba.sms2122.tourexperience.model.DTO.MuseoLocalStorageDTO;
 import it.uniba.sms2122.tourexperience.model.Museo;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
 
 /**
  * Classe che gestisce tutti salvati nel filesystem locale relativi ai musei.
@@ -89,6 +95,25 @@ public class LocalFileMuseoManager extends LocalFileManager {
                 .setStanzeDir(stanzeDir)
                 .setInfo(info)
                 .setImmaginePrincipale(immagine);
+    }
+
+    public void getPercorsiInLocale() throws IOException {
+        try (
+                DirectoryStream<Path> stream =
+                    Files.newDirectoryStream(Paths.get(generalPath))
+        ) {
+            for (Path path : stream) {
+                if (!Files.isDirectory(path)) continue;
+                String pathMuseo = path + "/Percorsi";
+                cachePercorsiInLocale.addAll(Stream.of(new File(pathMuseo).listFiles())
+                    .filter(file -> !file.isDirectory())
+                    .map(file -> {
+                        String name = file.getName();
+                        return String.format("%s_%s", path.getFileName(), name.substring(0, name.length()-5));
+                    })
+                    .collect(Collectors.toList()));
+            }
+        }
     }
 
 }

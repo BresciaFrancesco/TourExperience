@@ -20,11 +20,6 @@ import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.musei.MuseiAdapter;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MuseoFragment} factory method to
- * create an instance of this fragment.
- */
 public class MuseoFragment extends Fragment {
 
     ViewPager viewPager;

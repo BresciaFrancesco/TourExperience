@@ -12,6 +12,8 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
+import it.uniba.sms2122.tourexperience.model.Opera;
+
 
 /**
  * Classe per gestire il bluetooth low energy utilizzato per lo scan delle opere
@@ -21,6 +23,7 @@ public class BleController {
     private static final int RSSI_CALIBRATION = 194;    // Valore per calibrare l'rssi restituito dal bluetooth per calcolare una distanza più precisa
     private static final String TAG = BleController.class.getSimpleName();
 
+    private Context context;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothLeScanner scanner;
     private static BleController bleController;
@@ -30,23 +33,29 @@ public class BleController {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
-            // TODO Trovare l'opera
+            int rssi = result.getRssi() + RSSI_CALIBRATION;
+            int tx = result.getTxPower();
+            String rawData = getRawData(result);
+            String museumId = getMuseumId(rawData);
+            String operaId = museumId + getMajor(rawData) + getMinor(rawData);
         }
     };
 
     /*
      * Costruttore privato per la realizzazione del pattern singleton
      */
-    private BleController(BluetoothManager bluetoothManager) {
+    private BleController(Context context) {
+        this.context = context;
+        BluetoothManager bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
         scanner = bluetoothAdapter.getBluetoothLeScanner();
     }
 
     /**
      * Metodo per cominciare lo scan con il Bluetooth Low Energy dei dispositivi e per cominciare a trovare i dispositivi.
-     * @param context
+     * Lo scan è sempre attivo. Per fermarlo, chiamare il metodo {@code stopLeScan()}.
      */
-    public void startLeScan(Context context) {
+    public void startLeScan() {
         // TODO Qui parte il thread per capire ogni 4 secondi se il dispositivo è vicino all'opera
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
             scanner.startScan(scanCallback);
@@ -55,7 +64,10 @@ public class BleController {
         }
     }
 
-    public void stopLeScan(Context context) {
+    /**
+     * Metodo per fermare lo scan dei dispositivi con il Bluetooth Low Energy. È consigliabile chiamare questo metodo all'interno del metodo di callback {@code onPause()}
+     */
+    public void stopLeScan() {
         // TODO Qui bisogna stoppare il thread
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
             scanner.stopScan(scanCallback);
@@ -66,13 +78,45 @@ public class BleController {
 
     /**
      * Metodo per ottenere l'unica istanza di BleController
-     * @param bluetoothManager Un'istanza di BluetoothManager ottenibile dall'activity chiamando il metodo <pre>(BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)</pre>
+     * @param context Un'istanza del contesto dell'activity
      * @return L'unica istanza di BleController
      */
-    public static BleController getInstance(BluetoothManager bluetoothManager) {
+    public static BleController getInstance(Context context) {
         if(bleController==null) {
-            bleController = new BleController(bluetoothManager);
+            bleController = new BleController(context);
         }
         return bleController;
+    }
+
+    /*
+     * Partendo da un array di byte restituito dal dispositivo, viene restituita la stringa contenente tutti i dati necessari.
+     */
+    private String getRawData(ScanResult result) {
+        if(result==null) {
+            return null;
+        }
+
+        byte[] data = result.getScanRecord().getBytes();
+        StringBuilder builder = new StringBuilder();
+        for(byte b : data) {
+            builder.append(String.format("%02X", b));
+        }
+
+        return builder.toString().toLowerCase();
+    }
+
+    private String getMuseumId(String rawData) {
+        int start = 12; // Punto nella stringa dove parte l'id del museo
+        return rawData.substring(start, 32+start);
+    }
+
+    private String getMajor(String rawData) {
+        int start = 12+32;
+        return rawData.substring(start, 4+start);
+    }
+
+    private String getMinor(String rawData) {
+        int start = 12+32+4;
+        return rawData.substring(start, 4+start);
     }
 }

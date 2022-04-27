@@ -88,8 +88,10 @@ public class BleController {
         return bleController;
     }
 
-    /*
+    /**
      * Partendo da un array di byte restituito dal dispositivo, viene restituita la stringa contenente tutti i dati necessari.
+     * @param result L'oggetto di tipo ScanResult, ottenuto come risultato di uno scan.
+     * @return Il dato convertito in stringa esadecimale.
      */
     private String getRawData(ScanResult result) {
         if(result==null) {
@@ -105,18 +107,42 @@ public class BleController {
         return builder.toString().toLowerCase();
     }
 
+    /**
+     * @param rawData Il dato grezzo restituito dallo scan.
+     * @return L'id del museo.
+     */
     private String getMuseumId(String rawData) {
         int start = 12; // Punto nella stringa dove parte l'id del museo
         return rawData.substring(start, 32+start);
     }
 
+    /**
+     * @param rawData Il dato grezzo restituito dallo scan.
+     * @return Il major (cioè l'id della stanza all'interno del museo).
+     */
     private String getMajor(String rawData) {
         int start = 12+32;
         return rawData.substring(start, 4+start);
     }
 
+    /**
+     * @param rawData Il dato grezzo restituito dallo scan.
+     * @return Il minor (cioè l'id dell'opera all'interno della stanza).
+     */
     private String getMinor(String rawData) {
         int start = 12+32+4;
         return rawData.substring(start, 4+start);
+    }
+
+    /**
+     * Stima la distanza tra il dispositivo corrente e il dispositivo trovato nella scansione con il BLE.
+     * @param rssi La potenza effettiva del segnale.
+     * @param tx L'rssi teorico ad 1 m di distanza.
+     * @return La distanza in metri.
+     */
+    private double estimateDistance(int rssi, int tx) {
+        int n = 2;
+        double exp = (double) (tx-rssi)/(10*n);
+        return Math.pow(10, exp);
     }
 }

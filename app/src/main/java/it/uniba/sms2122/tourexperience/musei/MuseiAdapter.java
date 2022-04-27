@@ -173,7 +173,6 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
                 .setMessage(context.getString(R.string.importa_msg) + " " + percorso0_museo1[1] + "?")
                 .setIcon(R.drawable.ic_baseline_cloud_download_24)
                 .setPositiveButton(context.getString(R.string.SI), (dialog, whichButton) -> {
-                    Toast.makeText(context, "Work in progress...", Toast.LENGTH_SHORT).show();
                     downloadMuseoPercorso(percorso0_museo1[0], percorso0_museo1[1], context);
                 })
                 .setNegativeButton(android.R.string.no, null).show();
@@ -265,6 +264,12 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
             }).addOnFailureListener(error -> Log.e("DOWNLOAD_MUSEO", error.getMessage()));
         }
 
+        /**
+         * Scarica il percorso scelto da firebase e lo salva in locale
+         * @param nomePercorso
+         * @param nomeMuseo
+         * @param context
+         */
         private void downloadPercorso(final String nomePercorso,
                                       final String nomeMuseo,
                                       Context context) {

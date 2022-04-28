@@ -72,7 +72,7 @@ public class BleController {
      * @param operas Le opere in una determinata stanza.
      * @param onDetectionListener Il listener che eseguirà il metodo onOperaDetected. È possibile realizzarlo mediante lambda expression.
      */
-    public BleController(Context context, Map<String, Opera> operas, DistanceDetection.OnDetectionListener onDetectionListener) {
+    public BleController(Context context, Map<String, Opera> operas) {
         this.context = context;
         this.operas = operas;
         this.onDetectionListener = onDetectionListener;
@@ -88,7 +88,9 @@ public class BleController {
      * Metodo per cominciare lo scan con il Bluetooth Low Energy dei dispositivi e per cominciare a trovare i dispositivi.
      * Lo scan è sempre attivo. Per fermarlo, chiamare il metodo {@code stopLeScan()}.
      */
-    public void startLeScan() {
+    public void startLeScan(DistanceDetection.OnDetectionListener onDetectionListener) {
+        this.onDetectionListener = onDetectionListener;
+
         // Il thread viene startato quando viene istanziato l'oggetto distanceDetection
         distanceDetection = new DistanceDetection(distanceRecords, onDetectionListener);
 

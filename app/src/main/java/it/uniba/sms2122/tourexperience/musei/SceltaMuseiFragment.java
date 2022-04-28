@@ -102,7 +102,7 @@ public class SceltaMuseiFragment extends Fragment {
         }
 
         // Sending reference and data to Adapter
-        MuseiAdapter adapter = new MuseiAdapter((MainActivity) getActivity(), listaMusei, true);
+        MuseiAdapter adapter = new MuseiAdapter((MainActivity) getActivity(), progressBar, listaMusei, true);
         // Setting Adapter to RecyclerView
         recyclerView.setAdapter(adapter);
 
@@ -184,21 +184,9 @@ public class SceltaMuseiFragment extends Fragment {
             MainActivity activity = (MainActivity) getActivity();
             activity.getSupportActionBar().setTitle(R.string.museums_cloud_import);
             Back backToMuseumsList = new BackToMuseumsList(
-                    activity, this, recyclerView, mAddFab);
+                    activity, this, recyclerView, mAddFab, progressBar);
             // Il FAB torna allo stato iniziale e la lista di musei torna a contenere i musei presenti in cache
-            mAddFab.setOnClickListener(/*view3 -> {
-                listaMusei = getAllCachedMuseums();
-                MuseiAdapter adapterMusei = new MuseiAdapter(activity, listaMusei, true);
-                recyclerView.setAdapter(adapterMusei);
-                attachQueryTextListener(adapterMusei);
-                mAddFab.setImageResource(R.drawable.ic_baseline_add_24);
-                mAddFab.setOnClickListener(this::listenerFabMusei);
-                mAddFab.setBackgroundTintList(
-                    ColorStateList.valueOf(
-                        getResources().getColor(R.color.mtrl_fab_button_default, null))
-                );
-                activity.getSupportActionBar().setTitle(R.string.museums);
-            }*/backToMuseumsList::back);
+            mAddFab.setOnClickListener(backToMuseumsList::back);
 
             // Impostando questo oggetto in ImportPercorsi, potrò evocare il suo metodo back
             // per tornare allo stato precedente come se avessi cliccato il pulsante
@@ -245,6 +233,7 @@ public class SceltaMuseiFragment extends Fragment {
             Log.v("IMPORT_CLOUD", "with cache cachePercorsi.");
             MuseiAdapter adapterPercorsi = new MuseiAdapter(
                     null,
+                    progressBar,
                     cachePercorsi,
                     false
             );
@@ -258,6 +247,7 @@ public class SceltaMuseiFragment extends Fragment {
             Log.v("IMPORT_CLOUD", "start download...");
             MuseiAdapter adapterPercorsi = new MuseiAdapter(
                     null,
+                    progressBar,
                     new ArrayList<>(),
                     false
             );

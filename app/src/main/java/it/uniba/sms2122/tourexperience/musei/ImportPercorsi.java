@@ -60,7 +60,8 @@ public class ImportPercorsi implements Runnable {
 
     /**
      * Esegue il download e salvataggio in locale di un museo e tutte
-     * le informazioni ad esso associato, tranne i file json dei percorsi.
+     * le informazioni ad esso associato, con in più il file json del
+     * percorso scelto dall'utente.
      * @param nomeMuseo
      */
     public void downloadAll(final String nomePercorso, final String nomeMuseo) {
@@ -73,53 +74,86 @@ public class ImportPercorsi implements Runnable {
                 MuseoLocalStorageDTO dto = localFileManager
                         .createMuseoDirWithFiles(filesDir, nomeMuseo);
 
-                // Scarico l'immagine principale del museo
-                dto.getImmaginePrincipale().ifPresent(immagine ->
-                storage.child(nomeMuseo + ".png").getFile(immagine)
-                    .addOnFailureListener(e -> Log.v("ERROR_immagine_principale", e.getMessage()))
-                    .addOnSuccessListener(taskSnapImage -> {
-                        // Scarico il json di info del museo
-                        // La creazione del file Info.json del museo, avviene solo dopo
-                        // la creazione dell'immagine principale
-                        dto.getInfo().ifPresent(info -> storage.child("Info.json").getFile(info)
-                        .addOnFailureListener(e -> Log.v("ERROR_info", e.getMessage()))
-                        .addOnSuccessListener(taskSnapshot -> {
-                            try ( Reader reader = new FileReader(info) ) {
-                                Museo museo = new Gson().fromJson(reader , Museo.class);
-                                museo.setFileUri(filesDir.toString()
-                                        + "/Museums/" + museo.getNome()
-                                        + "/" + museo.getNome()
-                                        + ".png");
-                                cacheMuseums.put(nomeMuseo, museo);
-                                Log.v("CACHE", nomeMuseo + " scaricato e cachato correttamente");
-                            } catch (IOException | JsonSyntaxException | JsonIOException e) {
-                                e.printStackTrace();
-                            }
-                        }));
-                    }));
-
-                // TODO per ora scarico solo i file json delle varie stanze
-                // Scarico tutte le cartelle delle stanze con i file json delle stanze
-                dto.getStanzeDir().ifPresent(stanzeDir -> {
-                    storage.child("Stanze").listAll().addOnSuccessListener(listStanze -> {
-                        for (StorageReference dirStanza : listStanze.getPrefixes()) {
-                            File dirStanzaLocale = localFileManager
-                                    .createLocalDirectoryIfNotExists(stanzeDir, dirStanza.getName());
-                            File jsonStanza = new File(
-                                    dirStanzaLocale, "Info_stanza.json");
-                            dirStanza.child("Info_stanza.json").getFile(jsonStanza)
-                                    .addOnFailureListener(e -> Log.e("ERROR_Info_stanza.json", e.getMessage()));
-                        }
-                    }).addOnFailureListener(e -> Log.e("ERROR_stanze", e.getMessage()));
-                });
-
-                // Scarica infine il percorso scelto
-                downloadPercorso(nomePercorso, nomeMuseo);
+                // Comincio il download
+                downloadStepOne(dto, storage, nomeMuseo, nomePercorso);
             } else {
                 Log.e("DOWNLOAD_MUSEO",
                         String.format("museo %s non esistente nello storage in cloud", nomeMuseo));
             }
         }).addOnFailureListener(error -> Log.e("DOWNLOAD_MUSEO", error.getMessage()));
+    }
+
+
+    /**
+     * Step 1 del download.
+     * Scarico l'immagine principale del museo e il json di info del museo.
+     * Il resto viene eseguito nello Step 2.
+     * @param dto
+     * @param storage
+     * @param nomeMuseo
+     * @param nomePercorso
+     */
+    private void downloadStepOne(final MuseoLocalStorageDTO dto,
+                                   final StorageReference storage,
+                                   final String nomeMuseo,
+                                   final String nomePercorso) {
+        dto.getImmaginePrincipale().ifPresent(immagine ->
+            storage.child(nomeMuseo + ".png").getFile(immagine)
+            .addOnFailureListener(e -> Log.v("ERROR_immagine_principale", e.getMessage()))
+            .addOnSuccessListener(taskSnapImage -> {
+                // Scarico il json di info del museo
+                dto.getInfo().ifPresent(info -> storage.child("Info.json").getFile(info)
+                .addOnFailureListener(e -> Log.v("ERROR_info", e.getMessage()))
+                .addOnSuccessListener(taskSnapshot -> {
+                    try ( Reader reader = new FileReader(info) ) {
+                        Museo museo = new Gson().fromJson(reader , Museo.class);
+                        museo.setFileUri(filesDir.toString()
+                                + "/Museums/" + museo.getNome()
+                                + "/" + museo.getNome()
+                                + ".png");
+                        cacheMuseums.put(nomeMuseo, museo);
+                        Log.v("CACHE", nomeMuseo + " scaricato e cachato correttamente");
+
+                        // TODO per ora scarico solo i file json delle varie stanze
+                        // Scarico tutte le cartelle delle stanze con i file json delle stanze
+                        downloadStepTwo(dto, storage, nomeMuseo, nomePercorso);
+
+                    } catch (IOException | JsonSyntaxException | JsonIOException e) {
+                        e.printStackTrace();
+                    }
+                }));
+            }));
+    }
+
+    /**
+     * Step 2 del download.
+     * Scarico tutte le cartelle delle stanze con i file json delle stanze
+     * @param dto
+     * @param storage
+     * @param nomeMuseo
+     * @param nomePercorso
+     * @throws IOException
+     */
+    private void downloadStepTwo(final MuseoLocalStorageDTO dto,
+                                   final StorageReference storage,
+                                   final String nomeMuseo,
+                                   final String nomePercorso) throws IOException {
+        dto.getStanzeDir().ifPresent(stanzeDir -> {
+            storage.child("Stanze").listAll().addOnSuccessListener(listStanze -> {
+                for (StorageReference dirStanza : listStanze.getPrefixes()) {
+                    File dirStanzaLocale = localFileManager
+                            .createLocalDirectoryIfNotExists(stanzeDir, dirStanza.getName());
+                    File jsonStanza = new File(
+                            dirStanzaLocale, "Info_stanza.json");
+                    dirStanza.child("Info_stanza.json").getFile(jsonStanza)
+                            .addOnFailureListener(e -> Log.e("ERROR_Info_stanza.json", e.getMessage()));
+                }
+            }).addOnFailureListener(e -> Log.e("ERROR_stanze", e.getMessage()))
+            .addOnSuccessListener(taskSnapStanze -> {
+                // Scarica infine il percorso scelto
+                downloadPercorso(nomePercorso, nomeMuseo);
+            });
+        });
     }
 
     /**

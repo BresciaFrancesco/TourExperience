@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,15 +44,19 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     private List<Museo> listaMuseiFiltered;
     private boolean flagMusei;
     private static MainActivity mainActivity = null;
+    private static ProgressBar progressBar = null;
 
     // Constructor for initialization
-    public MuseiAdapter(final MainActivity activity, List<Museo> listaMusei, boolean flagMusei) {
+    public MuseiAdapter(final MainActivity activity, ProgressBar pb, List<Museo> listaMusei, boolean flagMusei) {
         if (mainActivity == null) {
             mainActivity = activity;
         }
         if (listaMusei == null) {
             this.listaMusei = new ArrayList<>();
         } else this.listaMusei = listaMusei;
+        if (progressBar == null) {
+            progressBar = pb;
+        }
         this.listaMuseiFiltered = listaMusei;
         this.flagMusei = flagMusei;
     }
@@ -63,7 +68,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         // layout file into View object)
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
         // Passing view to ViewHolder
-        ViewHolder vh = new ViewHolder(view, flagMusei);
+        ViewHolder vh = new ViewHolder(view, progressBar, flagMusei);
         if (flagMusei) {
             vh.addMainActivity(mainActivity);
         }
@@ -158,13 +163,17 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         private TextView text;
         private static ImportPercorsi importPercorsi = null;
         private static MainActivity mainActivity = null;
+        private static ProgressBar progressBar;
 
-        public ViewHolder(View view, boolean flagMusei) {
+        public ViewHolder(View view, ProgressBar pb, boolean flagMusei) {
             super(view);
             images = view.findViewById(R.id.icona_item_lista);
             text = view.findViewById(R.id.nome_item_lista);
             if (importPercorsi == null) {
                 importPercorsi = new ImportPercorsi(view.getContext());
+            }
+            if (progressBar == null) {
+                progressBar = pb;
             }
             // click di un item
             if (flagMusei)
@@ -205,7 +214,9 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
                 .setMessage(context.getString(R.string.importa_msg) + " " + percorso0_museo1[1].trim() + "?")
                 .setIcon(R.drawable.ic_baseline_cloud_download_24)
                 .setPositiveButton(context.getString(R.string.SI), (dialog, whichButton) -> {
+                    progressBar.setVisibility(View.VISIBLE);
                     importPercorsi.downloadMuseoPercorso(percorso0_museo1[0], percorso0_museo1[1]);
+                    progressBar.setVisibility(View.GONE);
                 })
                 .setNegativeButton(android.R.string.no, null).show();
         }

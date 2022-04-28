@@ -1,6 +1,9 @@
 package it.uniba.sms2122.tourexperience.graph;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import it.uniba.sms2122.tourexperience.model.Stanza;
 
@@ -45,5 +48,10 @@ public class Vertex {
      */
     public boolean containsEdge(String idStanza) {
         return archi.contains(idStanza);
+    }
+
+
+    public Set<String> getEdges() {
+        return archi;
     }
 }

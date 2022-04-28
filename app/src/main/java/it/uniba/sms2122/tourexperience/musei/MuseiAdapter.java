@@ -214,9 +214,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
                 .setMessage(context.getString(R.string.importa_msg) + " " + percorso0_museo1[1].trim() + "?")
                 .setIcon(R.drawable.ic_baseline_cloud_download_24)
                 .setPositiveButton(context.getString(R.string.SI), (dialog, whichButton) -> {
-                    progressBar.setVisibility(View.VISIBLE);
-                    importPercorsi.downloadMuseoPercorso(percorso0_museo1[0], percorso0_museo1[1]);
-                    progressBar.setVisibility(View.GONE);
+                    importPercorsi.downloadMuseoPercorso(percorso0_museo1[0], percorso0_museo1[1], progressBar);
                 })
                 .setNegativeButton(android.R.string.no, null).show();
         }

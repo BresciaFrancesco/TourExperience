@@ -4,6 +4,8 @@ import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -49,12 +51,14 @@ public class ImportPercorsi implements Runnable {
      * @param nomePercorso
      * @param nomeMuseo
      */
-    public void downloadMuseoPercorso(final String nomePercorso, final String nomeMuseo) {
+    public void downloadMuseoPercorso(final String nomePercorso,
+                                      final String nomeMuseo,
+                                      final ProgressBar progressBar) {
         if (cacheMuseums.get(nomeMuseo) == null &&
                 cacheMuseums.get(nomeMuseo.toLowerCase()) == null) {
-            downloadAll(nomePercorso, nomeMuseo);
+            downloadAll(nomePercorso, nomeMuseo, progressBar);
         } else {
-            downloadPercorso(nomePercorso, nomeMuseo);
+            downloadPercorso(nomePercorso, nomeMuseo, progressBar);
         }
     }
 
@@ -64,7 +68,10 @@ public class ImportPercorsi implements Runnable {
      * percorso scelto dall'utente.
      * @param nomeMuseo
      */
-    public void downloadAll(final String nomePercorso, final String nomeMuseo) {
+    public void downloadAll(final String nomePercorso,
+                            final String nomeMuseo,
+                            final ProgressBar progressBar) {
+        progressBar.setVisibility(View.VISIBLE);
         StorageReference storage = firebaseStorage.getReference("Museums/" + nomeMuseo);
         storage.listAll().addOnSuccessListener(listResult -> {
             if (!listResult.getPrefixes().isEmpty() && !listResult.getItems().isEmpty()) {
@@ -75,12 +82,15 @@ public class ImportPercorsi implements Runnable {
                         .createMuseoDirWithFiles(filesDir, nomeMuseo);
 
                 // Comincio il download
-                downloadStepOne(dto, storage, nomeMuseo, nomePercorso);
+                downloadStepOne(dto, storage, nomeMuseo, nomePercorso, progressBar);
             } else {
                 Log.e("DOWNLOAD_MUSEO",
                         String.format("museo %s non esistente nello storage in cloud", nomeMuseo));
             }
-        }).addOnFailureListener(error -> Log.e("DOWNLOAD_MUSEO", error.getMessage()));
+        }).addOnFailureListener(error -> {
+            progressBar.setVisibility(View.GONE);
+            Log.e("DOWNLOAD_MUSEO", error.getMessage());
+        });
     }
 
 
@@ -96,14 +106,18 @@ public class ImportPercorsi implements Runnable {
     private void downloadStepOne(final MuseoLocalStorageDTO dto,
                                    final StorageReference storage,
                                    final String nomeMuseo,
-                                   final String nomePercorso) {
+                                   final String nomePercorso,
+                                   final ProgressBar progressBar) {
         dto.getImmaginePrincipale().ifPresent(immagine ->
             storage.child(nomeMuseo + ".png").getFile(immagine)
             .addOnFailureListener(e -> Log.v("ERROR_immagine_principale", e.getMessage()))
             .addOnSuccessListener(taskSnapImage -> {
                 // Scarico il json di info del museo
                 dto.getInfo().ifPresent(info -> storage.child("Info.json").getFile(info)
-                .addOnFailureListener(e -> Log.v("ERROR_info", e.getMessage()))
+                .addOnFailureListener(e -> {
+                    progressBar.setVisibility(View.GONE);
+                    Log.v("ERROR_info", e.getMessage());
+                })
                 .addOnSuccessListener(taskSnapshot -> {
                     try ( Reader reader = new FileReader(info) ) {
                         Museo museo = new Gson().fromJson(reader , Museo.class);
@@ -116,9 +130,10 @@ public class ImportPercorsi implements Runnable {
 
                         // TODO per ora scarico solo i file json delle varie stanze
                         // Scarico tutte le cartelle delle stanze con i file json delle stanze
-                        downloadStepTwo(dto, storage, nomeMuseo, nomePercorso);
+                        downloadStepTwo(dto, storage, nomeMuseo, nomePercorso, progressBar);
 
                     } catch (IOException | JsonSyntaxException | JsonIOException e) {
+                        progressBar.setVisibility(View.GONE);
                         e.printStackTrace();
                     }
                 }));
@@ -137,7 +152,8 @@ public class ImportPercorsi implements Runnable {
     private void downloadStepTwo(final MuseoLocalStorageDTO dto,
                                    final StorageReference storage,
                                    final String nomeMuseo,
-                                   final String nomePercorso) throws IOException {
+                                   final String nomePercorso,
+                                   final ProgressBar progressBar) throws IOException {
         dto.getStanzeDir().ifPresent(stanzeDir -> {
             storage.child("Stanze").listAll().addOnSuccessListener(listStanze -> {
                 for (StorageReference dirStanza : listStanze.getPrefixes()) {
@@ -148,10 +164,13 @@ public class ImportPercorsi implements Runnable {
                     dirStanza.child("Info_stanza.json").getFile(jsonStanza)
                             .addOnFailureListener(e -> Log.e("ERROR_Info_stanza.json", e.getMessage()));
                 }
-            }).addOnFailureListener(e -> Log.e("ERROR_stanze", e.getMessage()))
+            }).addOnFailureListener(e -> {
+                progressBar.setVisibility(View.GONE);
+                Log.e("ERROR_stanze", e.getMessage());
+            })
             .addOnSuccessListener(taskSnapStanze -> {
                 // Scarica infine il percorso scelto
-                downloadPercorso(nomePercorso, nomeMuseo);
+                downloadPercorso(nomePercorso, nomeMuseo, progressBar);
             });
         });
     }
@@ -161,12 +180,16 @@ public class ImportPercorsi implements Runnable {
      * @param nomePercorso
      * @param nomeMuseo
      */
-    public void downloadPercorso(final String nomePercorso, final String nomeMuseo) {
+    public void downloadPercorso(final String nomePercorso,
+                                 final String nomeMuseo,
+                                 final ProgressBar progressBar) {
+        progressBar.setVisibility(View.VISIBLE);
         final String prefix = "Museums/" + nomeMuseo + "/Percorsi/";
         StorageReference filePercorso = firebaseStorage.getReference(prefix + nomePercorso + ".json");
         File dirPercorsi = localFileManager.createLocalDirectoryIfNotExists(filesDir, prefix);
         File jsonPercorso = new File(dirPercorsi, nomePercorso+".json");
         filePercorso.getFile(jsonPercorso)
+        .addOnCompleteListener(task -> progressBar.setVisibility(View.GONE))
         .addOnFailureListener(e -> Log.e("DOWNLOAD_PERCORSO", e.getMessage()))
         .addOnSuccessListener(taskSnapshot -> {
             cachePercorsiInLocale.add(String.format("%s_%s", nomeMuseo, nomePercorso));

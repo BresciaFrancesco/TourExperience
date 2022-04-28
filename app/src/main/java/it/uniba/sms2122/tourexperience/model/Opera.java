@@ -1,6 +1,8 @@
 package it.uniba.sms2122.tourexperience.model;
 
 
+import java.util.Objects;
+
 public class Opera {
 
     private String id;
@@ -47,5 +49,18 @@ public class Opera {
 
     public void setPercorsoImg(String percorsoImg) {
         this.percorsoImg = percorsoImg;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Opera opera = (Opera) o;
+        return Objects.equals(id, opera.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

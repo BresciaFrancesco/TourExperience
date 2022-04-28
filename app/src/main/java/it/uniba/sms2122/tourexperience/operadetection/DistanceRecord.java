@@ -43,7 +43,7 @@ public class DistanceRecord implements Comparable<DistanceRecord> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DistanceRecord that = (DistanceRecord) o;
-        return Double.compare(that.distance, distance) == 0 && Objects.equals(opera.getId(), that.opera.getId()) && Objects.equals(timestamp, that.timestamp);
+        return Double.compare(that.distance, distance) == 0 && Objects.equals(opera, that.opera);
     }
 
     @Override

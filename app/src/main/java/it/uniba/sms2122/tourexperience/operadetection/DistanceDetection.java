@@ -22,12 +22,13 @@ public class DistanceDetection implements Runnable {
     public Thread t;
 
     private HashMap<String, Queue<DistanceRecord>> distanceRecords;
-    private TreeSet<Opera> operasDetected;
+    private TreeSet<DistanceRecord> operasDetected;
     private OnDetectionListener onDetectionListener;
 
     public DistanceDetection(HashMap<String, Queue<DistanceRecord>> distanceRecords, OnDetectionListener onDetectionListener) {
         this.distanceRecords = distanceRecords;
         this.onDetectionListener = onDetectionListener;
+        operasDetected = new TreeSet<>();
 
         t = new Thread(this);
         t.start();
@@ -45,7 +46,7 @@ public class DistanceDetection implements Runnable {
 
                         double avg = distanceAverage(queue);
                         if(avg != -1 && avg < MIN_DISTANCE)
-                            operasDetected.add(queue.peek().getOpera());
+                            operasDetected.add(new DistanceRecord(queue.peek().getOpera(), avg));
                     }
                 }
                 if(!operasDetected.isEmpty()) {
@@ -82,6 +83,6 @@ public class DistanceDetection implements Runnable {
      * Interfaccia contenente un solo metodo da eseguire quando vengono rilevate le opere vicine.
      */
     public interface OnDetectionListener {
-        void onOperasDetected(TreeSet<Opera> operasDetected);
+        void onOperasDetected(TreeSet<DistanceRecord> operasDetected);
     }
 }

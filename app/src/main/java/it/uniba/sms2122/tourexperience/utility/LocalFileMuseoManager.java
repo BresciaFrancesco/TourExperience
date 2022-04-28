@@ -33,7 +33,6 @@ public class LocalFileMuseoManager extends LocalFileManager {
 
     public LocalFileMuseoManager(String generalPath) {
         super(generalPath);
-        super.generalPath += "Museums/";
     }
 
     /**
@@ -67,21 +66,6 @@ public class LocalFileMuseoManager extends LocalFileManager {
         return listaMusei;
     }
 
-
-    /**
-     * Crea una directory nel filesystem locale, nel path specificato come parametro,
-     * se non esiste già.
-     */
-    public File createLocalDirectoryIfNotExists(final File filesDir, final String pathFileWithFile) {
-        File directory = new File(filesDir, pathFileWithFile);
-        if (directory == null || !directory.exists()) {
-            if (directory.mkdir())
-                Log.v("CREATE_DIRECTORY: " + pathFileWithFile, "Created now!");
-            else
-                Log.e("CREATE_DIRECTORY: " + pathFileWithFile, "Error!");
-        }
-        return directory;
-    }
 
     public MuseoLocalStorageDTO createMuseoDirWithFiles(final File filesDir, final String nomeMuseo) {
         final String prefix = "Museums/" + nomeMuseo + "/";

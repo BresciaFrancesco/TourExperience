@@ -26,6 +26,9 @@ public class Percorso {
     /** Nome del museo che contiene questo percorso. */
     private String nomeMuseo;
 
+    /** Descrizione del percorso, da visualizzare come anteprima del percorso stesso */
+    private String descrizionePercorso;
+
     // ------------------------------ Metodi ------------------------------ //
 
     /**

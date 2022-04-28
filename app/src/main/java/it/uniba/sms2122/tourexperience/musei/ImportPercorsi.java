@@ -206,12 +206,13 @@ public class ImportPercorsi implements Runnable {
 
     /**
      * Metodo da eseguire su un altro Thread.
+     * Ottiene i percorsi salvati in locale (solo museo e nome del percorso),
+     * salvandoli in un'apposita cache.
      */
     @Override
     public void run() {
-        try {
-            localFileManager.getPercorsiInLocale();
-        } catch (IOException e) {
+        try { localFileManager.getPercorsiInLocale(); }
+        catch (IOException e) {
             Log.e("THREAD_Cache_Percorsi_Locale",
                     "Problemi nella lettura dei file o delle cartelle");
             e.printStackTrace();

@@ -23,7 +23,6 @@ public class LocalFileStanzaManager extends LocalFileManager {
 
     public LocalFileStanzaManager(String generalPath) {
         super(generalPath);
-        super.generalPath += "Museums/";
     }
 
 

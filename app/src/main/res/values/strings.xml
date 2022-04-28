@@ -45,6 +45,7 @@
     <string name="residenceLabelProfile">Residence</string>
     <string name="click_here">Click here</string>
     <string name="favorites_routes">Favorites routes</string>
+    <string name="favorites_routes_here">Here you can find your favorites routes</string>
     <string name="failed_registration">Failed registration</string>
     <string name="success_registration">Success registration</string>
     <string name="sign_up">Sign up</string>

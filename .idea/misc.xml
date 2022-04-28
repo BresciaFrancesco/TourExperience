@@ -48,6 +48,10 @@
         <entry key="app/src/main/res/drawable-xhdpi/ic_baseline_add_to_home_screen_24.xml" value="0.31" />
         <entry key="app/src/main/res/drawable/button_back.xml" value="0.1175" />
         <entry key="app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.31" />
+        <entry key="app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.1655" />
+        <entry key="app/src/main/res/drawable/ic_baseline_cloud_download_24.xml" value="0.1655" />
+        <entry key="app/src/main/res/drawable/ic_baseline_favorite_128.xml" value="0.1655" />
+        <entry key="app/src/main/res/drawable/ic_baseline_museum_24.xml" value="0.1655" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.249" />
         <entry key="app/src/main/res/drawable/ic_museum.xml" value="0.168" />
         <entry key="app/src/main/res/drawable/rounded_drawable.xml" value="0.1175" />

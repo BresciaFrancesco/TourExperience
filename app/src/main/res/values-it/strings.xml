@@ -44,6 +44,7 @@
     <string name="residenceLabelProfile">Residenza</string>
     <string name="click_here">Clicca qui</string>
     <string name="favorites_routes">Percorsi preferiti</string>
+    <string name="favorites_routes_here">Qui puoi trovare i tuoi percorsi preferiti</string>
     <string name="failed_registration">Registrazione fallita</string>
     <string name="success_registration">Registrazione eseguita con successo</string>
     <string name="sign_up">Registrati</string>

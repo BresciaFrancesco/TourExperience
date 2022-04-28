@@ -24,7 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TourExperience">
         <activity
-            android:name=".opera.OperaActivity"
+            android:name=".percorso.pagina_opera.OperaActivity"
             android:exported="false" />
         <activity
             android:name=".percorso.PercorsoActivity"

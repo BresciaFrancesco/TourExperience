@@ -38,7 +38,7 @@ public class ProfileDataChangeValidation {
      */
     public static boolean validateGenericText(EditText viewToValidate, String errorTxt) {
 
-        String regExp = "^[a-zA-Z]+$";
+        String regExp = "^[a-zA-Z_ ]+$";
 
         return genericlValidator(viewToValidate, regExp, errorTxt);
     }

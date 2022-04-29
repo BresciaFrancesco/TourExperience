@@ -16,10 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import it.uniba.sms2122.tourexperience.graph.Percorso;
-import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.model.Opera;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 

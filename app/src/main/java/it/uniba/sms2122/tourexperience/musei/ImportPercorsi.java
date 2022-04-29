@@ -84,6 +84,7 @@ public class ImportPercorsi implements Runnable {
                 // Comincio il download
                 downloadStepOne(dto, storage, nomeMuseo, nomePercorso, progressBar);
             } else {
+                progressBar.setVisibility(View.GONE);
                 Log.e("DOWNLOAD_MUSEO",
                         String.format("museo %s non esistente nello storage in cloud", nomeMuseo));
             }
@@ -110,14 +111,9 @@ public class ImportPercorsi implements Runnable {
                                    final ProgressBar progressBar) {
         dto.getImmaginePrincipale().ifPresent(immagine ->
             storage.child(nomeMuseo + ".png").getFile(immagine)
-            .addOnFailureListener(e -> Log.v("ERROR_immagine_principale", e.getMessage()))
             .addOnSuccessListener(taskSnapImage -> {
                 // Scarico il json di info del museo
                 dto.getInfo().ifPresent(info -> storage.child("Info.json").getFile(info)
-                .addOnFailureListener(e -> {
-                    progressBar.setVisibility(View.GONE);
-                    Log.v("ERROR_info", e.getMessage());
-                })
                 .addOnSuccessListener(taskSnapshot -> {
                     try ( Reader reader = new FileReader(info) ) {
                         Museo museo = new Gson().fromJson(reader , Museo.class);
@@ -136,8 +132,22 @@ public class ImportPercorsi implements Runnable {
                         progressBar.setVisibility(View.GONE);
                         e.printStackTrace();
                     }
+                }).addOnFailureListener(e -> {
+                    progressBar.setVisibility(View.GONE);
+                    Log.v("ERROR_info", e.getMessage());
                 }));
+                if (!dto.getInfo().isPresent()) {
+                    progressBar.setVisibility(View.GONE);
+                    Log.v("ERROR_info", "Non è presente nel DTO.");
+                }
+            }).addOnFailureListener(e -> {
+                progressBar.setVisibility(View.GONE);
+                Log.v("ERROR_immagine_principale", e.getMessage());
             }));
+        if (!dto.getImmaginePrincipale().isPresent()) {
+            progressBar.setVisibility(View.GONE);
+            Log.v("ERROR_immagine_principale", "Non è presente nel DTO.");
+        }
     }
 
     /**
@@ -155,24 +165,28 @@ public class ImportPercorsi implements Runnable {
                                    final String nomePercorso,
                                    final ProgressBar progressBar) throws IOException {
         dto.getStanzeDir().ifPresent(stanzeDir -> {
-            storage.child("Stanze").listAll().addOnSuccessListener(listStanze -> {
+            storage.child("Stanze").listAll()
+            .addOnSuccessListener(listStanze -> {
                 for (StorageReference dirStanza : listStanze.getPrefixes()) {
                     File dirStanzaLocale = localFileManager
-                            .createLocalDirectoryIfNotExists(stanzeDir, dirStanza.getName());
+                        .createLocalDirectoryIfNotExists(stanzeDir, dirStanza.getName());
                     File jsonStanza = new File(
-                            dirStanzaLocale, "Info_stanza.json");
+                        dirStanzaLocale, "Info_stanza.json");
                     dirStanza.child("Info_stanza.json").getFile(jsonStanza)
-                            .addOnFailureListener(e -> Log.e("ERROR_Info_stanza.json", e.getMessage()));
+                        .addOnFailureListener(e -> Log.e("ERROR_Info_stanza.json", e.getMessage()));
                 }
-            }).addOnFailureListener(e -> {
-                progressBar.setVisibility(View.GONE);
-                Log.e("ERROR_stanze", e.getMessage());
-            })
-            .addOnSuccessListener(taskSnapStanze -> {
                 // Scarica infine il percorso scelto
                 downloadPercorso(nomePercorso, nomeMuseo, progressBar);
+            })
+            .addOnFailureListener(e -> {
+                progressBar.setVisibility(View.GONE);
+                Log.e("ERROR_stanze", e.getMessage());
             });
         });
+        if (!dto.getStanzeDir().isPresent()) {
+            progressBar.setVisibility(View.GONE);
+            Log.v("ERROR_stanze", "Non è presente nel DTO.");
+        }
     }
 
     /**
@@ -183,7 +197,9 @@ public class ImportPercorsi implements Runnable {
     public void downloadPercorso(final String nomePercorso,
                                  final String nomeMuseo,
                                  final ProgressBar progressBar) {
-        progressBar.setVisibility(View.VISIBLE);
+        if (progressBar.getVisibility() != View.VISIBLE)  {
+            progressBar.setVisibility(View.VISIBLE);
+        }
         final String prefix = "Museums/" + nomeMuseo + "/Percorsi/";
         StorageReference filePercorso = firebaseStorage.getReference(prefix + nomePercorso + ".json");
         File dirPercorsi = localFileManager.createLocalDirectoryIfNotExists(filesDir, prefix);
@@ -195,12 +211,15 @@ public class ImportPercorsi implements Runnable {
             cachePercorsiInLocale.add(String.format("%s_%s", nomeMuseo, nomePercorso));
             // Eseguo in un altro thread la rimozione del percorso dalla cache
             new Thread(() -> cachePercorsi.remove(new Museo(nomePercorso, nomeMuseo))).start();
-            if (backToMuseumsList != null) backToMuseumsList.back(null);
-            Log.v("DOWNLOAD_PERCORSO",
-                String.format("Download del percorso %s eseguito correttamente", nomePercorso));
+            if (backToMuseumsList != null) {
+                backToMuseumsList.back(null);
+            }
             Toast.makeText(context,
                 nomePercorso + ", del museo " + nomeMuseo + ", scaricato correttamente!",
                 Toast.LENGTH_LONG).show();
+
+            Log.v("DOWNLOAD_PERCORSO",
+                    String.format("Download del percorso %s eseguito correttamente", nomePercorso));
         });
     }
 

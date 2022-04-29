@@ -89,13 +89,21 @@ public class LocalFileMuseoManager extends LocalFileManager {
             for (Path path : stream) {
                 if (!Files.isDirectory(path)) continue;
                 String pathMuseo = path + "/Percorsi";
-                cachePercorsiInLocale.addAll(Stream.of(new File(pathMuseo).listFiles())
+                try {
+                    File[] files = new File(pathMuseo).listFiles();
+                    if (files == null) continue;
+                    cachePercorsiInLocale.addAll(Stream.of(files)
                     .filter(file -> !file.isDirectory())
                     .map(file -> {
                         String name = file.getName();
                         return String.format("%s_%s", path.getFileName(), name.substring(0, name.length()-5));
                     })
                     .collect(Collectors.toList()));
+                }
+                catch (NullPointerException e) {
+                    Log.e("NullPointerException",
+                        "catturata in LocalFileMuseoManager.getPercorsiInLocale()\n" + e.getMessage());
+                }
             }
         }
     }

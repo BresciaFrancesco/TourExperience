@@ -1,10 +1,15 @@
 package it.uniba.sms2122.tourexperience.musei;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,11 +32,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.utility.LocalFileMuseoManager;
+import kotlin.jvm.internal.Lambda;
+
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 /**
@@ -47,6 +55,7 @@ public class SceltaMuseiFragment extends Fragment {
     private List<Museo> listaMusei;
     private LocalFileMuseoManager localFileManager;
     private FirebaseStorage firebaseStorage;
+    private final int requestCodeGC = 10;
 
     // Make sure to use the FloatingActionButton for all the FABs
     private FloatingActionButton mAddFab, localStorageFab, cloudFab;
@@ -147,9 +156,6 @@ public class SceltaMuseiFragment extends Fragment {
         localFileManager = new LocalFileMuseoManager(filesDir.toString());
         localFileManager.createLocalDirectoryIfNotExists(filesDir, "Museums");
 
-        // METODO DI TEST, USARE SOLO UNA VOLTA E POI ELIMINARE
-        //test_downloadImageAndSaveInLocalStorage();
-
         firebaseStorage = FirebaseStorage.getInstance();
         searchView = view.findViewById(R.id.searchviewMusei);
 
@@ -168,11 +174,35 @@ public class SceltaMuseiFragment extends Fragment {
         mAddFab.setOnClickListener(this::listenerFabMusei);
 
         localStorageFab.setOnClickListener(view2 -> {
-            Log.v("FAB", "cliccato LOCAL");
+            final Runnable openFileExplorer = () -> {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("application/zip");
+                startActivityForResult(intent, requestCodeGC);
+                hideFabOptions();
+            };
+            final SharedPreferences sp = ((MainActivity)requireActivity())
+                    .getPreferences(Context.MODE_PRIVATE);
+            final String spKey = getString(R.string.do_not_show_again_local_import);
+            boolean doNotShowAgain = sp.getBoolean(spKey, false);
+            if (!doNotShowAgain) {
+                new AlertDialog.Builder(view2.getContext())
+                .setTitle(getString(R.string.local_import_dialog_title))
+                .setMessage(getString(R.string.local_import_message))
+                .setPositiveButton("OK", (dialog, whichButton) -> {
+                    openFileExplorer.run();
+                })
+                .setNeutralButton(getString(R.string.do_not_show_again), (dialog, whichButton) -> {
+                    dialog.dismiss();
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putBoolean(spKey, true);
+                    editor.apply();
+                    openFileExplorer.run();
+                })
+                .show();
+            } else openFileExplorer.run();
         });
 
         cloudFab.setOnClickListener(view2 -> {
-            Log.v("FAB", "cliccato CLOUD");
             progressBar.setVisibility(View.VISIBLE);
             recyclerView.setAdapter(null);
             hideFabOptions();
@@ -186,18 +216,22 @@ public class SceltaMuseiFragment extends Fragment {
             Back backToMuseumsList = new BackToMuseumsList(
                     activity, this, recyclerView, mAddFab, progressBar);
             // Il FAB torna allo stato iniziale e la lista di musei torna a contenere i musei presenti in cache
-            mAddFab.setOnClickListener(backToMuseumsList::back);
+            mAddFab.setOnClickListener((view3) -> {
+                searchView.setQueryHint(getString(R.string.search_museums));
+                backToMuseumsList.back(view3);
+            });
 
             // Impostando questo oggetto in ImportPercorsi, potrò evocare il suo metodo back
             // per tornare allo stato precedente come se avessi cliccato il pulsante
             ImportPercorsi.setBackToMuseumsList(backToMuseumsList);
             // Ottiene da firebase tutti i percorsi
             getListaPercorsiFromCloudStorage();
+            searchView.setQueryHint(getString(R.string.search_paths));
         });
     }
 
     /**
-     * Permette di aprire e chiudere gli altri FAB a partire da quello principale.
+     * Permette di aprire e chiudere i FAB opzionali.
      * @param view
      */
     public void listenerFabMusei(View view) {
@@ -228,6 +262,28 @@ public class SceltaMuseiFragment extends Fragment {
     }
 
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == requestCodeGC) {
+            if (resultCode == MainActivity.RESULT_OK) {
+                // test
+                String path = data.getData().getPath();
+                Log.v("onActivityResult", "Funziona: " + path);
+            }
+            else {
+                Log.e("onActivityResult", "resultCode " + resultCode);
+            }
+        }
+    }
+
+
+    /**
+     * Ritorna la lista dei percorsi disponibili al download dallo storage
+     * di firebase. Riutilizza la lo stesso recycler view, impostando solo
+     * un adapter diverso con la lista di percorsi anziché di musei.
+     */
     private void getListaPercorsiFromCloudStorage() {
         if (!cachePercorsi.isEmpty()) {
             Log.v("IMPORT_CLOUD", "with cache cachePercorsi.");
@@ -346,45 +402,6 @@ public class SceltaMuseiFragment extends Fragment {
         super.onViewStateRestored(savedInstanceState);
     }
 
-    /**
-     * Metodo di test per effettuare il download la prima volta di
-     * due musei da firebase e salvarli in locale.
-     */
-    private void test_downloadImageAndSaveInLocalStorage() {
-        ArrayList<String> musei = new ArrayList<>();
-        musei.add("Louvre");
-        musei.add("Hermitage");
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        File fullPath = new File(getContext().getFilesDir() + "/Museums");
-
-        for (String museo : musei) {
-            String filePathImmagine = museo+"/"+museo+".png";
-            String filePathInfo = museo+"/"+"Info.json";
-
-            // Ottengo il riferimento su Firebase dell'immagine del museo e del file Info.json
-            StorageReference rifImmagine = storage.getReference("Museums").child(filePathImmagine);
-            StorageReference rifInfo = storage.getReference("Museums").child(filePathInfo);
-
-            File dir = new File(fullPath, museo);
-            if (!dir.exists())
-                dir.mkdir();
-
-            File localFileImmagine = new File(fullPath, filePathImmagine);
-            File localFileInfo = new File(fullPath, filePathInfo);
-
-            rifImmagine.getFile(localFileImmagine).addOnSuccessListener(taskSnapshot -> {
-                Log.v("CARICAMENTO IMMAGINE", filePathImmagine+" caricato!");
-            }).addOnFailureListener(exception -> {
-                Log.e("CARICAMENTO IMMAGINE", filePathImmagine+" NON caricato.");
-            });
-
-            rifInfo.getFile(localFileInfo).addOnSuccessListener(taskSnapshot -> {
-                Log.v("CARICAMENTO INFO", filePathInfo+" caricato!");
-            }).addOnFailureListener(exception -> {
-                Log.e("CARICAMENTO INFO", filePathInfo+" NON caricato.");
-            });
-        }
-    }
 
     private List<Museo> searchData(List<Museo> museums, String string) {
         List<Museo> returnList = new ArrayList<>();

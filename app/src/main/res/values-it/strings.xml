@@ -32,7 +32,8 @@
     <string name="museums_cloud_import">Scegli Percorso da importare</string>
     <string name="game_statistics">Statistiche giochi</string>
     <string name="search_hint">Roma, Museo egizio, …</string>
-    <string name="search_museums">Cerca musei per nome o città...</string>
+    <string name="search_museums">Cerca per nome o città...</string>
+    <string name="search_paths">Search by name or museum...</string>
     <string name="find_cultural_site">Trova un sito culturale</string>
     <string name="search_description">Scopri e segui i percorsi che\npiù ti piacciono!</string>
     <string name="modifyProfile">Modifica</string>
@@ -71,7 +72,7 @@
     <string name="insert_password_for_confirm_title">Inserire password</string>
     <string name="insert_password_for_confirm_body">Inserire password per confermare i cambiamenti</string>
     <string name="insert_password_for_confirm_button">Conferma</string>
-    <string name="no_result">Nessun risultato</string>
+    <string name="no_result">Nessun risultato\nClicca il pulsante + per importare un nuovo percorso di un museo</string>
     <string name="import_paths_from_internet">Importa da Internet</string>
     <string name="import_paths_from_local">Importa da locale</string>
     <string name="camera_permission_required">È necessario accedere alla camera per scannerizzare il codice QR</string>
@@ -91,4 +92,12 @@
     <string name="importa">Importa</string>
     <string name="importa_msg">Vuoi davvero importare questo percorso del museo</string>
     <string name="SI">Si</string>
+    <string name="NO">Annulla</string>
+    <string name="local_import_dialog_title">Spiegazione Importazione</string>
+    <string name="local_import_message">
+        È possibile importare solo file .zip strutturati secondo le regole di TourExperience.
+        Qualsiasi file .zip non conforme, sarà rifiutato.
+        \nGrazie
+    </string>
+    <string name="do_not_show_again">Non mostrare più</string>
 </resources>

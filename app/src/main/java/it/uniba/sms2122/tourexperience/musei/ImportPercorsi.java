@@ -209,8 +209,8 @@ public class ImportPercorsi implements Runnable {
         .addOnFailureListener(e -> Log.e("DOWNLOAD_PERCORSO", e.getMessage()))
         .addOnSuccessListener(taskSnapshot -> {
             cachePercorsiInLocale.add(String.format("%s_%s", nomeMuseo, nomePercorso));
-            // Eseguo in un altro thread la rimozione del percorso dalla cache
-            new Thread(() -> cachePercorsi.remove(new Museo(nomePercorso, nomeMuseo))).start();
+            // Eseguo la rimozione del percorso dalla cache
+            cachePercorsi.remove(new Museo(nomePercorso, nomeMuseo));
             if (backToMuseumsList != null) {
                 backToMuseumsList.back(null);
             }

@@ -11,8 +11,8 @@
         only for reference how it will looks"-->
     <ImageView
         android:id="@+id/icona_item_lista"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:padding="8dp"
         android:src="@mipmap/ic_launcher_round" />
 
@@ -28,7 +28,7 @@
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="23sp"/>
+            android:textSize="20sp"/>
     </LinearLayout>
 
 </LinearLayout>

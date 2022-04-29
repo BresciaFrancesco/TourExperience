@@ -47,7 +47,8 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     private ProgressBar progressBar;
 
     // Constructor for initialization
-    public MuseiAdapter(final MainActivity activity, ProgressBar pb, List<Museo> listaMusei, boolean flagMusei) {
+    public MuseiAdapter(final MainActivity activity, final ProgressBar pb,
+                        final List<Museo> listaMusei, final boolean flagMusei) {
         if (mainActivity == null) {
             mainActivity = activity;
         }
@@ -214,8 +215,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
                             percorso0_museo1[1],
                             progressBar
                     );
-                })
-                .setNegativeButton(android.R.string.no, null).show();
+                }).setNegativeButton(context.getString(R.string.NO), null).show();
         }
     }
 

@@ -33,7 +33,8 @@
     <string name="museums_cloud_import">Select Path to import</string>
     <string name="game_statistics">Game statistics</string>
     <string name="search_hint">Rome, Egyptian museum, …</string>
-    <string name="search_museums">Search museums by name or city...</string>
+    <string name="search_museums">Search by name or city...</string>
+    <string name="search_paths">Search by name or museum...</string>
     <string name="find_cultural_site">Find a cultural site</string>
     <string name="search_description">Discover and follow the routes\nyou like best!</string>
     <string name="modifyProfile">Modify</string>
@@ -73,7 +74,7 @@
     <string name="insert_password_for_confirm_title">Insert password</string>
     <string name="insert_password_for_confirm_body">Insert password for confirm your change</string>
     <string name="insert_password_for_confirm_button">Confirm</string>
-    <string name="no_result">No results</string>
+    <string name="no_result">No results\nClick the + button to import a new museum route</string>
     <string name="empty_phrase" translatable="false"></string>
     <string name="import_paths_from_internet">Import from Internet</string>
     <string name="import_paths_from_local">Import from local</string>
@@ -94,4 +95,13 @@
     <string name="importa">Import</string>
     <string name="importa_msg">Do you really want to import this path of the museum</string>
     <string name="SI">Yes</string>
+    <string name="NO">Cancel</string>
+    <string name="do_not_show_again_local_import" translatable="false">do_not_show_again</string>
+    <string name="local_import_dialog_title">Explanation Import</string>
+    <string name="local_import_message">
+        It is possible to import only .zip files structured according to the TourExperience rules.
+        Any non-compliant .zip file will be rejected.
+        \nThanks
+    </string>
+    <string name="do_not_show_again">Do not show again</string>
 </resources>

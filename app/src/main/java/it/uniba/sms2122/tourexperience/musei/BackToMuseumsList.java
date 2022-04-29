@@ -1,5 +1,6 @@
 package it.uniba.sms2122.tourexperience.musei;
 
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cacheMuseums;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getAllCachedMuseums;
 
 import android.content.res.ColorStateList;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
@@ -37,8 +39,16 @@ public class BackToMuseumsList implements Back {
 
     @Override
     public void back(View view) {
-        fragment.setListaMusei(getAllCachedMuseums());
-        MuseiAdapter adapterMusei = new MuseiAdapter(mainActivity, progressBar, fragment.getListaMusei(), true);
+        MuseiAdapter adapterMusei = null;
+        List<Museo> listaForAdapter = null;
+        if (cacheMuseums.isEmpty()) {
+            listaForAdapter = new ArrayList<>();
+            listaForAdapter.add(new Museo(fragment.getResources().getString(R.string.no_result)));
+        } else {
+            listaForAdapter = getAllCachedMuseums();
+        }
+        fragment.setListaMusei(listaForAdapter);
+        adapterMusei = new MuseiAdapter(mainActivity, progressBar, fragment.getListaMusei(), true);
         recyclerView.setAdapter(adapterMusei);
         fragment.attachQueryTextListener(adapterMusei);
         fab.setImageResource(R.drawable.ic_baseline_add_24);
@@ -48,5 +58,6 @@ public class BackToMuseumsList implements Back {
                 fragment.getResources().getColor(R.color.mtrl_fab_button_default, null))
         );
         mainActivity.getSupportActionBar().setTitle(R.string.museums);
+
     }
 }

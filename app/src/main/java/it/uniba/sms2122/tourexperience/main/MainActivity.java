@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
+import it.uniba.sms2122.tourexperience.musei.ImportPercorsi;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
@@ -45,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
                 () -> {}
         );
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        // Riempio una cache apposita con i nomi dei percorsi presenti in locale
+        new Thread(new ImportPercorsi(getApplicationContext())).start();
     }
 
     @Override

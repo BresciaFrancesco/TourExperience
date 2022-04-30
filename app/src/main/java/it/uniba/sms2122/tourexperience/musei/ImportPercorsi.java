@@ -19,7 +19,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
+import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.DTO.MuseoLocalStorageDTO;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.utility.LocalFileMuseoManager;
@@ -85,13 +90,11 @@ public class ImportPercorsi implements Runnable {
                 downloadStepOne(dto, storage, nomeMuseo, nomePercorso, progressBar);
             } else {
                 progressBar.setVisibility(View.GONE);
-                Log.e("DOWNLOAD_MUSEO",
-                        String.format("museo %s non esistente nello storage in cloud", nomeMuseo));
+                Toast.makeText(context, context.getString(R.string.path_from_cloud_empty),
+                        Toast.LENGTH_LONG).show();
             }
-        }).addOnFailureListener(error -> {
-            progressBar.setVisibility(View.GONE);
-            Log.e("DOWNLOAD_MUSEO", error.getMessage());
-        });
+        }).addOnFailureListener(error ->
+                fail(progressBar, "DOWNLOAD_MUSEO", error.getMessage()));
     }
 
 
@@ -129,25 +132,14 @@ public class ImportPercorsi implements Runnable {
                         downloadStepTwo(dto, storage, nomeMuseo, nomePercorso, progressBar);
 
                     } catch (IOException | JsonSyntaxException | JsonIOException e) {
-                        progressBar.setVisibility(View.GONE);
+                        fail(progressBar, "exception_file_or_gson", e.getMessage());
                         e.printStackTrace();
                     }
-                }).addOnFailureListener(e -> {
-                    progressBar.setVisibility(View.GONE);
-                    Log.v("ERROR_info", e.getMessage());
-                }));
-                if (!dto.getInfo().isPresent()) {
-                    progressBar.setVisibility(View.GONE);
-                    Log.v("ERROR_info", "Non è presente nel DTO.");
-                }
-            }).addOnFailureListener(e -> {
-                progressBar.setVisibility(View.GONE);
-                Log.v("ERROR_immagine_principale", e.getMessage());
-            }));
-        if (!dto.getImmaginePrincipale().isPresent()) {
-            progressBar.setVisibility(View.GONE);
-            Log.v("ERROR_immagine_principale", "Non è presente nel DTO.");
-        }
+                }).addOnFailureListener(e -> fail(progressBar, "info", e.getMessage())));
+                fail(progressBar, dto.getInfo(), "info");
+            }).addOnFailureListener(e ->
+                    fail(progressBar, "immagine_principale", e.getMessage())));
+        fail(progressBar, dto.getImmaginePrincipale(), "immagine_principale");
     }
 
     /**
@@ -178,15 +170,9 @@ public class ImportPercorsi implements Runnable {
                 // Scarica infine il percorso scelto
                 downloadPercorso(nomePercorso, nomeMuseo, progressBar);
             })
-            .addOnFailureListener(e -> {
-                progressBar.setVisibility(View.GONE);
-                Log.e("ERROR_stanze", e.getMessage());
-            });
+            .addOnFailureListener(e -> fail(progressBar, "stanze", e.getMessage()));
         });
-        if (!dto.getStanzeDir().isPresent()) {
-            progressBar.setVisibility(View.GONE);
-            Log.v("ERROR_stanze", "Non è presente nel DTO.");
-        }
+        fail(progressBar, dto.getStanzeDir(), "stanze");
     }
 
     /**
@@ -208,7 +194,8 @@ public class ImportPercorsi implements Runnable {
         .addOnCompleteListener(task -> progressBar.setVisibility(View.GONE))
         .addOnFailureListener(e -> Log.e("DOWNLOAD_PERCORSO", e.getMessage()))
         .addOnSuccessListener(taskSnapshot -> {
-            cachePercorsiInLocale.add(String.format("%s_%s", nomeMuseo, nomePercorso));
+            addNewPercorsoToCache(nomeMuseo, Collections.singletonList(nomePercorso));
+            //cachePercorsiInLocale.add(String.format("%s_%s", nomeMuseo, nomePercorso));
             // Eseguo la rimozione del percorso dalla cache
             cachePercorsi.remove(new Museo(nomePercorso, nomeMuseo));
             if (backToMuseumsList != null) {
@@ -221,6 +208,32 @@ public class ImportPercorsi implements Runnable {
             Log.v("DOWNLOAD_PERCORSO",
                     String.format("Download del percorso %s eseguito correttamente", nomePercorso));
         });
+    }
+
+    /**
+     * Quando un dto è vuoto, questo metodo viene usato per gestire e segnalare l'errore.
+     * @param pb progressBar da fermare.
+     * @param file file inserito in un Optional da controllare.
+     * @param errorTag tag da aggiungere al tag del log di errore.
+     */
+    private void fail(final ProgressBar pb, final Optional<File> file,
+                      final String errorTag) {
+        if (file.isPresent()) return;
+        pb.setVisibility(View.GONE);
+        Log.e("ERROR_"+errorTag, "Non è presente nel DTO.");
+    }
+
+    /**
+     * Quando avviene un fallimento catturato da un apposito listener, questo metodo
+     * si occupa di gestirle e segnalare l'errore.
+     * @param pb progressBar da fermare.
+     * @param errorTag tag da aggiungere al tag del log di errore.
+     * @param errorMessage messaggio di errore dinamico.
+     */
+    private void fail(final ProgressBar pb, final String errorTag,
+                      final String errorMessage) {
+        pb.setVisibility(View.GONE);
+        Log.e("ERROR_"+errorTag, errorMessage);
     }
 
     /**

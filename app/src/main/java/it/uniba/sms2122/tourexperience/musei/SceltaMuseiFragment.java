@@ -150,8 +150,6 @@ public class SceltaMuseiFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         File filesDir = view.getContext().getFilesDir();
-        // Riempio una cache apposita con i nomi dei percorsi presenti in locale
-        new Thread(new ImportPercorsi(view.getContext())).start();
 
         localFileManager = new LocalFileMuseoManager(filesDir.toString());
         localFileManager.createLocalDirectoryIfNotExists(filesDir, "Museums");
@@ -318,8 +316,7 @@ public class SceltaMuseiFragment extends Fragment {
                         String nomePercorso = fileJson.getName();
                         nomePercorso = nomePercorso.substring(0, nomePercorso.length()-5);
                         // Se il percorso è già presente in locale, non mostrarlo all'utente
-                        if (cachePercorsiInLocale.contains(
-                                String.format("%s_%s", nomeMuseo, nomePercorso))) continue;
+                        if (checkRouteExistence(nomeMuseo, nomePercorso)) continue;
                         adapterPercorsi.addMuseum(new Museo(nomePercorso, nomeMuseo));
                     }
                 } else Log.e("IMPORT_CLOUD", "Task is not succesfull");

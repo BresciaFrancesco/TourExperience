@@ -104,4 +104,5 @@
         \nThanks
     </string>
     <string name="do_not_show_again">Do not show again</string>
+    <string name="path_from_cloud_empty">There is no routes to import</string>
 </resources>

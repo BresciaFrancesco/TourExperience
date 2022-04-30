@@ -15,16 +15,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import it.uniba.sms2122.tourexperience.model.DTO.MuseoLocalStorageDTO;
 import it.uniba.sms2122.tourexperience.model.Museo;
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 /**
  * Classe che gestisce tutti salvati nel filesystem locale relativi ai musei.
@@ -92,13 +89,13 @@ public class LocalFileMuseoManager extends LocalFileManager {
                 try {
                     File[] files = new File(pathMuseo).listFiles();
                     if (files == null) continue;
-                    cachePercorsiInLocale.addAll(Stream.of(files)
-                    .filter(file -> !file.isDirectory())
-                    .map(file -> {
-                        String name = file.getName();
-                        return String.format("%s_%s", path.getFileName(), name.substring(0, name.length()-5));
-                    })
-                    .collect(Collectors.toList()));
+                    addNewPercorsoToCache(path.getFileName().toString(), Stream.of(files)
+                        .filter(file -> !file.isDirectory())
+                        .map(file -> {
+                            String name = file.getName();
+                            return name.substring(0, name.length()-5);
+                        })
+                        .collect(Collectors.toList()));
                 }
                 catch (NullPointerException e) {
                     Log.e("NullPointerException",

@@ -1,11 +1,15 @@
 package it.uniba.sms2122.tourexperience.cache;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import it.uniba.sms2122.tourexperience.model.Museo;
 
@@ -28,7 +32,7 @@ public class CacheMuseums {
     public final static List<Museo> cachePercorsi = new ArrayList<>();
 
 
-    public final static Set<String> cachePercorsiInLocale = new HashSet<>();
+    public final static Map<String, Set<String>> cachePercorsiInLocale = new HashMap<>();
 
     /** Costruttore privato perché la classe non è istanziabile */
     private CacheMuseums() {}
@@ -85,6 +89,29 @@ public class CacheMuseums {
             cacheMuseums.put(museo.getNome(), museo);
         }
         return true;
+    }
+
+
+    public static void addNewPercorsoToCache(final String nomeMuseo,
+                                             final List<String> percorsi) {
+        Set<String> s = cachePercorsiInLocale.get(nomeMuseo);
+        if (s == null) {
+            Set<String> set = new HashSet<>();
+            set.addAll(percorsi);
+            cachePercorsiInLocale.put(nomeMuseo, set);
+            return;
+        }
+        s.addAll(percorsi);
+    }
+
+
+    public static boolean checkRouteExistence(final String nomeMuseo,
+                                              String nomePercorso) {
+        if (nomePercorso.endsWith(".json")) {
+            nomePercorso = nomePercorso.substring(0, nomePercorso.length()-5);
+        }
+        Set<String> s = cachePercorsiInLocale.get(nomeMuseo);
+        return s != null && s.contains(nomePercorso);
     }
 
 }

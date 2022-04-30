@@ -243,6 +243,7 @@ public class ImportPercorsi implements Runnable {
      */
     @Override
     public void run() {
+        Log.v("THREAD_Cache_Percorsi_Locale", "chiamato il thread");
         try { localFileManager.getPercorsiInLocale(); }
         catch (IOException e) {
             Log.e("THREAD_Cache_Percorsi_Locale",

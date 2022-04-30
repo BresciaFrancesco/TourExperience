@@ -99,6 +99,6 @@
         Qualsiasi file .zip non conforme, sarà rifiutato.
         \nGrazie
     </string>
-    <string name="do_not_show_again">Non mostrare più</string>
+    <string name="do_not_show_again">OK e non mostrare più</string>
     <string name="path_from_cloud_empty">Non ci sono percorsi da importare</string>
 </resources>

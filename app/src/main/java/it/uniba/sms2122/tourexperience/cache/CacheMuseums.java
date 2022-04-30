@@ -31,12 +31,18 @@ public class CacheMuseums {
      *  museo). */
     public final static List<Museo> cachePercorsi = new ArrayList<>();
 
-
+    /** La cache è HashMap che contiene oggetti di tipo HashSet.
+     * Vengono salvati i percorsi presenti in locale, ma solo il nome.
+     * La struttura è:
+     * "nome museo" : {"nome percorso", "nome percorso", ...},
+     * "nome museo" : ...,
+     * ...
+     */
     public final static Map<String, Set<String>> cachePercorsiInLocale = new HashMap<>();
+
 
     /** Costruttore privato perché la classe non è istanziabile */
     private CacheMuseums() {}
-
 
     /**
      * Ritorna tutti i musei nella cache sotto forma di lista.
@@ -92,26 +98,38 @@ public class CacheMuseums {
     }
 
 
+    /**
+     * Aggiunge un nuovo percorso alla cache dei percorsi in locale.
+     * Controlla prima che il nome del museo sia già presente, in modo
+     * da eseguire correttamente l'aggiunta del nome del percorso.
+     * @param nomeMuseo nome del museo che potrebbe essere già presente,
+     *                  altrimenti viene aggiunto.
+     * @param percorsi nomi dei percorsi da aggiungere.
+     */
     public static void addNewPercorsoToCache(final String nomeMuseo,
                                              final List<String> percorsi) {
         Set<String> s = cachePercorsiInLocale.get(nomeMuseo);
         if (s == null) {
-            Set<String> set = new HashSet<>();
-            set.addAll(percorsi);
-            cachePercorsiInLocale.put(nomeMuseo, set);
+            cachePercorsiInLocale.put(nomeMuseo, new HashSet<>(percorsi));
             return;
         }
         s.addAll(percorsi);
     }
 
-
+    /**
+     * Controlla se la cache dei percorsi in locale contiene il percorso
+     * passato come parametro.
+     * @param nomeMuseo nome del museo nella quale potrebbe trovarsi o non trovarsi il percorso.
+     * @param nomePercorso nome del percorso di cui controllare l'esistenza.
+     * @return true se il percorso è già presente in cache, false altrimenti.
+     */
     public static boolean checkRouteExistence(final String nomeMuseo,
                                               String nomePercorso) {
         if (nomePercorso.endsWith(".json")) {
             nomePercorso = nomePercorso.substring(0, nomePercorso.length()-5);
         }
-        Set<String> s = cachePercorsiInLocale.get(nomeMuseo);
-        return s != null && s.contains(nomePercorso);
+        Set<String> percorsi = cachePercorsiInLocale.get(nomeMuseo);
+        return percorsi != null && percorsi.contains(nomePercorso);
     }
 
 }

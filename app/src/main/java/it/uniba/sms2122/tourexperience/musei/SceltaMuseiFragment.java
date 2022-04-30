@@ -175,6 +175,7 @@ public class SceltaMuseiFragment extends Fragment {
             final Runnable openFileExplorer = () -> {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("application/zip");
+                intent.setType("application/json");
                 startActivityForResult(intent, requestCodeGC);
                 hideFabOptions();
             };
@@ -186,9 +187,7 @@ public class SceltaMuseiFragment extends Fragment {
                 new AlertDialog.Builder(view2.getContext())
                 .setTitle(getString(R.string.local_import_dialog_title))
                 .setMessage(getString(R.string.local_import_message))
-                .setPositiveButton("OK", (dialog, whichButton) -> {
-                    openFileExplorer.run();
-                })
+                .setPositiveButton("OK", (dialog, whichButton) -> openFileExplorer.run())
                 .setNeutralButton(getString(R.string.do_not_show_again), (dialog, whichButton) -> {
                     dialog.dismiss();
                     SharedPreferences.Editor editor = sp.edit();
@@ -260,18 +259,20 @@ public class SceltaMuseiFragment extends Fragment {
     }
 
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // Gestisce solo l'ottenimento del file .zip, avvenuto tramite Intent implicito.
         if (requestCode == requestCodeGC) {
             if (resultCode == MainActivity.RESULT_OK) {
-                // test
-                String path = data.getData().getPath();
-                Log.v("onActivityResult", "Funziona: " + path);
-            }
-            else {
-                Log.e("onActivityResult", "resultCode " + resultCode);
+                /*try {
+                    localFileManager.unzip(new File(data.getData().getPath()));
+                }
+                catch (IOException | IllegalArgumentException e) {
+                    e.printStackTrace();
+                }*/
+            } else {
+                Log.e("SceltaMuseiFragment.onActivityResult", "resultCode " + resultCode);
             }
         }
     }

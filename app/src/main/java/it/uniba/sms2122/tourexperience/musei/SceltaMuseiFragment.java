@@ -5,15 +5,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -174,8 +179,8 @@ public class SceltaMuseiFragment extends Fragment {
         localStorageFab.setOnClickListener(view2 -> {
             final Runnable openFileExplorer = () -> {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("application/zip");
-                intent.setType("application/json");
+                intent.setType("application/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(intent, requestCodeGC);
                 hideFabOptions();
             };
@@ -265,12 +270,22 @@ public class SceltaMuseiFragment extends Fragment {
         // Gestisce solo l'ottenimento del file .zip, avvenuto tramite Intent implicito.
         if (requestCode == requestCodeGC) {
             if (resultCode == MainActivity.RESULT_OK) {
-                /*try {
+                try {
+                    Uri returnUri = data.getData();
+                    String mimeType = getActivity().getContentResolver().getType(returnUri);
+                    String fileName = DocumentFile.fromSingleUri(getContext(), returnUri).getName();
+
+                    Log.v("URI", returnUri.toString());
+                    Log.v("MIME_TYPE", mimeType);
+                    Log.v("NOME", fileName);
+                    // TODO cambiare il metodo zip per ricevere i parametri URI, mimeType e filename
+                    // TODO creare anche controllo sul mimetype (solo application/zip e application/json)
                     localFileManager.unzip(new File(data.getData().getPath()));
                 }
                 catch (IOException | IllegalArgumentException e) {
+                    Toast.makeText(getActivity(), "File .zip errato", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
-                }*/
+                }
             } else {
                 Log.e("SceltaMuseiFragment.onActivityResult", "resultCode " + resultCode);
             }

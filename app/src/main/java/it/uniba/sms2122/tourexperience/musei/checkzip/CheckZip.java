@@ -1,5 +1,7 @@
 package it.uniba.sms2122.tourexperience.musei.checkzip;
 
+import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +26,7 @@ public class CheckZip {
     private final String infoMuseoJson = "Info.json";
 
     public static void print(String s) {
-        System.out.println(s);
+        Log.v("CheckZip", s);
     }
 
     // TEST

@@ -270,7 +270,7 @@ public class SceltaMuseiFragment extends Fragment {
         // Gestisce solo l'ottenimento del file .zip, avvenuto tramite Intent implicito.
         if (requestCode == requestCodeGC) {
             if (resultCode == MainActivity.RESULT_OK) {
-                try {
+                /*try {
                     Uri returnUri = data.getData();
                     String mimeType = getActivity().getContentResolver().getType(returnUri);
                     String fileName = DocumentFile.fromSingleUri(getContext(), returnUri).getName();
@@ -285,7 +285,7 @@ public class SceltaMuseiFragment extends Fragment {
                 catch (IOException | IllegalArgumentException e) {
                     Toast.makeText(getActivity(), "File .zip errato", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
-                }
+                }*/
             } else {
                 Log.e("SceltaMuseiFragment.onActivityResult", "resultCode " + resultCode);
             }

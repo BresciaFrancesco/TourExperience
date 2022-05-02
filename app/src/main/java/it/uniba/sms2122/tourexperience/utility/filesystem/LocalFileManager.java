@@ -4,6 +4,8 @@ package it.uniba.sms2122.tourexperience.utility.filesystem;
 import android.util.Log;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 public class LocalFileManager {
 
@@ -14,6 +16,14 @@ public class LocalFileManager {
             generalPath += "/";
         }
         this.generalPath = generalPath + "Museums/";
+    }
+
+    /**
+     * Ritorna il path generale utilizzato da tutte le classi LocalFileManager.
+     * @return path generale.
+     */
+    public String getGeneralPath() {
+        return generalPath;
     }
 
     /**
@@ -29,6 +39,25 @@ public class LocalFileManager {
                 Log.e("CREATE_DIRECTORY: " + pathFileWithFile, "Error!");
         }
         return directory;
+    }
+
+    /**
+     * Eliminare una directory "non vuota", eliminando i file
+     * contenuti al suo interno in modo ricorsivo.
+     * @param dir file directory da eliminare.
+     * @throws IOException
+     */
+    public void deleteDir(final File dir) throws IOException {
+        File[] files = new File(dir.toURI()).listFiles();
+        if (files == null) return;
+        final int size = files.length;
+        for (int i = 0; i < size; i++) {
+            if (files[i].isDirectory()) {
+                deleteDir(files[i]);
+            }
+            Files.deleteIfExists(files[i].toPath());
+        }
+        Files.deleteIfExists(dir.toPath());
     }
 
 

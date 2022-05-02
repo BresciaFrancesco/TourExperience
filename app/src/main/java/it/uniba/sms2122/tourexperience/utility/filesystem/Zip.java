@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -20,13 +21,14 @@ import android.util.Log;
  * Classe che effettua l'unzip di un file .zip.
  */
 public class Zip {
-    private final String generalPath;
     private final int bufferDim = 8192; // 8.2 KB
     private final ZipChecker checker;
+    private final LocalFileManager localFileManager;
 
-    public Zip(final String generalPath) {
+
+    public Zip(final LocalFileManager localFileManager) {
         this.checker = new CheckZipMuseum();
-        this.generalPath = generalPath;
+        this.localFileManager = localFileManager;
     }
 
     /**
@@ -47,11 +49,20 @@ public class Zip {
 
         try {
             Log.v("CHECK_ZIP", "inizio UNZIP...");
-            unzip(zipFile, new File(generalPath));
+            unzip(zipFile, new File(localFileManager.getGeneralPath()));
             Log.v("CHECK_ZIP", "fine UNZIP...");
         }
         catch (IOException e) {
             Log.e("CHECK_ZIP", "ECCEZIONE in UNZIP...");
+            try {
+                localFileManager.deleteDir(
+                        Paths.get(localFileManager.generalPath, zipFile.getName()).toFile()
+                );
+            }
+            catch (IOException t) {
+                Log.e("CHECK_ZIP", "ECCEZIONE in DELETE DIR...");
+                t.printStackTrace();
+            }
             e.printStackTrace();
             return false;
         }

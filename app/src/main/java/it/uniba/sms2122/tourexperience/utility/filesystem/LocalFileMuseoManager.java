@@ -116,4 +116,10 @@ public class LocalFileMuseoManager extends LocalFileManager {
         }
     }
 
+    // TODO da completare
+    public boolean unzip(final File zipFile) {
+        Zip zip = new Zip(this);
+        return zip.startUnzip(zipFile);
+    }
+
 }

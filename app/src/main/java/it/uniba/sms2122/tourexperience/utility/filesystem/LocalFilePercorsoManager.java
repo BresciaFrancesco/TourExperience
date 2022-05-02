@@ -1,11 +1,10 @@
-package it.uniba.sms2122.tourexperience.utility;
+package it.uniba.sms2122.tourexperience.utility.filesystem;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -21,6 +20,7 @@ import java.util.Optional;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.model.Opera;
 import it.uniba.sms2122.tourexperience.model.Stanza;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
 
 public class LocalFilePercorsoManager extends LocalFileManager {
 

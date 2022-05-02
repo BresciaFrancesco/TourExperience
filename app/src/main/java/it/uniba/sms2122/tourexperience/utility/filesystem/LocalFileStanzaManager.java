@@ -1,4 +1,4 @@
-package it.uniba.sms2122.tourexperience.utility;
+package it.uniba.sms2122.tourexperience.utility.filesystem;
 
 import android.util.Log;
 
@@ -16,8 +16,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.model.Stanza;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
 
 public class LocalFileStanzaManager extends LocalFileManager {
 

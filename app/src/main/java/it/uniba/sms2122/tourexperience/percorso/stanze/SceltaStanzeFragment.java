@@ -22,8 +22,8 @@ import java.util.List;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.model.Stanza;
-import it.uniba.sms2122.tourexperience.utility.LocalFileMuseoManager;
-import it.uniba.sms2122.tourexperience.utility.LocalFileStanzaManager;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileStanzaManager;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -70,12 +70,10 @@ public class BleController {
      * Costruttore della classe BleController.
      * @param context Il contesto.
      * @param operas Le opere in una determinata stanza.
-     * @param onDetectionListener Il listener che eseguirà il metodo onOperaDetected. È possibile realizzarlo mediante lambda expression.
      */
     public BleController(Context context, Map<String, Opera> operas) {
         this.context = context;
         this.operas = operas;
-        this.onDetectionListener = onDetectionListener;
         distanceRecords = new HashMap<>();
 
         // Inizializzazione del bluetooth

@@ -32,7 +32,8 @@ public class Percorso {
     /** Descrizione del percorso, da visualizzare come anteprima del percorso stesso */
     private String descrizionePercorso;
 
-    // ------------------------------ Metodi ------------------------------ //
+
+// ------------------------------ Metodi ------------------------------ //
 
     /**
      * Muove il puntatore della stanza corrente sulla prossima stanza indicata
@@ -84,5 +85,7 @@ public class Percorso {
     public Stanza getStanzaCorrente() {
         return mappaStanze.get(idStanzaCorrente).getStanza();
     }
+
+    public String getDescrizionePercorso() { return descrizionePercorso; }
 
 }

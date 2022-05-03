@@ -10,21 +10,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.musei.MuseiAdapter;
 
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder> {
 
     private Context context;
-    private String[] names;
-    private int[] images;
+    private ArrayList<String> names;
 
     private RecycleViewAdapter.onItemClickListener onItemClickListener;
 
-    public RecycleViewAdapter(Context context, String[] names, int[] images) {
+    public RecycleViewAdapter(Context context, ArrayList<String> names) {
         this.context = context;
         this.names = names;
-        this.images = images;
     }
 
     @NonNull
@@ -37,8 +37,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.textview.setText(names[position]);
-        holder.imageView.setImageResource(images[position]);
+        holder.textview.setText(names.get(position));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,7 +48,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     @Override
     public int getItemCount() {
-        return names.length;
+        return names.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -61,6 +60,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             super(itemView);
             textview = itemView.findViewById(R.id.nameRoute);
             imageView = itemView.findViewById(R.id.imageRoute);
+            imageView.setImageResource(R.drawable.ic_path);
         }
     }
 

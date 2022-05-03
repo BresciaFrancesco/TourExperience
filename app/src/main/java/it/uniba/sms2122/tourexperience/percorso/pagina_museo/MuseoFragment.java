@@ -1,5 +1,7 @@
 package it.uniba.sms2122.tourexperience.percorso.pagina_museo;
 
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
@@ -15,8 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
+import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.musei.MuseiAdapter;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 
@@ -25,10 +34,7 @@ public class MuseoFragment extends Fragment {
     ViewPager viewPager;
     TextView textView;
     RecyclerView recycleView;
-
-    // Info items
-    String[] names = {"percorso1","percorso2"};
-    int[] images = {R.drawable.ic_launcher_background,R.drawable.ic_launcher_background};
+    ArrayList<String> nomiPercorsi = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,9 +55,14 @@ public class MuseoFragment extends Fragment {
 
         recycleView = view.findViewById(R.id.routes_recycle_view);
 
-        // Settare i dati per i percorsi qui, prima di creare l'adapter
+        // Prende il nome museo passato dall'activity principale
+        Bundle bundle = getArguments();
+        String nomeMuseo = bundle.getString("nomeMuseo");
 
-        RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(),names,images);
+        // Prende i nomi dei percorsi dalla cache locale
+        nomiPercorsi.addAll(cachePercorsiInLocale.get(nomeMuseo));
+
+        RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(),nomiPercorsi);
         recycleView.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();

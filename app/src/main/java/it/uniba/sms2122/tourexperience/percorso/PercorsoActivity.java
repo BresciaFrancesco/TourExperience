@@ -30,6 +30,9 @@ public class PercorsoActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             Fragment firstPage = new MuseoFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("nomeMuseo",nomeMuseo);
+            firstPage.setArguments(bundle);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.setReorderingAllowed(true);  //ottimizza i cambiamenti di stato dei fragment in modo che le animazioni funzionino correttammente
             transaction.add(R.id.container_fragments_route, firstPage);
@@ -51,16 +54,14 @@ public class PercorsoActivity extends AppCompatActivity {
     public void nextPercorsoFragment(Bundle bundle) {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         Fragment secondPage = new OverviewPathFragment();
-
-
         secondPage.setArguments(bundle);
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setReorderingAllowed(true);
         transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
         transaction.replace(R.id.container_fragments_route, secondPage);
         transaction.addToBackStack(null);
         transaction.commit();
-
     }
 
     public void nextStanzeFragment() {
@@ -73,7 +74,6 @@ public class PercorsoActivity extends AppCompatActivity {
         transaction.replace(R.id.container_fragments_route, thirdPage);
         transaction.addToBackStack(null);
         transaction.commit();
-
     }
 
     @Override

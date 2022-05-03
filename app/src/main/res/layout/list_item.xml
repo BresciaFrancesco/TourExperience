@@ -24,7 +24,7 @@
         android:layout_gravity="center">
         <TextView
             android:id="@+id/nome_item_lista"
-            android:text="courseName"
+            android:text="itemName"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

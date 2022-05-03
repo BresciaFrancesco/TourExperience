@@ -16,7 +16,10 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.Optional;
+
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 
 public class OverviewPathFragment extends Fragment {

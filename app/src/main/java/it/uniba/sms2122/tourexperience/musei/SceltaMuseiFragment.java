@@ -147,7 +147,6 @@ public class SceltaMuseiFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         File filesDir = view.getContext().getFilesDir();
-
         localFileManager = new LocalFileMuseoManager(filesDir.toString());
         localFileManager.createLocalDirectoryIfNotExists(filesDir, "Museums");
 

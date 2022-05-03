@@ -11,7 +11,12 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
 import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
+
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
+
+import java.io.File;
 
 public class PercorsoActivity extends AppCompatActivity {
 
@@ -33,6 +38,9 @@ public class PercorsoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         nomeMuseo = getIntent().getStringExtra("nome_museo");
+
+        File filesDir = getApplicationContext().getFilesDir();
+
 
         // cacheMuseums.get(nomeMuseo); // per ottenere l'oggetto Museo, basta fare così
 

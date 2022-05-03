@@ -1,5 +1,7 @@
 package it.uniba.sms2122.tourexperience.utility.filesystem;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -12,6 +14,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +23,6 @@ import java.util.Optional;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.model.Opera;
 import it.uniba.sms2122.tourexperience.model.Stanza;
-import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
 
 public class LocalFilePercorsoManager extends LocalFileManager {
 
@@ -43,30 +45,39 @@ public class LocalFilePercorsoManager extends LocalFileManager {
     }
 
     /**
-     * Carica e crea gli oggetti Opera di un percorso, in particolare
-     * carica e crea le opere della stanza corrente e delle stanze
-     * direttamente collegate ad essa.
+     * Carica e crea gli oggetti Stanza e Opera di un percorso, in particolare
+     * carica e crea la stanza corrente e le opere contenute al suo interno
+     * Inoltre carica e crea le stanze direttamente collegate ad essa e
+     * le opere contenute al suo interno
      * @param grafo percorso nella quale creare le opere.
      */
-    public void createOpereInThisAndNextStanze(final Percorso grafo) {
+    public void createStanzeAndOpereInThisAndNextStanze(final Percorso grafo) {
         // carico le opere di questa stanza
         Stanza stanzaCorrente = grafo.getStanzaCorrente();
+        System.out.println("nome stanza corrente "+grafo.getNomeMuseo());
+        loadStanza(grafo.getNomeMuseo(), stanzaCorrente.getNome());
         loadOpere(grafo.getNomeMuseo(), stanzaCorrente);
         // e poi carico le opere delle stanze collegate nel grafo
-        new Thread(() -> this.createOpereOnlyInNextStanze(grafo)).start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                LocalFilePercorsoManager.this.createStanzeAndOpereOnlyInNextStanze(grafo);
+            }
+        }).start();
     }
 
     /**
-     * Carica e crea gli oggetti Opera di un percorso, in particolare
-     * carica e crea le opere delle stanze direttamente collegate a
-     * quella in cui ci si trova in quel momento.
+     * Carica e crea gli oggetti Stanza e Opera di un percorso, in particolare
+     * carica e crea le le stanze direttamente collegate a quella in cui ci si trova in quel momento
+     * e le opere contenute al suo interno
      * @param grafo percorso nella quale creare le opere.
      */
     // Supposto che si abbiano già gli oggetti stanza completi
     // TODO non ancora testato: da testare prima dell'uso
-    public void createOpereOnlyInNextStanze(final Percorso grafo) {
+    public void createStanzeAndOpereOnlyInNextStanze(final Percorso grafo) {
         List<Stanza> stanzeAdiacenti = grafo.getAdiacentNodes();
         for (int i = 0; i < stanzeAdiacenti.size(); i++) {
+            loadStanza(grafo.getNomeMuseo(),stanzeAdiacenti.get(i).getNome());
             loadOpere(grafo.getNomeMuseo(), stanzeAdiacenti.get(i));
         }
     }
@@ -94,5 +105,32 @@ public class LocalFilePercorsoManager extends LocalFileManager {
         catch (IOException | JsonSyntaxException | JsonIOException e) {
             e.printStackTrace();
         }
+    }
+
+    private Stanza loadStanza(final String nomeMuseo, final String nomeStanza) {
+        Stanza stanza = new Stanza();
+        Gson gson = new Gson();
+        System.out.println(nomeStanza);
+
+        try (
+                DirectoryStream<Path> stream =
+                        Files.newDirectoryStream(Paths.get(generalPath + nomeMuseo + "/Stanze"));
+        ) {
+            for (Path path : stream) {
+                try ( Reader reader = new FileReader(path + "/Info_stanza.json") )
+                {
+                    System.out.println("path1" + path.toString());
+                    System.out.println("path2" + Paths.get(generalPath + nomeMuseo + "/Stanze/" + nomeStanza).toString());
+                    if(path == Paths.get(generalPath + nomeMuseo + "/Stanze/" + nomeStanza)) {
+                        System.out.println("COME" + path.toString());
+                        stanza = gson.fromJson(reader , Stanza.class);
+                    }
+                }
+            }
+        }
+        catch (IOException | JsonSyntaxException | JsonIOException e) {
+            e.printStackTrace();
+        }
+        return stanza;
     }
 }

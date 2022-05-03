@@ -27,9 +27,6 @@ import it.uniba.sms2122.tourexperience.cache.CacheMuseums;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
-import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
-import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileStanzaManager;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SceltaStanzeFragment} factory method to
@@ -41,7 +38,6 @@ public class SceltaStanzeFragment extends Fragment {
     private List<Stanza> listaStanze;
     private ImageView imageView;
     private TextView textView;
-    private LocalFileStanzaManager localFileStanzaManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,47 +56,25 @@ public class SceltaStanzeFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         textView = (TextView) view.findViewById(R.id.nome_item_museo);
         imageView = (ImageView) view.findViewById(R.id.icona_item_museo);
-
-        localFileStanzaManager = new LocalFileStanzaManager(getContext().getFilesDir().toString());
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        try{
-            PercorsoActivity parentActivity = (PercorsoActivity) getActivity();
+        PercorsoActivity parentActivity = (PercorsoActivity) getActivity();
 
-            String nomePercorso = parentActivity.getNomePercorso();
-            String nomeMuseo = parentActivity.getNomeMuseo();
-            createListStanze(nomeMuseo);
+        String nomePercorso = parentActivity.getNomePercorso();
+        String nomeMuseo = parentActivity.getNomeMuseo();
 
-            imageView.setImageURI(Uri.parse(cacheMuseums.get(nomeMuseo).getFileUri()));
-            textView.setText(nomeMuseo + "\n" + nomePercorso);
+        //TODO valorizzare la listaStanze da visualizzare nella recycleview
 
-            // Sending reference and data to Adapter
-            StanzeAdpter adapter = new StanzeAdpter(getContext(), listaStanze);
-            // Setting Adapter to RecyclerView
-            recyclerView.setAdapter(adapter);
-        }catch (IOException e){
-            listaStanze = new ArrayList<>();
-            e.printStackTrace();
-        }
-    }
+        imageView.setImageURI(Uri.parse(cacheMuseums.get(nomeMuseo).getFileUri()));
+        textView.setText(nomeMuseo + "\n" + nomePercorso);
 
-    /**
-     * Istanzia la lista delle stanze, recuperando le stanze dal filesystem locale.
-     * @throws IOException
-     */
-    private void createListStanze(String nomeMuseo) throws IOException {
-        if (listaStanze == null || listaStanze.isEmpty()) {
-            listaStanze = localFileStanzaManager.getListStanze(nomeMuseo);
-            if (listaStanze.isEmpty()) {
-                Log.v("LISTA_STANZE", "lista stanze vuota");
-                listaStanze = new ArrayList<>();
-            }
-            else {
-            }
-        } else Log.v("LISTA_STANZE", "stanze giò presenti in memoria");
+        // Sending reference and data to Adapter
+        StanzeAdpter adapter = new StanzeAdpter(getContext(), listaStanze);
+        // Setting Adapter to RecyclerView
+        recyclerView.setAdapter(adapter);
     }
 }

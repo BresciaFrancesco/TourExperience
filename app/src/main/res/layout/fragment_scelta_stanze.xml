@@ -37,11 +37,11 @@
     <FrameLayout
         android:id="@+id/rooms_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="580dp"
         android:layout_marginTop="150dp"
         android:layout_marginBottom="55dp"
-        android:minHeight="800dp"
         android:background="@drawable/top_rounded"
+        android:minHeight="800dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

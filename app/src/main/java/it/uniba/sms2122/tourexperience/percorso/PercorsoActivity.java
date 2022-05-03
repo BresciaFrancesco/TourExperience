@@ -16,7 +16,15 @@ import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 public class PercorsoActivity extends AppCompatActivity {
 
     private String nomeMuseo;
-    private String positionPercorsoSelected;
+    private String nomePercorso;
+
+    public String getNomeMuseo() {
+        return nomeMuseo;
+    }
+
+    public String getNomePercorso() {
+        return nomePercorso;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +38,6 @@ public class PercorsoActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             Fragment firstPage = new MuseoFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("nomeMuseo",nomeMuseo);
-            firstPage.setArguments(bundle);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.setReorderingAllowed(true);  //ottimizza i cambiamenti di stato dei fragment in modo che le animazioni funzionino correttammente
             transaction.add(R.id.container_fragments_route, firstPage);
@@ -54,6 +59,7 @@ public class PercorsoActivity extends AppCompatActivity {
     public void nextPercorsoFragment(Bundle bundle) {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         Fragment secondPage = new OverviewPathFragment();
+        nomePercorso = bundle.getString("nome_percorso");
         secondPage.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -67,6 +73,9 @@ public class PercorsoActivity extends AppCompatActivity {
     public void nextStanzeFragment() {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         Fragment thirdPage = new SceltaStanzeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("nome_percorso",nomePercorso);
+        thirdPage.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setReorderingAllowed(true);

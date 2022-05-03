@@ -34,7 +34,7 @@ public class MuseoFragment extends Fragment {
     ViewPager viewPager;
     TextView textView;
     RecyclerView recycleView;
-    ArrayList<String> nomiPercorsi = new ArrayList<>();
+    ArrayList<String> nomiPercorsi;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +46,7 @@ public class MuseoFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        nomiPercorsi = new ArrayList<>();
         viewPager = (ViewPager)view.findViewById(R.id.museum_viewpager);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getContext());
         viewPager.setAdapter(viewPagerAdapter);
@@ -55,25 +56,17 @@ public class MuseoFragment extends Fragment {
 
         recycleView = view.findViewById(R.id.routes_recycle_view);
 
-        // Prende il nome museo passato dall'activity principale
-        Bundle bundle = getArguments();
-        String nomeMuseo = bundle.getString("nomeMuseo");
-
         // Prende i nomi dei percorsi dalla cache locale
-        nomiPercorsi.addAll(cachePercorsiInLocale.get(nomeMuseo));
+        nomiPercorsi.addAll(cachePercorsiInLocale.get(((PercorsoActivity)getActivity()).getNomeMuseo()));
 
         RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(),nomiPercorsi);
         recycleView.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
-        adapter.setOnItemClickListener(new RecycleViewAdapter.onItemClickListener() {
-            @Override
-            public void onClick(String str) {
-                System.out.println(str);
-                Bundle bundle = new Bundle();
-                bundle.putString("position", str);
-                ((PercorsoActivity) getActivity()).nextPercorsoFragment(bundle);
-            }
+        adapter.setOnItemClickListener(str -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("nome_percorso", nomiPercorsi.get(Integer.parseInt(str)));
+            ((PercorsoActivity) getActivity()).nextPercorsoFragment(bundle);
         });
     }
 }

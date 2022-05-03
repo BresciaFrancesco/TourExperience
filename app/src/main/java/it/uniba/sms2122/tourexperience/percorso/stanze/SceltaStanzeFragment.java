@@ -11,17 +11,22 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.cache.CacheMuseums;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.model.Stanza;
+import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileStanzaManager;
 
@@ -33,11 +38,9 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileStanzaManager
 public class SceltaStanzeFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private List<Museo> listaMusei;
     private List<Stanza> listaStanze;
     private ImageView imageView;
     private TextView textView;
-    private LocalFileMuseoManager localFileMuseoManager;
     private LocalFileStanzaManager localFileStanzaManager;
 
     @Override
@@ -58,7 +61,6 @@ public class SceltaStanzeFragment extends Fragment {
         textView = (TextView) view.findViewById(R.id.nome_item_museo);
         imageView = (ImageView) view.findViewById(R.id.icona_item_museo);
 
-        localFileMuseoManager = new LocalFileMuseoManager(getContext().getFilesDir().toString());
         localFileStanzaManager = new LocalFileStanzaManager(getContext().getFilesDir().toString());
     }
 
@@ -66,22 +68,39 @@ public class SceltaStanzeFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        int position = 0;
-        String nomePercorso = "percorso_1";
-        listaMusei = getAllCachedMuseums();
+        try{
+            PercorsoActivity parentActivity = (PercorsoActivity) getActivity();
 
-        Bundle bundle = this.getArguments();
-        if (bundle != null) {
-            position = bundle.getInt("position");
-            nomePercorso = bundle.getString("nomePercorso");
+            String nomePercorso = parentActivity.getNomePercorso();
+            String nomeMuseo = parentActivity.getNomeMuseo();
+            createListStanze(nomeMuseo);
+
+            imageView.setImageURI(Uri.parse(cacheMuseums.get(nomeMuseo).getFileUri()));
+            textView.setText(nomeMuseo + "\n" + nomePercorso);
+
+            // Sending reference and data to Adapter
+            StanzeAdpter adapter = new StanzeAdpter(getContext(), listaStanze);
+            // Setting Adapter to RecyclerView
+            recyclerView.setAdapter(adapter);
+        }catch (IOException e){
+            listaStanze = new ArrayList<>();
+            e.printStackTrace();
         }
+    }
 
-        imageView.setImageURI(Uri.parse(listaMusei.get(position).getFileUri()));
-        textView.setText(listaMusei.get(position).getNome());
-
-        // Sending reference and data to Adapter
-        StanzeAdpter adapter = new StanzeAdpter(getContext(), listaStanze);
-        // Setting Adapter to RecyclerView
-        recyclerView.setAdapter(adapter);
+    /**
+     * Istanzia la lista delle stanze, recuperando le stanze dal filesystem locale.
+     * @throws IOException
+     */
+    private void createListStanze(String nomeMuseo) throws IOException {
+        if (listaStanze == null || listaStanze.isEmpty()) {
+            listaStanze = localFileStanzaManager.getListStanze(nomeMuseo);
+            if (listaStanze.isEmpty()) {
+                Log.v("LISTA_STANZE", "lista stanze vuota");
+                listaStanze = new ArrayList<>();
+            }
+            else {
+            }
+        } else Log.v("LISTA_STANZE", "stanze giò presenti in memoria");
     }
 }

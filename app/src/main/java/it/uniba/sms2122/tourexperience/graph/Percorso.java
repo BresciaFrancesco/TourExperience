@@ -26,6 +26,9 @@ public class Percorso {
     /** Puntatore alla stanza finale del percorso. */
     private String idStanzaFinale;
 
+    /** Nome del percorso. */
+    private String nomePercorso;
+
     /** Nome del museo che contiene questo percorso. */
     private String nomeMuseo;
 
@@ -87,5 +90,7 @@ public class Percorso {
     }
 
     public String getDescrizionePercorso() { return descrizionePercorso; }
+
+    public String getNomePercorso() { return nomePercorso; }
 
 }

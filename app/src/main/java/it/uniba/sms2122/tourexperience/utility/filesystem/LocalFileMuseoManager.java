@@ -1,7 +1,5 @@
 package it.uniba.sms2122.tourexperience.utility.filesystem;
 
-import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -23,6 +21,7 @@ import java.util.stream.Stream;
 
 import it.uniba.sms2122.tourexperience.model.DTO.MuseoLocalStorageDTO;
 import it.uniba.sms2122.tourexperience.model.Museo;
+import it.uniba.sms2122.tourexperience.musei.checkzip.CheckJsonPercorso;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.Zip;
 
@@ -130,17 +129,22 @@ public class LocalFileMuseoManager extends LocalFileManager {
      *         False altrimenti.
      */
     public boolean save(final String fileName, final String mimeType, final OpenFile dto) {
+        boolean result = false;
         if (mimeType.equals(JSON.mimeType())) {
-
+            CheckJsonPercorso cjp = new CheckJsonPercorso(dto, this);
+            result = cjp.check();
         }
         else if (mimeType.equals(ZIP.mimeType())) {
             Zip zip = new Zip(this);
-            return zip.startUnzip(fileName, dto);
+            result = zip.startUnzip(fileName, dto);
+            if (result) {
+
+            }
         }
         else {
             Log.e("LOCAL_IMPORT", "ALTRO NON PREVISTO");
         }
-        return false;
+        return result;
     }
 
 }

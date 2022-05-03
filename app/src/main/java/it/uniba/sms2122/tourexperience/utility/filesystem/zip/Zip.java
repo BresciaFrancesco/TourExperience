@@ -59,6 +59,7 @@ public class Zip {
                 localFileManager.deleteDir(
                         Paths.get(localFileManager.getGeneralPath(), zipName).toFile()
                 );
+                Log.v("CHECK_ZIP", "DELETE dei files completato...");
             }
             catch (IOException t) {
                 Log.e("CHECK_ZIP", "ECCEZIONE in DELETE DIR...");

@@ -1,11 +1,11 @@
-package it.uniba.sms2122.tourexperience.utility.filesystem;
+package it.uniba.sms2122.tourexperience.utility.filesystem.zip;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -14,7 +14,7 @@ import it.uniba.sms2122.tourexperience.musei.checkzip.CheckZipMuseum;
 import it.uniba.sms2122.tourexperience.musei.checkzip.ZipChecker;
 import it.uniba.sms2122.tourexperience.musei.checkzip.exception.ZipCheckerException;
 import it.uniba.sms2122.tourexperience.musei.checkzip.exception.ZipCheckerRunTimeException;
-
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
 import android.util.Log;
 
 /**
@@ -33,30 +33,31 @@ public class Zip {
 
     /**
      * Comincia l'unzip di un file .zip.
-     * @param zipFile file .zip da unzippare.
+     * @param zipName nome del file .zip
+     * @param dto
      * @return true se l'unzip è andato a buon fine, false altrimenti.
      */
-    public boolean startUnzip(File zipFile) {
-        try {
-            checker.start(zipFile);
+    public boolean startUnzip(final String zipName, final OpenFile dto) {
+        try ( InputStream in = dto.openFile() ) {
+            checker.start(in, zipName);
         }
-        catch (ZipCheckerException | ZipCheckerRunTimeException e) {
+        catch (ZipCheckerException | ZipCheckerRunTimeException | IOException e) {
             Log.e("CHECK_ZIP", "ECCEZIONE in CHECK ZIP...");
             e.printStackTrace();
             return false;
         }
         Log.v("CHECK_ZIP", "CHECK ZIP superato...");
 
-        try {
+        try ( InputStream in = dto.openFile() ) {
             Log.v("CHECK_ZIP", "inizio UNZIP...");
-            unzip(zipFile, new File(localFileManager.getGeneralPath()));
+            unzip(in, new File(localFileManager.getGeneralPath()));
             Log.v("CHECK_ZIP", "fine UNZIP...");
         }
         catch (IOException e) {
             Log.e("CHECK_ZIP", "ECCEZIONE in UNZIP...");
             try {
                 localFileManager.deleteDir(
-                        Paths.get(localFileManager.generalPath, zipFile.getName()).toFile()
+                        Paths.get(localFileManager.getGeneralPath(), zipName).toFile()
                 );
             }
             catch (IOException t) {
@@ -71,10 +72,8 @@ public class Zip {
 
 
     // UNZIP
-    private void unzip(File zipFile, File targetDirectory) throws IOException {
-        try (ZipInputStream zis = new ZipInputStream(
-                new BufferedInputStream(new FileInputStream(zipFile)))) {
-
+    private void unzip(final InputStream in, File targetDirectory) throws IOException {
+        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(in))) {
             ZipEntry ze;
             int count;
             byte[] buffer = new byte[bufferDim];

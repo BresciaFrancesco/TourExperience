@@ -1,5 +1,7 @@
 package it.uniba.sms2122.tourexperience.utility.filesystem;
 
+import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -21,7 +23,10 @@ import java.util.stream.Stream;
 
 import it.uniba.sms2122.tourexperience.model.DTO.MuseoLocalStorageDTO;
 import it.uniba.sms2122.tourexperience.model.Museo;
-import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
+import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
+import it.uniba.sms2122.tourexperience.utility.filesystem.zip.Zip;
+
+import static it.uniba.sms2122.tourexperience.utility.filesystem.zip.MimeType.*;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
@@ -116,10 +121,26 @@ public class LocalFileMuseoManager extends LocalFileManager {
         }
     }
 
-    // TODO da completare
-    public boolean unzip(final File zipFile) {
-        Zip zip = new Zip(this);
-        return zip.startUnzip(zipFile);
+    /**
+     * Tenta di salvare il file ottenuto dalla selezione dell'utente.
+     * @param fileName nome del file selezionato dall'utente.
+     * @param mimeType mime type del file selezionato dall'utente (valgono solo zip e json).
+     * @param dto Data Transfer Object contenente i dati utili all'apertura del file.
+     * @return True se il file scelto è corretto, accettabile ed è stato salvato in locale,
+     *         False altrimenti.
+     */
+    public boolean save(final String fileName, final String mimeType, final OpenFile dto) {
+        if (mimeType.equals(JSON.mimeType())) {
+
+        }
+        else if (mimeType.equals(ZIP.mimeType())) {
+            Zip zip = new Zip(this);
+            return zip.startUnzip(fileName, dto);
+        }
+        else {
+            Log.e("LOCAL_IMPORT", "ALTRO NON PREVISTO");
+        }
+        return false;
     }
 
 }

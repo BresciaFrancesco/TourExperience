@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +38,8 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
+import it.uniba.sms2122.tourexperience.utility.filesystem.zip.DTO.OpenFileAndroidStorageDTO;
+import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
@@ -259,25 +263,15 @@ public class SceltaMuseiFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Gestisce solo l'ottenimento del file .zip, avvenuto tramite Intent implicito.
+        // Gestisce solo l'ottenimento del file .zip / .json, avvenuto tramite Intent implicito.
         if (requestCode == requestCodeGC) {
             if (resultCode == MainActivity.RESULT_OK) {
-                /*try {
-                    Uri returnUri = data.getData();
-                    String mimeType = getActivity().getContentResolver().getType(returnUri);
-                    String fileName = DocumentFile.fromSingleUri(getContext(), returnUri).getName();
-
-                    Log.v("URI", returnUri.toString());
-                    Log.v("MIME_TYPE", mimeType);
-                    Log.v("NOME", fileName);
-                    // TODO cambiare il metodo zip per ricevere i parametri URI, mimeType e filename
-                    // TODO creare anche controllo sul mimetype (solo application/zip e application/json)
-                    localFileManager.unzip(new File(data.getData().getPath()));
-                }
-                catch (IOException | IllegalArgumentException e) {
-                    Toast.makeText(getActivity(), "File .zip errato", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }*/
+                Uri returnUri = data.getData();
+                String mimeType = getActivity().getContentResolver().getType(returnUri);
+                String fileName = DocumentFile.fromSingleUri(getContext(), returnUri).getName();
+                OpenFile dto = new OpenFileAndroidStorageDTO(getContext(), returnUri);
+                boolean res = localFileManager.save(fileName, mimeType, dto);
+                Log.v("RISULTATO", String.valueOf(res));
             } else {
                 Log.e("SceltaMuseiFragment.onActivityResult", "resultCode " + resultCode);
             }

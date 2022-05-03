@@ -9,7 +9,7 @@ import java.nio.file.Files;
 
 public class LocalFileManager {
 
-    protected String generalPath;
+    protected final String generalPath;
 
     public LocalFileManager(String generalPath) {
         if (generalPath.charAt(generalPath.length()-1) != '/') {
@@ -50,12 +50,11 @@ public class LocalFileManager {
     public void deleteDir(final File dir) throws IOException {
         File[] files = new File(dir.toURI()).listFiles();
         if (files == null) return;
-        final int size = files.length;
-        for (int i = 0; i < size; i++) {
-            if (files[i].isDirectory()) {
-                deleteDir(files[i]);
+        for (File file : files) {
+            if (file.isDirectory()) {
+                deleteDir(file);
             }
-            Files.deleteIfExists(files[i].toPath());
+            Files.deleteIfExists(file.toPath());
         }
         Files.deleteIfExists(dir.toPath());
     }

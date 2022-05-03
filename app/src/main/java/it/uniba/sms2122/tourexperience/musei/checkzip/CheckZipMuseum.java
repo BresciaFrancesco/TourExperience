@@ -1,7 +1,7 @@
 package it.uniba.sms2122.tourexperience.musei.checkzip;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Set;
 
 import it.uniba.sms2122.tourexperience.musei.checkzip.exception.ZipCheckerException;
@@ -28,9 +28,10 @@ public class CheckZipMuseum implements ZipChecker {
 
 
     @Override
-    public void start(File zipFile) throws ZipCheckerException, ZipCheckerRunTimeException {
+    public void start(final InputStream in, final String zipName)
+            throws ZipCheckerException, ZipCheckerRunTimeException {
         try {
-            String zipDirName = virtualZipFileSystem.createVirtualFileSystem(zipFile);
+            String zipDirName = virtualZipFileSystem.createVirtualFileSystem(in, zipName);
             checkZipStructure(zipDirName);
         }
         catch (NullPointerException e) {

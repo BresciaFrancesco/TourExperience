@@ -1,4 +1,4 @@
-package it.uniba.sms2122.tourexperience.percorso.pagina_museo;
+package it.uniba.sms2122.tourexperience.percorso.pagina_stanza;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,12 +19,14 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     private Context context;
     private ArrayList<String> names;
+    private ArrayList<Integer> images;
 
     private RecycleViewAdapter.onItemClickListener onItemClickListener;
 
-    public RecycleViewAdapter(Context context, ArrayList<String> names) {
+    public RecycleViewAdapter(Context context, ArrayList<String> names, ArrayList<Integer> images) {
         this.context = context;
         this.names = names;
+        this.images = images;
     }
 
     @NonNull
@@ -37,6 +40,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.textview.setText(names.get(position));
+        holder.imageView.setImageResource(images.get(position));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,7 +63,6 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
             super(itemView);
             textview = itemView.findViewById(R.id.nameRoute);
             imageView = itemView.findViewById(R.id.imageRoute);
-            imageView.setImageResource(R.drawable.ic_path);
         }
     }
 

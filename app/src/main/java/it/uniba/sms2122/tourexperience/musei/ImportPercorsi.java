@@ -29,7 +29,7 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 public class ImportPercorsi implements Runnable {
 
     private final static FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-    private static LocalFileMuseoManager localFileManager = null;
+    private final LocalFileMuseoManager localFileManager;
     private final Context context;
     private final File filesDir;
     private static Back backToMuseumsList;
@@ -37,9 +37,7 @@ public class ImportPercorsi implements Runnable {
     public ImportPercorsi(final Context context) {
         this.context = context;
         this.filesDir = context.getFilesDir();
-        if (localFileManager == null) {
-            localFileManager = new LocalFileMuseoManager(filesDir.toString());
-        }
+        this.localFileManager = new LocalFileMuseoManager(this.filesDir.toString());
     }
 
     public static void setBackToMuseumsList(Back back) {

@@ -1,9 +1,8 @@
 package it.uniba.sms2122.tourexperience.musei.checkzip;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -23,19 +22,17 @@ public class TreeVirtualZipFileSystem {
     /**
      * Crea una versione virtuale del filesystem interno al file .zip
      * sfruttando una struttura dati che è un albero n-ario.
-     * @param zipFile file .zip
+     * @param in
+     * @param zipName
      * @return nome del file .zip
      * @throws IOException
      * @throws ZipCheckerException
      */
-    public String createVirtualFileSystem(File zipFile) throws IOException, ZipCheckerException {
-        String zipFileName = zipFile.getName();
-        zipFileName = zipFileName.substring(0, zipFileName.length()-4);
+    public String createVirtualFileSystem(final InputStream in, String zipName) throws IOException, ZipCheckerException {
+        zipName = zipName.substring(0, zipName.length()-4);
         long dimAccum = 0;
-        try (ZipInputStream zis = new ZipInputStream(
-                new BufferedInputStream(new FileInputStream(zipFile)))) {
+        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(in))) {
             ZipEntry ze;
-
             while ((ze = zis.getNextEntry()) != null) {
                 dimAccum += ze.getSize();
 
@@ -50,7 +47,7 @@ public class TreeVirtualZipFileSystem {
                 }
             }
         }
-        return zipFileName;
+        return zipName;
     }
 
     /**

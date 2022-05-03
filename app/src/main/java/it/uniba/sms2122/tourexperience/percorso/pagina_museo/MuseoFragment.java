@@ -2,7 +2,6 @@ package it.uniba.sms2122.tourexperience.percorso.pagina_museo;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,21 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
 import it.uniba.sms2122.tourexperience.R;
-import it.uniba.sms2122.tourexperience.main.MainActivity;
-import it.uniba.sms2122.tourexperience.model.Museo;
-import it.uniba.sms2122.tourexperience.musei.MuseiAdapter;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 
 public class MuseoFragment extends Fragment {

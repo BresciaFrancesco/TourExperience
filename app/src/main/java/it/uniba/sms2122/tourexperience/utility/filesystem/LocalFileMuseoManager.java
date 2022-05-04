@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import it.uniba.sms2122.tourexperience.model.DTO.MuseoLocalStorageDTO;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.musei.checkzip.CheckJsonPercorso;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
@@ -36,6 +35,28 @@ public class LocalFileMuseoManager extends LocalFileManager {
 
     public LocalFileMuseoManager(String generalPath) {
         super(generalPath);
+    }
+
+    /**
+     * Ottiene il file di info json del museo scelto e ne ritorna un oggetto Museo.
+     * @param nomeMuseo nome del museo da ottenere.
+     * @return oggetto Museo scelto.
+     * @throws IOException
+     * @throws JsonSyntaxException
+     * @throws JsonIOException
+     */
+    public Museo getMuseoByName(String nomeMuseo)
+            throws IOException, JsonSyntaxException, JsonIOException {
+        try (
+                Reader reader = new
+                    FileReader(Paths.get(generalPath, nomeMuseo, "Info.json").toFile())
+        ) {
+            Museo museo = new Gson().fromJson(reader, Museo.class);
+            museo.setFileUri(
+                Paths.get(generalPath, nomeMuseo, nomeMuseo + IMG_EXTENSION).toString()
+            );
+            return museo;
+        }
     }
 
     /**
@@ -58,7 +79,7 @@ public class LocalFileMuseoManager extends LocalFileManager {
                 try ( Reader reader = new FileReader(path + "/Info.json") )
                 {
                     Museo museo = gson.fromJson(reader , Museo.class);
-                    museo.setFileUri(generalPath + museo.getNome() + "/" + museo.getNome() + ".png");
+                    museo.setFileUri(generalPath + museo.getNome() + "/" + museo.getNome() + IMG_EXTENSION);
                     listaMusei.add(museo);
                 }
                 catch (IOException | JsonSyntaxException | JsonIOException e) {
@@ -67,26 +88,6 @@ public class LocalFileMuseoManager extends LocalFileManager {
             }
         }
         return listaMusei;
-    }
-
-    /**
-     * Prepara il filesystem per il download dei percorsi/musei da cloud.
-     * @param filesDir file come riferimento allo storage interno dell'app.
-     * @param nomeMuseo nome del museo per creare la directory nella quale salvare tutto.
-     * @return data transfer object contenente i riferimenti creati.
-     */
-    public MuseoLocalStorageDTO createMuseoDirWithFiles(final File filesDir, final String nomeMuseo) {
-        final String prefix = "Museums/" + nomeMuseo + "/";
-        File museoDir = createLocalDirectoryIfNotExists(filesDir, prefix);
-        File stanzeDir = createLocalDirectoryIfNotExists(filesDir,prefix + "Stanze");
-        File info = new File(filesDir, prefix + "Info.json");
-        File immagine = new File(filesDir, prefix + nomeMuseo + ".png");
-
-        return MuseoLocalStorageDTO.newBuilder()
-                .setMuseoDir(museoDir)
-                .setStanzeDir(stanzeDir)
-                .setInfo(info)
-                .setImmaginePrincipale(immagine);
     }
 
     /**
@@ -145,6 +146,18 @@ public class LocalFileMuseoManager extends LocalFileManager {
             Log.e("LOCAL_IMPORT", "ALTRO NON PREVISTO");
         }
         return result;
+    }
+
+    /**
+     * Elimina un la cartella di un museo, anche ricorsivamente se non vuota.
+     * @param nomeMuseo nom del museo da eliminare.
+     */
+    public void deleteMuseo(final String nomeMuseo) {
+        try {
+            deleteDir(Paths.get(generalPath, nomeMuseo).toFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

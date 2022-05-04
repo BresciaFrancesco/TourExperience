@@ -22,8 +22,8 @@ public class TreeVirtualZipFileSystem {
     /**
      * Crea una versione virtuale del filesystem interno al file .zip
      * sfruttando una struttura dati che è un albero n-ario.
-     * @param in
-     * @param zipName
+     * @param in InputStream per aprire file in lettura.
+     * @param zipName nome del file .zip con l'estensione .zip integrata.
      * @return nome del file .zip
      * @throws IOException
      * @throws ZipCheckerException

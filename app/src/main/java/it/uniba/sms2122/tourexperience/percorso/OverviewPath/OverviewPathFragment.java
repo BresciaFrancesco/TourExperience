@@ -62,16 +62,15 @@ public class OverviewPathFragment extends Fragment {
      */
     private void setDynamicValuesOfPath() {
 
-        LocalFilePercorsoManager pathManager = new LocalFilePercorsoManager(getContext().getFilesDir().toString());
-
-        Optional<Percorso> pathContainer = pathManager.getPercorso(museoumName, pathName);
+        PercorsoActivity parent = (PercorsoActivity) getActivity();
+        Optional<Percorso> pathContainer = parent.getLocalFilePercorsoManager().getPercorso(museoumName, pathName);
 
         if (pathContainer.isPresent()) {
 
             Percorso pathObj = pathContainer.get();
 
             this.pathDescription = pathObj.getDescrizionePercorso();
-            this.pathName = ((PercorsoActivity)getActivity()).getNomePercorso();
+            this.pathName = parent.getNomePercorso();
 
         } else {
             Log.e("percorso non trovato", "percorso non trovato");

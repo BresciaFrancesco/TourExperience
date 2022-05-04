@@ -43,8 +43,29 @@ public class Percorso {
     /** Descrizione del percorso, da visualizzare come anteprima del percorso stesso */
     private String descrizionePercorso;
 
+    // ------------------------------ Getters ------------------------------ //
 
-// ------------------------------ Metodi ------------------------------ //
+    public String getNomeMuseo() {
+        return nomeMuseo;
+    }
+
+    public String getIdStanzaCorrente() {
+        return idStanzaCorrente;
+    }
+
+    public String getIdStanzaFinale() {
+        return idStanzaFinale;
+    }
+
+    public String getDescrizionePercorso() { return descrizionePercorso; }
+
+    public String getNomePercorso() { return nomePercorso; }
+
+    public Map<String, Vertex> getMappa() {
+        return mappaStanze;
+    }
+
+    // ------------------------------ Metodi ------------------------------ //
 
     /**
      * Muove il puntatore della stanza corrente sulla prossima stanza indicata
@@ -78,27 +99,24 @@ public class Percorso {
      * Ritorna una lista di stanze adiacenti a quella in cui ci si trova in quel momento.
      * @return lista di stanze adiacenti a quella corrente.
      */
-    public List<Stanza> getAdiacentNodes() {
-        Vertex v = mappaStanze.get(idStanzaCorrente);
-        Set<String> archi = v.getEdges();
-        List<Stanza> stanzeAdiacenti = new ArrayList<>(archi.size());
-        int i = 0;
-        for (String idS : archi) {
-            stanzeAdiacenti.add(i++, mappaStanze.get(idS).getStanza());
+    public List<Stanza> getAdiacentNodes() throws GraphRunTimeException {
+        try {
+            Vertex v = mappaStanze.get(idStanzaCorrente);
+            Set<String> archi = v.getEdges();
+            List<Stanza> stanzeAdiacenti = new ArrayList<>(archi.size());
+            int i = 0;
+            for (String idS : archi) {
+                stanzeAdiacenti.add(i++, mappaStanze.get(idS).getStanza());
+            }
+            return stanzeAdiacenti;
         }
-        return stanzeAdiacenti;
-    }
-
-    public String getNomeMuseo() {
-        return nomeMuseo;
+        catch (NullPointerException e) {
+            throw new GraphRunTimeException("Il percorso è errato!", e);
+        }
     }
 
     public Stanza getStanzaCorrente() {
         return mappaStanze.get(idStanzaCorrente).getStanza();
     }
-
-    public String getDescrizionePercorso() { return descrizionePercorso; }
-
-    public String getNomePercorso() { return nomePercorso; }
 
 }

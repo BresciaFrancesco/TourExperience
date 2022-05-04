@@ -10,6 +10,7 @@ import java.nio.file.Files;
 public class LocalFileManager {
 
     protected final String generalPath;
+    protected final String IMG_EXTENSION = ".png";
 
     public LocalFileManager(String generalPath) {
         if (generalPath.charAt(generalPath.length()-1) != '/') {
@@ -30,9 +31,10 @@ public class LocalFileManager {
      * Crea una directory nel filesystem locale, nel path specificato come parametro,
      * se non esiste già.
      */
-    public File createLocalDirectoryIfNotExists(final File filesDir, final String pathFileWithFile) {
+    public static File createLocalDirectoryIfNotExists(final File filesDir,
+                                                       final String pathFileWithFile) {
         File directory = new File(filesDir, pathFileWithFile);
-        if (directory == null || !directory.exists()) {
+        if (!directory.exists()) {
             if (directory.mkdir())
                 Log.v("CREATE_DIRECTORY: " + pathFileWithFile, "Created now!");
             else

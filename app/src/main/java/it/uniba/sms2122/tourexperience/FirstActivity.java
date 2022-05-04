@@ -14,6 +14,7 @@ import android.widget.TextView;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.registration.RegistrationActivity;
+import static it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager.createLocalDirectoryIfNotExists;
 import it.uniba.sms2122.tourexperience.welcome.WelcomeActivity;
 
 public class FirstActivity extends AppCompatActivity {
@@ -25,6 +26,7 @@ public class FirstActivity extends AppCompatActivity {
 
     private UserHolder userHolder;
     private ActivityOptions options;
+    private final String mainDirectory = "Museums";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,8 @@ public class FirstActivity extends AppCompatActivity {
         btnLogin = (Button) findViewById(R.id.idBtnMainLogin);
         btnRegistration = (Button) findViewById(R.id.idBtnMainRegistration);
         textViewGuest = (TextView) findViewById(R.id.idTextViewGuest);
+
+        createLocalDirectoryIfNotExists(getFilesDir(), mainDirectory);
 
         userHolder = UserHolder.getInstance();
         userHolder.getUser(

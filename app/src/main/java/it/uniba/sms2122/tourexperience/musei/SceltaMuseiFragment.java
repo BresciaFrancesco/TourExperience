@@ -25,6 +25,11 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -152,7 +157,6 @@ public class SceltaMuseiFragment extends Fragment {
 
         File filesDir = view.getContext().getFilesDir();
         localFileManager = new LocalFileMuseoManager(filesDir.toString());
-        localFileManager.createLocalDirectoryIfNotExists(filesDir, "Museums");
 
         firebaseStorage = FirebaseStorage.getInstance();
         searchView = view.findViewById(R.id.searchviewMusei);
@@ -277,13 +281,36 @@ public class SceltaMuseiFragment extends Fragment {
         }
     }
 
+    // IN TEST
+    private void getListaPercorsiFromCloudStorage() {
+        MuseiAdapter adapterPercorsi = new MuseiAdapter(
+                null,
+                progressBar,
+                (!cachePercorsi.isEmpty()) ? cachePercorsi : new ArrayList<>(),
+                false
+        );
+        if (!cachePercorsi.isEmpty()) {
+            Log.v("IMPORT_CLOUD", "with cache cachePercorsi.");
+            recyclerView.setAdapter(adapterPercorsi);
+            progressBar.setVisibility(View.GONE);
+            attachQueryTextListener(adapterPercorsi);
+            return;
+        }
+        Log.v("IMPORT_CLOUD", "start download...");
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference("Museums_v2");
+        ValueEventListener listener = new
+            ListaPercorsiFromCloud(adapterPercorsi, this, progressBar, recyclerView);
+        db.addValueEventListener(listener);
+    }
+
 
     /**
      * Ritorna la lista dei percorsi disponibili al download dallo storage
-     * di firebase. Riutilizza la lo stesso recycler view, impostando solo
+     * di firebase. Riutilizza lo stesso recycler view, impostando solo
      * un adapter diverso con la lista di percorsi anziché di musei.
      */
-    private void getListaPercorsiFromCloudStorage() {
+    private void getListaPercorsiFromCloudStorage____() {
+        //getListaPercorsiFromCloudStorage_v2();
         if (!cachePercorsi.isEmpty()) {
             Log.v("IMPORT_CLOUD", "with cache cachePercorsi.");
             MuseiAdapter adapterPercorsi = new MuseiAdapter(

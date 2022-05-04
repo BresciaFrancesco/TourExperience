@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -33,24 +32,24 @@ public class Zip {
 
     /**
      * Comincia l'unzip di un file .zip.
-     * @param zipName nome del file .zip
-     * @param dto
+     * @param zipName nome del file .zip con l'estensione .zip integrata.
+     * @param of oggetto che implementa l'interfaccia OpenFile, per
+     *           poter aprire il file .zip in lettura.
      * @return true se l'unzip è andato a buon fine, false altrimenti.
      */
-    public boolean startUnzip(final String zipName, final OpenFile dto) {
-        try ( InputStream in = dto.openFile() ) {
-            checker.start(in, zipName);
+    public boolean startUnzip(final String zipName, final OpenFile of) {
+        try {
+            checker.start(of, zipName);
         }
-        catch (ZipCheckerException | ZipCheckerRunTimeException | IOException e) {
+        catch (ZipCheckerException | ZipCheckerRunTimeException e) {
             Log.e("CHECK_ZIP", "ECCEZIONE in CHECK ZIP...");
             e.printStackTrace();
             return false;
         }
-        Log.v("CHECK_ZIP", "CHECK ZIP superato...");
+        Log.v("CHECK_ZIP", "CHECK ZIP superato - inizio UNZIP...");
 
-        try ( InputStream in = dto.openFile() ) {
-            Log.v("CHECK_ZIP", "inizio UNZIP...");
-            unzip(in, new File(localFileManager.getGeneralPath()));
+        try {
+            unzip(of);
             Log.v("CHECK_ZIP", "fine UNZIP...");
         }
         catch (IOException e) {
@@ -72,9 +71,15 @@ public class Zip {
     }
 
 
-    // UNZIP
-    private void unzip(final InputStream in, File targetDirectory) throws IOException {
-        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(in))) {
+    /**
+     * Esegue l'unzip di un file .zip in modo sicuro ed efficiente.
+     * @param of oggetto che implementa l'interfaccia OpenFile, per
+     *           poter aprire il file .zip in lettura
+     * @throws IOException se avviene qualunque errore di lettura/scrittura.
+     */
+    public void unzip(final OpenFile of) throws IOException {
+        File targetDirectory = new File(localFileManager.getGeneralPath());
+        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(of.openFile()))) {
             ZipEntry ze;
             int count;
             byte[] buffer = new byte[bufferDim];

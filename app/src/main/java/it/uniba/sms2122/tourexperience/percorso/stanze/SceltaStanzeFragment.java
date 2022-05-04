@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -41,6 +42,8 @@ public class SceltaStanzeFragment extends Fragment {
     private ImageView imageView;
     private TextView textView;
 
+    private boolean firstAttempt;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -58,6 +61,7 @@ public class SceltaStanzeFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         textView = (TextView) view.findViewById(R.id.nome_item_museo);
         imageView = (ImageView) view.findViewById(R.id.icona_item_museo);
+        firstAttempt = false;
     }
 
     @Override
@@ -76,14 +80,21 @@ public class SceltaStanzeFragment extends Fragment {
             pathObj = pathContainer.get();
             parentActivity.getLocalFilePercorsoManager().createStanzeAndOpereInThisAndNextStanze(pathObj);
 
-            listaStanze = pathObj.getAdiacentNodes();
-
         } else {
             Log.e("percorso non trovato", "percorso non trovato");
         }
 
+        if(firstAttempt){
+            listaStanze = pathObj.getAdiacentNodes();
+            textView.setText(getString(R.string.museum ,nomeMuseo ) + "\n" + getString(R.string.area, pathObj.getStanzaCorrente().getNome()));
+        }else {
+            listaStanze = new ArrayList<>();
+            listaStanze.add(pathObj.getStanzaCorrente());
+            textView.setText(getString(R.string.museum ,nomeMuseo));
+            firstAttempt = true;
+        }
         imageView.setImageURI(Uri.parse(cacheMuseums.get(nomeMuseo).getFileUri()));
-        textView.setText("Museo: " + nomeMuseo + "\nStanza: " + pathObj.getStanzaCorrente().getNome());
+
 
         // Sending reference and data to Adapter
         StanzeAdpter adapter = new StanzeAdpter(getContext(), listaStanze);

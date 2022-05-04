@@ -105,4 +105,8 @@
     </string>
     <string name="do_not_show_again">OK &amp; do not show again</string>
     <string name="path_from_cloud_empty">There is no routes to import</string>
+    <string name="available_routes">Available routes</string>
+    <string name="nearby_areas">Nearby areas</string>
+    <string name="museum">Museum: %1$s</string>
+    <string name="area">Area: %1$s</string>
 </resources>

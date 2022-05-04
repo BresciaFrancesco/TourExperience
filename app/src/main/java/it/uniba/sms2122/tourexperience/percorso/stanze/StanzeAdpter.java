@@ -1,5 +1,6 @@
 package it.uniba.sms2122.tourexperience.percorso.stanze;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,13 +9,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Optional;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.musei.MuseiAdapter;
+import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 
 public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> {
 
@@ -50,6 +55,13 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
     public void onBindViewHolder(@NonNull StanzeAdpter.ViewHolder holder, int position) {
         holder.textview.setText(stanzaList.get(position).getNome());
         holder.imageView.setImageResource(R.drawable.icon_stanza);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO impostare cosa bisogna fare al click di un determinato item della RecycleView
+            }
+        });
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

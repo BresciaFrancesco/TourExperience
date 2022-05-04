@@ -23,6 +23,14 @@ public class Percorso {
      *  Inizialmente, punta alla stanza di partenza del percorso. */
     private String idStanzaCorrente;
 
+    public Map<String, Vertex> getMappaStanze() {
+        return mappaStanze;
+    }
+
+    public String getIdStanzaCorrente() {
+        return idStanzaCorrente;
+    }
+
     /** Puntatore alla stanza finale del percorso. */
     private String idStanzaFinale;
 

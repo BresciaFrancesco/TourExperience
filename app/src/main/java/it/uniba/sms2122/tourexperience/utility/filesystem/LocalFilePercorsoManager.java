@@ -54,16 +54,10 @@ public class LocalFilePercorsoManager extends LocalFileManager {
     public void createStanzeAndOpereInThisAndNextStanze(final Percorso grafo) {
         // carico le opere di questa stanza
         Stanza stanzaCorrente = grafo.getStanzaCorrente();
-        System.out.println("nome stanza corrente "+grafo.getNomeMuseo());
         loadStanza(grafo.getNomeMuseo(), stanzaCorrente.getNome());
         loadOpere(grafo.getNomeMuseo(), stanzaCorrente);
         // e poi carico le opere delle stanze collegate nel grafo
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                LocalFilePercorsoManager.this.createStanzeAndOpereOnlyInNextStanze(grafo);
-            }
-        }).start();
+        new Thread(() -> LocalFilePercorsoManager.this.createStanzeAndOpereOnlyInNextStanze(grafo)).start();
     }
 
     /**
@@ -110,7 +104,6 @@ public class LocalFilePercorsoManager extends LocalFileManager {
     private Stanza loadStanza(final String nomeMuseo, final String nomeStanza) {
         Stanza stanza = new Stanza();
         Gson gson = new Gson();
-        System.out.println(nomeStanza);
 
         try (
                 DirectoryStream<Path> stream =
@@ -119,10 +112,7 @@ public class LocalFilePercorsoManager extends LocalFileManager {
             for (Path path : stream) {
                 try ( Reader reader = new FileReader(path + "/Info_stanza.json") )
                 {
-                    System.out.println("path1" + path.toString());
-                    System.out.println("path2" + Paths.get(generalPath + nomeMuseo + "/Stanze/" + nomeStanza).toString());
-                    if(path == Paths.get(generalPath + nomeMuseo + "/Stanze/" + nomeStanza)) {
-                        System.out.println("COME" + path.toString());
+                    if(path.equals(Paths.get(generalPath + nomeMuseo + "/Stanze/" + nomeStanza))) {
                         stanza = gson.fromJson(reader , Stanza.class);
                     }
                 }

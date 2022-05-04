@@ -21,9 +21,11 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.cache.CacheMuseums;
+import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
@@ -67,10 +69,21 @@ public class SceltaStanzeFragment extends Fragment {
         String nomePercorso = parentActivity.getNomePercorso();
         String nomeMuseo = parentActivity.getNomeMuseo();
 
-        //TODO valorizzare la listaStanze da visualizzare nella recycleview
+        Optional<Percorso> pathContainer = parentActivity.getLocalFilePercorsoManager().getPercorso(nomeMuseo, nomePercorso);
+        Percorso pathObj = new Percorso();
+
+        if (pathContainer.isPresent()) {
+            pathObj = pathContainer.get();
+            parentActivity.getLocalFilePercorsoManager().createStanzeAndOpereInThisAndNextStanze(pathObj);
+
+            listaStanze = pathObj.getAdiacentNodes();
+
+        } else {
+            Log.e("percorso non trovato", "percorso non trovato");
+        }
 
         imageView.setImageURI(Uri.parse(cacheMuseums.get(nomeMuseo).getFileUri()));
-        textView.setText(nomeMuseo + "\n" + nomePercorso);
+        textView.setText("Museo: " + nomeMuseo + "\nStanza: " + pathObj.getStanzaCorrente().getNome());
 
         // Sending reference and data to Adapter
         StanzeAdpter adapter = new StanzeAdpter(getContext(), listaStanze);

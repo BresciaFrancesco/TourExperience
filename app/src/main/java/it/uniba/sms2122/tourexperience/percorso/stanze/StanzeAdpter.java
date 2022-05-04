@@ -14,6 +14,7 @@ import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.Stanza;
+import it.uniba.sms2122.tourexperience.musei.MuseiAdapter;
 
 public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> {
 
@@ -32,33 +33,33 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
         // layout file into View object)
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
 
+        StanzeAdpter.ViewHolder vh = new StanzeAdpter.ViewHolder(view);
+
         // Passing view to ViewHolder
-        return new StanzeAdpter.ViewHolder(view);
+        return vh;
     }
 
     @Override
     public int getItemCount() {
         // Returns number of items
         // currently available in Adapter
-        //TODO togliere il commento
-        //return stanzaList.size();
-        return 0;
+        return stanzaList.size();
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull StanzeAdpter.ViewHolder holder, int position) {
         holder.textview.setText(stanzaList.get(position).getNome());
         holder.imageView.setImageResource(R.drawable.icon_stanza);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView textview;
-        ImageView imageView;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private ImageView imageView;
+        private TextView textview;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textview = itemView.findViewById(R.id.nameRoute);
-            imageView = itemView.findViewById(R.id.imageRoute);
+            this.textview = itemView.findViewById(R.id.nome_item_lista);
+            this.imageView = itemView.findViewById(R.id.icona_item_lista);
         }
     }
 }

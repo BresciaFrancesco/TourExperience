@@ -52,6 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|top"
                 android:text="Percorsi disponibili"
+                android:textStyle="bold"
                 android:textColor="@color/white" />
 
             <androidx.recyclerview.widget.RecyclerView

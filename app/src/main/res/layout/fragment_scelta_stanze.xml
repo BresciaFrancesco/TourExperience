@@ -49,12 +49,22 @@
         app:layout_constraintTop_toBottomOf="@+id/item_museum"
         app:layout_constraintVertical_bias="1.0">
 
-        <!--RecyclerView: contiene la lista dei musei-->
+        <TextView
+            android:id="@+id/routes_title"
+            style="@style/heading_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:text="Stanze Vicine"
+            android:textStyle="bold"
+            android:textColor="@color/white" />
+
+        <!--RecyclerView: contiene la lista delle stanze-->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewRooms"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="38dp"
+            android:layout_marginTop="50dp"
             android:scrollbars="vertical"
             app:layoutManager="LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"

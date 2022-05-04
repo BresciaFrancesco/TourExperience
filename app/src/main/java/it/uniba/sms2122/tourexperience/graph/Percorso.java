@@ -107,4 +107,8 @@ public class Percorso {
         }
     }
 
+    public Stanza getStanzaCorrente() {
+        return mappaStanze.get(idStanzaCorrente).getStanza();
+    }
+
 }

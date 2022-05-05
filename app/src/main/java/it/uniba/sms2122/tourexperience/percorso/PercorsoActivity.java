@@ -23,6 +23,7 @@ public class PercorsoActivity extends AppCompatActivity {
     private String nomeMuseo;
     private String nomePercorso;
     private LocalFilePercorsoManager localFilePercorsoManager;
+    private LocalFileMuseoManager localFileMuseoManager;
 
     public String getNomeMuseo() {
         return nomeMuseo;
@@ -36,6 +37,10 @@ public class PercorsoActivity extends AppCompatActivity {
         return localFilePercorsoManager;
     }
 
+    public LocalFileMuseoManager getLocalFileMuseoManager(){
+        return localFileMuseoManager;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +49,7 @@ public class PercorsoActivity extends AppCompatActivity {
 
         nomeMuseo = getIntent().getStringExtra("nome_museo");
         localFilePercorsoManager = new LocalFilePercorsoManager(getApplicationContext().getFilesDir().toString());
+        localFileMuseoManager = new LocalFileMuseoManager(getApplicationContext().getFilesDir().toString());
 
         File filesDir = getApplicationContext().getFilesDir();
 

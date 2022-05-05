@@ -20,7 +20,7 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     public ViewPagerAdapter(Context context) {
         this.context = context;
-        images = new Integer[]{R.drawable.musei_vaticani1, R.drawable.musei_vaticani2, R.drawable.musei_vaticani3};
+        images = new Integer[]{R.drawable.ic_museum, R.drawable.ic_museum, R.drawable.ic_museum};
     }
 
     @Override

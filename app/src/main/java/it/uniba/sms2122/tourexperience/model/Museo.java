@@ -5,12 +5,14 @@ import androidx.annotation.Nullable;
 public class Museo {
     private String nome;
     private String citta;
+    private String descrizione;
     private String tipologia;
     private String fileUri;
 
     public Museo(String nome) {
         this.nome = nome;
         this.citta = "";
+        this.descrizione = "";
         this.tipologia = "";
         this.fileUri = "";
     }
@@ -22,9 +24,10 @@ public class Museo {
         this.fileUri = "";
     }
 
-    public Museo(String nome, String citta, String tipologia, String fileUri) {
+    public Museo(String nome, String citta, String descrizione, String tipologia, String fileUri) {
         this.nome = nome;
         this.citta = citta;
+        this.descrizione = descrizione;
         this.tipologia = tipologia;
         this.fileUri = fileUri;
     }
@@ -36,6 +39,14 @@ public class Museo {
     public String getCitta() { return citta; }
 
     public void setCitta(String citta) { this.citta = citta; }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
 
     public String getTipologia() { return tipologia; }
 

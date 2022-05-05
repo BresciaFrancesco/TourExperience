@@ -91,6 +91,9 @@ public class Zip {
                 if (dir == null)
                     throw new FileNotFoundException("La variabile dir è null in unzip");
 
+                if (file.exists())
+                    continue;
+
                 if (!dir.isDirectory() && !dir.mkdirs()) {
                     throw new FileNotFoundException("Impossibile garantire la directory: " +
                             dir.getAbsolutePath());

@@ -6,6 +6,7 @@ import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.replacePercorsi
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -61,6 +62,9 @@ public class ListaPercorsiFromCloud implements ValueEventListener {
     }
 
     @Override
-    public void onCancelled(@NonNull DatabaseError error) {}
+    public void onCancelled(@NonNull DatabaseError error) {
+        progressBar.setVisibility(View.GONE);
+        Toast.makeText(fragment.getContext(), "Server error", Toast.LENGTH_SHORT).show();
+    }
 
 }

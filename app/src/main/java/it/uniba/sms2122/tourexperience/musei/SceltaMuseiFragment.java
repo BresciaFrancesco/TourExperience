@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -29,6 +30,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.OnDisconnect;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
@@ -47,6 +49,7 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.zip.DTO.OpenFileAndroi
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
+import static it.uniba.sms2122.tourexperience.utility.GenericUtility.thereIsConnection;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,7 +63,6 @@ public class SceltaMuseiFragment extends Fragment {
     private ProgressBar progressBar;
     private List<Museo> listaMusei;
     private LocalFileMuseoManager localFileManager;
-    private FirebaseStorage firebaseStorage;
     private final int requestCodeGC = 10;
 
     // Make sure to use the FloatingActionButton for all the FABs
@@ -158,7 +160,6 @@ public class SceltaMuseiFragment extends Fragment {
         File filesDir = view.getContext().getFilesDir();
         localFileManager = new LocalFileMuseoManager(filesDir.toString());
 
-        firebaseStorage = FirebaseStorage.getInstance();
         searchView = view.findViewById(R.id.searchviewMusei);
 
         recyclerView = view.findViewById(R.id.recyclerViewMusei);
@@ -296,63 +297,15 @@ public class SceltaMuseiFragment extends Fragment {
             attachQueryTextListener(adapterPercorsi);
             return;
         }
-        Log.v("IMPORT_CLOUD", "start download...");
+        Log.v("IMPORT_CLOUD", "start routes listing...");
+        if (!thereIsConnection(() -> {
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(getContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+        })) return;
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("Museums_v2");
         ValueEventListener listener = new
             ListaPercorsiFromCloud(adapterPercorsi, this, progressBar, recyclerView);
         db.addValueEventListener(listener);
-    }
-
-
-    /**
-     * Ritorna la lista dei percorsi disponibili al download dallo storage
-     * di firebase. Riutilizza lo stesso recycler view, impostando solo
-     * un adapter diverso con la lista di percorsi anziché di musei.
-     */
-    private void getListaPercorsiFromCloudStorage____() {
-        //getListaPercorsiFromCloudStorage_v2();
-        if (!cachePercorsi.isEmpty()) {
-            Log.v("IMPORT_CLOUD", "with cache cachePercorsi.");
-            MuseiAdapter adapterPercorsi = new MuseiAdapter(
-                    null,
-                    progressBar,
-                    cachePercorsi,
-                    false
-            );
-            recyclerView.setAdapter(adapterPercorsi);
-            progressBar.setVisibility(View.GONE);
-            attachQueryTextListener(adapterPercorsi);
-            return;
-        }
-        StorageReference listRef = firebaseStorage.getReference().child("Museums");
-        listRef.listAll().addOnSuccessListener(listResult -> {
-            Log.v("IMPORT_CLOUD", "start download...");
-            MuseiAdapter adapterPercorsi = new MuseiAdapter(
-                    null,
-                    progressBar,
-                    new ArrayList<>(),
-                    false
-            );
-            recyclerView.setAdapter(adapterPercorsi);
-            progressBar.setVisibility(View.GONE);
-            for (StorageReference folder : listResult.getPrefixes()) {
-                String nomeMuseo = folder.getName();
-                Task<ListResult> task = folder.child("Percorsi").listAll();
-                while (!task.isComplete());
-                if (task.isSuccessful()) {
-                    for (StorageReference fileJson : task.getResult().getItems()) {
-                        String nomePercorso = fileJson.getName();
-                        nomePercorso = nomePercorso.substring(0, nomePercorso.length()-5);
-                        // Se il percorso è già presente in locale, non mostrarlo all'utente
-                        if (checkRouteExistence(nomeMuseo, nomePercorso)) continue;
-                        adapterPercorsi.addMuseum(new Museo(nomePercorso, nomeMuseo));
-                    }
-                } else Log.e("IMPORT_CLOUD", "Task is not succesfull");
-            }
-            attachQueryTextListener(adapterPercorsi);
-            replacePercorsiInCache(adapterPercorsi.getListaMusei());
-            Log.v("IMPORT_CLOUD", "finish download...");
-        }).addOnFailureListener(error -> Log.e("IMPORT_CLOUD", error.toString()));
     }
 
 
@@ -389,16 +342,19 @@ public class SceltaMuseiFragment extends Fragment {
         Log.v("SceltaMuseiFragment", "chiamato onSaveInstanceState()");
         ArrayList<String> nomiMusei = new ArrayList<>();
         ArrayList<String> cittaMusei = new ArrayList<>();
+        ArrayList<String> descrizioneMusei = new ArrayList<>();
         ArrayList<String> tipologieMusei = new ArrayList<>();
         ArrayList<String> uriImmagini = new ArrayList<>();
         for (int i = 0; i < listaMusei.size(); i++) {
             nomiMusei.add(listaMusei.get(i).getNome());
             cittaMusei.add(listaMusei.get(i).getCitta());
+            descrizioneMusei.add(listaMusei.get(i).getDescrizione());
             tipologieMusei.add(listaMusei.get(i).getTipologia());
             uriImmagini.add(listaMusei.get(i).getFileUri());
         }
         outState.putStringArrayList("nomi_musei", nomiMusei);
         outState.putStringArrayList("citta_musei", cittaMusei);
+        outState.putStringArrayList("descrizione_musei", descrizioneMusei);
         outState.putStringArrayList("tipologie_musei", tipologieMusei);
         outState.putStringArrayList("immagini_musei", uriImmagini);
         super.onSaveInstanceState(outState);
@@ -413,12 +369,14 @@ public class SceltaMuseiFragment extends Fragment {
             Log.v("SceltaMuseiFragment", "chiamato onViewStateRestored() -> savedInstanceState != null");
             ArrayList<String> nomiMusei = savedInstanceState.getStringArrayList("nomi_musei");
             ArrayList<String> cittaMusei = savedInstanceState.getStringArrayList("citta_musei");
+            ArrayList<String> descrizioneMusei = savedInstanceState.getStringArrayList("descrizione_musei");
             ArrayList<String> tipologieMusei = savedInstanceState.getStringArrayList("tipologie_musei");
             ArrayList<String> uriImmagini = savedInstanceState.getStringArrayList("immagini_musei");
             for (int i = 0; i < nomiMusei.size(); i++) {
                 listaMusei.add(new Museo(
                     nomiMusei.get(i),
                     cittaMusei.get(i),
+                    descrizioneMusei.get(i),
                     tipologieMusei.get(i),
                     uriImmagini.get(i)
                 ));

@@ -10,6 +10,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
@@ -25,6 +27,8 @@ import it.uniba.sms2122.tourexperience.musei.ImportPercorsi;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -47,8 +51,22 @@ public class MainActivity extends AppCompatActivity {
         );
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
-        // Riempio una cache apposita con i nomi dei percorsi presenti in locale
-        new Thread(new ImportPercorsi(getApplicationContext())).start();
+        /*
+         * Riempio una cache apposita con i nomi dei percorsi presenti in locale.
+         * Ottiene i percorsi salvati in locale (solo museo e nome del percorso),
+         * salvandoli in un'apposita cache.
+         */
+        new Thread(() -> {
+            Log.v("THREAD_Cache_Percorsi_Locale", "chiamato il thread");
+            try {
+                new LocalFileMuseoManager(getFilesDir().toString()).getPercorsiInLocale();
+            }
+            catch (IOException e) {
+                Log.e("THREAD_Cache_Percorsi_Locale",
+                        "Problemi nella lettura dei file o delle cartelle");
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     @Override

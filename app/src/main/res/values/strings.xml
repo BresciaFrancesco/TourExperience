@@ -109,4 +109,5 @@
     <string name="nearby_areas">Nearby areas</string>
     <string name="museum">Museum: %1$s</string>
     <string name="area">Area: %1$s</string>
+    <string name="no_connection">There is no internet connection</string>
 </resources>

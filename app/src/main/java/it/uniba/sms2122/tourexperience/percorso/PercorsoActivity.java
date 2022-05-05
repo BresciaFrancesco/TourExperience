@@ -5,11 +5,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
+import it.uniba.sms2122.tourexperience.QRscanner.QRScannerFragment;
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
+import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
@@ -17,6 +21,7 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManag
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 import java.io.File;
+import java.util.Optional;
 
 public class PercorsoActivity extends AppCompatActivity {
 
@@ -24,6 +29,7 @@ public class PercorsoActivity extends AppCompatActivity {
     private String nomePercorso;
     private LocalFilePercorsoManager localFilePercorsoManager;
     private LocalFileMuseoManager localFileMuseoManager;
+    private Percorso path;
 
     public String getNomeMuseo() {
         return nomeMuseo;
@@ -35,6 +41,22 @@ public class PercorsoActivity extends AppCompatActivity {
 
     public LocalFilePercorsoManager getLocalFilePercorsoManager(){
         return localFilePercorsoManager;
+    }
+
+    private void setValuePath() {
+        Optional<Percorso> pathContainer = localFilePercorsoManager.getPercorso(nomeMuseo, nomePercorso);
+
+        if (pathContainer.isPresent()) {
+            path = pathContainer.get();
+            localFilePercorsoManager.createStanzeAndOpereInThisAndNextStanze(path);
+
+        } else {
+            Log.e("percorso non trovato", "percorso non trovato");
+        }
+    }
+
+    public Percorso getPath() {
+        return path;
     }
 
     public LocalFileMuseoManager getLocalFileMuseoManager(){
@@ -82,6 +104,8 @@ public class PercorsoActivity extends AppCompatActivity {
         nomePercorso = bundle.getString("nome_percorso");
         secondPage.setArguments(bundle);
 
+        setValuePath();
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setReorderingAllowed(true);
         transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
@@ -93,9 +117,6 @@ public class PercorsoActivity extends AppCompatActivity {
     public void nextStanzeFragment() {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         Fragment thirdPage = new SceltaStanzeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("nome_percorso",nomePercorso);
-        thirdPage.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setReorderingAllowed(true);
@@ -104,6 +125,32 @@ public class PercorsoActivity extends AppCompatActivity {
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
+    public void nextQRScannerFragment() {
+        //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
+        Fragment fourthPage = new QRScannerFragment();
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setReorderingAllowed(true);
+        transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
+        transaction.replace(R.id.container_fragments_route, fourthPage);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void nextStanzaFragment() {
+        //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
+        Fragment fifthPage = new StanzaFragment();
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setReorderingAllowed(true);
+        transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
+        transaction.replace(R.id.container_fragments_route, fifthPage);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    //TODO quando l'utente termina il percorso bisogna settare l'id della stanza corrente all'id della stanza iniziale
 
     @Override
     public void onBackPressed() {

@@ -33,6 +33,7 @@ public class OverviewPathFragment extends Fragment {
     String pathDescription;
     TextView pathDescriptionTextView;
     Button startPathButton;
+    PercorsoActivity parent;
 
 
 
@@ -42,10 +43,10 @@ public class OverviewPathFragment extends Fragment {
 
         this.inflater = inflater.inflate(R.layout.overview_path_fragment, container, false);
 
-        museoumName = ((PercorsoActivity)getActivity()).getNomeMuseo();
-        pathName = ((PercorsoActivity)getActivity()).getNomePercorso();
+        parent = (PercorsoActivity) getActivity();
 
-        setDynamicValuesOfPath();
+        museoumName = parent.getNomeMuseo();
+        pathName = parent.getNomePercorso();
 
         return this.inflater;
     }
@@ -58,41 +59,13 @@ public class OverviewPathFragment extends Fragment {
     }
 
     /**
-     * funzione per ottenere i reali valori relativi alla descrizione e al nome di un percorso
-     */
-    private void setDynamicValuesOfPath() {
-
-        PercorsoActivity parent = (PercorsoActivity) getActivity();
-        Optional<Percorso> pathContainer = parent.getLocalFilePercorsoManager().getPercorso(museoumName, pathName);
-
-        if (pathContainer.isPresent()) {
-
-            Percorso pathObj = pathContainer.get();
-
-            this.pathDescription = pathObj.getDescrizionePercorso();
-            this.pathName = parent.getNomePercorso();
-
-        } else {
-            Log.e("percorso non trovato", "percorso non trovato");
-        }
-
-
-    }
-
-    /**
      * funzione per triggerare il click sul pulsante per far partire la guida
      */
     private void triggerStartPathButton() {
 
         startPathButton = inflater.findViewById(R.id.startPathButton);
 
-        startPathButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PercorsoActivity parentActivity = (PercorsoActivity) getActivity();
-                parentActivity.nextStanzeFragment();
-            }
-        });
+        startPathButton.setOnClickListener(view -> parent.nextStanzeFragment());
     }
 
 

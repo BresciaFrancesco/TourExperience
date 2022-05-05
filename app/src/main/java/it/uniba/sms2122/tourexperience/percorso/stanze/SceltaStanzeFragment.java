@@ -41,7 +41,6 @@ public class SceltaStanzeFragment extends Fragment {
     private List<Stanza> listaStanze;
     private ImageView imageView;
     private TextView textView;
-
     private boolean firstAttempt;
 
     @Override
@@ -68,28 +67,15 @@ public class SceltaStanzeFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        PercorsoActivity parentActivity = (PercorsoActivity) getActivity();
-
-        String nomePercorso = parentActivity.getNomePercorso();
-        String nomeMuseo = parentActivity.getNomeMuseo();
-
-        Optional<Percorso> pathContainer = parentActivity.getLocalFilePercorsoManager().getPercorso(nomeMuseo, nomePercorso);
-        Percorso pathObj = new Percorso();
-
-        if (pathContainer.isPresent()) {
-            pathObj = pathContainer.get();
-            parentActivity.getLocalFilePercorsoManager().createStanzeAndOpereInThisAndNextStanze(pathObj);
-
-        } else {
-            Log.e("percorso non trovato", "percorso non trovato");
-        }
+        PercorsoActivity parent = (PercorsoActivity) getActivity();
+        String nomeMuseo = parent.getNomeMuseo();
 
         if(firstAttempt){
-            listaStanze = pathObj.getAdiacentNodes();
-            textView.setText(getString(R.string.museum ,nomeMuseo ) + "\n" + getString(R.string.area, pathObj.getStanzaCorrente().getNome()));
+            listaStanze = parent.getPath().getAdiacentNodes();
+            textView.setText(getString(R.string.museum ,nomeMuseo ) + "\n" + getString(R.string.area, parent.getPath().getStanzaCorrente().getNome()));
         }else {
             listaStanze = new ArrayList<>();
-            listaStanze.add(pathObj.getStanzaCorrente());
+            listaStanze.add(parent.getPath().getStanzaCorrente());
             textView.setText(getString(R.string.museum ,nomeMuseo));
             firstAttempt = true;
         }
@@ -97,7 +83,7 @@ public class SceltaStanzeFragment extends Fragment {
 
 
         // Sending reference and data to Adapter
-        StanzeAdpter adapter = new StanzeAdpter(getContext(), listaStanze);
+        StanzeAdpter adapter = new StanzeAdpter(getContext(), listaStanze, parent);
         // Setting Adapter to RecyclerView
         recyclerView.setAdapter(adapter);
     }

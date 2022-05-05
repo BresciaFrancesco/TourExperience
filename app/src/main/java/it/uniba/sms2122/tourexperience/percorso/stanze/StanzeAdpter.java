@@ -25,10 +25,12 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
 
     private Context context;
     private List<Stanza> stanzaList;
+    private PercorsoActivity parent;
 
-    public StanzeAdpter (Context context, List<Stanza> stanzaList){
+    public StanzeAdpter (Context context, List<Stanza> stanzaList, PercorsoActivity parent){
         this.context = context;
         this.stanzaList = stanzaList;
+        this.parent = parent;
     }
 
     @NonNull
@@ -59,7 +61,7 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO impostare cosa bisogna fare al click di un determinato item della RecycleView
+                parent.nextStanzaFragment();
             }
         });
     }

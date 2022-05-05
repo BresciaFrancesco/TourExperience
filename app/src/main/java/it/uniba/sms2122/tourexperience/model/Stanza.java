@@ -1,5 +1,7 @@
 package it.uniba.sms2122.tourexperience.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.Map;
 
 
@@ -10,7 +12,6 @@ public class Stanza {
     private String descrizione;
     private Map<String, Opera> opere;
 
-
     public Stanza() {}
 
     public Stanza(String id, String nome, String descrizione, Map<String, Opera> opere) {
@@ -18,6 +19,7 @@ public class Stanza {
         this.nome = nome;
         this.opere = opere;
         this.descrizione = descrizione;
+
     }
 
     public String getId() {

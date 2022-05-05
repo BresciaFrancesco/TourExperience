@@ -1,5 +1,7 @@
 package it.uniba.sms2122.tourexperience.graph;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,11 @@ public class Percorso {
 
     /** Mappa che rappresenta il grafo del percorso. */
     private Map<String, Vertex> mappaStanze;
+
+    /** Puntatore alla stanza iniziale del grafo.
+     *  Inizialmente, punta alla stanza di partenza del percorso. */
+    private transient  String idStanzaIniziale;
+
 
     /** Puntatore alla stanza corrente all'interno del grafo.
      *  Inizialmente, punta alla stanza di partenza del percorso. */
@@ -43,6 +50,10 @@ public class Percorso {
 
     public String getIdStanzaCorrente() {
         return idStanzaCorrente;
+    }
+
+    public String getIdStanzaIniziale() {
+        return idStanzaIniziale;
     }
 
     public void setIdStanzaCorrente(String idStanzaCorrente) {
@@ -84,6 +95,7 @@ public class Percorso {
             }
             Stanza stanza = mappaStanze.get(idProssimaStanza).getStanza();
             idStanzaCorrente = idProssimaStanza;
+            idStanzaIniziale = idStanzaCorrente;
             return stanza;
         }
         catch (NullPointerException err) {

@@ -20,7 +20,7 @@ import android.util.Log;
  * Classe che effettua l'unzip di un file .zip.
  */
 public class Zip {
-    private final int bufferDim = 8192; // 8.2 KB
+    private final int bufferDim = 32768; // 32 KB
     private final ZipChecker checker;
     private final LocalFileManager localFileManager;
 
@@ -79,7 +79,7 @@ public class Zip {
      */
     public void unzip(final OpenFile of) throws IOException {
         File targetDirectory = new File(localFileManager.getGeneralPath());
-        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(of.openFile()))) {
+        try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(of.openFile(), bufferDim))) {
             ZipEntry ze;
             int count;
             byte[] buffer = new byte[bufferDim];
@@ -87,12 +87,6 @@ public class Zip {
 
                 File file = new File(targetDirectory, ze.getName());
                 File dir = ze.isDirectory() ? file : file.getParentFile();
-
-                if (dir == null)
-                    throw new FileNotFoundException("La variabile dir è null in unzip");
-
-                if (file.exists())
-                    continue;
 
                 if (!dir.isDirectory() && !dir.mkdirs()) {
                     throw new FileNotFoundException("Impossibile garantire la directory: " +

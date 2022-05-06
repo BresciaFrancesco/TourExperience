@@ -1,6 +1,7 @@
 package it.uniba.sms2122.tourexperience.percorso.pagina_museo;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,22 +11,24 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import java.util.List;
+
 import it.uniba.sms2122.tourexperience.R;
 
 public class ViewPagerAdapter extends PagerAdapter {
 
     private Context context;
     private LayoutInflater layoutInflater;
-    private Integer[] images;
+    private List<String> images;
 
-    public ViewPagerAdapter(Context context) {
+    public ViewPagerAdapter(Context context, List<String> images) {
         this.context = context;
-        images = new Integer[]{R.drawable.ic_museum, R.drawable.ic_museum, R.drawable.ic_museum};
+        this.images = images;
     }
 
     @Override
     public int getCount() {
-        return images.length;
+        return images.size();
     }
 
     @Override
@@ -40,7 +43,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         View view = layoutInflater.inflate(R.layout.museum_image_view,null);
 
         ImageView imageView = (ImageView)view.findViewById(R.id.museumImageView);
-        imageView.setImageResource(images[position]);
+        imageView.setImageURI(Uri.parse(images.get(position)));
 
         ViewPager viewPager = (ViewPager)container;
         viewPager.addView(view);

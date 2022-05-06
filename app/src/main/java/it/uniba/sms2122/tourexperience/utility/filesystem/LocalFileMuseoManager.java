@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -57,6 +58,21 @@ public class LocalFileMuseoManager extends LocalFileManager {
             );
             return museo;
         }
+    }
+
+    /**
+     * Ottiene la lista di immagini del museo.
+     * @param nomeMuseo nome del museo da ottenere.
+     * @return lista immagini del museo.
+     */
+    public List<String> getMuseoImages(String nomeMuseo)
+    {
+        String img1 = Paths.get(generalPath, nomeMuseo, "Immagine_1" + IMG_EXTENSION).toString();
+        String img2 = Paths.get(generalPath, nomeMuseo, "Immagine_2" + IMG_EXTENSION).toString();
+        String img3 = Paths.get(generalPath, nomeMuseo, "Immagine_3" + IMG_EXTENSION).toString();
+
+        List<String> lista = Arrays.asList(img1,img2,img3);
+        return lista;
     }
 
     /**

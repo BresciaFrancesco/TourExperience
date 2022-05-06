@@ -18,12 +18,14 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 
 public class MuseoFragment extends Fragment {
 
@@ -32,6 +34,7 @@ public class MuseoFragment extends Fragment {
     TextView textView;
     RecyclerView recycleView;
     ArrayList<String> nomiPercorsi;
+    List<String> immagini;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,10 +46,15 @@ public class MuseoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         nomiPercorsi = new ArrayList<>();
+
+        // Recupera le immagini con il metodo getMuseoImages()
+        immagini = ((PercorsoActivity)getActivity())
+                .getLocalFileMuseoManager().getMuseoImages(nomeMuseo);
+
         viewPager = (ViewPager)view.findViewById(R.id.museum_viewpager);
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getContext());
+        // Passa la lista di immagini al viewPagerAdapter
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getContext(),immagini);
         viewPager.setAdapter(viewPagerAdapter);
 
         textView = view.findViewById(R.id.museum_description);
@@ -82,7 +90,5 @@ public class MuseoFragment extends Fragment {
 
         // Setta descrizione museo
         textView.setText(museo.getDescrizione());
-
-        //aggiungere immagini nella viewpager
     }
 }

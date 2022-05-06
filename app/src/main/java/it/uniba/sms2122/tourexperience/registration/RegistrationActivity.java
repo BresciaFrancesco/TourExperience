@@ -65,6 +65,10 @@ public class RegistrationActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Funzione che serve a sostituire il precedente fragment con StanzaFragment
+     * @param bundle, email e password inseriti nel fragment precedente
+     */
     public void nextFragment(Bundle bundle) {
         Fragment secondPage = new RegistrationFragmentSecondPage();
 
@@ -78,6 +82,10 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Funzione che si occupa della registrazione di un nuovo utente su firebase e poi fa partire LoginActivity
+     * @param bundle, email, password, nome, cognome e data di nascita del nuovo utente che si vuole registrare
+     */
     public void registration(Bundle bundle) {
         UserHolder userHolder = UserHolder.getInstance();
         userHolder.register(bundle.getString("email"), bundle.getString("password"), bundle.getString("name"), bundle.getString("surname"), bundle.getString("dateBirth"),

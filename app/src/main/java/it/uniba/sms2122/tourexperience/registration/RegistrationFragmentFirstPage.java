@@ -43,6 +43,10 @@ public class RegistrationFragmentFirstPage extends Fragment {
         btnNextPage.setOnClickListener(this::nextFragment);
     }
 
+    /**
+     * Funzione che invoca la funzione nextFragment al fine di passare al secondo fragment della registrazione
+     * @param view
+     */
     private void nextFragment(View view) {
         String txtEmail = email.getText().toString();
         String txtPsw = psw.getText().toString();

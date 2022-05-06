@@ -9,6 +9,10 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import it.uniba.sms2122.tourexperience.R;
 
+/**
+ * Classe che verifica la correttezza delle credenziali
+ * Più precisamente password, email, e stringa generica
+ */
 public class CheckCredentials {
 
     public static final int MAX_DATE = 15;
@@ -18,6 +22,14 @@ public class CheckCredentials {
     public static final int MAX_EMAIL = 50;
 
 
+    /**
+     * Funzione che verifica la correttezza della password inserita dell'utente
+     * sia in termini di lunghezza, eventuale presenza di spazi e soprattutto controlla che le due password inserite combacino
+     * @param firstPassword, TextInputEditText contenente la prima password inserita dall'utente
+     * @param secondPassword, TextInputEditText contenente la seconda password inserita dall'utente
+     * @param activity, referimento all'activity genitore
+     * @return true se la password inserita è corretta, altrimenti ritorna false
+     */
     public boolean checkPassword(TextInputEditText firstPassword, TextInputEditText secondPassword, Activity activity) {
         String txtPassword = firstPassword.getText().toString();
         String txtSecondPassword = secondPassword.getText().toString();
@@ -48,6 +60,13 @@ public class CheckCredentials {
         return true;
     }
 
+    /**
+     * Funzione che verifica la correttezza della password inserita dell'utente
+     * sia in termini di lunghezza, eventuale presenza di spazi e soprattutto controlla che le due password inserite combacino
+     * @param firstPassword, prima password inserita dall'utente
+     * @param activity, referimento all'activity genitore
+     * @return true se la password inserita è corretta, altrimenti ritorna false
+     */
     public boolean checkPassword(TextInputEditText firstPassword, Activity activity) {
         String txtPassword = firstPassword.getText().toString();
         if (!checkGenericStringGeneral("password", firstPassword, MAX_PASSWORD, txtPassword, activity))
@@ -68,6 +87,16 @@ public class CheckCredentials {
         return true;
     }
 
+    /**
+     * Funzione che verifica la correttezza di una stringa generica inserita dell'utente
+     * sia in termini di lunghezza ma anche se è eventualmente vuota
+     * @param tag, tag della stringa
+     * @param string, TextInputEditText in cui è stata inserita la stringa dell'utente
+     * @param MAX, lunghezza massima che la striga può avere
+     * @param txtString, stringa inserita dall'utente
+     * @param activity, referimento all'activity genitore
+     * @return true se la stringa generica inserita è corretta, altrimenti ritorna false
+     */
     public boolean checkGenericStringGeneral(String tag, TextInputEditText string, int MAX, String txtString, Activity activity) {
         if (txtString == null) {
             txtString = string.getText().toString().trim();
@@ -86,6 +115,13 @@ public class CheckCredentials {
         return true;
     }
 
+    /**
+     * Funzione che verifica la correttezza di una email
+     * sia in termini di lunghezza ma soprattutto di correttezza formale
+     * @param email, TextInputEditText che contiene l'email inserita dall'utente
+     * @param activity, referimento all'activity genitore
+     * @return true se l'email inserita è corretta, altrimenti ritorna false
+     */
     public boolean checkEmail(TextInputEditText email, Activity activity) {
         String txtEmail = email.getText().toString().trim();
         if (!checkGenericStringGeneral("email", email, MAX_EMAIL, txtEmail,activity))

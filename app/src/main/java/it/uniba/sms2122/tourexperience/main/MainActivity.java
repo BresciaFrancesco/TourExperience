@@ -180,6 +180,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Funzione che serve a sostituire il precedente fragment con SceltaMuseiFragment
+     */
     public void replaceSceltaMuseiFragment(Bundle bundle){
         SceltaMuseiFragment sceltaMuseiFragment = new SceltaMuseiFragment();
         sceltaMuseiFragment.setArguments(bundle);
@@ -206,6 +209,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent, options.toBundle());
     }
 
+    /**
+     * Funzione utile a nascondere la tastiera una volta che un fragment è stata sostituito con un altro
+     * @param ctx
+     */
     public static void hideKeyboard(Context ctx) {
         InputMethodManager inputManager = (InputMethodManager) ctx
                 .getSystemService(Context.INPUT_METHOD_SERVICE);

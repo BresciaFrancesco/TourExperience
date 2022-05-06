@@ -75,6 +75,12 @@ public class HomeFragment extends Fragment {
         reference.addListenerForSingleValueEvent(eventListener);
     }
 
+    /**
+     * Funzione che gestione la funzionalità di ricerca dei musei in base
+     * al nome, città e tipologia del museo
+     * @param snapshot, risultato ottenuto una volta intepellato firebase per ottenere la
+     *                  lista di nomi, città e tipologie dei musei presenti
+     */
     private void museumsSearch(DataSnapshot snapshot) {
         ArrayList<String> arrayList = new ArrayList<>();
         if(snapshot.exists()){

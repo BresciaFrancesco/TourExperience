@@ -24,7 +24,13 @@ import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> {
 
     private Context context;
+    /**
+     * lista di stanza da visualizzare
+     */
     private List<Stanza> stanzaList;
+    /**
+     * riferimento all'activity genitore PercorsoActivity
+     */
     private PercorsoActivity parent;
 
     public StanzeAdpter (Context context, List<Stanza> stanzaList, PercorsoActivity parent){

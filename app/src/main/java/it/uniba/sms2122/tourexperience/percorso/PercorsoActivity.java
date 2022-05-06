@@ -37,6 +37,9 @@ public class PercorsoActivity extends AppCompatActivity {
     private String nomePercorso;
     private LocalFilePercorsoManager localFilePercorsoManager;
     private LocalFileMuseoManager localFileMuseoManager;
+    /**
+     * Attributo che memorizza il percorso scelto dall'utente
+     */
     private Percorso path;
 
     public String getNomeMuseo() {
@@ -51,6 +54,10 @@ public class PercorsoActivity extends AppCompatActivity {
         return localFilePercorsoManager;
     }
 
+    /**
+     * Funzione che imposta il valore dell'attributo path ogni volta che viene selezionato un
+     * determinato percoso all'interno della lista percosi relativi ad un determinato museo
+     */
     private void setValuePath() {
         Optional<Percorso> pathContainer = localFilePercorsoManager.getPercorso(nomeMuseo, nomePercorso);
 
@@ -86,6 +93,9 @@ public class PercorsoActivity extends AppCompatActivity {
 
         // cacheMuseums.get(nomeMuseo); // per ottenere l'oggetto Museo, basta fare così
 
+        /**
+         * Viene aggiunto il fragment MuseoFragment all'activity
+         */
         if (savedInstanceState == null) {
             Fragment firstPage = new MuseoFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -106,6 +116,10 @@ public class PercorsoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Funzione che serve a sostituire il precedente fragment con OverviewPathFragment
+     * @param bundle, contiene il nome del percorso di cui si deve visualizzare la descrizione
+     */
     public void nextPercorsoFragment(Bundle bundle) {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         Fragment secondPage = new OverviewPathFragment();
@@ -122,6 +136,9 @@ public class PercorsoActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    /**
+     * Funzione che serve a sostituire il precedente fragment con SceltaStanzeFragment
+     */
     public void nextStanzeFragment() {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         Fragment thirdPage = new SceltaStanzeFragment();
@@ -134,6 +151,9 @@ public class PercorsoActivity extends AppCompatActivity {
         transaction.commit();
     }
 
+    /**
+     * Funzione che serve a sostituire il precedente fragment con QRScannerFragment
+     */
     public void nextQRScannerFragment() {
 
         if (checkCameraPermission() == true) {
@@ -174,6 +194,9 @@ public class PercorsoActivity extends AppCompatActivity {
         transaction.commit();*/
     }
 
+    /**
+     * Funzione che serve a sostituire il precedente fragment con StanzaFragment
+     */
     public void nextStanzaFragment() {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         Fragment fifthPage = new StanzaFragment();
@@ -197,7 +220,7 @@ public class PercorsoActivity extends AppCompatActivity {
 
 
     /**
-     * funzione per sapere se il permessio della camera è gia stato concesso o meno
+     * funzione per sapere se il permesso della camera è gia stato concesso o meno
      *
      * @return true se il permesso è gia stato concesso,false altrimeti
      */

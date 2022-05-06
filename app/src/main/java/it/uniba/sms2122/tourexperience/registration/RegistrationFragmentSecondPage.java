@@ -55,6 +55,10 @@ public class RegistrationFragmentSecondPage extends Fragment {
         btnEnd.setOnClickListener(view2 -> registration(view2));
     }
 
+    /**
+     * Funzione che invoca la funzione registration al fine di effettuare la registazione del nuovo utente su firebase
+     * @param view
+     */
     private void registration(View view) {
         String txtName = name.getText().toString();
         String txtSurname = surname.getText().toString();

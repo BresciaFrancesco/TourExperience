@@ -33,15 +33,16 @@ public class FirstActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
 
-        btnLogin = (Button) findViewById(R.id.idBtnMainLogin);
-        btnRegistration = (Button) findViewById(R.id.idBtnMainRegistration);
-        textViewGuest = (TextView) findViewById(R.id.idTextViewGuest);
-
         createLocalDirectoryIfNotExists(getFilesDir(), mainDirectory);
 
         userHolder = UserHolder.getInstance();
         userHolder.getUser(
+                //Caso: Utente è loggato
                 (user) -> {
+                    btnLogin = (Button) findViewById(R.id.idBtnMainLogin);
+                    btnRegistration = (Button) findViewById(R.id.idBtnMainRegistration);
+                    textViewGuest = (TextView) findViewById(R.id.idTextViewGuest);
+
                     btnLogin.setVisibility(View.GONE);
                     btnRegistration.setVisibility(View.GONE);
                     textViewGuest.setVisibility(View.GONE);
@@ -51,8 +52,9 @@ public class FirstActivity extends AppCompatActivity {
                     startActivity(intent);
                     supportFinishAfterTransition(); // Non si può tornare indietro con il pulsane Back
                 },
+                //Caso: Utente non è loggato
                 () -> {
-                    // Check sulla prima apertura
+                    // Verifica se si tratta della prima apertura o no
                     SharedPreferences prefs = getSharedPreferences(BuildConfig.SHARED_PREFS, MODE_PRIVATE);
                     if(!prefs.contains(BuildConfig.SP_FIRST_OPENING)) {
                         SharedPreferences.Editor editor = prefs.edit();
@@ -77,6 +79,9 @@ public class FirstActivity extends AppCompatActivity {
         );
     }
 
+    /**
+     * Funzione che fa partire l'activity LoginActivity
+     */
     private void setOnClickListenerBtnLogin() {
         btnLogin.setOnClickListener(view -> {
             Intent intent = new Intent(FirstActivity.this, LoginActivity.class);
@@ -84,6 +89,9 @@ public class FirstActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Funzione che fa partire l'activity RegistrationActivity
+     */
     private void setOnClickListenerBtnRegistration() {
         btnRegistration.setOnClickListener(view -> {
             Intent intent = new Intent(FirstActivity.this, RegistrationActivity.class);
@@ -91,6 +99,9 @@ public class FirstActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Funzione che fa partire l'activity MainActivity
+     */
     private void setOnClickListenerTextViewGuest() {
         textViewGuest.setOnClickListener(view -> {
             Intent intent = new Intent(FirstActivity.this, MainActivity.class);

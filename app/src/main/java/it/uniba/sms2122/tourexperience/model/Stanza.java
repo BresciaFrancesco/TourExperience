@@ -10,6 +10,7 @@ public class Stanza {
     private String id;
     private String nome;
     private String descrizione;
+    /** Mappa che contiene le opere presenti all'interno della stanza. */
     private Map<String, Opera> opere;
 
     public Stanza() {}

@@ -48,6 +48,8 @@ public class OverviewPathFragment extends Fragment {
         museoumName = parent.getNomeMuseo();
         pathName = parent.getNomePercorso();
 
+        setDynamicValuesOfPath();
+
         return this.inflater;
     }
 
@@ -57,6 +59,31 @@ public class OverviewPathFragment extends Fragment {
         setDynamicValuesOnView();
         triggerStartPathButton();
     }
+
+
+    /**
+     * funzione per ottenere i reali valori relativi alla descrizione e al nome di un percorso
+     */
+    private void setDynamicValuesOfPath() {
+
+        LocalFilePercorsoManager pathManager = new LocalFilePercorsoManager(getContext().getFilesDir().toString());
+
+        Optional<Percorso> pathContainer = pathManager.getPercorso(museoumName, pathName);
+
+        if (pathContainer.isPresent()) {
+
+            Percorso pathObj = pathContainer.get();
+
+            this.pathDescription = pathObj.getDescrizionePercorso();
+            this.pathName = ((PercorsoActivity)getActivity()).getNomePercorso();
+
+        } else {
+            Log.e("percorso non trovato", "percorso non trovato");
+        }
+
+
+    }
+
 
     /**
      * funzione per triggerare il click sul pulsante per far partire la guida

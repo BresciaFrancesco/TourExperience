@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collections;
 
-import static it.uniba.sms2122.tourexperience.utility.GenericUtility.*;
+import static it.uniba.sms2122.tourexperience.utility.GenericUtility.thereIsConnection;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.Museo;
@@ -41,6 +41,12 @@ public class ImportPercorsi {
         this.localFileManager = new LocalFileMuseoManager(this.filesDir.toString());
     }
 
+    /**
+     * Permette di settare in modo statico un oggetto di tipo Back, che
+     * deve permettere di tornare indietro allo stato precedente la lista
+     * dei percorsi di firebase, ovvero tornare alla lista dei musei.
+     * @param back oggetto Back da settare in questa classe in modo statico.
+     */
     public static void setBackToMuseumsList(Back back) {
         backToMuseumsList = back;
     }
@@ -71,6 +77,13 @@ public class ImportPercorsi {
     }
 
 
+    /**
+     * Scarica museo e percorso scelto da Firebase.
+     * Versione 2: Scarica un file .zip e lo decomprime, salvandone i file in locale.
+     * @param nomePercorso nome del percorso da scaricare.
+     * @param nomeMuseo nome del museo da scaricare.
+     * @param progressBar progress bar da settare visibile e gone quando serve.
+     */
     private void downloadAll_v2(final String nomePercorso,
                                 final String nomeMuseo,
                                 final ProgressBar progressBar) {
@@ -129,8 +142,6 @@ public class ImportPercorsi {
         .addOnCompleteListener(task -> progressBar.setVisibility(View.GONE))
         .addOnSuccessListener(taskSnapshot -> {
             addNewPercorsoToCache(nomeMuseo, Collections.singletonList(nomePercorso));
-            // Eseguo la rimozione del percorso dalla cache
-            cachePercorsi.remove(new Museo(nomePercorso, nomeMuseo));
             if (backToMuseumsList != null) {
                 backToMuseumsList.back(null);
             }

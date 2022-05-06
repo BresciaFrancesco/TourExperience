@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -47,6 +48,7 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.zip.DTO.OpenFileAndroi
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
+import static it.uniba.sms2122.tourexperience.utility.GenericUtility.thereIsConnection;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -204,6 +206,10 @@ public class SceltaMuseiFragment extends Fragment {
         });
 
         cloudFab.setOnClickListener(view2 -> {
+            if (!thereIsConnection(() -> Toast.makeText(
+                getContext(),
+                getContext().getString(R.string.no_connection),
+                Toast.LENGTH_SHORT).show())) return;
             progressBar.setVisibility(View.VISIBLE);
             recyclerView.setAdapter(null);
             hideFabOptions();
@@ -281,78 +287,17 @@ public class SceltaMuseiFragment extends Fragment {
         }
     }
 
-    // IN TEST
+    /**
+     * Ritorna la lista dei percorsi presenti in cloud su Firebase.
+     */
     private void getListaPercorsiFromCloudStorage() {
-        MuseiAdapter adapterPercorsi = new MuseiAdapter(
-                null,
-                progressBar,
-                (!cachePercorsi.isEmpty()) ? cachePercorsi : new ArrayList<>(),
-                false
-        );
-        if (!cachePercorsi.isEmpty()) {
-            Log.v("IMPORT_CLOUD", "with cache cachePercorsi.");
-            recyclerView.setAdapter(adapterPercorsi);
-            progressBar.setVisibility(View.GONE);
-            attachQueryTextListener(adapterPercorsi);
-            return;
-        }
+        MuseiAdapter adapterPercorsi = new MuseiAdapter(null, progressBar,
+                new ArrayList<>(), false);
         Log.v("IMPORT_CLOUD", "start download...");
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("Museums_v2");
         ValueEventListener listener = new
             ListaPercorsiFromCloud(adapterPercorsi, this, progressBar, recyclerView);
         db.addValueEventListener(listener);
-    }
-
-
-    /**
-     * Ritorna la lista dei percorsi disponibili al download dallo storage
-     * di firebase. Riutilizza lo stesso recycler view, impostando solo
-     * un adapter diverso con la lista di percorsi anziché di musei.
-     */
-    private void getListaPercorsiFromCloudStorage____() {
-        //getListaPercorsiFromCloudStorage_v2();
-        if (!cachePercorsi.isEmpty()) {
-            Log.v("IMPORT_CLOUD", "with cache cachePercorsi.");
-            MuseiAdapter adapterPercorsi = new MuseiAdapter(
-                    null,
-                    progressBar,
-                    cachePercorsi,
-                    false
-            );
-            recyclerView.setAdapter(adapterPercorsi);
-            progressBar.setVisibility(View.GONE);
-            attachQueryTextListener(adapterPercorsi);
-            return;
-        }
-        StorageReference listRef = firebaseStorage.getReference().child("Museums");
-        listRef.listAll().addOnSuccessListener(listResult -> {
-            Log.v("IMPORT_CLOUD", "start download...");
-            MuseiAdapter adapterPercorsi = new MuseiAdapter(
-                    null,
-                    progressBar,
-                    new ArrayList<>(),
-                    false
-            );
-            recyclerView.setAdapter(adapterPercorsi);
-            progressBar.setVisibility(View.GONE);
-            for (StorageReference folder : listResult.getPrefixes()) {
-                String nomeMuseo = folder.getName();
-                Task<ListResult> task = folder.child("Percorsi").listAll();
-                while (!task.isComplete());
-                if (task.isSuccessful()) {
-                    for (StorageReference fileJson : task.getResult().getItems()) {
-                        String nomePercorso = fileJson.getName();
-                        nomePercorso = nomePercorso.substring(0, nomePercorso.length()-5);
-                        // Se il percorso è già presente in locale, non mostrarlo all'utente
-                        if (checkRouteExistence(nomeMuseo, nomePercorso)) continue;
-                        adapterPercorsi.addMuseum(new Museo(nomePercorso, nomeMuseo));
-                    }
-                } else Log.e("IMPORT_CLOUD", "Task is not succesfull");
-            }
-            attachQueryTextListener(adapterPercorsi);
-            replacePercorsiInCache(adapterPercorsi.getListaMusei());
-            Log.v("IMPORT_CLOUD", "finish download...");
-        }).addOnFailureListener(error -> Log.e("IMPORT_CLOUD", error.toString()));
     }
 
 

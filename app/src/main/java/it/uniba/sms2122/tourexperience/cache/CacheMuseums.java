@@ -23,14 +23,6 @@ public class CacheMuseums {
     /** La cache è una semplice HashMap */
     public final static Map<String, Museo> cacheMuseums = new HashMap<>();
 
-    /** La cache è un semplice ArrayList.
-     *  I percorsi in questo caso sono contenuti in oggetti Museo perché
-     *  questo rende più facile il riutilizzo della lista dei musei per
-     *  contenere i percorsi scaricati dal cloud (che nella lista sono
-     *  rappresentati solo da 2 stringhe, nome del percorsi e nome del
-     *  museo). */
-    public final static List<Museo> cachePercorsi = new ArrayList<>();
-
     /** La cache è HashMap che contiene oggetti di tipo HashSet.
      * Vengono salvati i percorsi presenti in locale, ma solo il nome.
      * La struttura è:
@@ -57,18 +49,6 @@ public class CacheMuseums {
         }
         return museums;
     }
-
-
-    /**
-     * Ripulisce la cache e ne inserisce nuovi elementi.
-     * @param percorsi lista di percorsi da inserire nella cache.
-     * @return boolean of List.addAll()
-     */
-    public static boolean replacePercorsiInCache(final List<Museo> percorsi) {
-        cachePercorsi.clear();
-        return cachePercorsi.addAll(percorsi);
-    }
-
 
     /**
      * Ripulisce la cache e utilizza il metodo addNewMuseumsInCache(),

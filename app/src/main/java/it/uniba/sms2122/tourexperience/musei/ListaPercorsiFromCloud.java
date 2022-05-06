@@ -1,7 +1,6 @@
 package it.uniba.sms2122.tourexperience.musei;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.checkRouteExistence;
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.replacePercorsiInCache;
 
 import android.util.Log;
 import android.view.View;
@@ -57,7 +56,6 @@ public class ListaPercorsiFromCloud implements ValueEventListener {
             }
         }
         fragment.attachQueryTextListener(adapterPercorsi);
-        replacePercorsiInCache(adapterPercorsi.getListaMusei());
         Log.v("IMPORT_CLOUD", "finish download...");
     }
 

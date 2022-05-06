@@ -14,7 +14,7 @@ public class CheckZipMuseum implements ZipChecker {
      * del file .zip sotto forma di albero n-ario. */
     private final TreeVirtualZipFileSystem virtualZipFileSystem;
 
-    private final String IMG_EXTENSION = ".png";
+    private final String IMG_EXTENSION = ".webp";
     private final String infoOperaJson = "Info_opera.json";
     private final String infoStanzaJson = "Info_stanza.json";
     private final String infoMuseoJson = "Info.json";

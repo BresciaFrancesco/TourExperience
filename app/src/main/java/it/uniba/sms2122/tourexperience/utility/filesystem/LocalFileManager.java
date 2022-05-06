@@ -10,7 +10,7 @@ import java.nio.file.Files;
 public class LocalFileManager {
 
     protected final String generalPath;
-    protected final String IMG_EXTENSION = ".png";
+    protected final String IMG_EXTENSION = ".webp";
 
     public LocalFileManager(String generalPath) {
         if (generalPath.charAt(generalPath.length()-1) != '/') {

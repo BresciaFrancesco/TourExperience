@@ -2,13 +2,13 @@ package it.uniba.sms2122.tourexperience.musei;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.JsonIOException;
@@ -21,9 +21,6 @@ import java.nio.file.Paths;
 import java.util.Collections;
 
 import static it.uniba.sms2122.tourexperience.utility.GenericUtility.*;
-import static it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager.createLocalDirectoryIfNotExists;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.Museo;
@@ -68,7 +65,8 @@ public class ImportPercorsi {
                 cacheMuseums.get(nomeMuseo.toLowerCase()) == null) {
             downloadAll_v2(nomePercorso, nomeMuseo, progressBar);
         } else {
-            downloadPercorso(nomePercorso, nomeMuseo, progressBar);
+            downloadPercorso(nomePercorso, nomeMuseo, progressBar)
+            .addOnFailureListener(e -> Log.e("DOWNLOAD_PERCORSO", e.getMessage()));
         }
     }
 
@@ -82,32 +80,25 @@ public class ImportPercorsi {
         try {
             File tempFile = File.createTempFile("temp", null);
             storage.getFile(tempFile).addOnSuccessListener(taskSnapshot -> {
-
-                createLocalDirectoryIfNotExists(filesDir, "Museums/" + nomeMuseo);
-                createLocalDirectoryIfNotExists(filesDir, "Museums/" + nomeMuseo + "/Percorsi");
-
-                new Thread(() -> {
-                    try {
-                        Zip zip = new Zip(localFileManager);
-                        zip.unzip(() -> new FileInputStream(tempFile.getAbsoluteFile()));
-                        Museo museo = localFileManager.getMuseoByName(nomeMuseo);
-                        cacheMuseums.put(nomeMuseo, museo);
-                        Log.v("CACHE MUSEI", nomeMuseo + " scaricato e cachato correttamente");
-                    }
-                    catch (IOException | JsonSyntaxException | JsonIOException e) {
-                        ((Activity)context).runOnUiThread(() -> {
-                            fail(progressBar, "DOWNLOAD",
-                                    "Errore di unzip o downloadPercorso o parser Gson",
-                                    "Download fallito");
-                        });
-                        e.printStackTrace();
+                try {
+                    Zip zip = new Zip(localFileManager);
+                    zip.unzip(() -> new FileInputStream(tempFile.getAbsoluteFile()));
+                    Museo museo = localFileManager.getMuseoByName(nomeMuseo);
+                    cacheMuseums.put(nomeMuseo, museo);
+                    Log.v("CACHE MUSEI", nomeMuseo + " scaricato e cachato correttamente");
+                    downloadPercorso(nomePercorso, nomeMuseo, progressBar).addOnFailureListener(e -> {
+                        Log.e("DOWNLOAD_PERCORSO", e.getMessage());
                         localFileManager.deleteMuseo(nomeMuseo);
-                    }
-                    new Thread(tempFile::delete).start();
-                }).start();
-
-                downloadPercorso(nomePercorso, nomeMuseo, progressBar);
-
+                    });
+                }
+                catch (IOException | JsonSyntaxException | JsonIOException e) {
+                    fail(progressBar, "DOWNLOAD",
+                            "Errore di unzip o downloadPercorso o parser Gson",
+                            "Download fallito");
+                    e.printStackTrace();
+                    localFileManager.deleteMuseo(nomeMuseo);
+                }
+                new Thread(tempFile::delete).start();
             }).addOnFailureListener(error -> {
                 fail(progressBar, "DOWNLOAD", error.getMessage(), "Download fallito");
                 new Thread(tempFile::delete).start();
@@ -125,18 +116,17 @@ public class ImportPercorsi {
      * @param nomeMuseo
      * @param progressBar
      */
-    public void downloadPercorso(final String nomePercorso,
-                                 final String nomeMuseo,
-                                 final ProgressBar progressBar) {
+    public FileDownloadTask downloadPercorso(final String nomePercorso,
+                                             final String nomeMuseo,
+                                             final ProgressBar progressBar) {
         if (progressBar.getVisibility() != View.VISIBLE)  {
             progressBar.setVisibility(View.VISIBLE);
         }
         final String suffix = Paths.get(nomeMuseo, "Percorsi", nomePercorso+".json").toString();
         final String fileCloud = Paths.get("Museums_v2", suffix).toString();
         final File localFile = Paths.get(filesDir.getAbsolutePath(), "Museums", suffix).toFile();
-        firebaseStorage.getReference(fileCloud).getFile(localFile)
+        return (FileDownloadTask) firebaseStorage.getReference(fileCloud).getFile(localFile)
         .addOnCompleteListener(task -> progressBar.setVisibility(View.GONE))
-        .addOnFailureListener(e -> Log.e("DOWNLOAD_PERCORSO", e.getMessage()))
         .addOnSuccessListener(taskSnapshot -> {
             addNewPercorsoToCache(nomeMuseo, Collections.singletonList(nomePercorso));
             // Eseguo la rimozione del percorso dalla cache

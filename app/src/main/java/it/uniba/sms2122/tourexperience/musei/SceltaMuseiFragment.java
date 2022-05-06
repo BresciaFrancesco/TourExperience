@@ -28,7 +28,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,12 +37,12 @@ import java.util.List;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.model.Museo;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.DTO.OpenFileAndroidStorageDTO;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
-import static it.uniba.sms2122.tourexperience.utility.GenericUtility.thereIsConnection;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,7 +56,6 @@ public class SceltaMuseiFragment extends Fragment {
     private ProgressBar progressBar;
     private List<Museo> listaMusei;
     private LocalFileMuseoManager localFileManager;
-    private FirebaseStorage firebaseStorage;
     private final int requestCodeGC = 10;
 
     // Make sure to use the FloatingActionButton for all the FABs
@@ -66,6 +64,7 @@ public class SceltaMuseiFragment extends Fragment {
     private TextView localStorageTxtView, cloudTxtView;
     // to check whether sub FAB buttons are visible or not.
     private Boolean isAllFabsVisible;
+
 
     /**
      * Istanzia la lista dei musei, recuperando i musei dal filesystem
@@ -155,7 +154,6 @@ public class SceltaMuseiFragment extends Fragment {
         File filesDir = view.getContext().getFilesDir();
         localFileManager = new LocalFileMuseoManager(filesDir.toString());
 
-        firebaseStorage = FirebaseStorage.getInstance();
         searchView = view.findViewById(R.id.searchviewMusei);
 
         recyclerView = view.findViewById(R.id.recyclerViewMusei);
@@ -200,11 +198,11 @@ public class SceltaMuseiFragment extends Fragment {
             } else openFileExplorer.run();
         });
 
-        cloudFab.setOnClickListener(view2 -> {
-            if (!thereIsConnection(() -> Toast.makeText(
-                getContext(),
-                getContext().getString(R.string.no_connection),
-                Toast.LENGTH_SHORT).show())) return;
+        cloudFab.setOnClickListener(view2 -> NetworkConnectivity.check(isConnected -> {
+            if (!isConnected) {
+                Toast.makeText(getContext(), getContext().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+                return;
+            }
             progressBar.setVisibility(View.VISIBLE);
             recyclerView.setAdapter(null);
             hideFabOptions();
@@ -229,7 +227,7 @@ public class SceltaMuseiFragment extends Fragment {
             // Ottiene da firebase tutti i percorsi
             getListaPercorsiFromCloudStorage();
             searchView.setQueryHint(getString(R.string.search_paths));
-        });
+        }));
     }
 
     /**

@@ -20,10 +20,9 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collections;
 
-import static it.uniba.sms2122.tourexperience.utility.GenericUtility.thereIsConnection;
-
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.Museo;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.Zip;
 
@@ -62,18 +61,19 @@ public class ImportPercorsi {
     public void downloadMuseoPercorso(final String nomePercorso,
                                       final String nomeMuseo,
                                       final ProgressBar progressBar) {
-        if (!thereIsConnection(() -> Toast.makeText(
-                context,
-                context.getString(R.string.no_connection),
-                Toast.LENGTH_SHORT).show()
-        )) return;
-        if (cacheMuseums.get(nomeMuseo) == null &&
-                cacheMuseums.get(nomeMuseo.toLowerCase()) == null) {
-            downloadAll_v2(nomePercorso, nomeMuseo, progressBar);
-        } else {
-            downloadPercorso(nomePercorso, nomeMuseo, progressBar)
-            .addOnFailureListener(e -> Log.e("DOWNLOAD_PERCORSO", e.getMessage()));
-        }
+        NetworkConnectivity.check(isConnected -> {
+            if (!isConnected) {
+                Toast.makeText(context, context.getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (cacheMuseums.get(nomeMuseo) == null &&
+                    cacheMuseums.get(nomeMuseo.toLowerCase()) == null) {
+                downloadAll_v2(nomePercorso, nomeMuseo, progressBar);
+            } else {
+                downloadPercorso(nomePercorso, nomeMuseo, progressBar)
+                        .addOnFailureListener(e -> Log.e("DOWNLOAD_PERCORSO", e.getMessage()));
+            }
+        });
     }
 
 

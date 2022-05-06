@@ -23,11 +23,10 @@ import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
-import it.uniba.sms2122.tourexperience.musei.ImportPercorsi;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
-import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 
 
@@ -40,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        NetworkConnectivity.init(this);
 
         userHolder = UserHolder.getInstance();
         userHolder.getUser(

@@ -7,6 +7,8 @@
     android:id="@+id/fragment_lista_stanze"
     tools:context=".percorso.stanze.SceltaStanzeFragment">
 
+
+
     <LinearLayout
         android:id="@+id/item_museo"
         android:layout_width="match_parent"
@@ -71,5 +73,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </FrameLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/scannerFrag"
+        android:layout_width="300dp"
+        android:layout_height="320dp"
+        android:layout_gravity="center_horizontal|center_vertical"
+        />
+
 
 </FrameLayout>

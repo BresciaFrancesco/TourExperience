@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,17 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.zxing.Result;
 
+import java.security.Permission;
+
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
+import it.uniba.sms2122.tourexperience.utility.Permesso;
 
 public class QRScannerFragment extends Fragment {
 
     private CodeScanner mCodeScanner;
+    //private ScannerDataReadManager dataReadManager;
+
 
     @Nullable
     @Override
@@ -30,10 +37,16 @@ public class QRScannerFragment extends Fragment {
         final Activity activity = getActivity();
         View root = inflater.inflate(R.layout.qr_scanner_fragment, container, false);
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
+
+        Log.e("activity chimante", getActivity().getClass().getName());
+
+
         mCodeScanner = new CodeScanner(activity, scannerView);
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
             public void onDecoded(@NonNull final Result result) {
+
+                //dataReadManager.onScannerDataRead(result.getText());
 
                 //code after reading
 
@@ -70,5 +83,11 @@ public class QRScannerFragment extends Fragment {
         mCodeScanner.releaseResources();
         super.onPause();
     }
+
+
+    /* public interface ScannerDataReadManager {
+
+        void onScannerDataRead(String scannerResult);
+    }*/
 
 }

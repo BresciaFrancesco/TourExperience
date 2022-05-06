@@ -42,10 +42,14 @@ public class SceltaStanzeFragment extends Fragment {
     private ImageView imageView;
     private TextView textView;
     private boolean firstAttempt;
+    private Bundle savedInstanceState;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        this.savedInstanceState = savedInstanceState;
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_scelta_stanze, container, false);
     }
@@ -86,5 +90,9 @@ public class SceltaStanzeFragment extends Fragment {
         StanzeAdpter adapter = new StanzeAdpter(getContext(), listaStanze, parent);
         // Setting Adapter to RecyclerView
         recyclerView.setAdapter(adapter);
+    }
+
+    public Bundle getSavedInstanceState() {
+        return savedInstanceState;
     }
 }

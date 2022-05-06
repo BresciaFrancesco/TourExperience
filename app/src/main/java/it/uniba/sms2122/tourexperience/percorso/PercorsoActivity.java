@@ -1,12 +1,17 @@
 package it.uniba.sms2122.tourexperience.percorso;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import it.uniba.sms2122.tourexperience.QRscanner.QRScannerFragment;
 import it.uniba.sms2122.tourexperience.R;
@@ -15,6 +20,7 @@ import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragmen
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
+import it.uniba.sms2122.tourexperience.utility.Permesso;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
@@ -24,6 +30,8 @@ import java.io.File;
 import java.util.Optional;
 
 public class PercorsoActivity extends AppCompatActivity {
+
+    Permesso permission;
 
     private String nomeMuseo;
     private String nomePercorso;
@@ -39,7 +47,7 @@ public class PercorsoActivity extends AppCompatActivity {
         return nomePercorso;
     }
 
-    public LocalFilePercorsoManager getLocalFilePercorsoManager(){
+    public LocalFilePercorsoManager getLocalFilePercorsoManager() {
         return localFilePercorsoManager;
     }
 
@@ -59,7 +67,7 @@ public class PercorsoActivity extends AppCompatActivity {
         return path;
     }
 
-    public LocalFileMuseoManager getLocalFileMuseoManager(){
+    public LocalFileMuseoManager getLocalFileMuseoManager() {
         return localFileMuseoManager;
     }
 
@@ -108,7 +116,7 @@ public class PercorsoActivity extends AppCompatActivity {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setReorderingAllowed(true);
-        transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
+        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
         transaction.replace(R.id.container_fragments_route, secondPage);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -120,22 +128,50 @@ public class PercorsoActivity extends AppCompatActivity {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setReorderingAllowed(true);
-        transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
+        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
         transaction.replace(R.id.container_fragments_route, thirdPage);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
     public void nextQRScannerFragment() {
-        //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
+
+        if (checkCameraPermission() == true) {
+
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.scannerFrag, QRScannerFragment.class, null)
+                    .commit();
+
+            /*Fragment fourthPage = new QRScannerFragment();
+            //fourthPage.getView().setLayoutParams(lyParam);
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            //transaction.set
+            transaction.setReorderingAllowed(true);
+            transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
+            transaction.replace(R.id.scannerFrag, fourthPage);
+            transaction.addToBackStack(null);
+            transaction.commit();*/
+        }
+
+
+
+
+
+       /* FrameLayout.LayoutParams lyParam = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        lyParam.gravity = Gravity.CENTER;
+
         Fragment fourthPage = new QRScannerFragment();
+        fourthPage.getView().setLayoutParams(lyParam);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        //transaction.set
         transaction.setReorderingAllowed(true);
         transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
         transaction.replace(R.id.container_fragments_route, fourthPage);
         transaction.addToBackStack(null);
-        transaction.commit();
+        transaction.commit();*/
     }
 
     public void nextStanzaFragment() {
@@ -144,7 +180,7 @@ public class PercorsoActivity extends AppCompatActivity {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setReorderingAllowed(true);
-        transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
+        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
         transaction.replace(R.id.container_fragments_route, fifthPage);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -156,6 +192,49 @@ public class PercorsoActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+
+    /**
+     * funzione per sapere se il permessio della camera è gia stato concesso o meno
+     *
+     * @return true se il permesso è gia stato concesso,false altrimeti
+     */
+    public boolean checkCameraPermission() {
+
+        permission = new Permesso(this);
+
+        if (permission.getPermission(Manifest.permission.CAMERA,
+                Permesso.CAMERA_PERMISSION_CODE,
+                getString(R.string.permission_required_title),
+                getString(R.string.permission_required_body))) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case Permesso.CAMERA_PERMISSION_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    nextQRScannerFragment();
+                } else {
+                    /* Explain to the user that the feature is unavailable because
+                     * the features requires a permission that the user has denied.
+                     * At the same time, respect the user's decision. Don't link to
+                     * system settings in an effort to convince the user to change
+                     * their decision. */
+                    permission.showRationaleDialog(getString(R.string.permission_denied_title),
+                            getString(R.string.permission_denied_body), null);
+                }
+                break;
+            default:
+                Log.v("switch", "default");
+        }
     }
 }

@@ -27,13 +27,10 @@ public class OverviewPathFragment extends Fragment {
 
     View inflater;
 
-    String museoumName;
-    String pathName;
     TextView pathNameTextView;
     String pathDescription;
     TextView pathDescriptionTextView;
     Button startPathButton;
-    PercorsoActivity parent;
 
 
 
@@ -42,13 +39,6 @@ public class OverviewPathFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         this.inflater = inflater.inflate(R.layout.overview_path_fragment, container, false);
-
-        parent = (PercorsoActivity) getActivity();
-
-        museoumName = parent.getNomeMuseo();
-        pathName = parent.getNomePercorso();
-
-        setDynamicValuesOfPath();
 
         return this.inflater;
     }
@@ -60,31 +50,6 @@ public class OverviewPathFragment extends Fragment {
         triggerStartPathButton();
     }
 
-
-    /**
-     * funzione per ottenere i reali valori relativi alla descrizione e al nome di un percorso
-     */
-    private void setDynamicValuesOfPath() {
-
-        LocalFilePercorsoManager pathManager = new LocalFilePercorsoManager(getContext().getFilesDir().toString());
-
-        Optional<Percorso> pathContainer = pathManager.getPercorso(museoumName, pathName);
-
-        if (pathContainer.isPresent()) {
-
-            Percorso pathObj = pathContainer.get();
-
-            this.pathDescription = pathObj.getDescrizionePercorso();
-            this.pathName = ((PercorsoActivity)getActivity()).getNomePercorso();
-
-        } else {
-            Log.e("percorso non trovato", "percorso non trovato");
-        }
-
-
-    }
-
-
     /**
      * funzione per triggerare il click sul pulsante per far partire la guida
      */
@@ -92,7 +57,7 @@ public class OverviewPathFragment extends Fragment {
 
         startPathButton = inflater.findViewById(R.id.startPathButton);
 
-        startPathButton.setOnClickListener(view -> parent.nextStanzeFragment());
+        startPathButton.setOnClickListener(view -> ((PercorsoActivity)getActivity()).nextStanzeFragment());
     }
 
 
@@ -101,11 +66,13 @@ public class OverviewPathFragment extends Fragment {
      */
     private void setDynamicValuesOnView() {
 
+        Percorso path = ((PercorsoActivity)getActivity()).getPath();
+
         pathNameTextView = inflater.findViewById(R.id.pathName);
-        pathNameTextView.setText(pathName);
+        pathNameTextView.setText(path.getNomePercorso());
 
         pathDescriptionTextView = inflater.findViewById(R.id.pathDescription);
-        pathDescriptionTextView.setText(pathDescription);
+        pathDescriptionTextView.setText(path.getDescrizionePercorso());
 
 
     }

@@ -9,22 +9,21 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
+import android.view.SurfaceControl;
 
 import it.uniba.sms2122.tourexperience.QRscanner.QRScannerFragment;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
+import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
+import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaActivity;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
-
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 import java.io.File;
 import java.util.Optional;
@@ -152,47 +151,36 @@ public class PercorsoActivity extends AppCompatActivity {
     }
 
     /**
-     * Funzione che serve a sostituire il precedente fragment con QRScannerFragment
+     * Funzione che si occupa si apprire il fragment per scannerrizare il qr code di una stanza
+     *
+     * @param idClickedRoom, l'id della stanza che è stata clicccata
      */
-    public void nextQRScannerFragment() {
+    public void nextQRScannerFragmentOfRoomSelection(String idClickedRoom) {
 
         if (checkCameraPermission() == true) {
 
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.scannerFrag, QRScannerFragment.class, null)
+                    .add(R.id.scannerFrag, new QRScannerFragment(StanzaFragment.class), null)
                     .commit();
-
-            /*Fragment fourthPage = new QRScannerFragment();
-            //fourthPage.getView().setLayoutParams(lyParam);
-
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            //transaction.set
-            transaction.setReorderingAllowed(true);
-            transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
-            transaction.replace(R.id.scannerFrag, fourthPage);
-            transaction.addToBackStack(null);
-            transaction.commit();*/
         }
 
-
-
-
-
-       /* FrameLayout.LayoutParams lyParam = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        lyParam.gravity = Gravity.CENTER;
-
-        Fragment fourthPage = new QRScannerFragment();
-        fourthPage.getView().setLayoutParams(lyParam);
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        //transaction.set
-        transaction.setReorderingAllowed(true);
-        transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
-        transaction.replace(R.id.container_fragments_route, fourthPage);
-        transaction.addToBackStack(null);
-        transaction.commit();*/
     }
+
+    /**
+     * Funzione che si occupa si apprire il fragment per scannerrizare il qr code di una stanza
+     */
+   /* public void nextQRScannerFragmentOfSingleRoom() {
+
+        if (checkCameraPermission() == true) {
+
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.scannerFrag, new QRScannerFragment(OperaActivity.class), null)
+                    .commit();
+        }
+
+    }*/
 
     /**
      * Funzione che serve a sostituire il precedente fragment con StanzaFragment
@@ -245,7 +233,8 @@ public class PercorsoActivity extends AppCompatActivity {
         switch (requestCode) {
             case Permesso.CAMERA_PERMISSION_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    nextQRScannerFragment();
+                    //nextQRScannerFragmentOfRoom();
+                    continueExecute();
                 } else {
                     /* Explain to the user that the feature is unavailable because
                      * the features requires a permission that the user has denied.
@@ -259,5 +248,9 @@ public class PercorsoActivity extends AppCompatActivity {
             default:
                 Log.v("switch", "default");
         }
+    }
+
+    private void continueExecute(){
+
     }
 }

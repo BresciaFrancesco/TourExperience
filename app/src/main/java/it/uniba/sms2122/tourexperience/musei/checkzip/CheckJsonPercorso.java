@@ -1,6 +1,5 @@
 package it.uniba.sms2122.tourexperience.musei.checkzip;
 
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cacheMuseums;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
 
 import android.util.Log;
@@ -10,12 +9,9 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Paths;
@@ -51,16 +47,14 @@ public class CheckJsonPercorso {
             test = gson.fromJson(reader, Percorso.class);
 
             checkString(test.getNomeMuseo(), "Nome museo vuoto");
+            checkString(test.getNomePercorso(), "Nome percorso vuoto");
 
-            if (!cacheMuseums.containsKey(test.getNomeMuseo())) {
+            Set<String> percorsi = cachePercorsiInLocale.get(test.getNomeMuseo());
+            if (percorsi == null) {
                 Log.e("LOCAL_IMPORT_JSON",
                         "Il Percorso è associato ad un museo non presente in locale");
                 return false;
             }
-
-            checkString(test.getNomePercorso(), "Nome percorso vuoto");
-
-            Set<String> percorsi = cachePercorsiInLocale.get(test.getNomeMuseo());
             if (percorsi.contains(test.getNomePercorso())) {
                 Log.e("LOCAL_IMPORT_JSON", "Percorso già esistente");
                 return false;
@@ -103,26 +97,24 @@ public class CheckJsonPercorso {
      */
     private boolean save(final Percorso p, final Gson gson)
             throws NullPointerException, IOException, JsonSyntaxException, JsonIOException {
-        File filePercorsoJson = Paths.get(
-                localFileManager.getGeneralPath(),
-                p.getNomeMuseo(),
-                "Percorsi",
-                p.getNomePercorso()
-        ).toFile();
+        File filePercorsoJson = Paths.get(localFileManager.getGeneralPath(),
+                p.getNomeMuseo(), "Percorsi", p.getNomePercorso()).toFile();
 
-        Set<String> percorsi = cachePercorsiInLocale.get(p.getNomeMuseo());
-        percorsi.add(p.getNomePercorso());
+        cachePercorsiInLocale.get(p.getNomeMuseo()).add(p.getNomePercorso());
 
-        if (filePercorsoJson.exists() || !filePercorsoJson.createNewFile()) {
-            Log.e("LOCAL_IMPORT_JSON",
-                    "File percorso non creabile o già esistente in locale");
+        if (filePercorsoJson.exists()) {
+            Log.e("LOCAL_IMPORT_JSON", "File percorso o già esistente in locale");
+            return false;
+        }
+        if (!filePercorsoJson.createNewFile()) {
+            Log.e("LOCAL_IMPORT_JSON", "File percorso non creabile");
             return false;
         }
         Writer targetFileWriter = new FileWriter(filePercorsoJson);
         targetFileWriter.write(gson.toJson(p));
         targetFileWriter.close();
 
-        Log.v("LOCAL_IMPORT_JSON", "Json Percorso valido");
+        Log.v("LOCAL_IMPORT_JSON", "Json Percorso" + p.getNomePercorso() + " salvato correttamente");
         return true;
     }
 

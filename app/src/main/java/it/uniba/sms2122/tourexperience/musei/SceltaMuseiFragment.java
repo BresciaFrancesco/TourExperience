@@ -272,8 +272,8 @@ public class SceltaMuseiFragment extends Fragment {
                 String mimeType = getActivity().getContentResolver().getType(returnUri);
                 String fileName = DocumentFile.fromSingleUri(getContext(), returnUri).getName();
                 OpenFile dto = new OpenFileAndroidStorageDTO(getContext(), returnUri);
-                boolean res = localFileManager.save(fileName, mimeType, dto);
-                Log.v("RISULTATO", String.valueOf(res));
+                String resultMessage = localFileManager.saveImport(fileName, mimeType, dto, this);
+                Toast.makeText(getContext(), resultMessage, Toast.LENGTH_SHORT).show();
             } else {
                 Log.e("SceltaMuseiFragment.onActivityResult", "resultCode " + resultCode);
             }
@@ -389,5 +389,16 @@ public class SceltaMuseiFragment extends Fragment {
 
     public List<Museo> getListaMusei() {
         return listaMusei;
+    }
+
+    /**
+     * La lista è considerata vuota se è presente un solo museo ed
+     * esso è il Museo vuoto.
+     * @return True se nella lista è presente un solo museo ed è
+     * il museo vuoto, False altrimenti.
+     */
+    public boolean isListaMuseiEmpty() {
+        return listaMusei.size() == 1 && listaMusei.get(0)
+            .equals(new Museo(getResources().getString(R.string.no_result)));
     }
 }

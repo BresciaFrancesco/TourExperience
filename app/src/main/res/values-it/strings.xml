@@ -106,4 +106,9 @@
     <string name="museum">Museo: %1$s</string>
     <string name="area">Zona: %1$s</string>
     <string name="no_connection">There is no internet connection</string>
+    <string name="mime_type_error">Il file selezionato non è del tipo previsto</string>
+    <string name="json_import_error">Percorso %1$s errato!</string>
+    <string name="json_import_success">Percorso %1$s importato!</string>
+    <string name="zip_import_error">Zip %1$s errato</string>
+    <string name="zip_import_success">Zip %1$s importato!</string>
 </resources>

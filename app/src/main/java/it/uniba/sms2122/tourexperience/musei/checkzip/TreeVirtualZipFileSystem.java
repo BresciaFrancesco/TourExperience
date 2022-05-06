@@ -8,6 +8,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import it.uniba.sms2122.tourexperience.musei.checkzip.exception.ZipCheckerException;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cacheMuseums;
 
 /**
  * Classe che crea una versione virtuale del filesystem
@@ -28,8 +29,11 @@ public class TreeVirtualZipFileSystem {
      * @throws IOException
      * @throws ZipCheckerException
      */
-    public String createVirtualFileSystem(final InputStream in, String zipName) throws IOException, ZipCheckerException {
+    public String createVirtualFileSystem(final InputStream in, String zipName)
+            throws IOException, ZipCheckerException {
         zipName = zipName.substring(0, zipName.length()-4);
+        if (cacheMuseums.get(zipName) != null)
+            throw new ZipCheckerException("Il museo " + zipName + " esiste già");
         long dimAccum = 0;
         try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(in))) {
             ZipEntry ze;

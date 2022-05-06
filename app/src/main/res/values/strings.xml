@@ -110,4 +110,9 @@
     <string name="museum">Museum: %1$s</string>
     <string name="area">Area: %1$s</string>
     <string name="no_connection">There is no internet connection</string>
+    <string name="mime_type_error">The selected file is not of the expected type</string>
+    <string name="json_import_error">Incorrect %1$s route!</string>
+    <string name="json_import_success">Route %1$s imported!</string>
+    <string name="zip_import_error">Incorrect %1$s zip!</string>
+    <string name="zip_import_success">Zip %1$s imported!</string>
 </resources>

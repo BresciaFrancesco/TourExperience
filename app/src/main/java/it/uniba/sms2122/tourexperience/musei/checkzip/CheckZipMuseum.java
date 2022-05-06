@@ -1,14 +1,17 @@
 package it.uniba.sms2122.tourexperience.musei.checkzip;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 import it.uniba.sms2122.tourexperience.musei.checkzip.exception.ZipCheckerException;
 import it.uniba.sms2122.tourexperience.musei.checkzip.exception.ZipCheckerRunTimeException;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
 
-public class CheckZipMuseum implements ZipChecker {
+
+public class CheckZipMuseum {
 
     /** Classe che crea una versione virtuale del filesystem
      * del file .zip sotto forma di albero n-ario. */
@@ -27,12 +30,11 @@ public class CheckZipMuseum implements ZipChecker {
     }
 
 
-    @Override
-    public void start(final OpenFile of, final String zipName)
+    public Set<String> start(final OpenFile of, final String zipName)
             throws ZipCheckerException, ZipCheckerRunTimeException {
         try {
             String zipDirName = virtualZipFileSystem.createVirtualFileSystem(of.openFile(), zipName);
-            checkZipStructure(zipDirName);
+            return checkZipStructure(zipDirName);
         }
         catch (NullPointerException e) {
             throw new ZipCheckerRunTimeException(e.getMessage(), e);
@@ -52,27 +54,39 @@ public class CheckZipMuseum implements ZipChecker {
      * @param museumName nome del museo.
      * @throws ZipCheckerException se un qualunque controllo fallisce.
      */
-    private void checkZipStructure(final String museumName) throws ZipCheckerException {
+    private Set<String> checkZipStructure(final String museumName) throws ZipCheckerException {
         // CHECK root
         Tree tmpRoot = virtualZipFileSystem.getRoot();
         checkDim(tmpRoot, 1, true);
         tmpRoot = getIfExists(tmpRoot, museumName, false);
 
         // CHECK directory museo
-        checkDim(tmpRoot, 6, true);
+        checkDim(tmpRoot, 7, true);
         Tree percorsi = getIfExists(tmpRoot, "Percorsi", false);
         Tree stanze = getIfExists(tmpRoot, "Stanze", false);
         getIfExists(tmpRoot, infoMuseoJson, true);
         getIfExists(tmpRoot, museumName + IMG_EXTENSION, true);
         getIfExists(tmpRoot, "Immagine_1" + IMG_EXTENSION, true);
         getIfExists(tmpRoot, "Immagine_2" + IMG_EXTENSION, true);
+        getIfExists(tmpRoot, "Immagine_3" + IMG_EXTENSION, true);
 
         // CHECK directory Percorsi
+        Set<String> nomiPercorsi = new HashSet<>();
         checkDim(percorsi, 0, false);
         Set<String> jsonPercorsi = percorsi.children.keySet();
+        if (jsonPercorsi.isEmpty()) {
+            throw new ZipCheckerException("Non ci sono json di percorsi");
+        }
+        Set<String> cachedPercorsi = cachePercorsiInLocale.get(museumName);
         for (String percorso : jsonPercorsi) {
             if (!percorso.endsWith(".json") || percorsi.children.get(percorso).children != null)
                 throw new ZipCheckerException("I json dei percorsi sono errati");
+            String p = percorso.substring(0, percorso.length()-5);
+            if (cachedPercorsi != null && cachedPercorsi.contains(p)) {
+                throw new ZipCheckerException(p + " esiste già come percorso per il museo " + museumName);
+            }
+            if (!nomiPercorsi.add(p))
+                throw new ZipCheckerException(p + " è duplicato nel file .zip");
         }
 
         // CHECK directory Stanze
@@ -81,13 +95,13 @@ public class CheckZipMuseum implements ZipChecker {
         Set<String> stanzeKey = stanze.children.keySet();
         for (String stanza : stanzeKey) {
             Tree s = stanze.children.get(stanza);
-            if (s.children == null)
-                throw new ZipCheckerException(stanza + " non è una directory");
             checkDim(s, 0, false);
             getIfExists(s, infoStanzaJson, true);
             // CHECK opere
             checkOpere(s);
         }
+
+        return nomiPercorsi;
     }
 
     /**
@@ -104,8 +118,7 @@ public class CheckZipMuseum implements ZipChecker {
         for (String nomeOpera : opereKey) {
             Tree opera = stanza.children.get(nomeOpera);
             if (opera.children == null)
-                throw new ZipCheckerException(stanza + " non è una directory");
-            checkDim(opera, 0, false);
+                throw new ZipCheckerException(nomeOpera + " non è una directory oppure è vuota");
             getIfExists(opera, infoOperaJson, true);
             getIfExists(opera, nomeOpera + IMG_EXTENSION, true);
         }
@@ -138,7 +151,7 @@ public class CheckZipMuseum implements ZipChecker {
     /**
      * Metodo che, dopo attenti controlli, ritorna il figlio key del nodo n dell'albero,
      * oppure fallisce sollevando ZipCheckerException.
-     * @param n nodo dell'albero, si suppone padre diretto di "key".
+     * @param fatherNode nodo dell'albero, si suppone padre diretto di "key".
      * @param key si suppone figlio diretto di "n".
      * @param isFile se impostato a True, si testerà il nodo n come un file,
      *               altrimenti si testerà come una directory.
@@ -146,20 +159,19 @@ public class CheckZipMuseum implements ZipChecker {
      * @throws ZipCheckerException se il "key" non è figlio diretto di "n" o
      * n è null o ha fallito il controllo come file o directory.
      */
-    private Tree getIfExists(final Tree n, final String key,
+    private Tree getIfExists(final Tree fatherNode, final String key,
                              final boolean isFile) throws ZipCheckerException {
-        Tree node = n;
-        node = node.children.get(key);
-        if (node == null)
-            throw new ZipCheckerException(n.value() + " non contiene " + key + " come figlio");
+        Tree sonNode = fatherNode.children.get(key);
+        if (sonNode == null)
+            throw new ZipCheckerException(fatherNode.value() + " non contiene " + key + " come figlio");
         if (isFile) {
-            if (node.children != null)
-                throw new ZipCheckerException(n.value() + " non è un file");
+            if (sonNode.children != null)
+                throw new ZipCheckerException(sonNode.value() + " non è un file");
         } else {
-            if (node.children == null)
-                throw new ZipCheckerException(n.value() + " non è una directory");
+            if (sonNode.children == null)
+                throw new ZipCheckerException(sonNode.value() + " non è una directory oppure è vuota");
         }
-        return node;
+        return sonNode;
     }
 
 }

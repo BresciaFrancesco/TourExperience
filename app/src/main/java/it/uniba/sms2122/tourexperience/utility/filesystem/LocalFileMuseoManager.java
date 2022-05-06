@@ -1,5 +1,6 @@
 package it.uniba.sms2122.tourexperience.utility.filesystem;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -20,7 +21,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.Museo;
+import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.musei.checkzip.CheckJsonPercorso;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.Zip;
@@ -28,6 +31,7 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.zip.Zip;
 import static it.uniba.sms2122.tourexperience.utility.filesystem.zip.MimeType.*;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
+
 
 /**
  * Classe che gestisce tutti salvati nel filesystem locale relativi ai musei.
@@ -46,7 +50,7 @@ public class LocalFileMuseoManager extends LocalFileManager {
      * @throws JsonSyntaxException
      * @throws JsonIOException
      */
-    public Museo getMuseoByName(String nomeMuseo)
+    public Museo getMuseoByName(final String nomeMuseo)
             throws IOException, JsonSyntaxException, JsonIOException {
         try (
                 Reader reader = new
@@ -59,6 +63,7 @@ public class LocalFileMuseoManager extends LocalFileManager {
             return museo;
         }
     }
+
 
     /**
      * Ottiene la lista di immagini del museo.
@@ -142,26 +147,38 @@ public class LocalFileMuseoManager extends LocalFileManager {
      * @param fileName nome del file selezionato dall'utente.
      * @param mimeType mime type del file selezionato dall'utente (valgono solo zip e json).
      * @param dto Data Transfer Object contenente i dati utili all'apertura del file.
+     * @param frag fragment dalla quale è chiamato questo metodo
      * @return True se il file scelto è corretto, accettabile ed è stato salvato in locale,
      *         False altrimenti.
      */
-    public boolean save(final String fileName, final String mimeType, final OpenFile dto) {
-        boolean result = false;
+    public String saveImport(final String fileName, final String mimeType,
+                             final OpenFile dto, final SceltaMuseiFragment frag) {
+        boolean result;
+        Context context = frag.getContext();
+        String resultMessage = context.getString(R.string.mime_type_error);
+
         if (mimeType.equals(JSON.mimeType())) {
             CheckJsonPercorso cjp = new CheckJsonPercorso(dto, this);
             result = cjp.check();
+            if (result) {
+                resultMessage = context.getString(R.string.json_import_success, fileName);
+            } else {
+                resultMessage = context.getString(R.string.json_import_error, fileName);
+            }
         }
         else if (mimeType.equals(ZIP.mimeType())) {
             Zip zip = new Zip(this);
-            result = zip.startUnzip(fileName, dto);
+            result = zip.startUnzip(fileName, dto, frag);
             if (result) {
-
+                resultMessage = context.getString(R.string.zip_import_success, fileName);
+            } else {
+                resultMessage = context.getString(R.string.zip_import_error, fileName);
             }
         }
         else {
             Log.e("LOCAL_IMPORT", "ALTRO NON PREVISTO");
         }
-        return result;
+        return resultMessage;
     }
 
     /**

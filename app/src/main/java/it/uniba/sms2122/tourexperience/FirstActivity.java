@@ -33,15 +33,16 @@ public class FirstActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
 
+        btnLogin = (Button) findViewById(R.id.idBtnMainLogin);
+        btnRegistration = (Button) findViewById(R.id.idBtnMainRegistration);
+        textViewGuest = (TextView) findViewById(R.id.idTextViewGuest);
+
         createLocalDirectoryIfNotExists(getFilesDir(), mainDirectory);
 
         userHolder = UserHolder.getInstance();
         userHolder.getUser(
                 //Caso: Utente è loggato
                 (user) -> {
-                    btnLogin = (Button) findViewById(R.id.idBtnMainLogin);
-                    btnRegistration = (Button) findViewById(R.id.idBtnMainRegistration);
-                    textViewGuest = (TextView) findViewById(R.id.idTextViewGuest);
 
                     btnLogin.setVisibility(View.GONE);
                     btnRegistration.setVisibility(View.GONE);

@@ -13,6 +13,7 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -210,24 +211,30 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
          */
         private void deleteMuseum(View view) {
             String[] museo0_citta1 = text.getText().toString().split("\n");
-            String nomeMuseo = museo0_citta1[0].trim();
-            String citta = museo0_citta1[1].trim();
+            final String nomeMuseo = museo0_citta1[0].trim();
+            final String citta = museo0_citta1[1].trim();
+            final SceltaMuseiFragment fragment = adapter.fragment;
 
             new AlertDialog.Builder(view.getContext())
-            .setTitle("Delete " + nomeMuseo + "?")
-            .setMessage("Are you sure?")
-            .setPositiveButton(adapter.fragment.getString(R.string.SI), (dialog, whichButton) -> {
+            .setTitle(fragment.getString(R.string.delete_museum_title, nomeMuseo))
+            .setMessage(fragment.getString(R.string.delete_museum_message))
+            .setPositiveButton(fragment.getString(R.string.SI), (dialog, whichButton) -> {
                 Museo museo = new Museo(nomeMuseo, citta);
                 LocalFileManager manager = new LocalFileManager(view.getContext().getFilesDir().toString());
                 try {
                     manager.deleteDir(Paths.get(manager.getGeneralPath(), nomeMuseo).toFile());
-                    this.adapter.fragment.getListaMusei().remove(museo);
+                    fragment.getListaMusei().remove(museo);
                     adapter.listaMusei.remove(museo);
                     cacheMuseums.remove(nomeMuseo);
                     cachePercorsiInLocale.remove(nomeMuseo);
                     Log.v("DELETE_MUSEUM", "museo " + nomeMuseo + " eliminato correttamente");
                     // refresh fragment
-                    this.adapter.fragment.onResume();
+                    Toast.makeText(
+                        adapter.fragment.getContext(),
+                        fragment.getString(R.string.museum_deleted, nomeMuseo),
+                        Toast.LENGTH_LONG
+                    ).show();
+                    fragment.onResume();
                 } catch (IOException e) {
                     Log.e("DELETE_MUSEUM", "museo " + nomeMuseo + " non eliminato");
                     e.printStackTrace();

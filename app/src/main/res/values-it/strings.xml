@@ -111,4 +111,7 @@
     <string name="json_import_success">Percorso %1$s importato!</string>
     <string name="zip_import_error">Zip %1$s errato</string>
     <string name="zip_import_success">Zip %1$s importato!</string>
+    <string name="delete_museum_title">Eliminare %1$s?</string>
+    <string name="delete_museum_message">Sei sicuro di voler eliminare questo museo e tutti i percorsi ad esso associati?</string>
+    <string name="museum_deleted">Museo %1$s eliminato</string>
 </resources>

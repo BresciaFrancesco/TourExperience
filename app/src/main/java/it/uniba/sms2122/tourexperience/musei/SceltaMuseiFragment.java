@@ -113,7 +113,7 @@ public class SceltaMuseiFragment extends Fragment {
         }
 
         // Sending reference and data to Adapter
-        MuseiAdapter adapter = new MuseiAdapter((MainActivity) getActivity(), progressBar, listaMusei, true);
+        MuseiAdapter adapter = new MuseiAdapter(this, progressBar, listaMusei, true);
         // Setting Adapter to RecyclerView
         recyclerView.setAdapter(adapter);
 
@@ -213,8 +213,7 @@ public class SceltaMuseiFragment extends Fragment {
             );
             MainActivity activity = (MainActivity) getActivity();
             activity.getSupportActionBar().setTitle(R.string.museums_cloud_import);
-            Back backToMuseumsList = new BackToMuseumsList(
-                    activity, this, recyclerView, mAddFab, progressBar);
+            Back backToMuseumsList = new BackToMuseumsList(this, recyclerView, mAddFab, progressBar);
             // Il FAB torna allo stato iniziale e la lista di musei torna a contenere i musei presenti in cache
             mAddFab.setOnClickListener((view3) -> {
                 searchView.setQueryHint(getString(R.string.search_museums));
@@ -284,7 +283,7 @@ public class SceltaMuseiFragment extends Fragment {
      * Ritorna la lista dei percorsi presenti in cloud su Firebase.
      */
     private void getListaPercorsiFromCloudStorage() {
-        MuseiAdapter adapterPercorsi = new MuseiAdapter(null, progressBar,
+        MuseiAdapter adapterPercorsi = new MuseiAdapter(this, progressBar,
                 new ArrayList<>(), false);
         Log.v("IMPORT_CLOUD", "start download...");
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("Museums_v2");

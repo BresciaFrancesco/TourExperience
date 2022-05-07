@@ -19,7 +19,6 @@ import com.google.zxing.Result;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
-import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaActivity;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 
 public class QRScannerFragment extends Fragment {

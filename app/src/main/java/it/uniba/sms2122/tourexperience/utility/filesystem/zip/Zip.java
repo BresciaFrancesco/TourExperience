@@ -154,29 +154,7 @@ public class Zip {
             }
             listaPrincipale.add(museo);
 
-            // DA TESTARE
-            /*DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Museums");
-            ref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot snap : snapshot.getChildren()) {
-                        Map<String, String> res = (Map<String, String>) snap.getValue();
-                        Log.v("RES", res.toString());
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {}
-            });*/
-
-            // DA TESTARE
-            /*Map<String, String> mappa = new HashMap<>();
-            mappa.put("citta", museo.getCitta());
-            mappa.put("nome", museo.getNome());
-            mappa.put("tipologia", museo.getTipologia());
-
-            FirebaseDatabase.getInstance().getReference("Museums").push().setValue(mappa)
-            .addOnSuccessListener(snap -> Log.e("FIREBASE_MUSEUM_IMPORT", "Museo aggiunto correttamente"))
-            .addOnFailureListener(err -> Log.e("FIREBASE_MUSEUM_IMPORT", err.getMessage()));*/
+            updateFirebase(nomeMuseo, museo);
         }
         if (cachePercorsiInLocale.get(nomeMuseo) == null) {
             cachePercorsiInLocale.put(nomeMuseo, nomiPercorsi);
@@ -184,6 +162,46 @@ public class Zip {
             cachePercorsiInLocale.get(nomeMuseo).addAll(nomiPercorsi);
         }
         Log.v("CHECK_ZIP", "Museo/Percorsi inseriti in cache...");
+    }
+
+
+    /**
+     * Esegue l'update del realtime database di firebase, aggiungendo quello che serve del
+     * nuovo museo alla lista di musei usata per la ricerca. Se in quella lista esiste
+     * @param nuovoNomeMuseo
+     * @param nuovoMuseo
+     */
+    private void updateFirebase(final String nuovoNomeMuseo, final Museo nuovoMuseo) {
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Museums");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) return;
+                int indice = 0;
+                if (snapshot.hasChildren()) {
+                    for (DataSnapshot snap : snapshot.getChildren()) {
+                        String nomeDiUnMuseo = snap.child("nome").getValue(String.class);
+                        if (nuovoNomeMuseo.equals(nomeDiUnMuseo))
+                            return;
+                        indice++;
+                    }
+                }
+                // Il nuovo museo non esiste su firebase, allora lo aggiungiamo
+                Map<String, String> mappa = new HashMap<>();
+                mappa.put("citta", nuovoMuseo.getCitta());
+                mappa.put("nome", nuovoMuseo.getNome());
+                mappa.put("tipologia", nuovoMuseo.getTipologia());
+
+                final DatabaseReference r = ref.child(Integer.toString(indice));
+                r.setValue(mappa)
+                .addOnSuccessListener(snap -> Log.v("FIREBASE_MUSEUM_IMPORT", "Museo aggiunto correttamente"))
+                .addOnFailureListener(err -> Log.e("FIREBASE_MUSEUM_IMPORT", err.getMessage()));
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+
     }
 
 }

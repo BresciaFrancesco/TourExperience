@@ -80,7 +80,7 @@ public class Zip {
             // RIEMPIO LA CACHE
             updateUI(nomeMuseo, nomiPercorsi, frag);
         }
-        catch (IOException | JsonSyntaxException | JsonIOException | Error e) {
+        catch (IOException | IllegalArgumentException | JsonSyntaxException | JsonIOException | Error e) {
             Log.e("CHECK_ZIP", "ECCEZIONE in UNZIP...");
             try {
                 localFileManager.deleteDir(
@@ -105,7 +105,7 @@ public class Zip {
      *           poter aprire il file .zip in lettura
      * @throws IOException se avviene qualunque errore di lettura/scrittura.
      */
-    public void unzip(final OpenFile of) throws IOException {
+    public void unzip(final OpenFile of) throws IOException, IllegalArgumentException {
         File targetDirectory = new File(localFileManager.getGeneralPath());
         try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(of.openFile(), bufferDim))) {
             ZipEntry ze;

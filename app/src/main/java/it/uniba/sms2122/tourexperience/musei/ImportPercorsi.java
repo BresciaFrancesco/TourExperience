@@ -104,7 +104,7 @@ public class ImportPercorsi {
                         localFileManager.deleteMuseo(nomeMuseo);
                     });
                 }
-                catch (IOException | JsonSyntaxException | JsonIOException e) {
+                catch (IOException | IllegalArgumentException | JsonSyntaxException | JsonIOException e) {
                     fail(progressBar, "DOWNLOAD",
                             "Errore di unzip o downloadPercorso o parser Gson",
                             "Download fallito");

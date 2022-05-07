@@ -99,9 +99,9 @@
     <string name="do_not_show_again_local_import" translatable="false">do_not_show_again</string>
     <string name="local_import_dialog_title">Explanation Import</string>
     <string name="local_import_message">
-        It is possible to import only .zip files structured according to the TourExperience rules.
-        Any non-compliant .zip file will be rejected.
-        \nThanks
+        It is possible to import only .zip and .json. Zip files must be structured according to the TourExperience rules.
+        Any non-compliant .zip or .json file will be rejected. The .zip files must be UTF-8 encoded.
+        \nThanks.
     </string>
     <string name="do_not_show_again">OK &amp; do not show again</string>
     <string name="path_from_cloud_empty">There is no routes to import</string>

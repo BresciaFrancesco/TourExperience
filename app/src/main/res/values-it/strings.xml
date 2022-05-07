@@ -95,9 +95,9 @@
     <string name="NO">Annulla</string>
     <string name="local_import_dialog_title">Spiegazione Importazione</string>
     <string name="local_import_message">
-        È possibile importare solo file .zip strutturati secondo le regole di TourExperience.
-        Qualsiasi file .zip non conforme, sarà rifiutato.
-        \nGrazie
+        È possibile importare solo file .zip e .json. I file zip devono essere strutturati secondo le regole di TourExperience.
+        Qualsiasi file .zip non conforme, sarà rifiutato. I file zip devono essere codificati in UTF-8.
+        \nGrazie.
     </string>
     <string name="do_not_show_again">OK e non mostrare più</string>
     <string name="path_from_cloud_empty">Non ci sono percorsi da importare</string>

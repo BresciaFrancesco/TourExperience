@@ -138,7 +138,7 @@ public class PercorsoActivity extends AppCompatActivity {
     /**
      * Funzione che serve a sostituire il precedente fragment con SceltaStanzeFragment
      */
-    public void nextStanzeFragment() {
+    public void nextSceltaStanzeFragment() {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         Fragment thirdPage = new SceltaStanzeFragment();
 

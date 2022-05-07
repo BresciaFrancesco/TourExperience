@@ -2,7 +2,6 @@ package it.uniba.sms2122.tourexperience.percorso.OverviewPath;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 
-import java.util.Optional;
-
-import java.util.Optional;
-
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
-import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
 public class OverviewPathFragment extends Fragment {
 
@@ -57,7 +51,7 @@ public class OverviewPathFragment extends Fragment {
 
         startPathButton = inflater.findViewById(R.id.startPathButton);
 
-        startPathButton.setOnClickListener(view -> ((PercorsoActivity)getActivity()).nextStanzeFragment());
+        startPathButton.setOnClickListener(view -> ((PercorsoActivity)getActivity()).nextSceltaStanzeFragment());
     }
 
 

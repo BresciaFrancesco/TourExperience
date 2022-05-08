@@ -1,6 +1,7 @@
 package it.uniba.sms2122.tourexperience.percorso.stanze;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
      */
     private PercorsoActivity parent;
 
-    public StanzeAdpter (Context context, List<Stanza> stanzaList, PercorsoActivity parent){
+    public StanzeAdpter(Context context, List<Stanza> stanzaList, PercorsoActivity parent) {
         this.context = context;
         this.stanzaList = stanzaList;
         this.parent = parent;
@@ -64,13 +65,12 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 parent.nextStanzaFragment();
                 //parent.nextQRScannerFragmentOfRoomSelection(stanzaList.get(indexOfStanzaList).getId());
             }
         });
     }
-
-    //private void triggerItemView(View itemview)
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;

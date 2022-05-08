@@ -19,16 +19,15 @@ import com.google.zxing.Result;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
-import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaActivity;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 
 public class QRScannerFragment extends Fragment {
 
     private CodeScanner mCodeScanner;
-    private Class fragmentClassToOpen;
+    QRscannerDataManager scannerDataManager;
 
-    public QRScannerFragment(Class<StanzaFragment> fragmentClassToOpen){
-        this.fragmentClassToOpen = fragmentClassToOpen;
+    public QRScannerFragment(QRscannerDataManager scannerDataManager) {
+        this.scannerDataManager = scannerDataManager;
     }
 
 
@@ -36,24 +35,23 @@ public class QRScannerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        final Activity activity = getActivity();
+        Fragment thisFragment = this;
+        final Activity parentActivity = getActivity();
         View root = inflater.inflate(R.layout.qr_scanner_fragment, container, false);
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
 
-        mCodeScanner = new CodeScanner(activity, scannerView);
+        mCodeScanner = new CodeScanner(parentActivity, scannerView);
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
             public void onDecoded(@NonNull final Result result) {
 
-                try {
-
-
-                    Log.e("porcodio",((PercorsoActivity)getActivity()).getPath().moveTo(result.getText()).getNome());
-                    /*openNextFragment();*/
-                } catch (GraphException e) {
-                    Log.e("porcamadonna",e.getMessage());
-                }
-
+                parentActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        scannerDataManager.onScannerDataRead(result.getText());
+                    }
+                });
+                getActivity().getSupportFragmentManager().beginTransaction().remove(thisFragment).commit();
             }
         });
         scannerView.setOnClickListener(new View.OnClickListener() {
@@ -65,17 +63,6 @@ public class QRScannerFragment extends Fragment {
         return root;
     }
 
-    public void openNextFragment(){
-
-        if(fragmentClassToOpen == StanzaFragment.class)
-
-            ((PercorsoActivity)getActivity()).nextStanzaFragment();
-
-        else
-
-            Log.e("to implemetn", "toimplement");
-
-    }
 
     @Override
     public void onResume() {
@@ -87,6 +74,10 @@ public class QRScannerFragment extends Fragment {
     public void onPause() {
         mCodeScanner.releaseResources();
         super.onPause();
+    }
+
+    public interface QRscannerDataManager {
+        void onScannerDataRead(String scanResult);
     }
 
 }

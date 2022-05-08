@@ -1,16 +1,17 @@
 package it.uniba.sms2122.tourexperience.percorso;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.SurfaceControl;
 
 import it.uniba.sms2122.tourexperience.QRscanner.QRScannerFragment;
 import it.uniba.sms2122.tourexperience.R;
@@ -18,7 +19,6 @@ import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
-import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaActivity;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
@@ -31,6 +31,7 @@ import java.util.Optional;
 public class PercorsoActivity extends AppCompatActivity {
 
     Permesso permission;
+    private PermissionGrantedManager actionPerfom;
 
     private String nomeMuseo;
     private String nomePercorso;
@@ -117,6 +118,7 @@ public class PercorsoActivity extends AppCompatActivity {
 
     /**
      * Funzione che serve a sostituire il precedente fragment con OverviewPathFragment
+     *
      * @param bundle, contiene il nome del percorso di cui si deve visualizzare la descrizione
      */
     public void nextPercorsoFragment(Bundle bundle) {
@@ -157,30 +159,43 @@ public class PercorsoActivity extends AppCompatActivity {
      */
     public void nextQRScannerFragmentOfRoomSelection(String idClickedRoom) {
 
-        if (checkCameraPermission() == true) {
-
+        actionPerfom = () -> {
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.scannerFrag, new QRScannerFragment(StanzaFragment.class), null)
-                    .commit();
-        }
+                    .add(R.id.scannerFrag, new QRScannerFragment(
+                            (scanResult) -> {
+                                Log.e("scanresult", scanResult);
+                                Log.e("id clicked room ", String.valueOf(idClickedRoom));
+                                if (scanResult.equals(idClickedRoom)) {
+                                    try {
 
+                                        path.moveTo(idClickedRoom);
+                                        nextStanzaFragment();
+                                    } catch (GraphException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else{
+
+                                    AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                                    alert.setTitle("Stanza Errata");
+                                    alert.setMessage("La stanza cliccata non corrisponde alla prossima stanza prevista del percorso selezionato");
+                                    alert.setCancelable(true);
+                                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            dialogInterface.dismiss();
+                                        }
+                                    });
+                                    alert.show();
+                                }
+                            }
+                    ), null)
+                    .commit();
+        };
+
+        checkCameraPermission();
     }
 
-    /**
-     * Funzione che si occupa si apprire il fragment per scannerrizare il qr code di una stanza
-     */
-   /* public void nextQRScannerFragmentOfSingleRoom() {
-
-        if (checkCameraPermission() == true) {
-
-            getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.scannerFrag, new QRScannerFragment(OperaActivity.class), null)
-                    .commit();
-        }
-
-    }*/
 
     /**
      * Funzione che serve a sostituire il precedente fragment con StanzaFragment
@@ -208,11 +223,10 @@ public class PercorsoActivity extends AppCompatActivity {
 
 
     /**
-     * funzione per sapere se il permesso della camera è gia stato concesso o meno
-     *
-     * @return true se il permesso è gia stato concesso,false altrimeti
+     * funzione per sapere se il permesso della camera è gia stato concesso o meno,
+     * in caso di permesso gia concesso setto l'attributo della classe che segnala che il permesso è gia stato concesso
      */
-    public boolean checkCameraPermission() {
+    public void checkCameraPermission() {
 
         permission = new Permesso(this);
 
@@ -220,11 +234,9 @@ public class PercorsoActivity extends AppCompatActivity {
                 Permesso.CAMERA_PERMISSION_CODE,
                 getString(R.string.permission_required_title),
                 getString(R.string.permission_required_body))) {
-            return true;
+
+            actionPerfom.doAction();
         }
-
-        return false;
-
     }
 
     @Override
@@ -233,8 +245,9 @@ public class PercorsoActivity extends AppCompatActivity {
         switch (requestCode) {
             case Permesso.CAMERA_PERMISSION_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //nextQRScannerFragmentOfRoom();
-                    continueExecute();
+                    // setTrueCameraPermissionGranted();
+                    //nextQRScannerFragmentOfRoomSelection("sdfgdtnfhfgdreyr");
+                    actionPerfom.doAction();
                 } else {
                     /* Explain to the user that the feature is unavailable because
                      * the features requires a permission that the user has denied.
@@ -250,7 +263,8 @@ public class PercorsoActivity extends AppCompatActivity {
         }
     }
 
-    private void continueExecute(){
+    public interface PermissionGrantedManager {
 
+        void doAction();
     }
 }

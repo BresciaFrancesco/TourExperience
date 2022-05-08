@@ -99,9 +99,9 @@
     <string name="do_not_show_again_local_import" translatable="false">do_not_show_again</string>
     <string name="local_import_dialog_title">Explanation Import</string>
     <string name="local_import_message">
-        It is possible to import only .zip files structured according to the TourExperience rules.
-        Any non-compliant .zip file will be rejected.
-        \nThanks
+        It is possible to import only .zip and .json. Zip files must be structured according to the TourExperience rules.
+        Any non-compliant .zip or .json file will be rejected. The .zip files must be UTF-8 encoded.
+        \nThanks.
     </string>
     <string name="do_not_show_again">OK &amp; do not show again</string>
     <string name="path_from_cloud_empty">There is no routes to import</string>
@@ -115,4 +115,7 @@
     <string name="json_import_success">Route %1$s imported!</string>
     <string name="zip_import_error">Incorrect %1$s zip!</string>
     <string name="zip_import_success">Zip %1$s imported!</string>
+    <string name="delete_museum_title">Delete %1$s?</string>
+    <string name="delete_museum_message">Are you sure you want to delete this museum and all associated routes?</string>
+    <string name="museum_deleted">Museum %1$s deleted</string>
 </resources>

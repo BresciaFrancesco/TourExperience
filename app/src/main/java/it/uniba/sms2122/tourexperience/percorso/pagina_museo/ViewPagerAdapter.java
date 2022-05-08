@@ -45,6 +45,52 @@ public class ViewPagerAdapter extends PagerAdapter {
         ImageView imageView = (ImageView)view.findViewById(R.id.museumImageView);
         imageView.setImageURI(Uri.parse(images.get(position)));
 
+        ImageView ind1 = view.findViewById(R.id.ind1);
+        ImageView ind2 = view.findViewById(R.id.ind2);
+        ImageView ind3 = view.findViewById(R.id.ind3);
+
+        ImageView back = view.findViewById(R.id.back);
+        ImageView next = view.findViewById(R.id.next);
+
+        // Con i listener posso premere sulla freccia e cambiare immagine
+        // Altrimenti posso solo scorrere per cambiare immagine
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MuseoFragment.viewPager.setCurrentItem(position-1);
+            }
+        });
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MuseoFragment.viewPager.setCurrentItem(position+1);
+            }
+        });
+
+        switch (position) {
+            case 0:
+                ind1.setImageResource(R.drawable.viewpager_selected_dot);
+                ind2.setImageResource(R.drawable.viewpager_unselected_dot);
+                ind3.setImageResource(R.drawable.viewpager_unselected_dot);
+                back.setVisibility(View.GONE);
+                next.setVisibility(View.VISIBLE);
+                break;
+            case 1:
+                ind1.setImageResource(R.drawable.viewpager_unselected_dot);
+                ind2.setImageResource(R.drawable.viewpager_selected_dot);
+                ind3.setImageResource(R.drawable.viewpager_unselected_dot);
+                back.setVisibility(View.VISIBLE);
+                next.setVisibility(View.VISIBLE);
+                break;
+            case 2:
+                ind1.setImageResource(R.drawable.viewpager_unselected_dot);
+                ind2.setImageResource(R.drawable.viewpager_unselected_dot);
+                ind3.setImageResource(R.drawable.viewpager_selected_dot);
+                back.setVisibility(View.VISIBLE);
+                next.setVisibility(View.GONE);
+                break;
+        }
+
         ViewPager viewPager = (ViewPager)container;
         viewPager.addView(view);
         return view;

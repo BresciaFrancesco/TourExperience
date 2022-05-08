@@ -153,7 +153,7 @@ public class PercorsoActivity extends AppCompatActivity {
     }
 
     /**
-     * Funzione che si occupa si apprire il fragment per scannerrizare il qr code di una stanza,
+     * Funzione che si occupa si aprire il fragment per scannerrizare il qr code di una stanza,
      * quindi settare cosa fare una volta che il qr è stato letto
      *
      * @param idClickedRoom, l'id della stanza che è stata clicccata
@@ -194,6 +194,27 @@ public class PercorsoActivity extends AppCompatActivity {
                                     });
                                     alert.show();
                                 }
+                            }
+                    ), null)
+                    .commit();
+        };
+
+        checkCameraPermission();
+    }
+
+    /**
+     * Funzione che si occupa si aprire il fragment per scannerrizare il qr code di un opera,
+     * quindi settare cosa fare una volta che il qr è stato letto
+     */
+    public void nextQRScannerFragmentOfSingleRomm() {
+
+        actionPerfom = () -> {
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.scannerFrag, new QRScannerFragment(
+                            (scanResult) -> {//i dati letti dallo scannere qr verranno gestiti come segue
+
+                                //code..
                             }
                     ), null)
                     .commit();

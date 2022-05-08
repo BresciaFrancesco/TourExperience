@@ -7,12 +7,14 @@ import android.os.Bundle;
 import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,10 +33,13 @@ public class StanzaFragment extends Fragment {
     ArrayList<String> nomiOpereVicine;
     ArrayList<Integer> immaginiOpereVicine;
 
+    View inflater;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_stanza, container, false);
+        this.inflater =  inflater.inflate(R.layout.fragment_stanza, container, false);
+        return this.inflater;
     }
 
     @Override
@@ -69,5 +74,23 @@ public class StanzaFragment extends Fragment {
             bundle.putString("nome_percorso", nomiPercorsi.get(Integer.parseInt(str)));
             ((PercorsoActivity) getActivity()).nextPercorsoFragment(bundle);
         }); */
+
+        triggerOperaScanButton();
+    }
+
+    /**
+     * funzione per triggerare il click sul pulsante scansione un opera
+     */
+    private void triggerOperaScanButton() {
+
+        ConstraintLayout operaScanButton = inflater.findViewById(R.id.operaScannButton);
+
+        operaScanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((PercorsoActivity)getActivity()).nextQRScannerFragmentOfSingleRomm();
+            }
+        });
+
     }
 }

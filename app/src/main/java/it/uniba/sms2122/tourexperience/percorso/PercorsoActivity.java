@@ -165,23 +165,26 @@ public class PercorsoActivity extends AppCompatActivity {
                     .setReorderingAllowed(true)
                     .add(R.id.scannerFrag, new QRScannerFragment(
                             (scanResult) -> {//i dati letti dallo scannere qr verranno gestiti come segue
-                                Log.e("scanresult", scanResult);
-                                Log.e("id clicked room ", String.valueOf(idClickedRoom));
 
                                 if (scanResult.equals(idClickedRoom)) {
                                     try {
 
-                                        path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
-                                        nextStanzaFragment();
+                                        if (idClickedRoom.equals(path.getIdStanzaCorrente())) {
+                                            path.setIdStanzaCorrente(idClickedRoom);
+                                            nextStanzaFragment();
+                                        } else {
+                                            path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
+                                            nextStanzaFragment();
+                                        }
 
                                     } catch (GraphException e) {
                                         e.printStackTrace();
                                     }
-                                } else{
+                                } else {
 
                                     AlertDialog.Builder alert = new AlertDialog.Builder(this);
-                                    alert.setTitle("Stanza Errata");
-                                    alert.setMessage("La stanza cliccata non corrisponde alla prossima stanza prevista del percorso selezionato");
+                                    alert.setTitle(getString(R.string.error_room_title));
+                                    alert.setMessage(getString(R.string.error_room_body));
                                     alert.setCancelable(true);
                                     alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         @Override

@@ -26,6 +26,10 @@ public class QRScannerFragment extends Fragment {
     private CodeScanner mCodeScanner;
     QRscannerDataManager scannerDataManager;
 
+    /**
+     * Costruttore
+     * @param scannerDataManager, un oggetto da instanziare tramite lambda expression per decidere che fare con i dati letto dallo scanner dei qr
+     */
     public QRScannerFragment(QRscannerDataManager scannerDataManager) {
         this.scannerDataManager = scannerDataManager;
     }
@@ -48,7 +52,7 @@ public class QRScannerFragment extends Fragment {
                 parentActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        scannerDataManager.onScannerDataRead(result.getText());
+                        scannerDataManager.onScannerDataRead(result.getText());//eseguo le operazione richieste una volta letto un codice qr
                     }
                 });
                 getActivity().getSupportFragmentManager().beginTransaction().remove(thisFragment).commit();
@@ -76,6 +80,9 @@ public class QRScannerFragment extends Fragment {
         super.onPause();
     }
 
+    /**
+     * Classe che viene instanziata per rendere dinamiche le operazioni che il programma deve fare quando lo scanner dei qr ha letto un qr
+     */
     public interface QRscannerDataManager {
         void onScannerDataRead(String scanResult);
     }

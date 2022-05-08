@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import it.uniba.sms2122.tourexperience.QRscanner.QRScannerFragment;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
+import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
@@ -152,7 +153,8 @@ public class PercorsoActivity extends AppCompatActivity {
     }
 
     /**
-     * Funzione che si occupa si apprire il fragment per scannerrizare il qr code di una stanza
+     * Funzione che si occupa si apprire il fragment per scannerrizare il qr code di una stanza,
+     * quindi settare cosa fare una volta che il qr è stato letto
      *
      * @param idClickedRoom, l'id della stanza che è stata clicccata
      */
@@ -162,14 +164,16 @@ public class PercorsoActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
                     .add(R.id.scannerFrag, new QRScannerFragment(
-                            (scanResult) -> {
+                            (scanResult) -> {//i dati letti dallo scannere qr verranno gestiti come segue
                                 Log.e("scanresult", scanResult);
                                 Log.e("id clicked room ", String.valueOf(idClickedRoom));
+
                                 if (scanResult.equals(idClickedRoom)) {
                                     try {
 
-                                        path.moveTo(idClickedRoom);
+                                        path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
                                         nextStanzaFragment();
+
                                     } catch (GraphException e) {
                                         e.printStackTrace();
                                     }
@@ -234,7 +238,7 @@ public class PercorsoActivity extends AppCompatActivity {
                 getString(R.string.permission_required_title),
                 getString(R.string.permission_required_body))) {
 
-            actionPerfom.doAction();
+            actionPerfom.doAction();//eseguo le operazione richieste se il permesso della camera è concesso
         }
     }
 
@@ -244,9 +248,8 @@ public class PercorsoActivity extends AppCompatActivity {
         switch (requestCode) {
             case Permesso.CAMERA_PERMISSION_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // setTrueCameraPermissionGranted();
-                    //nextQRScannerFragmentOfRoomSelection("sdfgdtnfhfgdreyr");
-                    actionPerfom.doAction();
+
+                    actionPerfom.doAction();//eseguo le operazione richieste se il permesso della camera è concesso
                 } else {
                     /* Explain to the user that the feature is unavailable because
                      * the features requires a permission that the user has denied.
@@ -262,6 +265,9 @@ public class PercorsoActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Classe che viene instanziata per rendere dinamiche le operazioni che il programma deve fare l'utente ha concesso il permesso della camera
+     */
     public interface PermissionGrantedManager {
 
         void doAction();

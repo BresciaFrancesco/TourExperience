@@ -66,8 +66,7 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
             @Override
             public void onClick(View view) {
 
-                parent.nextStanzaFragment();
-                //parent.nextQRScannerFragmentOfRoomSelection(stanzaList.get(indexOfStanzaList).getId());
+                parent.nextQRScannerFragmentOfRoomSelection(stanzaList.get(indexOfStanzaList).getId());
             }
         });
     }

@@ -114,4 +114,6 @@
     <string name="delete_museum_title">Eliminare %1$s?</string>
     <string name="delete_museum_message">Sei sicuro di voler eliminare questo museo e tutti i percorsi ad esso associati?</string>
     <string name="museum_deleted">Museo %1$s eliminato</string>
+    <string name="error_room_title">Stanza errata</string>
+    <string name="error_room_body">"La stanza cliccata non corrisponde alla prossima stanza prevista del percorso selezionato"</string>
 </resources>

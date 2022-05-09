@@ -38,17 +38,8 @@ public class PercorsoActivity extends AppCompatActivity {
     private String nomePercorso;
     private LocalFilePercorsoManager localFilePercorsoManager;
     private LocalFileMuseoManager localFileMuseoManager;
-    /** Fragment generale per un opera */
-    private final OperaFragment operaFragment;
     /** Attributo che memorizza il percorso scelto dall'utente */
     private Percorso path;
-
-    /**
-     * Costruttore della classe PercorsoActivity
-     */
-    public PercorsoActivity() {
-        this.operaFragment = new OperaFragment();
-    }
 
 
     public String getNomeMuseo() {

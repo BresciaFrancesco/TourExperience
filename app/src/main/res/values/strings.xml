@@ -120,4 +120,8 @@
     <string name="museum_deleted">Museum %1$s deleted</string>
     <string name="error_room_title">Wrong room</string>
     <string name="error_room_body">The clicked room does not correspond to the next expected room on the selected route</string>
+    <string name="bluetooth_permission_title" translatable="false">Bluetooth Low Energy</string>
+    <string name="bluetooth_permission_body">Accepting this permission you can use Bluetooth Low Energy to detect the operas nearest you!</string>
+    <string name="location_permission_title">Location</string>
+    <string name="location_permission_body">Accepting this permission you can find the operas neartest you! Don\'t worry, we won\'t use any data related to your location.</string>
 </resources>

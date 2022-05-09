@@ -66,7 +66,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull MuseiAdapter.ViewHolder holder, int position) {
         Log.v("MuseiAdapter", "chiamato onBindViewHolder()");
         String fileUri = listaMusei.get(position).getFileUri();
-        String nomeCitta = listaMusei.get(position).getNome() + "\n" + listaMusei.get(position).getCitta();
+        String nomeMuseoECitta = listaMusei.get(position).getNome() + "\n" + listaMusei.get(position).getCitta();
         if (fileUri.isEmpty()) {
             if (flagMusei)
                 holder.images.setImageResource(R.drawable.ic_baseline_error_24);
@@ -75,7 +75,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         } else {
             holder.images.setImageURI(Uri.parse(listaMusei.get(position).getFileUri()));
         }
-        holder.text.setText(nomeCitta);
+        holder.text.setText(nomeMuseoECitta);
     }
 
     @Override
@@ -155,10 +155,11 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
             this.adapter = adapter;
             this.deleteButton = view.findViewById(R.id.delete_button);
             this.importPercorsi = new ImportPercorsi(view.getContext());
+
             // click di un item
             view.setOnClickListener((flagMusei)
-                   ? this::listenerForMusei
-                   : this::listenerForPercorsi
+                    ? this::listenerForMusei
+                    : this::listenerForPercorsi
             );
 
             // delete button vale solo per la lista dei musei, non per quella dei percorsi
@@ -175,12 +176,17 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
          * @param view
          */
         private void listenerForMusei(View view) {
+            String txt = text.getText().toString();
+            // Se il test da mostrare all'utente finisce per \n, significa che il testo
+            // è il messaggio di lista vuota. Allora non imposta nessun listener per il click.
+            if (txt.endsWith("\n"))
+                return;
             MainActivity mainActivity = (MainActivity) this.adapter.fragment.getActivity();
             if (mainActivity == null) {
                 Log.e("listenerForMusei", "mainActivity è null, ma non dovrebbe esserlo!");
                 return;
             }
-            mainActivity.startPercorsoActivity(text.getText().toString().split("\n")[0].trim());
+            mainActivity.startPercorsoActivity(txt.split("\n")[0].trim());
         }
 
         /**

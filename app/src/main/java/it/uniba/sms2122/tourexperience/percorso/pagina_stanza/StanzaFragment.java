@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -83,22 +84,31 @@ public class StanzaFragment extends Fragment {
     private final ActivityResultLauncher<String[]> permissionResult = registerForActivityResult(
             new ActivityResultContracts.RequestMultiplePermissions(),
             result -> {
+                boolean permissionGranted = false;
                 // Gestione del risultato del bluetooth
                 if(result.containsKey(Manifest.permission.BLUETOOTH_SCAN) && result.get(Manifest.permission.BLUETOOTH_SCAN)) {
                     enableBt();
+                    permissionGranted = true;
                 } else {
                     Log.v("Permesso", "Bluetooth rifiutato");
+                    permissionGranted = Build.VERSION.SDK_INT < Build.VERSION_CODES.S;
                 }
 
                 // Gestione del risultato della geolocalizzazione
-                if(result.get(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                if(result.containsKey(Manifest.permission.ACCESS_FINE_LOCATION) && result.get(Manifest.permission.ACCESS_FINE_LOCATION)) {
                     LocationManager locationManager = ((LocationManager) requireContext().getSystemService(Context.LOCATION_SERVICE));
                     if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !locationManager.isLocationEnabled()) || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                         Intent enableGps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         gpsActivityResultLauncher.launch(enableGps);
                     }
+                    permissionGranted = true;
                 } else {
                     Log.v("Permesso", "GPS rifiutato");
+                    permissionGranted = false;
+                }
+
+                if(permissionGranted) {
+                    // TODO Far partire il bluetooth
                 }
             }
     );
@@ -107,8 +117,8 @@ public class StanzaFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        percorsoActivity = (PercorsoActivity) getActivity();
         permission = new Permesso(percorsoActivity);
+        percorsoActivity = (PercorsoActivity) getActivity();
         path = percorsoActivity.getPath();
         localFilePercorsoManager = new LocalFilePercorsoManager(requireContext().getFilesDir().toString());
 
@@ -134,10 +144,28 @@ public class StanzaFragment extends Fragment {
         // Check dei permessi sul bluetooth. Questi vanno fatti solo se la versione dell'SDK è superiore alla 31 e se il dispositivo ha il ble
         if(percorsoActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                permissionResult.launch(new String[] {Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.ACCESS_FINE_LOCATION});
+                // Controllo se è necessario spiegare all'utente i permessi per il bluetooth e la localizzazione
+                if(shouldShowRequestPermissionRationale(Manifest.permission.BLUETOOTH_SCAN) && shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    permission.showRationaleDialog(getString(R.string.bluetooth_permission_title), getString(R.string.bluetooth_permission_body),
+                            (dialogInterface, i) -> permission.showRationaleDialog(getString(R.string.location_permission_title), getString(R.string.location_permission_body),
+                                    (dialogInterface1, i1) -> permissionResult.launch(new String[] {Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.ACCESS_FINE_LOCATION})
+                            )
+                    );
+                // Chiedo il permesso direttamente
+                } else {
+                    permissionResult.launch(new String[] {Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.ACCESS_FINE_LOCATION});
+                }
+
             } else {
-                permissionResult.launch(new String[] {Manifest.permission.ACCESS_FINE_LOCATION});
-                enableBt();
+                // Controllo se c'è bisogno di spiegare all'utente il permesso per la localizzazione
+                if(shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    permission.showRationaleDialog(getString(R.string.location_permission_title), getString(R.string.location_permission_body),
+                            (dialogInterface, i) -> permissionResult.launch(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}));
+                // Chiedo il permesso senza spiegazioni
+                } else {
+                    permissionResult.launch(new String[] {Manifest.permission.ACCESS_FINE_LOCATION});
+                    enableBt();
+                }
             }
         }
     }

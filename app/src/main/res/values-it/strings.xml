@@ -116,4 +116,7 @@
     <string name="museum_deleted">Museo %1$s eliminato</string>
     <string name="error_room_title">Stanza errata</string>
     <string name="error_room_body">"La stanza cliccata non corrisponde alla prossima stanza prevista del percorso selezionato"</string>
+    <string name="bluetooth_permission_body">Accettando questo permesso potrai usare il Bluetooth Low Energy per rilevare le opere più vicine a te!</string>
+    <string name="location_permission_title">Localizzazione</string>
+    <string name="location_permission_body">Accettando questo permesso potrai trovare quali sono le opere più vicine a te! Non preoccuparti, non useremo alcun dato relativo alla tua posizione.</string>
 </resources>

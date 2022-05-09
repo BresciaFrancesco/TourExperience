@@ -33,7 +33,7 @@
     <string name="game_statistics">Statistiche giochi</string>
     <string name="search_hint">Roma, Museo egizio, …</string>
     <string name="search_museums">Cerca per nome o città...</string>
-    <string name="search_paths">Search by name or museum...</string>
+    <string name="search_paths">Cerca per nome o museo...</string>
     <string name="find_cultural_site">Trova un sito culturale</string>
     <string name="search_description">Scopri e segui i percorsi che\npiù ti piacciono!</string>
     <string name="modifyProfile">Modifica</string>
@@ -72,7 +72,7 @@
     <string name="insert_password_for_confirm_title">Inserire password</string>
     <string name="insert_password_for_confirm_body">Inserire password per confermare i cambiamenti</string>
     <string name="insert_password_for_confirm_button">Conferma</string>
-    <string name="no_result">Nessun risultato\nClicca il pulsante + per importare un nuovo percorso di un museo</string>
+    <string name="no_result">Clicca il pulsante + per\nimportare un percorso</string>
     <string name="import_paths_from_internet">Importa da Internet</string>
     <string name="import_paths_from_local">Importa da locale</string>
     <string name="camera_permission_required">È necessario accedere alla camera per scannerizzare il codice QR</string>

@@ -41,6 +41,12 @@ public class PercorsoActivity extends AppCompatActivity {
     /** Attributo che memorizza il percorso scelto dall'utente */
     private Percorso path;
 
+    /**
+     * Costruttore della classe PercorsoActivity
+     */
+    public PercorsoActivity() {
+    }
+
 
     public String getNomeMuseo() {
         return nomeMuseo;

@@ -108,12 +108,15 @@ public class SceltaMuseiFragment extends Fragment {
             e.printStackTrace();
         }
 
+        boolean flagListaVuota = false;
+
         if (listaMusei.isEmpty()) {
             listaMusei.add(new Museo(getContext().getResources().getString(R.string.no_result)));
+            flagListaVuota = true;
         }
 
         // Sending reference and data to Adapter
-        MuseiAdapter adapter = new MuseiAdapter(this, progressBar, listaMusei, true);
+        MuseiAdapter adapter = new MuseiAdapter(this, progressBar, listaMusei, true, flagListaVuota);
         // Setting Adapter to RecyclerView
         recyclerView.setAdapter(adapter);
 
@@ -284,7 +287,7 @@ public class SceltaMuseiFragment extends Fragment {
      */
     private void getListaPercorsiFromCloudStorage() {
         MuseiAdapter adapterPercorsi = new MuseiAdapter(this, progressBar,
-                new ArrayList<>(), false);
+                new ArrayList<>(), false, false);
         Log.v("IMPORT_CLOUD", "start download...");
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("Museums_v2");
         ValueEventListener listener = new

@@ -45,7 +45,14 @@ public class BackToMuseumsList implements Back {
             listaForAdapter = getAllCachedMuseums();
         }
         fragment.setListaMusei(listaForAdapter);
-        adapterMusei = new MuseiAdapter(fragment, progressBar, fragment.getListaMusei(), true);
+
+        boolean flagListaVuota;
+        if(fragment.getListaMusei().size() == 0)
+            flagListaVuota = true;
+        else
+            flagListaVuota = false;
+
+        adapterMusei = new MuseiAdapter(fragment, progressBar, fragment.getListaMusei(), true, flagListaVuota);
         recyclerView.setAdapter(adapterMusei);
         fragment.attachQueryTextListener(adapterMusei);
         fab.setImageResource(R.drawable.ic_baseline_add_24);

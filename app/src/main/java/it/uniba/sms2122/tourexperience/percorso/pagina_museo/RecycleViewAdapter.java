@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -30,7 +31,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.item_recycle_view,parent,false);
+        View view = inflater.inflate(R.layout.list_item ,parent,false);
         return new MyViewHolder(view);
     }
 
@@ -54,11 +55,14 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
         TextView textview;
         ImageView imageView;
+        Button deleteButton;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            textview = itemView.findViewById(R.id.nameRoute);
-            imageView = itemView.findViewById(R.id.imageRoute);
+            textview = itemView.findViewById(R.id.nome_item_lista);
+            imageView = itemView.findViewById(R.id.icona_item_lista);
+            deleteButton = itemView.findViewById(R.id.delete_button);
+            deleteButton.setVisibility(View.GONE);
             imageView.setImageResource(R.drawable.ic_path);
         }
     }

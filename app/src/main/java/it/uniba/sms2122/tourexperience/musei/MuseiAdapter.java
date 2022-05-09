@@ -38,17 +38,19 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     private List<Museo> listaMusei;
     private final List<Museo> listaMuseiFiltered;
     private final boolean flagMusei;
+    private final boolean flagListaVuota;
     private final SceltaMuseiFragment fragment;
     private final ProgressBar progressBar;
 
     // Constructor for initialization
     public MuseiAdapter(final SceltaMuseiFragment fragment, final ProgressBar pb,
-                        final List<Museo> listaMusei, final boolean flagMusei) {
+                        final List<Museo> listaMusei, final boolean flagMusei, final boolean flagListaVuota) {
         this.fragment = fragment;
         this.listaMusei = (listaMusei == null) ? new ArrayList<>() : listaMusei;
         this.progressBar = pb;
         this.listaMuseiFiltered = listaMusei;
         this.flagMusei = flagMusei;
+        this.flagListaVuota = flagListaVuota;
     }
 
     @NonNull
@@ -58,7 +60,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         // layout file into View object)
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
         // Passing view to ViewHolder
-        return new ViewHolder(view, flagMusei, this);
+        return new ViewHolder(view, flagMusei, flagListaVuota, this);
     }
 
     // Binding data to the into specified position
@@ -148,7 +150,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         private final MuseiAdapter adapter;
         private final Button deleteButton;
 
-        public ViewHolder(View view, boolean flagMusei, final MuseiAdapter adapter) {
+        public ViewHolder(View view, boolean flagMusei, boolean flagListaVuota, final MuseiAdapter adapter) {
             super(view);
             this.images = view.findViewById(R.id.icona_item_lista);
             this.text = view.findViewById(R.id.nome_item_lista);
@@ -163,7 +165,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
             );
 
             // delete button vale solo per la lista dei musei, non per quella dei percorsi
-            if (flagMusei) {
+            if (flagMusei && !flagListaVuota) {
                 deleteButton.setOnClickListener(this::deleteMuseum);
             } else {
                 deleteButton.setVisibility(View.GONE);

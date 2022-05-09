@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -74,11 +75,14 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
         private TextView textview;
+        private Button deleteButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            this.textview = itemView.findViewById(R.id.nome_item_lista);
-            this.imageView = itemView.findViewById(R.id.icona_item_lista);
+            textview = itemView.findViewById(R.id.nome_item_lista);
+            imageView = itemView.findViewById(R.id.icona_item_lista);
+            deleteButton = itemView.findViewById(R.id.delete_button);
+            deleteButton.setVisibility(View.GONE);
         }
     }
 }

@@ -27,12 +27,15 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManag
 
 public class OperaFragment extends Fragment {
 
-    private final Opera opera;
-    private final String nomeStanza;
-    private final FragmentManager fragmentManager = getParentFragmentManager();
+    private Opera opera;
+    private String nomeStanza;
     private ImageAndDescriptionFragment fragment;
     private LocalFilePercorsoManager localFilePercorsoManager;
+    private final FragmentManager fragmentManager = getParentFragmentManager();
     private final String IMG_EXTENSION = ".webp";
+
+
+    public OperaFragment() {}
 
     public OperaFragment(final Opera opera, final String nomeStanza) {
         this.opera = opera;

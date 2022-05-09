@@ -19,6 +19,7 @@ import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
+import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
@@ -37,17 +38,21 @@ public class PercorsoActivity extends AppCompatActivity {
     private String nomePercorso;
     private LocalFilePercorsoManager localFilePercorsoManager;
     private LocalFileMuseoManager localFileMuseoManager;
-    /**
-     * Attributo che memorizza il percorso scelto dall'utente
-     */
+    /** Fragment generale per un opera */
+    private final OperaFragment operaFragment;
+    /** Attributo che memorizza il percorso scelto dall'utente */
     private Percorso path;
+
+    /**
+     * Costruttore della classe PercorsoActivity
+     */
+    public PercorsoActivity() {
+        this.operaFragment = new OperaFragment();
+    }
+
 
     public String getNomeMuseo() {
         return nomeMuseo;
-    }
-
-    public String getNomePercorso() {
-        return nomePercorso;
     }
 
     public LocalFilePercorsoManager getLocalFilePercorsoManager() {

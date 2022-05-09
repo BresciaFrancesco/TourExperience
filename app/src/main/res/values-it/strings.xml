@@ -95,9 +95,9 @@
     <string name="NO">Annulla</string>
     <string name="local_import_dialog_title">Spiegazione Importazione</string>
     <string name="local_import_message">
-        È possibile importare solo file .zip strutturati secondo le regole di TourExperience.
-        Qualsiasi file .zip non conforme, sarà rifiutato.
-        \nGrazie
+        È possibile importare solo file .zip e .json. I file zip devono essere strutturati secondo le regole di TourExperience.
+        Qualsiasi file .zip non conforme, sarà rifiutato. I file zip devono essere codificati in UTF-8.
+        \nGrazie.
     </string>
     <string name="do_not_show_again">OK e non mostrare più</string>
     <string name="path_from_cloud_empty">Non ci sono percorsi da importare</string>
@@ -111,4 +111,9 @@
     <string name="json_import_success">Percorso %1$s importato!</string>
     <string name="zip_import_error">Zip %1$s errato</string>
     <string name="zip_import_success">Zip %1$s importato!</string>
+    <string name="delete_museum_title">Eliminare %1$s?</string>
+    <string name="delete_museum_message">Sei sicuro di voler eliminare questo museo e tutti i percorsi ad esso associati?</string>
+    <string name="museum_deleted">Museo %1$s eliminato</string>
+    <string name="error_room_title">Stanza errata</string>
+    <string name="error_room_body">"La stanza cliccata non corrisponde alla prossima stanza prevista del percorso selezionato"</string>
 </resources>

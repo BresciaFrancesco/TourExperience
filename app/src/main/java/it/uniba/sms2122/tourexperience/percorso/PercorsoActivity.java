@@ -1,30 +1,30 @@
 package it.uniba.sms2122.tourexperience.percorso;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
 import it.uniba.sms2122.tourexperience.QRscanner.QRScannerFragment;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
+import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
+import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
-
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 import java.io.File;
 import java.util.Optional;
@@ -32,22 +32,27 @@ import java.util.Optional;
 public class PercorsoActivity extends AppCompatActivity {
 
     Permesso permission;
+    private PermissionGrantedManager actionPerfom;
 
     private String nomeMuseo;
     private String nomePercorso;
     private LocalFilePercorsoManager localFilePercorsoManager;
     private LocalFileMuseoManager localFileMuseoManager;
-    /**
-     * Attributo che memorizza il percorso scelto dall'utente
-     */
+    /** Fragment generale per un opera */
+    private final OperaFragment operaFragment;
+    /** Attributo che memorizza il percorso scelto dall'utente */
     private Percorso path;
+
+    /**
+     * Costruttore della classe PercorsoActivity
+     */
+    public PercorsoActivity() {
+        this.operaFragment = new OperaFragment();
+    }
+
 
     public String getNomeMuseo() {
         return nomeMuseo;
-    }
-
-    public String getNomePercorso() {
-        return nomePercorso;
     }
 
     public LocalFilePercorsoManager getLocalFilePercorsoManager() {
@@ -118,6 +123,7 @@ public class PercorsoActivity extends AppCompatActivity {
 
     /**
      * Funzione che serve a sostituire il precedente fragment con OverviewPathFragment
+     *
      * @param bundle, contiene il nome del percorso di cui si deve visualizzare la descrizione
      */
     public void nextPercorsoFragment(Bundle bundle) {
@@ -139,7 +145,7 @@ public class PercorsoActivity extends AppCompatActivity {
     /**
      * Funzione che serve a sostituire il precedente fragment con SceltaStanzeFragment
      */
-    public void nextStanzeFragment() {
+    public void nextSceltaStanzeFragment() {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         Fragment thirdPage = new SceltaStanzeFragment();
 
@@ -152,47 +158,76 @@ public class PercorsoActivity extends AppCompatActivity {
     }
 
     /**
-     * Funzione che serve a sostituire il precedente fragment con QRScannerFragment
+     * Funzione che si occupa si aprire il fragment per scannerrizare il qr code di una stanza,
+     * quindi settare cosa fare una volta che il qr è stato letto
+     *
+     * @param idClickedRoom, l'id della stanza che è stata clicccata
      */
-    public void nextQRScannerFragment() {
+    public void nextQRScannerFragmentOfRoomSelection(String idClickedRoom) {
 
-        if (checkCameraPermission() == true) {
-
+        actionPerfom = () -> {
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.scannerFrag, QRScannerFragment.class, null)
+                    .add(R.id.scannerFrag, new QRScannerFragment(
+                            (scanResult) -> {//i dati letti dallo scannere qr verranno gestiti come segue
+
+                                if (scanResult.equals(idClickedRoom)) {
+                                    try {
+
+                                        if (idClickedRoom.equals(path.getIdStanzaCorrente())) {
+                                            path.setIdStanzaCorrente(idClickedRoom);
+                                            nextStanzaFragment();
+                                        } else {
+                                            path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
+                                            nextStanzaFragment();
+                                        }
+
+                                    } catch (GraphException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+
+                                    AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                                    alert.setTitle(getString(R.string.error_room_title));
+                                    alert.setMessage(getString(R.string.error_room_body));
+                                    alert.setCancelable(true);
+                                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            dialogInterface.dismiss();
+                                        }
+                                    });
+                                    alert.show();
+                                }
+                            }
+                    ), null)
                     .commit();
+        };
 
-            /*Fragment fourthPage = new QRScannerFragment();
-            //fourthPage.getView().setLayoutParams(lyParam);
-
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            //transaction.set
-            transaction.setReorderingAllowed(true);
-            transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
-            transaction.replace(R.id.scannerFrag, fourthPage);
-            transaction.addToBackStack(null);
-            transaction.commit();*/
-        }
-
-
-
-
-
-       /* FrameLayout.LayoutParams lyParam = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        lyParam.gravity = Gravity.CENTER;
-
-        Fragment fourthPage = new QRScannerFragment();
-        fourthPage.getView().setLayoutParams(lyParam);
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        //transaction.set
-        transaction.setReorderingAllowed(true);
-        transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
-        transaction.replace(R.id.container_fragments_route, fourthPage);
-        transaction.addToBackStack(null);
-        transaction.commit();*/
+        checkCameraPermission();
     }
+
+    /**
+     * Funzione che si occupa si aprire il fragment per scannerrizare il qr code di un opera,
+     * quindi settare cosa fare una volta che il qr è stato letto
+     */
+    public void nextQRScannerFragmentOfSingleRomm() {
+
+        actionPerfom = () -> {
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.scannerFrag, new QRScannerFragment(
+                            (scanResult) -> {//i dati letti dallo scannere qr verranno gestiti come segue
+
+                                //code..
+                            }
+                    ), null)
+                    .commit();
+        };
+
+        checkCameraPermission();
+    }
+
 
     /**
      * Funzione che serve a sostituire il precedente fragment con StanzaFragment
@@ -220,11 +255,10 @@ public class PercorsoActivity extends AppCompatActivity {
 
 
     /**
-     * funzione per sapere se il permesso della camera è gia stato concesso o meno
-     *
-     * @return true se il permesso è gia stato concesso,false altrimeti
+     * funzione per sapere se il permesso della camera è gia stato concesso o meno,
+     * in caso di permesso gia concesso setto l'attributo della classe che segnala che il permesso è gia stato concesso
      */
-    public boolean checkCameraPermission() {
+    public void checkCameraPermission() {
 
         permission = new Permesso(this);
 
@@ -232,11 +266,9 @@ public class PercorsoActivity extends AppCompatActivity {
                 Permesso.CAMERA_PERMISSION_CODE,
                 getString(R.string.permission_required_title),
                 getString(R.string.permission_required_body))) {
-            return true;
+
+            actionPerfom.doAction();//eseguo le operazione richieste se il permesso della camera è concesso
         }
-
-        return false;
-
     }
 
     @Override
@@ -245,7 +277,8 @@ public class PercorsoActivity extends AppCompatActivity {
         switch (requestCode) {
             case Permesso.CAMERA_PERMISSION_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    nextQRScannerFragment();
+
+                    actionPerfom.doAction();//eseguo le operazione richieste se il permesso della camera è concesso
                 } else {
                     /* Explain to the user that the feature is unavailable because
                      * the features requires a permission that the user has denied.
@@ -259,5 +292,13 @@ public class PercorsoActivity extends AppCompatActivity {
             default:
                 Log.v("switch", "default");
         }
+    }
+
+    /**
+     * Classe che viene instanziata per rendere dinamiche le operazioni che il programma deve fare l'utente ha concesso il permesso della camera
+     */
+    public interface PermissionGrantedManager {
+
+        void doAction();
     }
 }

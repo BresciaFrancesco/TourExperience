@@ -30,11 +30,13 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 public class MuseoFragment extends Fragment {
 
     String nomeMuseo;
-    ViewPager viewPager;
     TextView textView;
     RecyclerView recycleView;
     ArrayList<String> nomiPercorsi;
     List<String> immagini;
+
+    // Posso recuperarlo anche nell'adapter
+    public static ViewPager viewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

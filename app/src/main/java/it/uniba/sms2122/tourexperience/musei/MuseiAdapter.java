@@ -1,21 +1,26 @@
 package it.uniba.sms2122.tourexperience.musei;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,25 +28,24 @@ import it.uniba.sms2122.tourexperience.R;
 
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.model.Museo;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
+
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 
 public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> implements Filterable {
 
     private List<Museo> listaMusei;
-    private List<Museo> listaMuseiFiltered;
-    private boolean flagMusei;
-    private static MainActivity mainActivity = null;
-    private ProgressBar progressBar;
+    private final List<Museo> listaMuseiFiltered;
+    private final boolean flagMusei;
+    private final SceltaMuseiFragment fragment;
+    private final ProgressBar progressBar;
 
     // Constructor for initialization
-    public MuseiAdapter(final MainActivity activity, final ProgressBar pb,
+    public MuseiAdapter(final SceltaMuseiFragment fragment, final ProgressBar pb,
                         final List<Museo> listaMusei, final boolean flagMusei) {
-        if (mainActivity == null) {
-            mainActivity = activity;
-        }
-        if (listaMusei == null) {
-            this.listaMusei = new ArrayList<>();
-        } else this.listaMusei = listaMusei;
+        this.fragment = fragment;
+        this.listaMusei = (listaMusei == null) ? new ArrayList<>() : listaMusei;
         this.progressBar = pb;
         this.listaMuseiFiltered = listaMusei;
         this.flagMusei = flagMusei;
@@ -54,11 +58,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         // layout file into View object)
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
         // Passing view to ViewHolder
-        ViewHolder vh = new ViewHolder(view, progressBar, flagMusei);
-        if (flagMusei) {
-            vh.addMainActivity(mainActivity);
-        }
-        return vh;
+        return new ViewHolder(view, flagMusei, this);
     }
 
     // Binding data to the into specified position
@@ -66,7 +66,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull MuseiAdapter.ViewHolder holder, int position) {
         Log.v("MuseiAdapter", "chiamato onBindViewHolder()");
         String fileUri = listaMusei.get(position).getFileUri();
-        String nomeCitta = listaMusei.get(position).getNome() + "\n" + listaMusei.get(position).getCitta();
+        String nomeMuseoECitta = listaMusei.get(position).getNome() + "\n" + listaMusei.get(position).getCitta();
         if (fileUri.isEmpty()) {
             if (flagMusei)
                 holder.images.setImageResource(R.drawable.ic_baseline_error_24);
@@ -75,7 +75,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         } else {
             holder.images.setImageURI(Uri.parse(listaMusei.get(position).getFileUri()));
         }
-        holder.text.setText(nomeCitta);
+        holder.text.setText(nomeMuseoECitta);
     }
 
     @Override
@@ -137,36 +137,36 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         listaMusei.add(museo);
     }
 
-    public List<Museo> getListaMusei() {
-        return listaMusei;
-    }
 
     /**
-     * Classe che inizializza la View. Rappresenta un elemento della lista.
+     * Classe che rappresenta un elemento della lista.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private ImageView images;
-        private TextView text;
+        private final ImageView images;
+        private final TextView text;
         private final ImportPercorsi importPercorsi;
-        private final ProgressBar progressBar;
-        private static MainActivity mainActivity = null;
+        private final MuseiAdapter adapter;
+        private final Button deleteButton;
 
-        public ViewHolder(View view, ProgressBar pb, boolean flagMusei) {
+        public ViewHolder(View view, boolean flagMusei, final MuseiAdapter adapter) {
             super(view);
             this.images = view.findViewById(R.id.icona_item_lista);
             this.text = view.findViewById(R.id.nome_item_lista);
-            this.progressBar = pb;
+            this.adapter = adapter;
+            this.deleteButton = view.findViewById(R.id.delete_button);
             this.importPercorsi = new ImportPercorsi(view.getContext());
+
             // click di un item
             view.setOnClickListener((flagMusei)
-                   ? this::listenerForMusei
-                   : this::listenerForPercorsi
+                    ? this::listenerForMusei
+                    : this::listenerForPercorsi
             );
-        }
 
-        public void addMainActivity(final MainActivity activity) {
-            if (mainActivity == null) {
-                mainActivity = activity;
+            // delete button vale solo per la lista dei musei, non per quella dei percorsi
+            if (flagMusei) {
+                deleteButton.setOnClickListener(this::deleteMuseum);
+            } else {
+                deleteButton.setVisibility(View.GONE);
             }
         }
 
@@ -176,11 +176,17 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
          * @param view
          */
         private void listenerForMusei(View view) {
+            String txt = text.getText().toString();
+            // Se il test da mostrare all'utente finisce per \n, significa che il testo
+            // è il messaggio di lista vuota. Allora non imposta nessun listener per il click.
+            if (txt.endsWith("\n"))
+                return;
+            MainActivity mainActivity = (MainActivity) this.adapter.fragment.getActivity();
             if (mainActivity == null) {
                 Log.e("listenerForMusei", "mainActivity è null, ma non dovrebbe esserlo!");
                 return;
             }
-            mainActivity.startPercorsoActivity(text.getText().toString().split("\n")[0].trim());
+            mainActivity.startPercorsoActivity(txt.split("\n")[0].trim());
         }
 
         /**
@@ -200,10 +206,51 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
                     importPercorsi.downloadMuseoPercorso(
                             percorso0_museo1[0],
                             percorso0_museo1[1],
-                            progressBar
+                            this.adapter.progressBar
                     );
                 }).setNegativeButton(context.getString(R.string.NO), null).show();
         }
+
+        /**
+         * Elimina un museo dal filesystem locale e dalla lista.
+         * @param view
+         */
+        private void deleteMuseum(View view) {
+            String[] museo0_citta1 = text.getText().toString().split("\n");
+            final String nomeMuseo = museo0_citta1[0].trim();
+            final String citta = museo0_citta1[1].trim();
+            final SceltaMuseiFragment fragment = adapter.fragment;
+
+            new AlertDialog.Builder(view.getContext())
+            .setTitle(fragment.getString(R.string.delete_museum_title, nomeMuseo))
+            .setMessage(fragment.getString(R.string.delete_museum_message))
+            .setPositiveButton(fragment.getString(R.string.SI), (dialog, whichButton) -> {
+                Museo museo = new Museo(nomeMuseo, citta);
+                LocalFileManager manager = new LocalFileManager(view.getContext().getFilesDir().toString());
+                try {
+                    manager.deleteDir(Paths.get(manager.getGeneralPath(), nomeMuseo).toFile());
+                    fragment.getListaMusei().remove(museo);
+                    adapter.listaMusei.remove(museo);
+                    cacheMuseums.remove(nomeMuseo);
+                    cachePercorsiInLocale.remove(nomeMuseo);
+                    Log.v("DELETE_MUSEUM", "museo " + nomeMuseo + " eliminato correttamente");
+                    // refresh fragment
+                    Toast.makeText(
+                        adapter.fragment.getContext(),
+                        fragment.getString(R.string.museum_deleted, nomeMuseo),
+                        Toast.LENGTH_LONG
+                    ).show();
+                    fragment.onResume();
+                } catch (IOException e) {
+                    Log.e("DELETE_MUSEUM", "museo " + nomeMuseo + " non eliminato");
+                    e.printStackTrace();
+                    dialog.dismiss();
+                }
+            })
+            .setNegativeButton(adapter.fragment.getString(R.string.NO), (dialog, whichButton) -> dialog.dismiss())
+            .show();
+        }
+
     }
 
 }

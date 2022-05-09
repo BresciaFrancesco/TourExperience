@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
 
@@ -24,12 +25,13 @@ import it.uniba.sms2122.tourexperience.R;
  * @author Catignano Francesco
  */
 public class ImageAndDescriptionFragment extends Fragment {
-    private ArrayList<Integer> imageIds;
+    private List<String> imagesPaths;
     private ViewPager2 imgViewPager;
     private String description;
+    private TextView descriptionTextView;
 
-    public ImageAndDescriptionFragment(ArrayList<Integer> imageIds, String description) {
-        this.imageIds = imageIds;
+    public ImageAndDescriptionFragment(List<String> imagesPaths, String description) {
+        this.imagesPaths = imagesPaths;
         this.description = description;
     }
 
@@ -49,8 +51,12 @@ public class ImageAndDescriptionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Inizializzo la descrizione
+        descriptionTextView = view.findViewById(R.id.stanza_description);
+        descriptionTextView.setText(description);
+
         // Inizializzo il view pager
         imgViewPager = view.findViewById(R.id.image_viewpager);
-        imgViewPager.setAdapter(new ImageAdapter(imageIds));
+        imgViewPager.setAdapter(new ImageAdapter(imagesPaths));
     }
 }

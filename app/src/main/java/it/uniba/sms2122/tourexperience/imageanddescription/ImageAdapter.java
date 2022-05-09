@@ -1,5 +1,6 @@
 package it.uniba.sms2122.tourexperience.imageanddescription;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,15 +9,17 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
-    ArrayList<Integer> imageIds;
+    List<String> imagesPaths;
 
-    public ImageAdapter(ArrayList<Integer> imageIds) {
-        this.imageIds = imageIds;
+    public ImageAdapter(List<String> imagesPaths) {
+        this.imagesPaths = imagesPaths;
     }
 
     @NonNull
@@ -28,13 +31,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ImageAdapter.ViewHolder holder, int position) {
-        int currentImage = imageIds.get(position);
-        holder.imageItem.setImageResource(currentImage);
+        Uri currentImage = Uri.parse(imagesPaths.get(position));
+        holder.imageItem.setImageURI(currentImage);
     }
 
     @Override
     public int getItemCount() {
-        return imageIds.size();
+        return imagesPaths.size();
     }
 
     protected static class ViewHolder extends RecyclerView.ViewHolder {

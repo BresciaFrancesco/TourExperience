@@ -1,7 +1,6 @@
 package it.uniba.sms2122.tourexperience.musei;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,14 +38,12 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     private final boolean flagMusei;
     private final boolean flagListaVuota;
     private final SceltaMuseiFragment fragment;
-    private final ProgressBar progressBar;
 
     // Constructor for initialization
-    public MuseiAdapter(final SceltaMuseiFragment fragment, final ProgressBar pb,
-                        final List<Museo> listaMusei, final boolean flagMusei, final boolean flagListaVuota) {
+    public MuseiAdapter(final SceltaMuseiFragment fragment, final List<Museo> listaMusei,
+                        final boolean flagMusei, final boolean flagListaVuota) {
         this.fragment = fragment;
         this.listaMusei = (listaMusei == null) ? new ArrayList<>() : listaMusei;
-        this.progressBar = pb;
         this.listaMuseiFiltered = listaMusei;
         this.flagMusei = flagMusei;
         this.flagListaVuota = flagListaVuota;
@@ -148,14 +144,12 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         private final TextView text;
         private final ImportPercorsi importPercorsi;
         private final MuseiAdapter adapter;
-        private final Button deleteButton;
 
         public ViewHolder(View view, boolean flagMusei, boolean flagListaVuota, final MuseiAdapter adapter) {
             super(view);
             this.images = view.findViewById(R.id.icona_item_lista);
             this.text = view.findViewById(R.id.nome_item_lista);
             this.adapter = adapter;
-            this.deleteButton = view.findViewById(R.id.delete_button);
             this.importPercorsi = new ImportPercorsi(view.getContext());
 
             // click di un item
@@ -165,6 +159,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
             );
 
             // delete button vale solo per la lista dei musei, non per quella dei percorsi
+            final Button deleteButton = view.findViewById(R.id.delete_button);
             if (flagMusei && !flagListaVuota) {
                 deleteButton.setOnClickListener(this::deleteMuseum);
             } else {
@@ -207,8 +202,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
                 .setPositiveButton(context.getString(R.string.SI), (dialog, whichButton) -> {
                     importPercorsi.downloadMuseoPercorso(
                             percorso0_museo1[0],
-                            percorso0_museo1[1],
-                            this.adapter.progressBar
+                            percorso0_museo1[1]
                     );
                 }).setNegativeButton(context.getString(R.string.NO), null).show();
         }

@@ -75,7 +75,7 @@
 
     <style name="LabelStyle">
         <item name="android:background">@drawable/bg_label</item>
-        <item name="android:textColor">#FFF</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
 </resources>

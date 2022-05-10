@@ -5,7 +5,6 @@ import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getAllCachedMus
 
 import android.content.res.ColorStateList;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,16 +21,13 @@ public class BackToMuseumsList implements Back {
     private final SceltaMuseiFragment fragment;
     private final RecyclerView recyclerView;
     private final FloatingActionButton fab;
-    private final ProgressBar progressBar;
 
     public BackToMuseumsList(final SceltaMuseiFragment fragment,
                              final RecyclerView recyclerView,
-                             final FloatingActionButton fab,
-                             final ProgressBar progressBar) {
+                             final FloatingActionButton fab) {
         this.fragment = fragment;
         this.recyclerView = recyclerView;
         this.fab = fab;
-        this.progressBar = progressBar;
     }
 
     @Override
@@ -52,15 +48,11 @@ public class BackToMuseumsList implements Back {
         else
             flagListaVuota = false;
 
-        adapterMusei = new MuseiAdapter(fragment, progressBar, fragment.getListaMusei(), true, flagListaVuota);
+        adapterMusei = new MuseiAdapter(fragment, fragment.getListaMusei(), true, flagListaVuota);
         recyclerView.setAdapter(adapterMusei);
         fragment.attachQueryTextListener(adapterMusei);
         fab.setImageResource(R.drawable.ic_baseline_add_24);
         fab.setOnClickListener(fragment::listenerFabMusei);
-        fab.setBackgroundTintList(
-            ColorStateList.valueOf(
-                fragment.getResources().getColor(R.color.mtrl_fab_button_default, null))
-        );
         ((MainActivity)fragment.getActivity()).getSupportActionBar().setTitle(R.string.museums);
     }
 }

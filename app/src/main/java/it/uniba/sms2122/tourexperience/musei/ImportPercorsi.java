@@ -4,8 +4,6 @@ import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.storage.FileDownloadTask;
@@ -56,11 +54,9 @@ public class ImportPercorsi {
      * e salva in locale anche tutte le altre informazioni del museo.
      * @param nomePercorso
      * @param nomeMuseo
-     * @param progressBar
      */
     public void downloadMuseoPercorso(final String nomePercorso,
-                                      final String nomeMuseo,
-                                      final ProgressBar progressBar) {
+                                      final String nomeMuseo) {
         NetworkConnectivity.check(isConnected -> {
             if (!isConnected) {
                 Toast.makeText(context, context.getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
@@ -68,10 +64,11 @@ public class ImportPercorsi {
             }
             if (cacheMuseums.get(nomeMuseo) == null &&
                     cacheMuseums.get(nomeMuseo.toLowerCase()) == null) {
-                downloadAll_v2(nomePercorso, nomeMuseo, progressBar);
+                downloadAll_v2(nomePercorso, nomeMuseo);
             } else {
-                downloadPercorso(nomePercorso, nomeMuseo, progressBar)
-                        .addOnFailureListener(e -> Log.e("DOWNLOAD_PERCORSO", e.getMessage()));
+                downloadPercorso(nomePercorso, nomeMuseo, false)
+                .addOnFailureListener(e ->
+                    fail("DOWNLOAD_PERCORSO", e.getMessage()));
             }
         });
     }
@@ -82,12 +79,11 @@ public class ImportPercorsi {
      * Versione 2: Scarica un file .zip e lo decomprime, salvandone i file in locale.
      * @param nomePercorso nome del percorso da scaricare.
      * @param nomeMuseo nome del museo da scaricare.
-     * @param progressBar progress bar da settare visibile e gone quando serve.
      */
     private void downloadAll_v2(final String nomePercorso,
-                                final String nomeMuseo,
-                                final ProgressBar progressBar) {
-        progressBar.setVisibility(View.VISIBLE);
+                                final String nomeMuseo) {
+        Toast.makeText(context, context.getString(R.string.download_in_progress),
+                Toast.LENGTH_LONG).show();
         StorageReference storage = firebaseStorage
             .getReference(String.format("Museums_v2/%s/%s.zip", nomeMuseo, nomeMuseo));
         try {
@@ -99,27 +95,25 @@ public class ImportPercorsi {
                     Museo museo = localFileManager.getMuseoByName(nomeMuseo);
                     cacheMuseums.put(nomeMuseo, museo);
                     Log.v("CACHE MUSEI", nomeMuseo + " scaricato e cachato correttamente");
-                    downloadPercorso(nomePercorso, nomeMuseo, progressBar).addOnFailureListener(e -> {
+
+                    downloadPercorso(nomePercorso, nomeMuseo, true)
+                    .addOnFailureListener(e -> {
                         Log.e("DOWNLOAD_PERCORSO", e.getMessage());
                         localFileManager.deleteMuseo(nomeMuseo);
                     });
                 }
                 catch (IOException | IllegalArgumentException | JsonSyntaxException | JsonIOException e) {
-                    fail(progressBar, "DOWNLOAD",
-                            "Errore di unzip o downloadPercorso o parser Gson",
-                            "Download fallito");
+                    fail("DOWNLOAD", "Errore di unzip o downloadPercorso o parser Gson");
                     e.printStackTrace();
                     localFileManager.deleteMuseo(nomeMuseo);
                 }
                 new Thread(tempFile::delete).start();
             }).addOnFailureListener(error -> {
-                fail(progressBar, "DOWNLOAD", error.getMessage(), "Download fallito");
+                fail("DOWNLOAD", error.getMessage());
                 new Thread(tempFile::delete).start();
             });
         } catch (IOException e) {
-            fail(progressBar, "DOWNLOAD",
-                    "Impossibile creare un file temporaneo per il file .zip",
-                    "Download fallito");
+            fail("DOWNLOAD", "Impossibile creare un file temporaneo per il file .zip");
         }
     }
 
@@ -127,44 +121,40 @@ public class ImportPercorsi {
      * Scarica il percorso scelto da firebase e lo salva in locale
      * @param nomePercorso
      * @param nomeMuseo
-     * @param progressBar
      */
     public FileDownloadTask downloadPercorso(final String nomePercorso,
                                              final String nomeMuseo,
-                                             final ProgressBar progressBar) {
-        if (progressBar.getVisibility() != View.VISIBLE)  {
-            progressBar.setVisibility(View.VISIBLE);
+                                             final boolean withMuseum) {
+        if (!withMuseum) {
+            Toast.makeText(context, context.getString(R.string.download_in_progress),
+                Toast.LENGTH_LONG).show();
         }
         final String suffix = Paths.get(nomeMuseo, "Percorsi", nomePercorso+".json").toString();
         final String fileCloud = Paths.get("Museums_v2", suffix).toString();
         final File localFile = Paths.get(filesDir.getAbsolutePath(), "Museums", suffix).toFile();
         return (FileDownloadTask) firebaseStorage.getReference(fileCloud).getFile(localFile)
-        .addOnCompleteListener(task -> progressBar.setVisibility(View.GONE))
         .addOnSuccessListener(taskSnapshot -> {
             addNewPercorsoToCache(nomeMuseo, Collections.singletonList(nomePercorso));
             if (backToMuseumsList != null) {
                 backToMuseumsList.back(null);
             }
             Toast.makeText(context,
-                nomePercorso + ", del museo " + nomeMuseo + ", scaricato correttamente!",
+                context.getString(R.string.download_successful, nomePercorso, nomeMuseo),
                 Toast.LENGTH_LONG).show();
 
             Log.v("DOWNLOAD_PERCORSO",
-                    String.format("Download del percorso %s eseguito correttamente", nomePercorso));
+                String.format("Download del percorso %s eseguito correttamente", nomePercorso));
         });
     }
 
     /**
      * Quando avviene un fallimento catturato da un apposito listener, questo metodo
      * si occupa di gestirle e segnalare l'errore.
-     * @param pb progressBar da fermare.
      * @param errorTag tag da aggiungere al tag del log di errore.
      * @param errorMessage messaggio di errore dinamico.
      */
-    private void fail(final ProgressBar pb, final String errorTag,
-                      final String errorMessage, final String toastMessage) {
-        Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
-        pb.setVisibility(View.GONE);
+    private void fail(final String errorTag, final String errorMessage) {
+        Toast.makeText(context, context.getString(R.string.download_failed), Toast.LENGTH_LONG).show();
         Log.e("ERROR_"+errorTag, errorMessage);
     }
 

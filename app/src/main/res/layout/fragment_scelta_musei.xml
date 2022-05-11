@@ -59,6 +59,8 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_fab"
+        app:tint="@color/black"
+        android:backgroundTint="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -75,6 +77,8 @@
         button to the parent button-->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_import_from_localstorage"
+        app:tint="@color/main_blue"
+        android:backgroundTint="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
@@ -104,6 +108,8 @@
         button to the add Alarm FAB button-->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_import_from_cloud"
+        app:tint="@color/main_blue"
+        android:backgroundTint="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"

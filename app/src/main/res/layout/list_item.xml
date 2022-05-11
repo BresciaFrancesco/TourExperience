@@ -51,7 +51,7 @@
                 android:layout_height="48dp"
                 android:layout_marginEnd="16dp"
                 android:background="@android:color/transparent"
-                android:foreground="@drawable/ic_baseline_close_24"
+                android:foreground="@drawable/ic_baseline_delete_forever_24"
                 android:foregroundTint="@color/main_blue"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

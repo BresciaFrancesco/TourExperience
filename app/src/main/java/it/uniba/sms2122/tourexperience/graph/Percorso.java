@@ -60,6 +60,10 @@ public class Percorso {
         this.idStanzaCorrente = idStanzaCorrente;
     }
 
+    public void setIdStanzaIniziale(String idStanzaIniziale) {
+        this.idStanzaIniziale = idStanzaIniziale;
+    }
+
     public String getIdStanzaFinale() {
         return idStanzaFinale;
     }
@@ -95,7 +99,8 @@ public class Percorso {
             }
             Stanza stanza = mappaStanze.get(idProssimaStanza).getStanza();
             idStanzaCorrente = idProssimaStanza;
-            idStanzaIniziale = idStanzaCorrente;
+            if(idStanzaIniziale == null)
+                idStanzaIniziale = idStanzaCorrente;
             return stanza;
         }
         catch (NullPointerException err) {

@@ -74,6 +74,50 @@
             app:layout_constraintStart_toStartOf="parent" />
     </FrameLayout>
 
+    <RelativeLayout
+        android:id="@+id/votePath"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="250dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/textVotePath"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:gravity="center"
+            android:text="@string/rate_path"
+            android:textColor="@color/main_blue"
+            android:textSize="30dp"
+            android:textStyle="bold|italic" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textVotePath"
+            android:numStars="5"
+            android:layout_centerInParent="true"
+            android:stepSize="0.5" />
+
+        <Button
+            android:id="@+id/btnEndPath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_below="@id/ratingBar"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="25dp"
+            android:background="@drawable/button_shape"
+            android:text="@string/path_end"
+            android:textAllCaps="true" />
+
+
+    </RelativeLayout>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/scannerFrag"
         android:layout_width="300dp"

@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,8 @@ import it.uniba.sms2122.tourexperience.QRscanner.QRScannerFragment;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
+import it.uniba.sms2122.tourexperience.main.HomeFragment;
+import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaFragment;
@@ -41,21 +44,13 @@ public class PercorsoActivity extends AppCompatActivity {
     /** Attributo che memorizza il percorso scelto dall'utente */
     private Percorso path;
 
-    /**
-     * Costruttore della classe PercorsoActivity
-     */
-    public PercorsoActivity() {
-    }
-
-
     public String getNomeMuseo() {
         return nomeMuseo;
     }
 
-    public LocalFilePercorsoManager getLocalFilePercorsoManager() {
-        return localFilePercorsoManager;
+    public String getNomePercorso() {
+        return nomePercorso;
     }
-
     /**
      * Funzione che imposta il valore dell'attributo path ogni volta che viene selezionato un
      * determinato percoso all'interno della lista percosi relativi ad un determinato museo
@@ -170,15 +165,8 @@ public class PercorsoActivity extends AppCompatActivity {
 
                                 if (scanResult.equals(idClickedRoom)) {
                                     try {
-
-                                        if (idClickedRoom.equals(path.getIdStanzaCorrente())) {
-                                            path.setIdStanzaCorrente(idClickedRoom);
-                                            nextStanzaFragment();
-                                        } else {
-                                            path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
-                                            nextStanzaFragment();
-                                        }
-
+                                        nextStanzaFragment();
+                                        path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
                                     } catch (GraphException e) {
                                         e.printStackTrace();
                                     }
@@ -239,6 +227,16 @@ public class PercorsoActivity extends AppCompatActivity {
         transaction.replace(R.id.container_fragments_route, fifthPage);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    /**
+     * Funzione che serve a ritornare alla home
+     */
+    public void endPath() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     //TODO quando l'utente termina il percorso bisogna settare l'id della stanza corrente all'id della stanza iniziale

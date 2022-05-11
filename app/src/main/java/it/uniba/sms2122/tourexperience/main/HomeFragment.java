@@ -104,6 +104,7 @@ public class HomeFragment extends Fragment {
                     Bundle bundle = new Bundle();
                     bundle.putString("search", string);
                     ((MainActivity) HomeFragment.this.getActivity()).replaceSceltaMuseiFragment(bundle);
+                    autoCompleteTextView.setText(R.string.empty_phrase);
                 } else {
                     autoCompleteTextView.setText(R.string.empty_phrase);
                 }

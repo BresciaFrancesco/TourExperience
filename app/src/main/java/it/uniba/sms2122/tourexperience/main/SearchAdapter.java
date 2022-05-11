@@ -69,7 +69,6 @@ public class SearchAdapter extends ArrayAdapter implements Filterable {
                             resultData.add(string);
                         }
                     }
-
                     filterResults.count = resultData.size();
                     filterResults.values = resultData;
                 }

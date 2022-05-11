@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private UserHolder userHolder;
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;
+    private SceltaMuseiFragment sceltaMuseiFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }).start();
+
+        sceltaMuseiFragment = new SceltaMuseiFragment();
     }
 
     @Override
@@ -93,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
                             .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-                            .replace(R.id.content_fragment_container_view, SceltaMuseiFragment.class, null)
+                            .replace(R.id.content_fragment_container_view, safeGetSceltaMuseiFragment(), null)
                             .addToBackStack("SceltaMuseiFragment")
                             .commit();
                     Objects.requireNonNull(MainActivity.this.getSupportActionBar()).setTitle(R.string.museums);
@@ -223,5 +226,17 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         inputManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    /**
+     * Ritorna il fragment sceltaMuseiFragment assicurandosi che non
+     * sia null, in tal caso crea un nuovo fragment.
+     * @return sceltaMuseiFragment, mai null.
+     */
+    private SceltaMuseiFragment safeGetSceltaMuseiFragment() {
+        if (sceltaMuseiFragment == null) {
+            sceltaMuseiFragment = new SceltaMuseiFragment();
+        }
+        return sceltaMuseiFragment;
     }
 }

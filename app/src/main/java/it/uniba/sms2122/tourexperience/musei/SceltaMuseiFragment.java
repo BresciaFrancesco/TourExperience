@@ -1,6 +1,5 @@
 package it.uniba.sms2122.tourexperience.musei;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -54,6 +53,7 @@ public class SceltaMuseiFragment extends Fragment {
     private List<Museo> listaMusei;
     private LocalFileMuseoManager localFileManager;
     private final int requestCodeGC = 10;
+    private MuseiAdapter generalAdapter;
 
     // Make sure to use the FloatingActionButton for all the FABs
     private FloatingActionButton mAddFab, localStorageFab, cloudFab;
@@ -93,15 +93,14 @@ public class SceltaMuseiFragment extends Fragment {
      * Collega un listener alla barra di ricerca. In particolare
      * il listener che collega permette di filtrare la lista
      * presente nella recyclerView.
-     * @param adapter adapter da utilizzate per il filtraggio.
      */
-    public void attachQueryTextListener(MuseiAdapter adapter) {
+    public void attachQueryTextListener() {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {return false;}
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
+                generalAdapter.getFilter().filter(newText);
                 return true;
             }
         });
@@ -211,23 +210,12 @@ public class SceltaMuseiFragment extends Fragment {
             e.printStackTrace();
         }
 
-        boolean flagListaVuota = false;
-
         if (listaMusei.isEmpty()) {
-            listaMusei.add(new Museo(
-                getContext().getResources().getString(R.string.no_result_1),
-                getContext().getResources().getString(R.string.no_result_2))
-            );
-            flagListaVuota = true;
+            listaMusei.add(Museo.getMuseoVuoto(getResources()));
         }
 
         if (recyclerView.getAdapter() == null) {
-            // Sending reference and data to Adapter
-            MuseiAdapter adapter = new MuseiAdapter(this, listaMusei, true, flagListaVuota);
-            // Setting Adapter to RecyclerView
-            recyclerView.setAdapter(adapter);
-
-            attachQueryTextListener(adapter);
+            attachNewAdapter(new MuseiAdapter(this, listaMusei, true));
         }
     }
 
@@ -285,12 +273,11 @@ public class SceltaMuseiFragment extends Fragment {
      * Ritorna la lista dei percorsi presenti in cloud su Firebase.
      */
     private void getListaPercorsiFromCloudStorage() {
-        MuseiAdapter adapterPercorsi = new MuseiAdapter(this, new ArrayList<>(),
-                false, false);
+        generalAdapter = new MuseiAdapter(this, new ArrayList<>(), false);
         Log.v("IMPORT_CLOUD", "start download...");
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("Museums_v2");
         ValueEventListener listener = new
-            ListaPercorsiFromCloud(adapterPercorsi, this, progressBar, recyclerView);
+            ListaPercorsiFromCloud(this, progressBar, recyclerView);
         db.addValueEventListener(listener);
     }
 
@@ -407,19 +394,12 @@ public class SceltaMuseiFragment extends Fragment {
             listaMusei = new ArrayList<>();
             e.printStackTrace();
         }
-        boolean flagListaVuota = false;
 
         if (listaMusei.isEmpty()) {
-            listaMusei.add(new Museo(
-                getContext().getResources().getString(R.string.no_result_1),
-                getContext().getResources().getString(R.string.no_result_2))
-            );
-            flagListaVuota = true;
+            listaMusei.add(Museo.getMuseoVuoto(getResources()));
         }
 
-        MuseiAdapter adapter = new MuseiAdapter(this, listaMusei, true, flagListaVuota);
-        recyclerView.setAdapter(adapter);
-        attachQueryTextListener(adapter);
+        attachNewAdapter(new MuseiAdapter(this, listaMusei, true));
     }
 
     /**
@@ -430,8 +410,7 @@ public class SceltaMuseiFragment extends Fragment {
      */
     public boolean isListaMuseiEmpty() {
         return listaMusei.size() == 1 && listaMusei.get(0)
-            .equals(new Museo(getResources().getString(R.string.no_result_1),
-                    getContext().getResources().getString(R.string.no_result_2)));
+            .equals(Museo.getMuseoVuoto(getResources()));
     }
 
     public void setListaMusei(List<Museo> listaMusei) {
@@ -440,5 +419,15 @@ public class SceltaMuseiFragment extends Fragment {
 
     public List<Museo> getListaMusei() {
         return listaMusei;
+    }
+
+    public MuseiAdapter getGeneralAdapter() {
+        return generalAdapter;
+    }
+
+    public void attachNewAdapter(@NonNull MuseiAdapter adapter) {
+        generalAdapter = adapter;
+        recyclerView.setAdapter(generalAdapter);
+        attachQueryTextListener();
     }
 }

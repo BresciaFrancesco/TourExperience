@@ -26,16 +26,13 @@ import it.uniba.sms2122.tourexperience.model.Museo;
  */
 public class ListaPercorsiFromCloud implements ValueEventListener {
 
-    private final MuseiAdapter adapterPercorsi;
     private final SceltaMuseiFragment fragment;
     private final ProgressBar progressBar;
     private final RecyclerView recyclerView;
 
-    public ListaPercorsiFromCloud(final MuseiAdapter adapterPercorsi,
-                                  final SceltaMuseiFragment fragment,
+    public ListaPercorsiFromCloud(final SceltaMuseiFragment fragment,
                                   final ProgressBar progressBar,
                                   final RecyclerView recyclerView) {
-        this.adapterPercorsi = adapterPercorsi;
         this.fragment = fragment;
         this.progressBar = progressBar;
         this.recyclerView = recyclerView;
@@ -43,7 +40,7 @@ public class ListaPercorsiFromCloud implements ValueEventListener {
 
     @Override
     public void onDataChange(@NonNull DataSnapshot snapshot) {
-        recyclerView.setAdapter(adapterPercorsi);
+        final MuseiAdapter adapterPercorsi = fragment.getGeneralAdapter();
         progressBar.setVisibility(View.GONE);
         for (DataSnapshot snap: snapshot.getChildren()) {
             String nomeMuseo = snap.getKey();
@@ -54,7 +51,7 @@ public class ListaPercorsiFromCloud implements ValueEventListener {
                 adapterPercorsi.addMuseum(new Museo(nomePercorso, nomeMuseo));
             }
         }
-        fragment.attachQueryTextListener(adapterPercorsi);
+        fragment.attachNewAdapter(adapterPercorsi);
         Log.v("IMPORT_CLOUD", "finish download...");
     }
 

@@ -35,18 +35,16 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
 
     private List<Museo> listaMusei;
     private final List<Museo> listaMuseiFiltered;
-    private final boolean flagMusei;
-    private final boolean flagListaVuota;
     private final SceltaMuseiFragment fragment;
+    private final boolean flagMusei;
 
     // Constructor for initialization
     public MuseiAdapter(final SceltaMuseiFragment fragment, final List<Museo> listaMusei,
-                        final boolean flagMusei, final boolean flagListaVuota) {
+                        final boolean flagMusei) {
         this.fragment = fragment;
         this.listaMusei = (listaMusei == null) ? new ArrayList<>() : listaMusei;
         this.listaMuseiFiltered = listaMusei;
         this.flagMusei = flagMusei;
-        this.flagListaVuota = flagListaVuota;
     }
 
     @NonNull
@@ -56,7 +54,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
         // layout file into View object)
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
         // Passing view to ViewHolder
-        return new ViewHolder(view, flagMusei, flagListaVuota, this);
+        return new ViewHolder(view, flagMusei, this);
     }
 
     // Binding data to the into specified position
@@ -142,15 +140,13 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final ImageView images;
         private final TextView text;
-        private final ImportPercorsi importPercorsi;
         private final MuseiAdapter adapter;
 
-        public ViewHolder(View view, boolean flagMusei, boolean flagListaVuota, final MuseiAdapter adapter) {
+        public ViewHolder(View view, boolean flagMusei, final MuseiAdapter adapter) {
             super(view);
             this.images = view.findViewById(R.id.icona_item_lista);
             this.text = view.findViewById(R.id.nome_item_lista);
             this.adapter = adapter;
-            this.importPercorsi = new ImportPercorsi(view.getContext());
             final Button deleteButton = view.findViewById(R.id.delete_button);
 
             // click di un item
@@ -160,7 +156,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
             );
 
             // delete button vale solo per la lista dei musei, non per quella dei percorsi
-            if (flagMusei && !flagListaVuota) {
+            if (flagMusei && !this.adapter.fragment.isListaMuseiEmpty()) {
                 deleteButton.setOnClickListener(this::deleteMuseum);
             } else {
                 deleteButton.setVisibility(View.GONE);
@@ -199,7 +195,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
                         + " " + percorso0_museo1[1].trim() + "?")
                 .setIcon(R.drawable.ic_baseline_cloud_download_24)
                 .setPositiveButton(context.getString(R.string.SI), (dialog, whichButton) -> {
-                    importPercorsi.downloadMuseoPercorso(
+                    new ImportPercorsi(view.getContext()).downloadMuseoPercorso(
                             percorso0_museo1[0],
                             percorso0_museo1[1]
                     );

@@ -171,7 +171,7 @@ public class SceltaMuseiFragment extends Fragment {
                 Toast.makeText(getContext(), getContext().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                 return;
             }
-            progressBar.setVisibility(View.VISIBLE);
+            //progressBar.setVisibility(View.VISIBLE);
             recyclerView.setAdapter(null);
             hideFabOptions();
             mAddFab.setImageResource(R.drawable.ic_baseline_close_24);

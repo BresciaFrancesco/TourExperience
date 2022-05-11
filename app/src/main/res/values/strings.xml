@@ -105,12 +105,13 @@
         \nThanks.
     </string>
     <string name="do_not_show_again">OK &amp; do not show again</string>
-    <string name="path_from_cloud_empty">There is no routes to import</string>
+    <string name="path_from_cloud_empty">There is _ routes to import</string>
     <string name="available_routes">Available routes</string>
     <string name="nearby_areas">Nearby areas</string>
     <string name="museum">Museum: %1$s</string>
     <string name="area">Area: %1$s</string>
     <string name="no_connection">There is no internet connection</string>
+    <string name="importing_ruote">Importing the selected route…</string>
     <string name="mime_type_error">The selected file is not of the expected type</string>
     <string name="json_import_error">Incorrect %1$s route!</string>
     <string name="json_import_success">Route %1$s imported!</string>

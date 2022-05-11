@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +17,8 @@ import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.zxing.Result;
+
+import java.util.zip.Inflater;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
@@ -28,6 +32,7 @@ public class QRScannerFragment extends Fragment {
 
     /**
      * Costruttore
+     *
      * @param scannerDataManager, un oggetto da instanziare tramite lambda expression per decidere che fare con i dati letto dallo scanner dei qr
      */
     public QRScannerFragment(QRscannerDataManager scannerDataManager) {
@@ -43,6 +48,9 @@ public class QRScannerFragment extends Fragment {
         final Activity parentActivity = getActivity();
         View root = inflater.inflate(R.layout.qr_scanner_fragment, container, false);
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
+
+
+        triggerCloseScannerButton(root);
 
         mCodeScanner = new CodeScanner(parentActivity, scannerView);
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
@@ -65,6 +73,19 @@ public class QRScannerFragment extends Fragment {
             }
         });
         return root;
+    }
+
+    private void triggerCloseScannerButton(View root) {
+
+        Fragment thisFragment = this;
+        Button closeScanneButton = root.findViewById(R.id.closeScannerButton);
+
+        closeScanneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                thisFragment.getActivity().getSupportFragmentManager().beginTransaction().remove(thisFragment).commit();
+            }
+        });
     }
 
 

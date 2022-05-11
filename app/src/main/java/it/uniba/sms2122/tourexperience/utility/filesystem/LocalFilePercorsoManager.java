@@ -35,6 +35,7 @@ public class LocalFilePercorsoManager extends LocalFileManager {
         Optional<Percorso> optPercorso = Optional.empty();
         try ( Reader reader = new FileReader(filePercorso) ) {
             optPercorso = Optional.ofNullable(new Gson().fromJson(reader, Percorso.class));
+            optPercorso.get().setIdStanzaIniziale(optPercorso.get().getIdStanzaCorrente());
         } catch (IOException | JsonSyntaxException | JsonIOException e) {
             e.printStackTrace();
         }

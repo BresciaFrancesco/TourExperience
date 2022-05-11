@@ -151,6 +151,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
             this.text = view.findViewById(R.id.nome_item_lista);
             this.adapter = adapter;
             this.importPercorsi = new ImportPercorsi(view.getContext());
+            final Button deleteButton = view.findViewById(R.id.delete_button);
 
             // click di un item
             view.setOnClickListener((flagMusei)
@@ -159,7 +160,6 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
             );
 
             // delete button vale solo per la lista dei musei, non per quella dei percorsi
-            final Button deleteButton = view.findViewById(R.id.delete_button);
             if (flagMusei && !flagListaVuota) {
                 deleteButton.setOnClickListener(this::deleteMuseum);
             } else {
@@ -173,12 +173,11 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
          * @param view
          */
         private void listenerForMusei(View view) {
-            String txt = text.getText().toString();
-            // Se il test da mostrare all'utente finisce per \n, significa che il testo
-            // è il messaggio di lista vuota. Allora non imposta nessun listener per il click.
-            if (txt.endsWith("\n"))
+            // se la lista musei è vuota, non imposta nessun listener per il click
+            if (adapter.fragment.isListaMuseiEmpty())
                 return;
-            MainActivity mainActivity = (MainActivity) this.adapter.fragment.getActivity();
+            String txt = text.getText().toString();
+            MainActivity mainActivity = (MainActivity) adapter.fragment.getActivity();
             if (mainActivity == null) {
                 Log.e("listenerForMusei", "mainActivity è null, ma non dovrebbe esserlo!");
                 return;
@@ -236,7 +235,7 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
                         fragment.getString(R.string.museum_deleted, nomeMuseo),
                         Toast.LENGTH_LONG
                     ).show();
-                    fragment.onResume();
+                    fragment.refreshListaMusei();
                 } catch (IOException e) {
                     Log.e("DELETE_MUSEUM", "museo " + nomeMuseo + " non eliminato");
                     e.printStackTrace();

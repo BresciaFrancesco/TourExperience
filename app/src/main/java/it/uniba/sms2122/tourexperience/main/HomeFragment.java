@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
 import androidx.annotation.NonNull;
@@ -100,7 +98,8 @@ public class HomeFragment extends Fragment {
             autoCompleteTextView.setOnItemClickListener((adapterView, view, i, l) -> {
                 String string = autoCompleteTextView.getText().toString();
 
-                if(!string.equals(getContext().getResources().getString(R.string.no_result))){
+                if(!string.equals(getContext().getResources().getString(R.string.no_result_1)
+                        + "\n" + getContext().getResources().getString(R.string.no_result_2))){
                     Bundle bundle = new Bundle();
                     bundle.putString("search", string);
                     ((MainActivity) HomeFragment.this.getActivity()).replaceSceltaMuseiFragment(bundle);

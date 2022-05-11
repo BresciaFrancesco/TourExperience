@@ -72,7 +72,8 @@
     <string name="insert_password_for_confirm_title">Inserire password</string>
     <string name="insert_password_for_confirm_body">Inserire password per confermare i cambiamenti</string>
     <string name="insert_password_for_confirm_button">Conferma</string>
-    <string name="no_result">Clicca il pulsante + per\nimportare un percorso</string>
+    <string name="no_result_1">Clicca il pulsante + per</string>
+    <string name="no_result_2">import a museum route</string>
     <string name="import_paths_from_internet">Importa da Internet</string>
     <string name="import_paths_from_local">Importa da locale</string>
     <string name="camera_permission_required">È necessario accedere alla camera per scannerizzare il codice QR</string>

@@ -1,14 +1,15 @@
 package it.uniba.sms2122.tourexperience.musei;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
@@ -44,11 +45,7 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SceltaMuseiFragment} factory method to
- * create an instance of this fragment.
- */
+
 public class SceltaMuseiFragment extends Fragment {
 
     private SearchView searchView;
@@ -88,40 +85,9 @@ public class SceltaMuseiFragment extends Fragment {
                 Log.v("CACHE_MUSEI", "musei recuperati dalla cache");
                 listaMusei = getAllCachedMuseums();
             }
-        } else Log.v("CACHE_MUSEI", "musei giò presenti in memoria");
+        } else Log.v("CACHE_MUSEI", "musei già presenti in memoria");
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        try {
-            createListMuseums();
-
-            Bundle bundle = this.getArguments();
-            if (bundle != null) {
-                listaMusei = searchData(listaMusei, bundle.getString("search"));
-            }
-        } catch (IOException e) {
-            Log.e("SceltaMuseiFragment", "SCELTA_MUSEI_ERROR: Lista musei non caricata.");
-            listaMusei = new ArrayList<>();
-            e.printStackTrace();
-        }
-
-        boolean flagListaVuota = false;
-
-        if (listaMusei.isEmpty()) {
-            listaMusei.add(new Museo(getContext().getResources().getString(R.string.no_result)));
-            flagListaVuota = true;
-        }
-
-        // Sending reference and data to Adapter
-        MuseiAdapter adapter = new MuseiAdapter(this, listaMusei, true, flagListaVuota);
-        // Setting Adapter to RecyclerView
-        recyclerView.setAdapter(adapter);
-
-        attachQueryTextListener(adapter);
-    }
 
     /**
      * Collega un listener alla barra di ricerca. In particolare
@@ -228,6 +194,43 @@ public class SceltaMuseiFragment extends Fragment {
         }));
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        try {
+            createListMuseums();
+
+            Bundle bundle = this.getArguments();
+            if (bundle != null) {
+                listaMusei = searchData(listaMusei, bundle.getString("search"));
+            }
+        } catch (IOException e) {
+            Log.e("SceltaMuseiFragment", "SCELTA_MUSEI_ERROR: Lista musei non caricata.");
+            listaMusei = new ArrayList<>();
+            e.printStackTrace();
+        }
+
+        boolean flagListaVuota = false;
+
+        if (listaMusei.isEmpty()) {
+            listaMusei.add(new Museo(
+                getContext().getResources().getString(R.string.no_result_1),
+                getContext().getResources().getString(R.string.no_result_2))
+            );
+            flagListaVuota = true;
+        }
+
+        if (recyclerView.getAdapter() == null) {
+            // Sending reference and data to Adapter
+            MuseiAdapter adapter = new MuseiAdapter(this, listaMusei, true, flagListaVuota);
+            // Setting Adapter to RecyclerView
+            recyclerView.setAdapter(adapter);
+
+            attachQueryTextListener(adapter);
+        }
+    }
+
     /**
      * Permette di aprire e chiudere i FAB opzionali.
      * @param view
@@ -323,45 +326,57 @@ public class SceltaMuseiFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         Log.v("SceltaMuseiFragment", "chiamato onSaveInstanceState()");
-        ArrayList<String> nomiMusei = new ArrayList<>();
-        ArrayList<String> cittaMusei = new ArrayList<>();
-        ArrayList<String> descrizioneMusei = new ArrayList<>();
-        ArrayList<String> tipologieMusei = new ArrayList<>();
-        ArrayList<String> uriImmagini = new ArrayList<>();
-        for (int i = 0; i < listaMusei.size(); i++) {
-            nomiMusei.add(listaMusei.get(i).getNome());
-            cittaMusei.add(listaMusei.get(i).getCitta());
-            descrizioneMusei.add(listaMusei.get(i).getDescrizione());
-            tipologieMusei.add(listaMusei.get(i).getTipologia());
-            uriImmagini.add(listaMusei.get(i).getFileUri());
+        if (listaMusei != null && !isListaMuseiEmpty()) {
+            ArrayList<String> nomiMusei = new ArrayList<>();
+            ArrayList<String> cittaMusei = new ArrayList<>();
+            ArrayList<String> descrizioneMusei = new ArrayList<>();
+            ArrayList<String> tipologieMusei = new ArrayList<>();
+            ArrayList<String> uriImmagini = new ArrayList<>();
+            for (int i = 0; i < listaMusei.size(); i++) {
+                nomiMusei.add(listaMusei.get(i).getNome());
+                cittaMusei.add(listaMusei.get(i).getCitta());
+                descrizioneMusei.add(listaMusei.get(i).getDescrizione());
+                tipologieMusei.add(listaMusei.get(i).getTipologia());
+                uriImmagini.add(listaMusei.get(i).getFileUri());
+            }
+            outState.putStringArrayList("nomi_musei", nomiMusei);
+            outState.putStringArrayList("citta_musei", cittaMusei);
+            outState.putStringArrayList("descrizione_musei", descrizioneMusei);
+            outState.putStringArrayList("tipologie_musei", tipologieMusei);
+            outState.putStringArrayList("immagini_musei", uriImmagini);
         }
-        outState.putStringArrayList("nomi_musei", nomiMusei);
-        outState.putStringArrayList("citta_musei", cittaMusei);
-        outState.putStringArrayList("descrizione_musei", descrizioneMusei);
-        outState.putStringArrayList("tipologie_musei", tipologieMusei);
-        outState.putStringArrayList("immagini_musei", uriImmagini);
         super.onSaveInstanceState(outState);
     }
+
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
         Log.v("SceltaMuseiFragment", "chiamato onViewStateRestored()");
-        listaMusei = new ArrayList<>();
-        if(savedInstanceState != null && !savedInstanceState.isEmpty())
-        {
-            Log.v("SceltaMuseiFragment", "chiamato onViewStateRestored() -> savedInstanceState != null");
+        MainActivity activity = (MainActivity)getActivity();
+        if (activity != null) {
+            ActionBar actionBar = activity.getSupportActionBar();
+            if (actionBar != null)
+                actionBar.setTitle(R.string.museums);
+        }
+        if(savedInstanceState != null && !savedInstanceState.isEmpty()) {
+            listaMusei = new ArrayList<>();
+            Log.v("SceltaMuseiFragment", "ripristino stato precedente della lista musei");
             ArrayList<String> nomiMusei = savedInstanceState.getStringArrayList("nomi_musei");
+            if (nomiMusei == null || nomiMusei.isEmpty()) {
+                super.onViewStateRestored(savedInstanceState);
+                return;
+            }
             ArrayList<String> cittaMusei = savedInstanceState.getStringArrayList("citta_musei");
             ArrayList<String> descrizioneMusei = savedInstanceState.getStringArrayList("descrizione_musei");
             ArrayList<String> tipologieMusei = savedInstanceState.getStringArrayList("tipologie_musei");
             ArrayList<String> uriImmagini = savedInstanceState.getStringArrayList("immagini_musei");
             for (int i = 0; i < nomiMusei.size(); i++) {
                 listaMusei.add(new Museo(
-                    nomiMusei.get(i),
-                    cittaMusei.get(i),
-                    descrizioneMusei.get(i),
-                    tipologieMusei.get(i),
-                    uriImmagini.get(i)
+                        nomiMusei.get(i),
+                        cittaMusei.get(i),
+                        descrizioneMusei.get(i),
+                        tipologieMusei.get(i),
+                        uriImmagini.get(i)
                 ));
             }
         }
@@ -381,12 +396,30 @@ public class SceltaMuseiFragment extends Fragment {
         return returnList;
     }
 
-    public void setListaMusei(List<Museo> listaMusei) {
-        this.listaMusei = listaMusei;
-    }
+    /**
+     * Ricarica la lista musei nel caso sia vuota o nulla e ricrea l'adapter.
+     */
+    public void refreshListaMusei() {
+        try {
+            createListMuseums();
+        } catch (IOException e) {
+            Log.e("SceltaMuseiFragment", "SCELTA_MUSEI_ERROR: Lista musei non caricata.");
+            listaMusei = new ArrayList<>();
+            e.printStackTrace();
+        }
+        boolean flagListaVuota = false;
 
-    public List<Museo> getListaMusei() {
-        return listaMusei;
+        if (listaMusei.isEmpty()) {
+            listaMusei.add(new Museo(
+                getContext().getResources().getString(R.string.no_result_1),
+                getContext().getResources().getString(R.string.no_result_2))
+            );
+            flagListaVuota = true;
+        }
+
+        MuseiAdapter adapter = new MuseiAdapter(this, listaMusei, true, flagListaVuota);
+        recyclerView.setAdapter(adapter);
+        attachQueryTextListener(adapter);
     }
 
     /**
@@ -397,6 +430,15 @@ public class SceltaMuseiFragment extends Fragment {
      */
     public boolean isListaMuseiEmpty() {
         return listaMusei.size() == 1 && listaMusei.get(0)
-            .equals(new Museo(getResources().getString(R.string.no_result)));
+            .equals(new Museo(getResources().getString(R.string.no_result_1),
+                    getContext().getResources().getString(R.string.no_result_2)));
+    }
+
+    public void setListaMusei(List<Museo> listaMusei) {
+        this.listaMusei = listaMusei;
+    }
+
+    public List<Museo> getListaMusei() {
+        return listaMusei;
     }
 }

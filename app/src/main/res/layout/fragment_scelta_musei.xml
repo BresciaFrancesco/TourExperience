@@ -59,7 +59,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_fab"
-        app:tint="@color/black"
+        app:tint="@color/main_blue"
         android:backgroundTint="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,6 +67,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="70dp"
         android:src="@drawable/ic_baseline_add_24"
+        app:maxImageSize="40dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,6 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         app:fabSize="normal"
+        app:maxImageSize="30dp"
         app:layout_constraintBottom_toTopOf="@+id/add_fab"
         app:layout_constraintEnd_toEndOf="@+id/add_fab"
         app:layout_constraintStart_toStartOf="@+id/add_fab"
@@ -114,6 +116,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         app:fabSize="normal"
+        app:maxImageSize="30dp"
         app:layout_constraintBottom_toTopOf="@+id/fab_import_from_localstorage"
         app:layout_constraintEnd_toEndOf="@+id/fab_import_from_localstorage"
         app:layout_constraintStart_toStartOf="@+id/fab_import_from_localstorage"

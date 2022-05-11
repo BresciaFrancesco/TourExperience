@@ -3,7 +3,6 @@ package it.uniba.sms2122.tourexperience.musei;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cacheMuseums;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getAllCachedMuseums;
 
-import android.content.res.ColorStateList;
 import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,19 +35,16 @@ public class BackToMuseumsList implements Back {
         List<Museo> listaForAdapter = null;
         if (cacheMuseums.isEmpty()) {
             listaForAdapter = new ArrayList<>();
-            listaForAdapter.add(new Museo(fragment.getResources().getString(R.string.no_result)));
+            listaForAdapter.add(new Museo(
+                fragment.getResources().getString(R.string.no_result_1),
+                fragment.getResources().getString(R.string.no_result_2))
+            );
         } else {
             listaForAdapter = getAllCachedMuseums();
         }
         fragment.setListaMusei(listaForAdapter);
 
-        boolean flagListaVuota;
-        if(fragment.getListaMusei().size() == 0)
-            flagListaVuota = true;
-        else
-            flagListaVuota = false;
-
-        adapterMusei = new MuseiAdapter(fragment, fragment.getListaMusei(), true, flagListaVuota);
+        adapterMusei = new MuseiAdapter(fragment, fragment.getListaMusei(), true, fragment.isListaMuseiEmpty());
         recyclerView.setAdapter(adapterMusei);
         fragment.attachQueryTextListener(adapterMusei);
         fab.setImageResource(R.drawable.ic_baseline_add_24);

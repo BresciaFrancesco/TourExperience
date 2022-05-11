@@ -13,10 +13,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.transform.sax.SAXResult;
-
 import it.uniba.sms2122.tourexperience.R;
-import it.uniba.sms2122.tourexperience.model.Museo;
 
 public class SearchAdapter extends ArrayAdapter implements Filterable {
 
@@ -80,7 +77,8 @@ public class SearchAdapter extends ArrayAdapter implements Filterable {
             protected void publishResults(CharSequence charSequence, FilterResults results) {
                 if(results.count == 0){
                     museumList.clear();
-                    museumList.add(getContext().getResources().getString((R.string.no_result)));
+                    museumList.add(getContext().getResources().getString(R.string.no_result_1)
+                        + "\n" + getContext().getResources().getString(R.string.no_result_2));
                 } else {
                     museumList = (ArrayList<String>) results.values;
                 }

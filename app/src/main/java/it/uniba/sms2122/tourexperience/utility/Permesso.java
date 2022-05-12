@@ -17,6 +17,8 @@ public class Permesso {
     /* Defining Permission codes.
      * We can give any value but unique for each permission. */
     public static final int CAMERA_PERMISSION_CODE = 100;
+    public static final int BLUETOOT_SCAN_PERMISSION_CODE = 101;
+    public static final int ACCESS_FINE_LOCATION_PERMISSION_CODE = 102;
 
     // Activity generica nella quale chiedo il permesso
     private AppCompatActivity main;
@@ -42,7 +44,6 @@ public class Permesso {
             }
         }
         else {
-            Toast.makeText(main, "Permission already granted", Toast.LENGTH_LONG).show();
             return true;
         }
         return false;

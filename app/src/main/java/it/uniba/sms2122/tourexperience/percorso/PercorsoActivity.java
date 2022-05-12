@@ -7,9 +7,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -219,15 +221,19 @@ public class PercorsoActivity extends AppCompatActivity {
      * Funzione che serve a sostituire il precedente fragment con StanzaFragment
      */
     public void nextStanzaFragment() {
+        // Controllo dei permessi
+        if(getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {    // Se la versione dell'sdk è maggiore a 31
+                boolean esitoBtPermission = permission.getPermission(Manifest.permission.BLUETOOTH_SCAN, Permesso.BLUETOOT_SCAN_PERMISSION_CODE, getString(R.string.bluetooth_permission_title), getString(R.string.bluetooth_permission_body));
+                if(esitoBtPermission) {
+                    permission.getPermission(Manifest.permission.ACCESS_FINE_LOCATION, Permesso.ACCESS_FINE_LOCATION_PERMISSION_CODE, getString(R.string.location_permission_title), getString(R.string.location_permission_body));
+                }
+            } else {
+                permission.getPermission(Manifest.permission.ACCESS_FINE_LOCATION, Permesso.ACCESS_FINE_LOCATION_PERMISSION_CODE, getString(R.string.location_permission_title), getString(R.string.location_permission_body));
+            }
+        }
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
-        Fragment fifthPage = new StanzaFragment();
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setReorderingAllowed(true);
-        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-        transaction.replace(R.id.container_fragments_route, fifthPage);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        createFragment(new StanzaFragment());
     }
 
     /**
@@ -276,15 +282,17 @@ public class PercorsoActivity extends AppCompatActivity {
 
                     actionPerfom.doAction();//eseguo le operazione richieste se il permesso della camera è concesso
                 } else {
-                    /* Explain to the user that the feature is unavailable because
-                     * the features requires a permission that the user has denied.
-                     * At the same time, respect the user's decision. Don't link to
-                     * system settings in an effort to convince the user to change
-                     * their decision. */
                     permission.showRationaleDialog(getString(R.string.permission_denied_title),
                             getString(R.string.permission_denied_body), null);
                 }
                 break;
+
+            case Permesso.BLUETOOT_SCAN_PERMISSION_CODE:
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    permission.getPermission(Manifest.permission.ACCESS_FINE_LOCATION, Permesso.ACCESS_FINE_LOCATION_PERMISSION_CODE, getString(R.string.location_permission_title), getString(R.string.location_permission_body));
+                }
+                break;
+
             default:
                 Log.v("switch", "default");
         }

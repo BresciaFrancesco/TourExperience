@@ -4,9 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
@@ -14,17 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.google.gson.Gson;
+
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.imageanddescription.ImageAndDescriptionFragment;
-import it.uniba.sms2122.tourexperience.main.HomeFragment;
-import it.uniba.sms2122.tourexperience.main.MainActivity;
-import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.model.Opera;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
@@ -32,19 +27,10 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManag
 public class OperaFragment extends Fragment {
 
     private Opera opera;
-    private String nomeStanza;
     private ImageAndDescriptionFragment fragment;
     private LocalFilePercorsoManager localFilePercorsoManager;
     private final FragmentManager fragmentManager = getParentFragmentManager();
-    private final String IMG_EXTENSION = ".webp";
 
-
-    public OperaFragment() {}
-
-    public OperaFragment(final Opera opera, final String nomeStanza) {
-        this.opera = opera;
-        this.nomeStanza = nomeStanza;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,12 +43,15 @@ public class OperaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        localFilePercorsoManager = new LocalFilePercorsoManager(getContext().getFilesDir().toString());
-        final List<String> immaginiOpera = Collections.singletonList(opera.getPercorsoImg());
-        fragment = new ImageAndDescriptionFragment(immaginiOpera, opera.getDescrizione());
+        Bundle bundle = getArguments();
+        String operaJson = Objects.requireNonNull(bundle).getString("OperaJson");
+        this.opera = new Gson().fromJson(Objects.requireNonNull(operaJson), Opera.class);
+
+        localFilePercorsoManager = new LocalFilePercorsoManager(view.getContext().getFilesDir().toString());
+        final List<String> immagineOpera = Collections.singletonList(opera.getPercorsoImg());
+        fragment = new ImageAndDescriptionFragment(immagineOpera, opera.getDescrizione());
         fragmentManager.beginTransaction()
             .setReorderingAllowed(true)
-            //.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left)
             .add(R.id.imageanddescription_fragment_container_view, fragment)
             .commit();
     }

@@ -126,12 +126,7 @@ public class PercorsoActivity extends AppCompatActivity {
 
         setValuePath();
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setReorderingAllowed(true);
-        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-        transaction.replace(R.id.container_fragments_route, secondPage);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        createFragment(secondPage);
     }
 
     /**
@@ -141,12 +136,18 @@ public class PercorsoActivity extends AppCompatActivity {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         Fragment thirdPage = new SceltaStanzeFragment();
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setReorderingAllowed(true);
-        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-        transaction.replace(R.id.container_fragments_route, thirdPage);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        createFragment(thirdPage);
+    }
+
+    /**
+     * Crea il fragment per visualizzare un'opera.
+     * @param bundle contiene la stringa json dell'oggetto opera da istanziare.
+     */
+    public void nextOperaFragment(Bundle bundle) {
+        Fragment operaFragment = new OperaFragment();
+        operaFragment.setArguments(bundle);
+
+        createFragment(operaFragment);
     }
 
     /**
@@ -295,5 +296,19 @@ public class PercorsoActivity extends AppCompatActivity {
     public interface PermissionGrantedManager {
 
         void doAction();
+    }
+
+
+    /**
+     * Riuso del codice per creare ed istanziare un fragment
+     * @param fragment
+     */
+    private void createFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setReorderingAllowed(true);
+        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
+        transaction.replace(R.id.container_fragments_route, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

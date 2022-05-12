@@ -89,6 +89,14 @@ public class LocalFilePercorsoManager extends LocalFileManager {
                 File fileOpera = new File(path + "/Info_opera.json");
                 try ( Reader reader = new FileReader(fileOpera) ) {
                     Opera opera = gson.fromJson(reader, Opera.class);
+                    opera.setPercorsoImg(
+                        Paths.get(generalPath,
+                                nomeMuseo,
+                                "Stanze",
+                                stanza.getNome(),
+                                opera.getNome(),
+                                opera.getNome()+IMG_EXTENSION
+                        ).toString());
                     newOpereForStanza.put(opera.getId(), opera);
                 }
             }

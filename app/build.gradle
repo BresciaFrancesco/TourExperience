@@ -63,4 +63,7 @@ dependencies {
 
     //dipendendenze per lo scanner qr
     implementation 'com.github.yuriy-budiyev:code-scanner:2.1.2'
+
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
 }

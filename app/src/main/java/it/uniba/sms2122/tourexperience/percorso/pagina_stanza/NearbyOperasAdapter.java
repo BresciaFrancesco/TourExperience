@@ -1,6 +1,8 @@
 package it.uniba.sms2122.tourexperience.percorso.pagina_stanza;
 
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,26 +10,24 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.model.Opera;
 
-public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder> {
+public class NearbyOperasAdapter extends RecyclerView.Adapter<NearbyOperasAdapter.MyViewHolder> {
 
     private Context context;
-    private ArrayList<String> names;
-    private ArrayList<Integer> images;
+    private ArrayList<Opera> nearbyOperas;
 
-    private RecycleViewAdapter.onItemClickListener onItemClickListener;
+    private NearbyOperasAdapter.onItemClickListener onItemClickListener;
 
-    public RecycleViewAdapter(Context context, ArrayList<String> names, ArrayList<Integer> images) {
+    public NearbyOperasAdapter(Context context) {
         this.context = context;
-        this.names = names;
-        this.images = images;
+        this.nearbyOperas = new ArrayList<>();
     }
 
     @NonNull
@@ -40,8 +40,8 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.textview.setText(names.get(position));
-        holder.imageView.setImageResource(images.get(position));
+        holder.textview.setText(nearbyOperas.get(position).getNome());
+        holder.imageView.setImageURI(Uri.parse(nearbyOperas.get(position).getPercorsoImg()));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,7 +52,23 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
     @Override
     public int getItemCount() {
-        return names.size();
+        return nearbyOperas.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    public void addOperas(ArrayList<Opera> operas) {
+        if(operas != null) {
+            nearbyOperas.clear();
+            nearbyOperas.addAll(operas);
+        }
+    }
+
+    public void clear() {
+        nearbyOperas.clear();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -70,7 +86,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         }
     }
 
-    public void setOnItemClickListener(RecycleViewAdapter.onItemClickListener onItemClickListener) {
+    public void setOnItemClickListener(NearbyOperasAdapter.onItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 

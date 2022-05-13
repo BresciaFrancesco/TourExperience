@@ -1,9 +1,10 @@
 package it.uniba.sms2122.tourexperience.model;
 
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Opera {
+public class Opera implements Serializable {
 
     private String id;
     private String nome;

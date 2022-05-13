@@ -79,7 +79,7 @@
         <LinearLayout
             android:id="@+id/opere_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="vertical"
             android:layout_marginTop="20dp"
             android:background="@drawable/top_rounded"
@@ -97,7 +97,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/opere_recycle_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:orientation="vertical"
                 android:padding="20dp"

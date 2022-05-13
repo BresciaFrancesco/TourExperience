@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class BleService extends IntentService {
             super.onScanResult(callbackType, result);
 
             // Ottenimento dei dati
-            String operaId = getRawData(result).substring(12, 40);
+            String operaId = getRawData(result).substring(12, 52);
             double distance = estimateDistance(result.getRssi(), result.getTxPower());
 
             // Inserimento dei dati nella mappa
@@ -80,9 +81,9 @@ public class BleService extends IntentService {
         bluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
         if(bluetoothAdapter != null) {
             scanner = bluetoothAdapter.getBluetoothLeScanner();
+            startLeScan();
         } else {
             Log.e(TAG, "onBind: bluetoothAdapter is null");
-            startLeScan();
         }
         return binder;
     }
@@ -150,7 +151,7 @@ public class BleService extends IntentService {
      */
     private double estimateDistance(int rssi, int tx) {
         int n = 2;
-        double exp = (double) (tx-rssi)/(10*n);
+        double exp = (double) (tx-(rssi+RSSI_CALIBRATION))/(10*n);
         return Math.pow(10, exp);
     }
 
@@ -185,11 +186,12 @@ public class BleService extends IntentService {
      * Le opere vicine sono tutte quelle la cui distanza media è inferiore o uguale a {@value BleService#MAX_DISTANCE} metri.
      * @return Le opere vicine
      */
-    public Set<DistanceRecord> getNearbyOperas() {
-        if(distanceRecordMap.isEmpty())
+    public ArrayList<Opera> getNearbyOperas() {
+        if(distanceRecordMap.isEmpty()) {
             return null;
+        }
 
-        Set<DistanceRecord> nearbyOperas = new TreeSet<>();
+        ArrayList<Opera> nearbyOperas = new ArrayList<>();
         for (Map.Entry<String, Queue<DistanceRecord>> entry : distanceRecordMap.entrySet()) {
             // Pulizia della coda
             Queue<DistanceRecord> queue = entry.getValue();
@@ -198,7 +200,7 @@ public class BleService extends IntentService {
             // Inserimento nel set
             double avg = avgDistance(queue);
             if(avg != -1 && avg <= MAX_DISTANCE) {
-                nearbyOperas.add(new DistanceRecord(queue.peek().getOpera(), avg));
+                nearbyOperas.add(queue.peek().getOpera());
             }
         }
         return nearbyOperas;
@@ -209,7 +211,7 @@ public class BleService extends IntentService {
      * Inner class che contiene il binder per la comunicazione tra activity e service.
      */
     public class LocalBinder extends Binder {
-        BleService getService() {
+        public BleService getService() {
             return BleService.this;
         }
     }

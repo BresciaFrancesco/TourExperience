@@ -11,6 +11,7 @@ public class QuizJson {
     private Double punteggioCorrente;
     private List<DomandaJson> domande;
 
+    private QuizJson() {}
 
     public String getTitolo() {
         return titolo;

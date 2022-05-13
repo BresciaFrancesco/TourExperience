@@ -11,6 +11,8 @@ public class DomandaJson {
     private Double valore;
     private List<RispostaJson> risposte;
 
+    private DomandaJson() {}
+
     public String getId() {
         return id;
     }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -21,6 +22,7 @@ import java.util.Objects;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.imageanddescription.ImageAndDescriptionFragment;
 import it.uniba.sms2122.tourexperience.model.Opera;
+import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
 
@@ -30,6 +32,7 @@ public class OperaFragment extends Fragment {
     private ImageAndDescriptionFragment fragment;
     private LocalFilePercorsoManager localFilePercorsoManager;
     private final FragmentManager fragmentManager = getParentFragmentManager();
+    private final int requestCodeGC = 900007;
 
 
     @Override
@@ -46,6 +49,8 @@ public class OperaFragment extends Fragment {
         Bundle bundle = getArguments();
         String operaJson = Objects.requireNonNull(bundle).getString("OperaJson");
         this.opera = new Gson().fromJson(Objects.requireNonNull(operaJson), Opera.class);
+
+        setActionBar(opera.getNome());
 
         localFilePercorsoManager = new LocalFilePercorsoManager(view.getContext().getFilesDir().toString());
         final List<String> immagineOpera = Collections.singletonList(opera.getPercorsoImg());
@@ -83,4 +88,20 @@ public class OperaFragment extends Fragment {
         }
         super.onViewStateRestored(savedInstanceState);
     }
+
+    /**
+     * Imposta la action bar con pulsante back e titolo.
+     * @param title titolo da impostare per l'action bar.
+     */
+    private void setActionBar(final String title) {
+        try {
+            final ActionBar actionBar = ((PercorsoActivity) requireActivity()).getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(true); // abilita il pulsante "back" nella action bar
+            actionBar.setTitle(title);
+        } catch (NullPointerException e) {
+            Log.e("OperaFragment", "ActionBar null");
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -1,8 +1,8 @@
 package it.uniba.sms2122.tourexperience.games.quiz.domainprimitive;
 
-import static org.apache.commons.lang3.Validate.inclusiveBetween;
-import static org.apache.commons.lang3.Validate.notBlank;
-import static org.apache.commons.lang3.Validate.matchesPattern;
+import static it.uniba.sms2122.tourexperience.utility.Validate.inclusiveBetween;
+import static it.uniba.sms2122.tourexperience.utility.Validate.notBlank;
+import static it.uniba.sms2122.tourexperience.utility.Validate.matchesPattern;
 
 /**
  * Pattern: Domain Primitive.

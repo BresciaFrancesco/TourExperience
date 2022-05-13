@@ -153,32 +153,30 @@ public class LocalFileMuseoManager extends LocalFileManager {
      */
     public String saveImport(final String fileName, final String mimeType,
                              final OpenFile dto, final SceltaMuseiFragment frag) {
-        boolean result;
-        Context context = frag.getContext();
-        String resultMessage = context.getString(R.string.mime_type_error);
+        try {
+            Context context = frag.getContext();
+            String resultMessage = context.getString(R.string.mime_type_error);
 
-        if (mimeType.equals(JSON.mimeType())) {
-            CheckJsonPercorso cjp = new CheckJsonPercorso(dto, this);
-            result = cjp.check();
-            if (result) {
-                resultMessage = context.getString(R.string.json_import_success, fileName);
-            } else {
-                resultMessage = context.getString(R.string.json_import_error, fileName);
+            if (mimeType.equals(JSON.mimeType())) {
+                CheckJsonPercorso cjp = new CheckJsonPercorso(dto, this);
+                resultMessage = (cjp.check())
+                        ? context.getString(R.string.json_import_success, fileName)
+                        : context.getString(R.string.json_import_error, fileName);
             }
-        }
-        else if (mimeType.equals(ZIP.mimeType())) {
-            Zip zip = new Zip(this);
-            result = zip.startUnzip(fileName, dto, frag);
-            if (result) {
-                resultMessage = context.getString(R.string.zip_import_success, fileName);
+            else if (mimeType.equals(ZIP.mimeType())) {
+                Zip zip = new Zip(this);
+                resultMessage = (zip.startUnzip(fileName, dto, frag))
+                        ? context.getString(R.string.zip_import_success, fileName)
+                        : context.getString(R.string.zip_import_error, fileName);
             } else {
-                resultMessage = context.getString(R.string.zip_import_error, fileName);
+                Log.e("LOCAL_IMPORT", "ALTRO NON PREVISTO");
             }
+            return resultMessage;
         }
-        else {
-            Log.e("LOCAL_IMPORT", "ALTRO NON PREVISTO");
+        catch (NullPointerException e) {
+            e.printStackTrace();
+            return "Error";
         }
-        return resultMessage;
     }
 
     /**

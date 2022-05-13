@@ -1,6 +1,6 @@
 package it.uniba.sms2122.tourexperience.graph;
 
-import com.google.gson.annotations.Expose;
+import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,10 +72,6 @@ public class Percorso {
 
     public String getNomePercorso() { return nomePercorso; }
 
-    public Map<String, Vertex> getMappa() {
-        return mappaStanze;
-    }
-
     // ------------------------------ Metodi ------------------------------ //
 
     /**
@@ -130,6 +126,18 @@ public class Percorso {
 
     public Stanza getStanzaCorrente() {
         return mappaStanze.get(idStanzaCorrente).getStanza();
+    }
+
+
+    public void testCorrettezzaPercorso() throws NullPointerException {
+        Set<String> keySet = mappaStanze.keySet();
+        for (String key : keySet) {
+            Vertex v = notNull(mappaStanze.get(key), "Non è presente una stanza nella mappa del grafo");
+            Set<String> edges = v.getEdges();
+            for (String edge : edges) {
+                notNull(mappaStanze.get(edge), "Archi sbagliati");
+            }
+        }
     }
 
 }

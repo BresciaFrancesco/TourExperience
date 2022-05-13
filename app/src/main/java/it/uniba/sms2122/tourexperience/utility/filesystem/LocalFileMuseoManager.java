@@ -97,10 +97,10 @@ public class LocalFileMuseoManager extends LocalFileManager {
         ) {
             for (Path path : stream) {
                 if (!Files.isDirectory(path)) continue;
-                try ( Reader reader = new FileReader(path + "/Info.json") )
+                try ( Reader reader = new FileReader(Paths.get(path.toString(), "Info.json").toString()) )
                 {
                     Museo museo = gson.fromJson(reader , Museo.class);
-                    museo.setFileUri(generalPath + museo.getNome() + "/" + museo.getNome() + IMG_EXTENSION);
+                    museo.setFileUri(Paths.get(generalPath, museo.getNome(), museo.getNome()+IMG_EXTENSION).toString());
                     listaMusei.add(museo);
                 }
                 catch (IOException | JsonSyntaxException | JsonIOException e) {
@@ -122,7 +122,7 @@ public class LocalFileMuseoManager extends LocalFileManager {
         ) {
             for (Path path : stream) {
                 if (!Files.isDirectory(path)) continue;
-                String pathMuseo = path + "/Percorsi";
+                String pathMuseo = Paths.get(path.toString(), "Percorsi").toString();
                 try {
                     File[] files = new File(pathMuseo).listFiles();
                     if (files == null) continue;

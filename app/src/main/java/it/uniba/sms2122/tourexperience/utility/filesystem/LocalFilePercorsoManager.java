@@ -1,7 +1,5 @@
 package it.uniba.sms2122.tourexperience.utility.filesystem;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -31,9 +29,9 @@ public class LocalFilePercorsoManager extends LocalFileManager {
         super(generalPath);
     }
 
-
+    // TODO metodo non sicuro, da sistemare
     public Optional<Percorso> getPercorso(final String nomeMuseo, final String nomePercorso) {
-        File filePercorso = new File(String.format("%s%s/Percorsi/%s.json", generalPath, nomeMuseo, nomePercorso));
+        File filePercorso = Paths.get(generalPath, nomeMuseo, "Percorsi", nomePercorso+".json").toFile();
         Optional<Percorso> optPercorso = Optional.empty();
         try ( Reader reader = new FileReader(filePercorso) ) {
             optPercorso = Optional.ofNullable(new Gson().fromJson(reader, Percorso.class));
@@ -117,12 +115,12 @@ public class LocalFilePercorsoManager extends LocalFileManager {
 
         try (
                 DirectoryStream<Path> stream =
-                        Files.newDirectoryStream(Paths.get(generalPath + nomeMuseo + "/Stanze"));
+                        Files.newDirectoryStream(Paths.get(generalPath, nomeMuseo, "Stanze"));
         ) {
             for (Path path : stream) {
-                try ( Reader reader = new FileReader(path + "/Info_stanza.json") )
+                try ( Reader reader = new FileReader(Paths.get(path.toString(), "Info_stanza.json").toString()) )
                 {
-                    if(path.equals(Paths.get(generalPath + nomeMuseo + "/Stanze/" + nomeStanza))) {
+                    if(path.equals(Paths.get(generalPath, nomeMuseo, "Stanze", nomeStanza))) {
                         stanza = gson.fromJson(reader , Stanza.class);
                         //Log.v("STANZA",stanza.toString());
                     }

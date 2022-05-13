@@ -137,5 +137,10 @@
     <string name="try_again">Try again</string>
     <string name="attention">Attention !</string>
     <string name="msg_attention">It was not possible register your vote because there is no internet connection</string>
+    <string name="title_classifica_voti">Best paths</string>
+    <string name="description_classifica_voti">Ranking of the paths present in the app that had a better review by the different users who made them</string>
+    <string name="title_classifica_visitati">Most visited paths</string>
+    <string name="description_classifica_visitati">Ranking of the most visited paths that were visited most by users</string>
+    <string name="rankings">Rankings</string>
 
 </resources>

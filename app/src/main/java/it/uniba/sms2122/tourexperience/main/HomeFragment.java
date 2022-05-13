@@ -1,5 +1,6 @@
 package it.uniba.sms2122.tourexperience.main;
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.AutoCompleteTextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +33,8 @@ public class HomeFragment extends Fragment {
     private AutoCompleteTextView autoCompleteTextView;
     private static DatabaseReference reference;
     private static final String TABLE_NAME = "Museums";
+    private CardView classificaVoti;
+    private CardView classificaVisitati;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -83,6 +87,30 @@ public class HomeFragment extends Fragment {
             }
         };
         reference.addListenerForSingleValueEvent(eventListener);
+
+        classificaVoti = view.findViewById(R.id.classifica_voti);
+        classificaVisitati = view.findViewById(R.id.classifica_visitai);
+        Bundle bundle = new Bundle();
+
+        classificaVoti.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("ranking", 1);
+                ((MainActivity) HomeFragment.this.getActivity()).replaceRankingFragment(bundle);
+            }
+        });
+
+        classificaVisitati.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("ranking", 2);
+                ((MainActivity) HomeFragment.this.getActivity()).replaceRankingFragment(bundle);
+            }
+        });
+
+
     }
 
     /**

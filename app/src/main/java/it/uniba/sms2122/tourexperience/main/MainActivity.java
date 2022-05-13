@@ -200,6 +200,19 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
+    public void replaceRankingFragment(Bundle bundle){
+        RankingFragment rankingFragment = new RankingFragment();
+        rankingFragment.setArguments(bundle);
+
+        //passare al SceltaMuseiFragment
+        fragmentManager.beginTransaction()
+                .setReorderingAllowed(true)
+                .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
+                .replace(R.id.content_fragment_container_view, rankingFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     /**
      * Passa alla prossima activity e le fornisce il nome del museo selezionato.
      * @param nomeMuseo nome del museo selezionato, da passare alla prossima activity.

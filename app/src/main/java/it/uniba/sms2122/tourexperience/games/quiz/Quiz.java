@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.apache.commons.lang3.Validate.inclusiveBetween;
-import static org.apache.commons.lang3.Validate.notNull;
+import static it.uniba.sms2122.tourexperience.utility.Validate.inclusiveBetween;
+import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
 
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.ID;
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.Punteggio;

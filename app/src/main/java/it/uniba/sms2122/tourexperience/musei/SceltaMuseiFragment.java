@@ -132,10 +132,6 @@ public class SceltaMuseiFragment extends Fragment {
 
         setAllTheReference(view);
 
-        // We will make all the FABs and action name texts
-        // visible only when Parent FAB button is clicked So
-        // we have to handle the Parent FAB button first, by
-        // using setOnClickListener you can see below
         mAddFab.setOnClickListener(this::listenerFabMusei);
 
         localStorageFab.setOnClickListener(view2 -> {
@@ -146,10 +142,9 @@ public class SceltaMuseiFragment extends Fragment {
                 startActivityForResult(intent, requestCodeGC);
                 hideFabOptions();
             };
-            final SharedPreferences sp = ((MainActivity)requireActivity())
-                    .getPreferences(Context.MODE_PRIVATE);
+            final SharedPreferences sp = requireActivity().getPreferences(Context.MODE_PRIVATE);
             final String spKey = getString(R.string.do_not_show_again_local_import);
-            boolean doNotShowAgain = sp.getBoolean(spKey, false);
+            final boolean doNotShowAgain = sp.getBoolean(spKey, false);
             if (!doNotShowAgain) {
                 new AlertDialog.Builder(view2.getContext())
                 .setTitle(getString(R.string.local_import_dialog_title))
@@ -177,7 +172,7 @@ public class SceltaMuseiFragment extends Fragment {
             mAddFab.setImageResource(R.drawable.ic_baseline_close_24);
             MainActivity activity = (MainActivity) getActivity();
             activity.getSupportActionBar().setTitle(R.string.museums_cloud_import);
-            Back backToMuseumsList = new BackToMuseumsList(this, recyclerView, mAddFab);
+            Back backToMuseumsList = new BackToMuseumsList(this, mAddFab);
             // Il FAB torna allo stato iniziale e la lista di musei torna a contenere i musei presenti in cache
             mAddFab.setOnClickListener((view3) -> {
                 searchView.setQueryHint(getString(R.string.search_museums));

@@ -1,6 +1,6 @@
 package it.uniba.sms2122.tourexperience.games.quiz;
 
-import static org.apache.commons.lang3.Validate.notNull;
+import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
 
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.ID;
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.Punteggio;

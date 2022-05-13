@@ -8,6 +8,7 @@ public class RispostaJson {
     private String risposta;
     private Double punti;
 
+    private RispostaJson() {}
 
     public String getId() {
         return id;

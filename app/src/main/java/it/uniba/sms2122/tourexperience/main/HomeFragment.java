@@ -17,8 +17,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.holders.UserHolder;
 
 /**
  * Fragment per la schermata Home
@@ -52,6 +54,16 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Imposto il titolo del fragment col nome dell'utente e lo faccio
+        // ogni volta che torno su questo fragment
+        UserHolder.getInstance().getUser(
+                (user) -> {
+                    String title = getString(R.string.hello, user.getName());
+                    Objects.requireNonNull(((MainActivity)requireActivity()).getSupportActionBar()).setTitle(title);
+                },
+                () -> {}
+        );
 
         autoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.autocomplete);
         // setThreshold() is used to specify the number of characters after which

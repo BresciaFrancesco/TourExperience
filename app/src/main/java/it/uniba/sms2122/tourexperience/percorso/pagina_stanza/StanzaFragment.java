@@ -60,29 +60,6 @@ public class StanzaFragment extends Fragment {
     private Stanza stanza;
     private Map<String, Opera> opere;
 
-    // Gestione del risultato dell'attivazione del bluetooth
-    private final ActivityResultLauncher<Intent> btActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if(result.getResultCode()!=Activity.RESULT_OK) {
-                    Log.v("Bluetooth", "Acceso");
-                } else {
-                    Log.v("Bluetooth", "Non acceso");
-                }
-            }
-    );
-
-    // Gestione del risultato dell'attivazione del gps
-    private final ActivityResultLauncher<Intent> gpsActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if(result.getResultCode()!=Activity.RESULT_OK) {
-                    Log.v("GPS", "Acceso");
-                } else {
-                    Log.v("GPS", "Non acceso");
-                }
-            }
-    );
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -169,13 +146,5 @@ public class StanzaFragment extends Fragment {
             }
         });
 
-    }
-
-    private void enableBt() {
-        BluetoothAdapter bluetoothAdapter = ((BluetoothManager) requireContext().getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-        if(!bluetoothAdapter.isEnabled()) {
-            Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            btActivityResultLauncher.launch(enableBluetooth);
-        }
     }
 }

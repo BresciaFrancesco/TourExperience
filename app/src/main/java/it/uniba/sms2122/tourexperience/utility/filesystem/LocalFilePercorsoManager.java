@@ -15,31 +15,40 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.model.Opera;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 
+import static it.uniba.sms2122.tourexperience.utility.Validate.*;
+
+
 public class LocalFilePercorsoManager extends LocalFileManager {
 
     private final Gson gson = new Gson();
+
 
     public LocalFilePercorsoManager(String generalPath) {
         super(generalPath);
     }
 
-    // TODO metodo non sicuro, da sistemare
-    public Optional<Percorso> getPercorso(final String nomeMuseo, final String nomePercorso) {
+    /**
+     * Carica un percorso dal filesystem.
+     * @param nomeMuseo nome del museo.
+     * @param nomePercorso nodem del percorso da caricare.
+     * @return oggetto Percorso caricato da locale.
+     */
+    public Percorso getPercorso(final String nomeMuseo, final String nomePercorso) throws IllegalArgumentException {
         File filePercorso = Paths.get(generalPath, nomeMuseo, "Percorsi", nomePercorso+".json").toFile();
-        Optional<Percorso> optPercorso = Optional.empty();
+        Percorso percorso;
         try ( Reader reader = new FileReader(filePercorso) ) {
-            optPercorso = Optional.ofNullable(new Gson().fromJson(reader, Percorso.class));
-            optPercorso.get().setIdStanzaIniziale(optPercorso.get().getIdStanzaCorrente());
-        } catch (IOException | JsonSyntaxException | JsonIOException e) {
+            percorso = notNull(gson.fromJson(reader, Percorso.class));
+            percorso.setIdStanzaIniziale(percorso.getIdStanzaCorrente());
+        } catch (IOException | JsonSyntaxException | JsonIOException | NullPointerException e) {
             e.printStackTrace();
+            throw new IllegalArgumentException("Il percorso recuperato da locale ha problemi.", e);
         }
-        return optPercorso;
+        return percorso;
     }
 
     /**
@@ -111,8 +120,6 @@ public class LocalFilePercorsoManager extends LocalFileManager {
 
     private Stanza loadStanza(final String nomeMuseo, final String nomeStanza) {
         Stanza stanza = new Stanza();
-        Gson gson = new Gson();
-
         try (
                 DirectoryStream<Path> stream =
                         Files.newDirectoryStream(Paths.get(generalPath, nomeMuseo, "Stanze"));

@@ -32,8 +32,8 @@
     <string name="museums_cloud_import">Scegli Percorso da importare</string>
     <string name="game_statistics">Statistiche giochi</string>
     <string name="search_hint">Roma, Museo egizio, …</string>
-    <string name="search_museums">Cerca per nome o città...</string>
-    <string name="search_paths">Cerca per nome o museo...</string>
+    <string name="search_museums">Cerca per nome o città…</string>
+    <string name="search_paths">Cerca per nome o museo…</string>
     <string name="find_cultural_site">Trova un sito culturale</string>
     <string name="search_description">Scopri e segui i percorsi che\npiù ti piacciono!</string>
     <string name="modifyProfile">Modifica</string>
@@ -125,7 +125,7 @@
     <string name="bluetooth_permission_body">Accettando questo permesso potrai usare il Bluetooth Low Energy per rilevare le opere più vicine a te!</string>
     <string name="location_permission_title">Localizzazione</string>
     <string name="location_permission_body">Accettando questo permesso potrai trovare quali sono le opere più vicine a te! Non preoccuparti, non useremo alcun dato relativo alla tua posizione.</string>
-    <string name="download_in_progress">Download in corso, per favore attendere...</string>
+    <string name="download_in_progress">Download in corso, per favore attendere…</string>
     <string name="download_successful">%1$s, del museo %2$s, scaricato correttamente!</string>
     <string name="download_failed">Download fallito</string>
 

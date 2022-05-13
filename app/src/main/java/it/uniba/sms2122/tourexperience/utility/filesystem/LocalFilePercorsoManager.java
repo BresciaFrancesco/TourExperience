@@ -1,5 +1,7 @@
 package it.uniba.sms2122.tourexperience.utility.filesystem;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -52,8 +54,10 @@ public class LocalFilePercorsoManager extends LocalFileManager {
     public void createStanzeAndOpereInThisAndNextStanze(final Percorso grafo) {
         // carico le opere di questa stanza
         Stanza stanzaCorrente = grafo.getStanzaCorrente();
-        loadStanza(grafo.getNomeMuseo(), stanzaCorrente.getNome());
+        Stanza temp = loadStanza(grafo.getNomeMuseo(), stanzaCorrente.getNome());
+        stanzaCorrente.setDescrizione(temp.getDescrizione());
         loadOpere(grafo.getNomeMuseo(), stanzaCorrente);
+
         // e poi carico le opere delle stanze collegate nel grafo
         new Thread(() -> LocalFilePercorsoManager.this.createStanzeAndOpereOnlyInNextStanze(grafo)).start();
     }
@@ -120,6 +124,7 @@ public class LocalFilePercorsoManager extends LocalFileManager {
                 {
                     if(path.equals(Paths.get(generalPath + nomeMuseo + "/Stanze/" + nomeStanza))) {
                         stanza = gson.fromJson(reader , Stanza.class);
+                        //Log.v("STANZA",stanza.toString());
                     }
                 }
             }

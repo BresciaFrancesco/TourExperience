@@ -30,11 +30,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
+import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.model.Opera;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
@@ -44,7 +46,9 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManag
 public class StanzaFragment extends Fragment {
     private static final int REQUEST_ENABLE_BT = 1;
 
-    ImageView imageView;
+    String nomeMuseo;
+    String nomeStanza;
+
     TextView textView;
     RecyclerView recycleView;
     ArrayList<String> nomiOpereVicine;
@@ -83,24 +87,6 @@ public class StanzaFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        permission = new Permesso(percorsoActivity);
-        percorsoActivity = (PercorsoActivity) getActivity();
-        path = percorsoActivity.getPath();
-        localFilePercorsoManager = new LocalFilePercorsoManager(requireContext().getFilesDir().toString());
-
-        /* Caricamento delle opere */
-        String idStanzaCorrente = path.getIdStanzaCorrente();
-        if(idStanzaCorrente.equals(path.getIdStanzaIniziale())) {   // Se la stanza attuale è la prima del percorso...
-            // Caricamento delle opere nelle stanze adiacenti
-            localFilePercorsoManager.createStanzeAndOpereInThisAndNextStanze(path);
-        } else {
-            // Caricamento delle opere nelle stanze adiacenti
-            new Thread(() -> localFilePercorsoManager.createStanzeAndOpereOnlyInNextStanze(path)).start();
-        }
-
-        stanza = path.getStanzaCorrente();
-        opere = stanza.getOpere();
     }
 
     @Override
@@ -121,11 +107,27 @@ public class StanzaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        textView = view.findViewById(R.id.stanza_description);
-        //TODO: settare descrizione dal json
-        textView.setText("Descrizione stanza...");
+        permission = new Permesso(percorsoActivity);
+        percorsoActivity = (PercorsoActivity) getActivity();
+        path = percorsoActivity.getPath();
+        localFilePercorsoManager = new LocalFilePercorsoManager(requireContext().getFilesDir().toString());
 
+        textView = view.findViewById(R.id.stanza_description);
         recycleView = view.findViewById(R.id.opere_recycle_view);
+
+        /* Caricamento delle opere */
+        String idStanzaCorrente = path.getIdStanzaCorrente();
+        if(idStanzaCorrente.equals(path.getIdStanzaIniziale())) {   // Se la stanza attuale è la prima del percorso...
+            // Caricamento delle opere nelle stanze adiacenti
+            localFilePercorsoManager.createStanzeAndOpereInThisAndNextStanze(path);
+        } else {
+            // Caricamento delle opere nelle stanze adiacenti
+            new Thread(() -> localFilePercorsoManager.createStanzeAndOpereOnlyInNextStanze(path)).start();
+        }
+
+        stanza = path.getStanzaCorrente();
+        opere = stanza.getOpere();
+        textView.setText(stanza.getDescrizione());
 
         //TODO: Recuperare lista opere vicine
         nomiOpereVicine = new ArrayList<>();

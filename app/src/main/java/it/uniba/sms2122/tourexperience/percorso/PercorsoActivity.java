@@ -115,16 +115,9 @@ public class PercorsoActivity extends AppCompatActivity {
      * Funzione che imposta il valore dell'attributo path ogni volta che viene selezionato un
      * determinato percoso all'interno della lista percosi relativi ad un determinato museo
      */
-    private void setValuePath() {
-        Optional<Percorso> pathContainer = localFilePercorsoManager.getPercorso(nomeMuseo, nomePercorso);
-
-        if (pathContainer.isPresent()) {
-            path = pathContainer.get();
-            localFilePercorsoManager.createStanzeAndOpereInThisAndNextStanze(path);
-
-        } else {
-            Log.e("percorso non trovato", "percorso non trovato");
-        }
+    private void setValuePath() throws IllegalArgumentException {
+        path = localFilePercorsoManager.getPercorso(nomeMuseo, nomePercorso);
+        localFilePercorsoManager.createStanzeAndOpereInThisAndNextStanze(path);
     }
 
     public Percorso getPath() {
@@ -193,13 +186,19 @@ public class PercorsoActivity extends AppCompatActivity {
      */
     public void nextPercorsoFragment(Bundle bundle) {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
-        Fragment secondPage = new OverviewPathFragment();
-        nomePercorso = bundle.getString("nome_percorso");
-        secondPage.setArguments(bundle);
+        try {
+            Fragment secondPage = new OverviewPathFragment();
+            nomePercorso = bundle.getString("nome_percorso");
+            secondPage.setArguments(bundle);
 
-        setValuePath();
+            setValuePath();
 
-        createFragment(secondPage);
+            createFragment(secondPage);
+        }
+        catch (IllegalArgumentException e) {
+            Log.e("PercorsoActivity.class", "nextPercorsoFragment -> IllegalArgumentException sollevata.");
+            e.printStackTrace();
+        }
     }
 
     /**

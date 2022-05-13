@@ -127,9 +127,7 @@
     <string name="path_end_success">End path success</string>
     <string name="path_end_fail">End path fail</string>
     <string name="bluetooth_permission_title" translatable="false">Bluetooth Low Energy</string>
-    <string name="bluetooth_permission_body">Accepting this permission you can use Bluetooth Low Energy to detect the operas nearest you!</string>
-    <string name="location_permission_title">Location</string>
-    <string name="location_permission_body">Accepting this permission you can find the operas neartest you! Don\'t worry, we won\'t use any data related to your location.</string>
+    <string name="bluetooth_permission_body">Accepting this permission you can use Bluetooth Low Energy to detect the operas nearest you! Don\'t worry, we don\'t use any data related your position.</string>
     <string name="download_in_progress">Download in progress, please wait...</string>
     <string name="download_successful">%1$s, from the %2$s museum, downloaded successfully!</string>
     <string name="download_failed">Download failed</string>

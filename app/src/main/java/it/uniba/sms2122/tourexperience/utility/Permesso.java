@@ -1,6 +1,7 @@
 package it.uniba.sms2122.tourexperience.utility;
 
 import android.app.AlertDialog; // è importante che sia android.app.AlertDialog e non androix, perché altrimenti non funziona il codice
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.widget.Toast;
@@ -17,8 +18,7 @@ public class Permesso {
     /* Defining Permission codes.
      * We can give any value but unique for each permission. */
     public static final int CAMERA_PERMISSION_CODE = 100;
-    public static final int BLUETOOT_SCAN_PERMISSION_CODE = 101;
-    public static final int ACCESS_FINE_LOCATION_PERMISSION_CODE = 102;
+    public static final int BLUETOOTH_PERMISSION_CODE = 101;
 
     // Activity generica nella quale chiedo il permesso
     private AppCompatActivity main;
@@ -30,17 +30,17 @@ public class Permesso {
     }
 
     // Richiedo in modo completo un generico permesso.
-    public boolean getPermission(final String permission, final int permissionCode,
+    public boolean getPermission(final String permissions[], final int permissionCode,
                                  final String dialogTitle, final String dialogBody) {
-        if (ContextCompat.checkSelfPermission(main, permission) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(main, permission)) {
+        if (!hasPermissions(permissions)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(main, permissions[0])) {
                 // Mostro all'utente una spiegazione in modo "asincrono"
                 showRationaleDialog(dialogTitle, dialogBody,
-                        (dialogInterface, i) -> requestPermission(permission, permissionCode));
+                        (dialogInterface, i) -> ActivityCompat.requestPermissions(main, permissions, permissionCode));
             }
             else {
                 // Non serve una spiegazione per l'utente, richiedo permesso direttamente
-                requestPermission(permission, permissionCode);
+                ActivityCompat.requestPermissions(main, permissions, permissionCode);
             }
         }
         else {
@@ -66,5 +66,19 @@ public class Permesso {
                 setMessage(body)
                 .setPositiveButton("Ok", listener)
                 .show();
+    }
+
+    /*
+     * Controlla tutti i permessi
+     */
+    private boolean hasPermissions(String[] permissions) {
+        if (permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(main, permission) != PackageManager.PERMISSION_GRANTED)
+                    return false;
+            }
+            return true;
+        }
+        return false;
     }
 }

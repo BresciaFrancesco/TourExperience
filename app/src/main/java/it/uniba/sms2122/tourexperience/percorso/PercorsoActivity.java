@@ -239,10 +239,17 @@ public class PercorsoActivity extends AppCompatActivity {
 
                                 if (scanResult.equals(idClickedRoom)) {
                                     try {
-                                        nextStanzaFragment();
-                                        path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
+
+                                        if (idClickedRoom.equals(path.getIdStanzaIniziale())) {
+                                            //path.setIdStanzaCorrente(idClickedRoom);
+                                            nextStanzaFragment();
+                                        } else {
+                                            path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
+                                            nextStanzaFragment();
+                                        }
+
                                     } catch (GraphException e) {
-                                        e.printStackTrace();
+                                       Log.e("excpetion", e.getMessage());
                                     }
                                 } else {
 
@@ -360,6 +367,8 @@ public class PercorsoActivity extends AppCompatActivity {
 
                     actionPerfom.doAction();//eseguo le operazione richieste se il permesso della camera è concesso
                 } else {
+
+                    getSupportFragmentManager().popBackStack();
                     permission.showRationaleDialog(getString(R.string.permission_denied_title),
                             getString(R.string.permission_denied_body), null);
                 }

@@ -109,7 +109,9 @@
     <string name="available_routes">Available routes</string>
     <string name="nearby_areas">Nearby areas</string>
     <string name="museum">Museum: %1$s</string>
+    <string name="path">Path: %1$s</string>
     <string name="area">Area: %1$s</string>
+    <string name="vote">Vote: %1$s</string>
     <string name="no_connection">There is no internet connection</string>
     <string name="importing_ruote">Importing the selected route…</string>
     <string name="mime_type_error">The selected file is not of the expected type</string>
@@ -131,5 +133,9 @@
     <string name="download_in_progress">Download in progress, please wait...</string>
     <string name="download_successful">%1$s, from the %2$s museum, downloaded successfully!</string>
     <string name="download_failed">Download failed</string>
+    <string name="msg_share">Hey, look what path I made</string>
+    <string name="try_again">Try again</string>
+    <string name="attention">Attention !</string>
+    <string name="msg_attention">It was not possible register your vote because there is no internet connection</string>
 
 </resources>

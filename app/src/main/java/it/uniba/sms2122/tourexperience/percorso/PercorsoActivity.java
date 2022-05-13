@@ -18,16 +18,25 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import it.uniba.sms2122.tourexperience.QRscanner.QRScannerFragment;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
+import it.uniba.sms2122.tourexperience.main.HomeFragment;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
@@ -35,6 +44,7 @@ import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
@@ -77,6 +87,10 @@ public class PercorsoActivity extends AppCompatActivity {
             }
     );
 
+    private DatabaseReference db;
+    private Task<DataSnapshot> snapshotVoti;
+    private Task<DataSnapshot> snapshotNumStarts;
+
     public String getNomeMuseo() {
         return nomeMuseo;
     }
@@ -84,6 +98,19 @@ public class PercorsoActivity extends AppCompatActivity {
     public String getNomePercorso() {
         return nomePercorso;
     }
+
+    public DatabaseReference getDb() {
+        return db;
+    }
+
+    public Task<DataSnapshot> getSnapshotVoti() {
+        return snapshotVoti;
+    }
+
+    public Task<DataSnapshot> getSnapshotNumStarts() {
+        return snapshotNumStarts;
+    }
+
     /**
      * Funzione che imposta il valore dell'attributo path ogni volta che viene selezionato un
      * determinato percoso all'interno della lista percosi relativi ad un determinato museo
@@ -120,9 +147,6 @@ public class PercorsoActivity extends AppCompatActivity {
 
         File filesDir = getApplicationContext().getFilesDir();
 
-
-        // cacheMuseums.get(nomeMuseo); // per ottenere l'oggetto Museo, basta fare così
-
         /**
          * Viene aggiunto il fragment MuseoFragment all'activity
          */
@@ -132,6 +156,22 @@ public class PercorsoActivity extends AppCompatActivity {
             transaction.setReorderingAllowed(true);  //ottimizza i cambiamenti di stato dei fragment in modo che le animazioni funzionino correttammente
             transaction.add(R.id.container_fragments_route, firstPage);
             transaction.commit();
+        }
+
+        // cacheMuseums.get(nomeMuseo); // per ottenere l'oggetto Museo, basta fare così
+    }
+
+    public boolean checkConnectivity() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(PercorsoActivity.this.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        if (ni!=null && ni.isAvailable() && ni.isConnected()) {
+            db = FirebaseDatabase.getInstance().getReference("Museums").child(nomeMuseo).child(nomePercorso);
+            snapshotVoti = db.child("Voti").get();
+            snapshotNumStarts = db.child("Numero_starts").get();
+            return true;
+        } else {
+            Toast.makeText(PercorsoActivity.this.getApplicationContext(), PercorsoActivity.this.getApplicationContext().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+            return false;
         }
     }
 

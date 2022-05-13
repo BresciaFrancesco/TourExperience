@@ -105,7 +105,9 @@
     <string name="available_routes">Percorsi disponibili</string>
     <string name="nearby_areas">Zone vicine</string>
     <string name="museum">Museo: %1$s</string>
+    <string name="path">Percorso: %1$s</string>
     <string name="area">Zona: %1$s</string>
+    <string name="vote">Voto: %1$s</string>
     <string name="no_connection">Connessione internet assente</string>
     <string name="importing_ruote">Importazione percorso…</string>
     <string name="mime_type_error">Il file selezionato non è del tipo previsto</string>
@@ -126,5 +128,9 @@
     <string name="download_in_progress">Download in corso, per favore attendere...</string>
     <string name="download_successful">%1$s, del museo %2$s, scaricato correttamente!</string>
     <string name="download_failed">Download fallito</string>
+    <string name="msg_share">Hey, guarda che percorso ho fatto</string>
+    <string name="try_again">Riprova</string>
+    <string name="attention">Attenzione !</string>
+    <string name="msg_attention">Non è stato possibile registrare la tua votazione poichè non è presente connessione ad internet</string>
 
 </resources>

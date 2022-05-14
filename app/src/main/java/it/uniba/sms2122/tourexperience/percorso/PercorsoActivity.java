@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
@@ -336,6 +337,15 @@ public class PercorsoActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
+        // Stop del service
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        int index = fragmentManager.getBackStackEntryCount() - 1;
+        FragmentManager.BackStackEntry backStackEntry = fragmentManager.getBackStackEntryAt(index);
+        Fragment fragment = fragmentManager.findFragmentByTag(backStackEntry.getName());
+        if(fragment instanceof StanzaFragment && ((StanzaFragment) fragment).isBounded()) {
+            ((StanzaFragment) fragment).unBindService();
+        }
 
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

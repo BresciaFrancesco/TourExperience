@@ -120,7 +120,7 @@ public class BleService extends IntentService {
             Log.e(TAG, "stopLeScan: permission error");
             return;
         }
-        stopLeScan();
+        scanner.stopScan(scanCallback);
         Log.d(TAG, "stopLeScan: scan stopped");
     }
 

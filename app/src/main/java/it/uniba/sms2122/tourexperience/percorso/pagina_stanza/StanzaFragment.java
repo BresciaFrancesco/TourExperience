@@ -34,11 +34,6 @@ import it.uniba.sms2122.tourexperience.utility.Permesso;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
 public class StanzaFragment extends Fragment {
-    private static final int REQUEST_ENABLE_BT = 1;
-
-    String nomeMuseo;
-    String nomeStanza;
-
     TextView textView;
     RecyclerView recycleView;
     private NearbyOperasAdapter adapter;
@@ -104,13 +99,6 @@ public class StanzaFragment extends Fragment {
         stanza = path.getStanzaCorrente();
         opereInStanza = stanza.getOpere();
         textView.setText(stanza.getDescrizione());
-
-        /* Dati di prova
-        nomiOpereVicine.add("opera1");
-        nomiOpereVicine.add("Opera 2");
-        immaginiOpereVicine.add(R.drawable.ic_museum);
-        immaginiOpereVicine.add(R.drawable.ic_puzzle);
-         */
 
         adapter = new NearbyOperasAdapter(getContext());
         recycleView.setAdapter(adapter);
@@ -179,5 +167,20 @@ public class StanzaFragment extends Fragment {
             }
         });
 
+    }
+
+    /**
+     * Resituisce lo stato del service.
+     * @return bounded
+     */
+    public boolean isBounded() {
+        return bounded;
+    }
+
+    /**
+     * Chiama unBindService()
+     */
+    public void unBindService() {
+        percorsoActivity.unbindService(serviceConnection);
     }
 }

@@ -1,12 +1,12 @@
 package it.uniba.sms2122.tourexperience.model;
 
-import android.content.Context;
 import android.content.res.Resources;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import it.uniba.sms2122.tourexperience.R;
+import static it.uniba.sms2122.tourexperience.utility.Validate.*;
 
 public class Museo {
     private String nome;
@@ -96,5 +96,30 @@ public class Museo {
             resources.getString(R.string.no_result_1),
             resources.getString(R.string.no_result_2)
         );
+    }
+
+    /**
+     * Controlla un oggetto Museo arbitrario secondo tale contratto:
+     * 0. museo non null.
+     * 1. nome non Blank.
+     * 2. città non Blank.
+     * 3. descrizione non Blank.
+     * 4. tipologia non Blank.
+     * 5. file uri deve essere null.
+     *
+     * Per la definizione di "non Blank" guardare la documentazione del metodo
+     * notBlank della classe it.uniba.sms2122.tourexperience.utility.Validate
+     * @param m museo da controllare.
+     */
+    public static void checkMuseo(final Museo m) throws NullPointerException, IllegalArgumentException {
+        final String erroreBlank = "Museo: Blank %s";
+        final String erroreNull = "Museo: Null %s";
+        final String erroreNotNull = "Museo: Not Null %s";
+        notNull(m, erroreNull, "museo");
+        notBlank(m.getNome(), erroreBlank, "nome");
+        notBlank(m.getCitta(), erroreBlank, "città");
+        notBlank(m.getDescrizione(), erroreBlank, "descrizione");
+        notBlank(m.getTipologia(), erroreBlank, "tipologia");
+        isTrue(m.getFileUri() == null || m.getFileUri().isEmpty(), erroreNotNull, "file uri");
     }
 }

@@ -1,5 +1,6 @@
 package it.uniba.sms2122.tourexperience.graph;
 
+import static it.uniba.sms2122.tourexperience.utility.Validate.notBlank;
 import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
 
 import java.util.ArrayList;
@@ -129,13 +130,36 @@ public class Percorso {
     }
 
 
-    public void testCorrettezzaPercorso() throws NullPointerException {
-        Set<String> keySet = mappaStanze.keySet();
+    /**
+     * Controlla un oggetto Percorso arbitrario secondo tale contratto:
+     * 0. percorso non null.
+     * 1. nome museo non Blank.
+     * 2. nome percorso non Blank.
+     * 3. id stanza corrente non Blank.
+     * 4. id stanza finale non Blank.
+     * 5. descrizione non Blank.
+     * 6. per ogni stanza nel grafo:
+     *    6.0. stanza non null.
+     *    6.1. per ogni arco del vertice del grafo:
+     *         6.1.0. stanza collegata all'arco non null.
+     *
+     * Per la definizione di "non Blank" guardare la documentazione del metodo
+     * notBlank della classe it.uniba.sms2122.tourexperience.utility.Validate
+     * @param test percorso da controllare.
+     */
+    public static void checkAll(final Percorso test) throws NullPointerException, IllegalArgumentException {
+        notNull(test);
+        notBlank(test.getNomeMuseo(), "Nome museo vuoto");
+        notBlank(test.getNomePercorso(), "Nome percorso vuoto");
+        notBlank(test.getIdStanzaCorrente(), "Id stanza corrente vuoto");
+        notBlank(test.getIdStanzaFinale(), "Id stanza finale vuoto");
+        notBlank(test.getDescrizionePercorso(), "Descrizione vuota");
+        final Set<String> keySet = test.mappaStanze.keySet();
         for (String key : keySet) {
-            Vertex v = notNull(mappaStanze.get(key), "Non è presente una stanza nella mappa del grafo");
-            Set<String> edges = v.getEdges();
+            final Vertex v = notNull(test.mappaStanze.get(key), "Non è presente una stanza nella mappa del grafo");
+            final Set<String> edges = v.getEdges();
             for (String edge : edges) {
-                notNull(mappaStanze.get(edge), "Archi sbagliati");
+                notNull(test.mappaStanze.get(edge), "Archi sbagliati");
             }
         }
     }

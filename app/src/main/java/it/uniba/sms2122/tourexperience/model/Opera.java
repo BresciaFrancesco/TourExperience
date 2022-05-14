@@ -1,6 +1,10 @@
 package it.uniba.sms2122.tourexperience.model;
 
 
+import static it.uniba.sms2122.tourexperience.utility.Validate.isTrue;
+import static it.uniba.sms2122.tourexperience.utility.Validate.notBlank;
+import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -51,5 +55,30 @@ public class Opera implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+
+    /**
+     * Controlla un oggetto Opera arbitrario secondo tale contratto:
+     * 0. opera non null
+     * 1. id non Blank.
+     * 2. nome non Blank.
+     * 3. descrizione non Blank.
+     * 4. tipologia non Blank.
+     * 5. percorso immagine deve essere null.
+     *
+     * Per la definizione di "non Blank" guardare la documentazione del metodo
+     * notBlank della classe it.uniba.sms2122.tourexperience.utility.Validate
+     * @param o opera da controllare.
+     */
+    public static void checkOpera(final Opera o) throws NullPointerException, IllegalArgumentException {
+        final String erroreBlank = "Opera: Blank %s";
+        final String erroreNull = "Opera: Null %s";
+        final String erroreNotNull = "Opera: Not Null %s";
+        notNull(o, erroreNull, "opera");
+        notBlank(o.getId(), erroreBlank, "id");
+        notBlank(o.getNome(), erroreBlank, "nome");
+        notBlank(o.getDescrizione(), erroreBlank, "descrizione");
+        isTrue(o.getPercorsoImg() == null || o.getPercorsoImg().isEmpty(), erroreNotNull, "percorso img");
     }
 }

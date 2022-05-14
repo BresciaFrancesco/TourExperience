@@ -40,25 +40,17 @@ public class CheckJsonPercorso {
      * @return True se il file json è accettabile, False altrimenti.
      */
     public boolean check() {
-        Gson gson = new Gson();
+        final Gson gson = new Gson();
         try ( Reader reader = new InputStreamReader(dto.openFile()) ) {
-            Percorso test = gson.fromJson(reader, Percorso.class);
-
-            notBlank(test.getNomeMuseo(), "Nome museo vuoto");
-            notBlank(test.getNomePercorso(), "Nome percorso vuoto");
-            Set<String> percorsi = cachePercorsiInLocale.get(test.getNomeMuseo());
+            final Percorso test = gson.fromJson(reader, Percorso.class);
+            Percorso.checkAll(test);
+            final Set<String> percorsi = cachePercorsiInLocale.get(test.getNomeMuseo());
             notNull(percorsi, "La cache dei percorsi in locale è nulla");
             isTrue(!percorsi.contains(test.getNomePercorso()), "Percorso già esistente");
-            notBlank(test.getIdStanzaCorrente(), "Id stanza corrente vuoto");
-            notBlank(test.getIdStanzaFinale(), "Id stanza finale vuoto");
-            notBlank(test.getDescrizionePercorso(), "Descrizione vuota");
-            test.testCorrettezzaPercorso();
-
             return save(test, gson);
         }
-        catch (NullPointerException | IllegalArgumentException  | IOException
-                | JsonSyntaxException | JsonIOException e) {
-            Log.e("LOCAL_IMPORT_JSON", "Json Percorso non valido");
+        catch (Exception e) {
+            Log.e("LOCAL_IMPORT_JSON", "Json Percorso non valido\n" + e.getMessage());
             e.printStackTrace();
             return false;
         }

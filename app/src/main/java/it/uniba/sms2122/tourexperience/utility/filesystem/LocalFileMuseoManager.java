@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,6 +26,7 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.musei.checkzip.CheckJsonPercorso;
+import it.uniba.sms2122.tourexperience.musei.checkzip.CheckZipMuseum;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.Zip;
 
@@ -164,16 +166,23 @@ public class LocalFileMuseoManager extends LocalFileManager {
                         : context.getString(R.string.json_import_error, fileName);
             }
             else if (mimeType.equals(ZIP.mimeType())) {
-                Zip zip = new Zip(this);
-                resultMessage = (zip.startUnzip(fileName, dto, frag))
-                        ? context.getString(R.string.zip_import_success, fileName)
-                        : context.getString(R.string.zip_import_error, fileName);
+                final String nomeMuseo = fileName.substring(0, fileName.length()-4);
+                final Zip zip = new Zip(this);
+                if (!zip.startUnzip(fileName, dto, frag))
+                    return context.getString(R.string.zip_import_error, fileName);
+                final List<Object> bool0_hashSet1 = CheckZipMuseum.checkAllJson(generalPath, nomeMuseo);
+                if (!((Boolean)bool0_hashSet1.get(0))) {
+                    deleteMuseo(nomeMuseo);
+                    return context.getString(R.string.zip_import_error, fileName);
+                }
+                Zip.updateUI(nomeMuseo, (Set<String>) bool0_hashSet1.get(1), frag, this);
+                resultMessage = context.getString(R.string.zip_import_success, fileName);
             } else {
                 Log.e("LOCAL_IMPORT", "ALTRO NON PREVISTO");
             }
             return resultMessage;
         }
-        catch (NullPointerException e) {
+        catch (NullPointerException | IOException e) {
             e.printStackTrace();
             return "Error";
         }

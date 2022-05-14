@@ -17,6 +17,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import it.uniba.sms2122.tourexperience.model.Museo;
+import it.uniba.sms2122.tourexperience.musei.MuseiAdapter;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.musei.checkzip.CheckZipMuseum;
 import it.uniba.sms2122.tourexperience.musei.checkzip.exception.ZipCheckerException;
@@ -58,11 +59,8 @@ public class Zip {
      * @return true se l'unzip è andato a buon fine, false altrimenti.
      */
     public boolean startUnzip(final String zipName, final OpenFile of, final SceltaMuseiFragment frag) {
-        String nomeMuseo;
-        Set<String> nomiPercorsi;
         try {
-            nomiPercorsi = checker.start(of, zipName);
-            nomeMuseo = zipName.substring(0, zipName.length()-4);
+            checker.start(of, zipName);
         }
         catch (ZipCheckerException | ZipCheckerRunTimeException e) {
             Log.e("CHECK_ZIP", "ECCEZIONE in CHECK ZIP...");
@@ -75,9 +73,6 @@ public class Zip {
         try {
             unzip(of);
             Log.v("CHECK_ZIP", "fine UNZIP...");
-
-            // RIEMPIO LA CACHE
-            updateUI(nomeMuseo, nomiPercorsi, frag);
         }
         catch (IOException | IllegalArgumentException | JsonSyntaxException | JsonIOException | Error e) {
             Log.e("CHECK_ZIP", "ECCEZIONE in UNZIP...");
@@ -139,9 +134,10 @@ public class Zip {
      * @throws JsonSyntaxException
      * @throws JsonIOException
      */
-    private void updateUI(final String nomeMuseo,
-                          final Set<String> nomiPercorsi,
-                          final SceltaMuseiFragment frag)
+    public static void updateUI(final String nomeMuseo,
+                            final Set<String> nomiPercorsi,
+                            final SceltaMuseiFragment frag,
+                            final LocalFileMuseoManager localFileManager)
             throws IOException, JsonSyntaxException, JsonIOException
     {
         Museo museo = localFileManager.getMuseoByName(nomeMuseo);
@@ -152,6 +148,8 @@ public class Zip {
                 listaPrincipale.clear();
             }
             listaPrincipale.add(museo);
+
+            frag.attachNewAdapter(new MuseiAdapter(frag, listaPrincipale, true));
 
             updateFirebase(nomeMuseo, museo);
         }
@@ -170,7 +168,7 @@ public class Zip {
      * @param nuovoNomeMuseo
      * @param nuovoMuseo
      */
-    private void updateFirebase(final String nuovoNomeMuseo, final Museo nuovoMuseo) {
+    private static void updateFirebase(final String nuovoNomeMuseo, final Museo nuovoMuseo) {
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Museums");
         ref.addValueEventListener(new ValueEventListener() {
             @Override

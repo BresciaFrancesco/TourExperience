@@ -89,14 +89,14 @@ public class Percorso {
     public Stanza moveTo(String idProssimaStanza) throws GraphException, GraphRunTimeException {
         Vertex currVertex = mappaStanze.get(idStanzaCorrente);
         try {
-            if (!currVertex.containsEdge(idProssimaStanza)) {
+            if ((!currVertex.containsEdge(idProssimaStanza) ) && (!idProssimaStanza.equals(idStanzaIniziale))) {
                 throw new GraphException("La stanza con ID: " + idProssimaStanza
                         + " non è collegata alla stanza corrente o è inesistente.");
             }
             Stanza stanza = mappaStanze.get(idProssimaStanza).getStanza();
             idStanzaCorrente = idProssimaStanza;
-            if(idStanzaIniziale == null)
-                idStanzaIniziale = idStanzaCorrente;
+            /*if(idStanzaIniziale == null)
+                idStanzaIniziale = idStanzaCorrente;*/
             return stanza;
         }
         catch (NullPointerException err) {

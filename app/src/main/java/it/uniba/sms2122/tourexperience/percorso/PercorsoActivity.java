@@ -241,6 +241,7 @@ public class PercorsoActivity extends AppCompatActivity {
 
                                         if (idClickedRoom.equals(path.getIdStanzaIniziale())) {
                                             //path.setIdStanzaCorrente(idClickedRoom);
+                                            path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
                                             nextStanzaFragment();
                                         } else {
                                             path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando

@@ -1,7 +1,5 @@
 package it.uniba.sms2122.tourexperience.utility.filesystem;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -17,31 +15,40 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.model.Opera;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 
+import static it.uniba.sms2122.tourexperience.utility.Validate.*;
+
+
 public class LocalFilePercorsoManager extends LocalFileManager {
 
     private final Gson gson = new Gson();
+
 
     public LocalFilePercorsoManager(String generalPath) {
         super(generalPath);
     }
 
-
-    public Optional<Percorso> getPercorso(final String nomeMuseo, final String nomePercorso) {
-        File filePercorso = new File(String.format("%s%s/Percorsi/%s.json", generalPath, nomeMuseo, nomePercorso));
-        Optional<Percorso> optPercorso = Optional.empty();
+    /**
+     * Carica un percorso dal filesystem.
+     * @param nomeMuseo nome del museo.
+     * @param nomePercorso nodem del percorso da caricare.
+     * @return oggetto Percorso caricato da locale.
+     */
+    public Percorso getPercorso(final String nomeMuseo, final String nomePercorso) throws IllegalArgumentException {
+        File filePercorso = Paths.get(generalPath, nomeMuseo, "Percorsi", nomePercorso+".json").toFile();
+        Percorso percorso;
         try ( Reader reader = new FileReader(filePercorso) ) {
-            optPercorso = Optional.ofNullable(new Gson().fromJson(reader, Percorso.class));
-            optPercorso.get().setIdStanzaIniziale(optPercorso.get().getIdStanzaCorrente());
-        } catch (IOException | JsonSyntaxException | JsonIOException e) {
+            percorso = notNull(gson.fromJson(reader, Percorso.class));
+            percorso.setIdStanzaIniziale(percorso.getIdStanzaCorrente());
+        } catch (IOException | JsonSyntaxException | JsonIOException | NullPointerException e) {
             e.printStackTrace();
+            throw new IllegalArgumentException("Il percorso recuperato da locale ha problemi.", e);
         }
-        return optPercorso;
+        return percorso;
     }
 
     /**
@@ -113,16 +120,14 @@ public class LocalFilePercorsoManager extends LocalFileManager {
 
     private Stanza loadStanza(final String nomeMuseo, final String nomeStanza) {
         Stanza stanza = new Stanza();
-        Gson gson = new Gson();
-
         try (
                 DirectoryStream<Path> stream =
-                        Files.newDirectoryStream(Paths.get(generalPath + nomeMuseo + "/Stanze"));
+                        Files.newDirectoryStream(Paths.get(generalPath, nomeMuseo, "Stanze"));
         ) {
             for (Path path : stream) {
-                try ( Reader reader = new FileReader(path + "/Info_stanza.json") )
+                try ( Reader reader = new FileReader(Paths.get(path.toString(), "Info_stanza.json").toString()) )
                 {
-                    if(path.equals(Paths.get(generalPath + nomeMuseo + "/Stanze/" + nomeStanza))) {
+                    if(path.equals(Paths.get(generalPath, nomeMuseo, "Stanze", nomeStanza))) {
                         stanza = gson.fromJson(reader , Stanza.class);
                         //Log.v("STANZA",stanza.toString());
                     }

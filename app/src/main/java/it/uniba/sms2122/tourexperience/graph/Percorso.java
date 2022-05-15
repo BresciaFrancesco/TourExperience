@@ -1,6 +1,7 @@
 package it.uniba.sms2122.tourexperience.graph;
 
-import com.google.gson.annotations.Expose;
+import static it.uniba.sms2122.tourexperience.utility.Validate.notBlank;
+import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,10 +73,6 @@ public class Percorso {
 
     public String getNomePercorso() { return nomePercorso; }
 
-    public Map<String, Vertex> getMappa() {
-        return mappaStanze;
-    }
-
     // ------------------------------ Metodi ------------------------------ //
 
     /**
@@ -93,14 +90,14 @@ public class Percorso {
     public Stanza moveTo(String idProssimaStanza) throws GraphException, GraphRunTimeException {
         Vertex currVertex = mappaStanze.get(idStanzaCorrente);
         try {
-            if (!currVertex.containsEdge(idProssimaStanza)) {
+            if ((!currVertex.containsEdge(idProssimaStanza) ) && (!idProssimaStanza.equals(idStanzaIniziale))) {
                 throw new GraphException("La stanza con ID: " + idProssimaStanza
                         + " non è collegata alla stanza corrente o è inesistente.");
             }
             Stanza stanza = mappaStanze.get(idProssimaStanza).getStanza();
             idStanzaCorrente = idProssimaStanza;
-            if(idStanzaIniziale == null)
-                idStanzaIniziale = idStanzaCorrente;
+            /*if(idStanzaIniziale == null)
+                idStanzaIniziale = idStanzaCorrente;*/
             return stanza;
         }
         catch (NullPointerException err) {
@@ -130,6 +127,41 @@ public class Percorso {
 
     public Stanza getStanzaCorrente() {
         return mappaStanze.get(idStanzaCorrente).getStanza();
+    }
+
+
+    /**
+     * Controlla un oggetto Percorso arbitrario secondo tale contratto:
+     * 0. percorso non null.
+     * 1. nome museo non Blank.
+     * 2. nome percorso non Blank.
+     * 3. id stanza corrente non Blank.
+     * 4. id stanza finale non Blank.
+     * 5. descrizione non Blank.
+     * 6. per ogni stanza nel grafo:
+     *    6.0. stanza non null.
+     *    6.1. per ogni arco del vertice del grafo:
+     *         6.1.0. stanza collegata all'arco non null.
+     *
+     * Per la definizione di "non Blank" guardare la documentazione del metodo
+     * notBlank della classe it.uniba.sms2122.tourexperience.utility.Validate
+     * @param test percorso da controllare.
+     */
+    public static void checkAll(final Percorso test) throws NullPointerException, IllegalArgumentException {
+        notNull(test);
+        notBlank(test.getNomeMuseo(), "Nome museo vuoto");
+        notBlank(test.getNomePercorso(), "Nome percorso vuoto");
+        notBlank(test.getIdStanzaCorrente(), "Id stanza corrente vuoto");
+        notBlank(test.getIdStanzaFinale(), "Id stanza finale vuoto");
+        notBlank(test.getDescrizionePercorso(), "Descrizione vuota");
+        final Set<String> keySet = test.mappaStanze.keySet();
+        for (String key : keySet) {
+            final Vertex v = notNull(test.mappaStanze.get(key), "Non è presente una stanza nella mappa del grafo");
+            final Set<String> edges = v.getEdges();
+            for (String edge : edges) {
+                notNull(test.mappaStanze.get(edge), "Archi sbagliati");
+            }
+        }
     }
 
 }

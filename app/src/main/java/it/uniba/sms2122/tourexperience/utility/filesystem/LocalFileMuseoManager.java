@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,6 +26,7 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.musei.checkzip.CheckJsonPercorso;
+import it.uniba.sms2122.tourexperience.musei.checkzip.CheckZipMuseum;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.Zip;
 
@@ -97,10 +99,10 @@ public class LocalFileMuseoManager extends LocalFileManager {
         ) {
             for (Path path : stream) {
                 if (!Files.isDirectory(path)) continue;
-                try ( Reader reader = new FileReader(path + "/Info.json") )
+                try ( Reader reader = new FileReader(Paths.get(path.toString(), "Info.json").toString()) )
                 {
                     Museo museo = gson.fromJson(reader , Museo.class);
-                    museo.setFileUri(generalPath + museo.getNome() + "/" + museo.getNome() + IMG_EXTENSION);
+                    museo.setFileUri(Paths.get(generalPath, museo.getNome(), museo.getNome()+IMG_EXTENSION).toString());
                     listaMusei.add(museo);
                 }
                 catch (IOException | JsonSyntaxException | JsonIOException e) {
@@ -122,7 +124,7 @@ public class LocalFileMuseoManager extends LocalFileManager {
         ) {
             for (Path path : stream) {
                 if (!Files.isDirectory(path)) continue;
-                String pathMuseo = path + "/Percorsi";
+                String pathMuseo = Paths.get(path.toString(), "Percorsi").toString();
                 try {
                     File[] files = new File(pathMuseo).listFiles();
                     if (files == null) continue;
@@ -153,32 +155,37 @@ public class LocalFileMuseoManager extends LocalFileManager {
      */
     public String saveImport(final String fileName, final String mimeType,
                              final OpenFile dto, final SceltaMuseiFragment frag) {
-        boolean result;
-        Context context = frag.getContext();
-        String resultMessage = context.getString(R.string.mime_type_error);
+        try {
+            Context context = frag.getContext();
+            String resultMessage = context.getString(R.string.mime_type_error);
 
-        if (mimeType.equals(JSON.mimeType())) {
-            CheckJsonPercorso cjp = new CheckJsonPercorso(dto, this);
-            result = cjp.check();
-            if (result) {
-                resultMessage = context.getString(R.string.json_import_success, fileName);
-            } else {
-                resultMessage = context.getString(R.string.json_import_error, fileName);
+            if (mimeType.equals(JSON.mimeType())) {
+                CheckJsonPercorso cjp = new CheckJsonPercorso(dto, this);
+                resultMessage = (cjp.check())
+                        ? context.getString(R.string.json_import_success, fileName)
+                        : context.getString(R.string.json_import_error, fileName);
             }
-        }
-        else if (mimeType.equals(ZIP.mimeType())) {
-            Zip zip = new Zip(this);
-            result = zip.startUnzip(fileName, dto, frag);
-            if (result) {
+            else if (mimeType.equals(ZIP.mimeType())) {
+                final String nomeMuseo = fileName.substring(0, fileName.length()-4);
+                final Zip zip = new Zip(this);
+                if (!zip.startUnzip(fileName, dto, frag))
+                    return context.getString(R.string.zip_import_error, fileName);
+                final List<Object> bool0_hashSet1 = CheckZipMuseum.checkAllJson(generalPath, nomeMuseo);
+                if (!((Boolean)bool0_hashSet1.get(0))) {
+                    deleteMuseo(nomeMuseo);
+                    return context.getString(R.string.zip_import_error, fileName);
+                }
+                Zip.updateUI(nomeMuseo, (Set<String>) bool0_hashSet1.get(1), frag, this);
                 resultMessage = context.getString(R.string.zip_import_success, fileName);
             } else {
-                resultMessage = context.getString(R.string.zip_import_error, fileName);
+                Log.e("LOCAL_IMPORT", "ALTRO NON PREVISTO");
             }
+            return resultMessage;
         }
-        else {
-            Log.e("LOCAL_IMPORT", "ALTRO NON PREVISTO");
+        catch (NullPointerException | IOException e) {
+            e.printStackTrace();
+            return "Error";
         }
-        return resultMessage;
     }
 
     /**

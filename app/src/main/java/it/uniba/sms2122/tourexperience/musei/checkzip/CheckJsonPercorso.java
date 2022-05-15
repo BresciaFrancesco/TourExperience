@@ -15,13 +15,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.Set;
 
 import it.uniba.sms2122.tourexperience.graph.Percorso;
-import it.uniba.sms2122.tourexperience.graph.Vertex;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
+import static it.uniba.sms2122.tourexperience.utility.Validate.*;
 
 /**
  * Esegue controlli sui file .json dei percorsi da importare.
@@ -32,8 +31,8 @@ public class CheckJsonPercorso {
     private final LocalFileManager localFileManager;
 
     public CheckJsonPercorso(final OpenFile dto, final LocalFileManager localFileManager) {
-        this.dto = dto;
-        this.localFileManager = localFileManager;
+        this.dto = notNull(dto);
+        this.localFileManager = notNull(localFileManager);
     }
 
     /**
@@ -41,44 +40,17 @@ public class CheckJsonPercorso {
      * @return True se il file json è accettabile, False altrimenti.
      */
     public boolean check() {
-        Gson gson = new Gson();
-        Percorso test;
+        final Gson gson = new Gson();
         try ( Reader reader = new InputStreamReader(dto.openFile()) ) {
-            test = gson.fromJson(reader, Percorso.class);
-
-            checkString(test.getNomeMuseo(), "Nome museo vuoto");
-            checkString(test.getNomePercorso(), "Nome percorso vuoto");
-
-            Set<String> percorsi = cachePercorsiInLocale.get(test.getNomeMuseo());
-            if (percorsi == null) {
-                Log.e("LOCAL_IMPORT_JSON",
-                        "Il Percorso è associato ad un museo non presente in locale");
-                return false;
-            }
-            if (percorsi.contains(test.getNomePercorso())) {
-                Log.e("LOCAL_IMPORT_JSON", "Percorso già esistente");
-                return false;
-            }
-
-            checkString(test.getIdStanzaCorrente(), "Id stanza corrente vuoto");
-            checkString(test.getIdStanzaFinale(), "Id stanza finale vuoto");
-            checkString(test.getDescrizionePercorso(), "Descrizione vuota");
-
-            Map<String, Vertex> mappa = test.getMappa();
-            Set<String> keySet = mappa.keySet();
-            for (String key : keySet) {
-                Set<String> edges = mappa.get(key).getEdges();
-                for (String edge : edges) {
-                    if (mappa.get(edge) == null) {
-                        throw new NullPointerException("Archi sbagliati");
-                    }
-                }
-            }
-
+            final Percorso test = gson.fromJson(reader, Percorso.class);
+            Percorso.checkAll(test);
+            final Set<String> percorsi = cachePercorsiInLocale.get(test.getNomeMuseo());
+            notNull(percorsi, "La cache dei percorsi in locale è nulla");
+            isTrue(!percorsi.contains(test.getNomePercorso()), "Percorso già esistente");
             return save(test, gson);
         }
-        catch (NullPointerException | IOException | JsonSyntaxException | JsonIOException e) {
-            Log.e("LOCAL_IMPORT_JSON", "Json Percorso non valido");
+        catch (Exception e) {
+            Log.e("LOCAL_IMPORT_JSON", "Json Percorso non valido\n" + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -96,39 +68,29 @@ public class CheckJsonPercorso {
      * @throws JsonIOException
      */
     private boolean save(final Percorso p, final Gson gson)
-            throws NullPointerException, IOException, JsonSyntaxException, JsonIOException {
+            throws NullPointerException, IllegalArgumentException,
+            IOException, JsonSyntaxException, JsonIOException
+    {
+        notNull(p, "Percorso vuoto");
+        notNull(gson, "Gson vuoto");
+
         File filePercorsoJson = Paths.get(localFileManager.getGeneralPath(),
                 p.getNomeMuseo(), "Percorsi", p.getNomePercorso()).toFile();
 
-        cachePercorsiInLocale.get(p.getNomeMuseo()).add(p.getNomePercorso());
+        notNull(cachePercorsiInLocale.get(p.getNomeMuseo()),
+                "La cache dei percorsi in locale non ha il museo %s",
+                p.getNomeMuseo())
+        .add(p.getNomePercorso());
 
-        if (filePercorsoJson.exists()) {
-            Log.e("LOCAL_IMPORT_JSON", "File percorso o già esistente in locale");
-            return false;
-        }
-        if (!filePercorsoJson.createNewFile()) {
-            Log.e("LOCAL_IMPORT_JSON", "File percorso non creabile");
-            return false;
-        }
+        isTrue(!filePercorsoJson.exists(), "File percorso o già esistente in locale");
+        isTrue(filePercorsoJson.createNewFile());
+
         Writer targetFileWriter = new FileWriter(filePercorsoJson);
         targetFileWriter.write(gson.toJson(p));
         targetFileWriter.close();
 
         Log.v("LOCAL_IMPORT_JSON", "Json Percorso" + p.getNomePercorso() + " salvato correttamente");
         return true;
-    }
-
-    /**
-     * Controlla in modo generico se una stringa è vuota. Se lo è, stampa un log
-     * di errore e ritorna una NullPointerException.
-     * @param s stringa da controllare.
-     * @param errorMessage messaggio di errore da stampare nel log in caso di stringa vuota.
-     * @throws NullPointerException se la stringa "s" è vuota.
-     */
-    private void checkString(final String s, final String errorMessage) throws NullPointerException {
-        if (!s.isEmpty()) return;
-        Log.e("LOCAL_IMPORT_JSON", errorMessage);
-        throw new NullPointerException("Stringa vuota trovata");
     }
 
 }

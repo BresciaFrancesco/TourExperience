@@ -254,17 +254,12 @@ public class StanzaFragment extends Fragment {
     }
 
     /**
-     * Resituisce lo stato del service.
-     * @return bounded
-     */
-    public boolean isBounded() {
-        return bounded;
-    }
-
-    /**
      * Chiama unBindService()
      */
     public void unBindService() {
-        percorsoActivity.unbindService(serviceConnection);
+        if(bounded) {
+            percorsoActivity.unbindService(serviceConnection);
+        }
     }
+
 }

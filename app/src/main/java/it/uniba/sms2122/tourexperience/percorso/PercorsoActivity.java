@@ -306,7 +306,7 @@ public class PercorsoActivity extends AppCompatActivity {
 
         // Stop del service
        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container_fragments_route);
-        if(fragment instanceof StanzaFragment && ((StanzaFragment) fragment).isBounded()) {
+        if(fragment instanceof StanzaFragment) {
             ((StanzaFragment) fragment).unBindService();
         }
 

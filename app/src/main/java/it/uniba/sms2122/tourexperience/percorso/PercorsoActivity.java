@@ -185,56 +185,7 @@ public class PercorsoActivity extends AppCompatActivity {
                 Log.v("switch", "default");
         }
     }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        /*FragmentManager fgManager = getSupportFragmentManager();
-        FragmentManager.BackStackEntry backStackEntry = fgManager.getBackStackEntryAt(fgManager.getBackStackEntryCount()-1);
-        Fragment lastFragmentInStack = fgManager.findFragmentByTag(backStackEntry.getName());
-        Bundle bundleOfLastFragmentInstack = lastFragmentInStack.getArguments();
-        fgManager.saveFragmentInstanceState(lastFragmentInStack);
-        outState.putBundle("lastFragmentInstackSavedInstance", bundleOfLastFragmentInstack);*/
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-        outState.putSerializable("path", gson.toJson(this.path));
-
-       /* outState.putSerializable("localFilePercorsoManager", gson.toJson(this.localFilePercorsoManager));
-        outState.putSerializable("localFileMuseoManager", gson.toJson(this.localFileMuseoManager));*/
-
-        /*private LocalFilePercorsoManager localFilePercorsoManager;
-        private LocalFileMuseoManager localFileMuseoManager;*/
-
-        outState.putString("nomeMuseo", this.nomeMuseo);
-        outState.putString("nomePercorso", this.nomePercorso);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        Gson gson = new GsonBuilder().create();
-
-        this.path =  gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
-
-        /*this.localFilePercorsoManager = gson.fromJson(savedInstanceState.getSerializable("localFilePercorsoManager").toString(),LocalFilePercorsoManager.class);
-        this.localFileMuseoManager = gson.fromJson(savedInstanceState.getSerializable("localFileMuseoManager").toString(),LocalFileMuseoManager.class);*/
-
-        this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
-        this.nomePercorso = savedInstanceState.getString("nomePercorso");
-
-        /*FragmentManager fgManager = getSupportFragmentManager();
-        FragmentManager.BackStackEntry backStackEntry = fgManager.getBackStackEntryAt(fgManager.getBackStackEntryCount()-1);
-        /*Fragment lastFragmentInStack = fgManager.findFragmentByTag(backStackEntry.getName());
-        Bundle bundleToRestoreOfLastFragmentInstack = savedInstanceState.getBundle("lastFragmentInstackSavedInstance").;
-        lastFragmentInStack.setInitialSavedState(bundleToRestoreOfLastFragmentInstack);*/
-
-
-    }
-
-
+    
     /**
      * Classe che viene instanziata per rendere dinamiche le operazioni che il programma deve fare l'utente ha concesso il permesso della camera
      */

@@ -339,10 +339,7 @@ public class PercorsoActivity extends AppCompatActivity {
         super.onBackPressed();
 
         // Stop del service
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        int index = fragmentManager.getBackStackEntryCount() - 1;
-        FragmentManager.BackStackEntry backStackEntry = fragmentManager.getBackStackEntryAt(index);
-        Fragment fragment = fragmentManager.findFragmentByTag(backStackEntry.getName());
+       Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container_fragments_route);
         if(fragment instanceof StanzaFragment && ((StanzaFragment) fragment).isBounded()) {
             ((StanzaFragment) fragment).unBindService();
         }

@@ -1,19 +1,30 @@
 package it.uniba.sms2122.tourexperience.percorso.pagina_stanza;
 
+import android.Manifest;
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.IBinder;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +32,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Map;
 
 import it.uniba.sms2122.tourexperience.R;
@@ -36,6 +46,7 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManag
 public class StanzaFragment extends Fragment {
     TextView textView;
     RecyclerView recycleView;
+    private Permesso permission;
     private NearbyOperasAdapter adapter;
     private PercorsoActivity percorsoActivity;
     private LocalFilePercorsoManager localFilePercorsoManager;
@@ -45,6 +56,32 @@ public class StanzaFragment extends Fragment {
     private BleService service;
     private boolean bounded = false;
     private boolean canScanWithBluetooh = false;
+
+    // Gestione del risultato dell'attivazione del bluetooth
+    private final ActivityResultLauncher<Intent> btActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if(result.getResultCode() == Activity.RESULT_OK) {
+                    Log.d("Bluetooth", "Acceso");
+                    checkSensorsStateAndStartService();
+                } else {
+                    Log.d("Bluetooth", "Non acceso");
+                }
+            }
+    );
+
+    // Gestione del risultato dell'attivazione del gps
+    private final ActivityResultLauncher<Intent> locationActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if(result.getResultCode() != Activity.RESULT_OK) {
+                    Log.d("GPS", "Acceso");
+                    checkSensorsStateAndStartService();
+                } else {
+                    Log.d("GPS", "Non acceso");
+                }
+            }
+    );
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -80,6 +117,7 @@ public class StanzaFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         percorsoActivity = (PercorsoActivity) getActivity();
+        permission = new Permesso(percorsoActivity);
         path = percorsoActivity.getPath();
         localFilePercorsoManager = new LocalFilePercorsoManager(requireContext().getFilesDir().toString());
 
@@ -117,28 +155,23 @@ public class StanzaFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Intent intent = new Intent(requireContext(), BleService.class);
-        intent.putExtra("opere", (Serializable) opereInStanza);
-        percorsoActivity.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
-        // Thread per prendere le opere
-        new Thread(() -> {
-            do {
-                try {
-                    Thread.sleep(BleService.SECONDS_FOR_DETECTION * 1000);
-                }
-                catch(InterruptedException e) {
-                    e.printStackTrace();
-                }
+        // Check dei permessi
+        String[] permessi;
+        if(percorsoActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                permessi = new String[] {Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.ACCESS_FINE_LOCATION};
+            } else {
+                permessi = new String[] {Manifest.permission.ACCESS_FINE_LOCATION};
+            }
 
-                if(service != null) {
-                    percorsoActivity.runOnUiThread(() -> {
-                        adapter.addOperas(service.getNearbyOperas());
-                        adapter.notifyDataSetChanged();
-                    });
-                }
-            } while(bounded);
-        }).start();
+            /*
+             * Se i permessi sono stati accettati, vengono abilitati i sensori
+             */
+            if(permission.hasPermissions(permessi)) {
+                checkSensorsStateAndStartService();
+            }
+        }
     }
 
     @Override
@@ -167,6 +200,57 @@ public class StanzaFragment extends Fragment {
             }
         });
 
+    }
+
+    private void checkSensorsStateAndStartService() {
+        BluetoothAdapter bluetoothAdapter = ((BluetoothManager) percorsoActivity.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+        LocationManager locationManager = ((LocationManager) percorsoActivity.getSystemService(Context.LOCATION_SERVICE));
+
+        /*
+         * In questo caso uso un costrutto if-else if per fare in modo che le chiamate alle activity di attivazione
+         * dei sensori siano fatte in ordine.
+         * Solo se le condizioni sono soddisfatte entrambe contemporeaneamente viene startato il service
+         */
+        if(!bluetoothAdapter.isEnabled()) {
+            Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            btActivityResultLauncher.launch(enableBluetooth);
+        }
+        else if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !locationManager.isLocationEnabled()) || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Intent enableGps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            locationActivityResultLauncher.launch(enableGps);
+        }
+        else if(bluetoothAdapter.isEnabled() &&
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && locationManager.isLocationEnabled()) || locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            bindService();
+        }
+    }
+
+    /**
+     * Chiama bindService() e fa partire il thread
+     */
+    private void bindService() {
+        Intent intent = new Intent(requireContext(), BleService.class);
+        intent.putExtra("opere", (Serializable) opereInStanza);
+        percorsoActivity.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
+        // Thread per prendere le opere
+        new Thread(() -> {
+            do {
+                try {
+                    Thread.sleep(BleService.SECONDS_FOR_DETECTION * 1000);
+                }
+                catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if(service != null) {
+                    percorsoActivity.runOnUiThread(() -> {
+                        adapter.addOperas(service.getNearbyOperas());
+                        adapter.notifyDataSetChanged();
+                    });
+                }
+            } while(bounded);
+        }).start();
     }
 
     /**

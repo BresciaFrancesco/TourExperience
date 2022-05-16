@@ -5,9 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
@@ -37,7 +35,6 @@ import it.uniba.sms2122.tourexperience.QRscanner.QRScannerFragment;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
-import it.uniba.sms2122.tourexperience.main.HomeFragment;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
@@ -45,12 +42,10 @@ import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
-import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
 import java.io.File;
-import java.util.Optional;
 
 public class PercorsoActivity extends AppCompatActivity {
 
@@ -63,30 +58,6 @@ public class PercorsoActivity extends AppCompatActivity {
     private LocalFileMuseoManager localFileMuseoManager;
     /** Attributo che memorizza il percorso scelto dall'utente */
     private Percorso path;
-
-    // Gestione del risultato dell'attivazione del bluetooth
-    private final ActivityResultLauncher<Intent> btActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if(result.getResultCode()!= Activity.RESULT_OK) {
-                    Log.d("Bluetooth", "Acceso");
-                } else {
-                    Log.d("Bluetooth", "Non acceso");
-                }
-            }
-    );
-
-    // Gestione del risultato dell'attivazione del gps
-    private final ActivityResultLauncher<Intent> gpsActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if(result.getResultCode()!=Activity.RESULT_OK) {
-                    Log.d("GPS", "Acceso");
-                } else {
-                    Log.d("GPS", "Non acceso");
-                }
-            }
-    );
 
     private DatabaseReference db;
     private Task<DataSnapshot> snapshotVoti;
@@ -302,7 +273,6 @@ public class PercorsoActivity extends AppCompatActivity {
     public void nextStanzaFragment() {
         // Controllo dei permessi
         if(getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            boolean permissionsAccepted = false;
             String[] permissions;
 
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {    // Se la versione dell'sdk è maggiore a 31
@@ -311,13 +281,9 @@ public class PercorsoActivity extends AppCompatActivity {
                 permissions = new String[] {Manifest.permission.ACCESS_FINE_LOCATION};
             }
 
-            permissionsAccepted = permission.getPermission(permissions, Permesso.BLUETOOTH_PERMISSION_CODE, getString(R.string.bluetooth_permission_title), getString(R.string.bluetooth_permission_body));
-            // Attivo il bluetooth e la geolocalizzazione solo se tutti i permessi sono stati accettati
-            if(permissionsAccepted) {
-                enableBt();
-                enableLocation();
-            }
+            permission.getPermission(permissions, Permesso.BLUETOOTH_PERMISSION_CODE, getString(R.string.bluetooth_permission_title), getString(R.string.bluetooth_permission_body));
         }
+
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         createFragment(new StanzaFragment());
     }
@@ -381,13 +347,6 @@ public class PercorsoActivity extends AppCompatActivity {
                 }
                 break;
 
-            case Permesso.BLUETOOTH_PERMISSION_CODE:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    enableBt();
-                    enableLocation();
-                }
-                break;
-
             default:
                 Log.v("switch", "default");
         }
@@ -413,27 +372,5 @@ public class PercorsoActivity extends AppCompatActivity {
         transaction.replace(R.id.container_fragments_route, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
-    }
-
-    /**
-     * Metodo per far attivare il bluetooth all'utente
-     */
-    private void enableBt() {
-        BluetoothAdapter bluetoothAdapter = ((BluetoothManager) this.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-        if(!bluetoothAdapter.isEnabled()) {
-            Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            btActivityResultLauncher.launch(enableBluetooth);
-        }
-    }
-
-    /**
-     * Metodo per far attivare la geolocalizzazione all'utente
-     */
-    private void enableLocation() {
-        LocationManager locationManager = ((LocationManager) this.getSystemService(Context.LOCATION_SERVICE));
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !locationManager.isLocationEnabled()) || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Intent enableGps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            gpsActivityResultLauncher.launch(enableGps);
-        }
     }
 }

@@ -71,7 +71,7 @@ public class Permesso {
     /*
      * Controlla tutti i permessi
      */
-    private boolean hasPermissions(String[] permissions) {
+    public boolean hasPermissions(String[] permissions) {
         if (permissions != null) {
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(main, permission) != PackageManager.PERMISSION_GRANTED)

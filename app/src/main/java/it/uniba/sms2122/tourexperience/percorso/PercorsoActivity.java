@@ -19,6 +19,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
@@ -89,10 +91,7 @@ public class PercorsoActivity extends AppCompatActivity {
          */
         if (savedInstanceState == null) {
             Fragment firstPage = new MuseoFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.setReorderingAllowed(true);  //ottimizza i cambiamenti di stato dei fragment in modo che le animazioni funzionino correttammente
-            transaction.add(R.id.container_fragments_route, firstPage);
-            transaction.commit();
+            fgManagerOfPercorso.createFragment(firstPage, "museoFragment");
         }
 
         // cacheMuseums.get(nomeMuseo); // per ottenere l'oggetto Museo, basta fare così
@@ -186,6 +185,55 @@ public class PercorsoActivity extends AppCompatActivity {
                 Log.v("switch", "default");
         }
     }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        /*FragmentManager fgManager = getSupportFragmentManager();
+        FragmentManager.BackStackEntry backStackEntry = fgManager.getBackStackEntryAt(fgManager.getBackStackEntryCount()-1);
+        Fragment lastFragmentInStack = fgManager.findFragmentByTag(backStackEntry.getName());
+        Bundle bundleOfLastFragmentInstack = lastFragmentInStack.getArguments();
+        fgManager.saveFragmentInstanceState(lastFragmentInStack);
+        outState.putBundle("lastFragmentInstackSavedInstance", bundleOfLastFragmentInstack);*/
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        outState.putSerializable("path", gson.toJson(this.path));
+
+       /* outState.putSerializable("localFilePercorsoManager", gson.toJson(this.localFilePercorsoManager));
+        outState.putSerializable("localFileMuseoManager", gson.toJson(this.localFileMuseoManager));*/
+
+        /*private LocalFilePercorsoManager localFilePercorsoManager;
+        private LocalFileMuseoManager localFileMuseoManager;*/
+
+        outState.putString("nomeMuseo", this.nomeMuseo);
+        outState.putString("nomePercorso", this.nomePercorso);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        Gson gson = new GsonBuilder().create();
+
+        this.path =  gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
+
+        /*this.localFilePercorsoManager = gson.fromJson(savedInstanceState.getSerializable("localFilePercorsoManager").toString(),LocalFilePercorsoManager.class);
+        this.localFileMuseoManager = gson.fromJson(savedInstanceState.getSerializable("localFileMuseoManager").toString(),LocalFileMuseoManager.class);*/
+
+        this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
+        this.nomePercorso = savedInstanceState.getString("nomePercorso");
+
+        /*FragmentManager fgManager = getSupportFragmentManager();
+        FragmentManager.BackStackEntry backStackEntry = fgManager.getBackStackEntryAt(fgManager.getBackStackEntryCount()-1);
+        /*Fragment lastFragmentInStack = fgManager.findFragmentByTag(backStackEntry.getName());
+        Bundle bundleToRestoreOfLastFragmentInstack = savedInstanceState.getBundle("lastFragmentInstackSavedInstance").;
+        lastFragmentInStack.setInitialSavedState(bundleToRestoreOfLastFragmentInstack);*/
+
+
+    }
+
 
     /**
      * Classe che viene instanziata per rendere dinamiche le operazioni che il programma deve fare l'utente ha concesso il permesso della camera

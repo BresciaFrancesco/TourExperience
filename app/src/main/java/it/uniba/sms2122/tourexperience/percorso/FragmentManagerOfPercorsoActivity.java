@@ -43,7 +43,7 @@ public class FragmentManagerOfPercorsoActivity {
 
             percorsoActivity.setValuePath();
 
-            createFragment(secondPage);
+            createFragment(secondPage, "overviewFragment");
         } catch (IllegalArgumentException e) {
             Log.e("PercorsoActivity.class", "nextPercorsoFragment -> IllegalArgumentException sollevata.");
             e.printStackTrace();
@@ -57,7 +57,7 @@ public class FragmentManagerOfPercorsoActivity {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         Fragment thirdPage = new SceltaStanzeFragment();
 
-        createFragment(thirdPage);
+        createFragment(thirdPage, "sceltaStanzeFragment");
     }
 
     /**
@@ -69,7 +69,7 @@ public class FragmentManagerOfPercorsoActivity {
         Fragment operaFragment = new OperaFragment();
         operaFragment.setArguments(bundle);
 
-        createFragment(operaFragment);
+        createFragment(operaFragment, "operaFragment");
     }
 
 
@@ -169,20 +169,21 @@ public class FragmentManagerOfPercorsoActivity {
         }
 
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
-        createFragment(new StanzaFragment());
+        createFragment(new StanzaFragment(), "stanzaFragment");
     }
 
     /**
      * Riuso del codice per creare ed istanziare un fragment
      *
      * @param fragment
+     * @param fragmentName
      */
-    private void createFragment(Fragment fragment) {
+    protected void createFragment(Fragment fragment, String fragmentName) {
         FragmentTransaction transaction = percorsoActivity.getSupportFragmentManager().beginTransaction();
         transaction.setReorderingAllowed(true);
         transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
         transaction.replace(R.id.container_fragments_route, fragment);
-        transaction.addToBackStack(null);
+        transaction.addToBackStack(fragmentName);
         transaction.commit();
     }
 }

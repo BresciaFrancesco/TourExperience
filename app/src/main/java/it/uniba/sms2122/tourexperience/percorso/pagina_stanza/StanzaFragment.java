@@ -196,7 +196,7 @@ public class StanzaFragment extends Fragment {
         operaScanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((PercorsoActivity)getActivity()).nextQRScannerFragmentOfSingleRomm();
+                ((PercorsoActivity)getActivity()).getFgManagerOfPercorso().nextQRScannerFragmentOfSingleRomm();
             }
         });
 

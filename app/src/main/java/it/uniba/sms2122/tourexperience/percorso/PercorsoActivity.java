@@ -1,27 +1,16 @@
 package it.uniba.sms2122.tourexperience.percorso;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -31,16 +20,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import it.uniba.sms2122.tourexperience.QRscanner.QRScannerFragment;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
-import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
-import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
-import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
-import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
@@ -49,6 +33,9 @@ import java.io.File;
 
 public class PercorsoActivity extends AppCompatActivity {
 
+
+    FragmentManagerOfPercorsoActivity fgManagerOfPercorso;
+
     Permesso permission;
     private PermissionGrantedManager actionPerfom;
 
@@ -56,53 +43,38 @@ public class PercorsoActivity extends AppCompatActivity {
     private String nomePercorso;
     private LocalFilePercorsoManager localFilePercorsoManager;
     private LocalFileMuseoManager localFileMuseoManager;
-    /** Attributo che memorizza il percorso scelto dall'utente */
-    private Percorso path;
+    /**
+     * Attributo che memorizza il percorso scelto dall'utente
+     */
+    public Percorso path;
 
     private DatabaseReference db;
     private Task<DataSnapshot> snapshotVoti;
     private Task<DataSnapshot> snapshotNumStarts;
 
-    public String getNomeMuseo() {
-        return nomeMuseo;
+    public PercorsoActivity() {
+        this.fgManagerOfPercorso = new FragmentManagerOfPercorsoActivity(this);
     }
 
-    public String getNomePercorso() {
-        return nomePercorso;
+    public FragmentManagerOfPercorsoActivity getFgManagerOfPercorso() {
+        return fgManagerOfPercorso;
     }
 
-    public DatabaseReference getDb() {
-        return db;
-    }
-
-    public Task<DataSnapshot> getSnapshotVoti() {
-        return snapshotVoti;
-    }
-
-    public Task<DataSnapshot> getSnapshotNumStarts() {
-        return snapshotNumStarts;
-    }
 
     /**
      * Funzione che imposta il valore dell'attributo path ogni volta che viene selezionato un
      * determinato percoso all'interno della lista percosi relativi ad un determinato museo
      */
-    private void setValuePath() throws IllegalArgumentException {
+    protected void setValuePath() throws IllegalArgumentException {
         path = localFilePercorsoManager.getPercorso(nomeMuseo, nomePercorso);
         localFilePercorsoManager.createStanzeAndOpereInThisAndNextStanze(path);
     }
 
-    public Percorso getPath() {
-        return path;
-    }
-
-    public LocalFileMuseoManager getLocalFileMuseoManager() {
-        return localFileMuseoManager;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_percorso);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -129,7 +101,7 @@ public class PercorsoActivity extends AppCompatActivity {
     public boolean checkConnectivity() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(PercorsoActivity.this.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
-        if (ni!=null && ni.isAvailable() && ni.isConnected()) {
+        if (ni != null && ni.isAvailable() && ni.isConnected()) {
             db = FirebaseDatabase.getInstance().getReference("Museums").child(nomeMuseo).child(nomePercorso);
             snapshotVoti = db.child("Voti").get();
             snapshotNumStarts = db.child("Numero_starts").get();
@@ -152,143 +124,6 @@ public class PercorsoActivity extends AppCompatActivity {
     }
 
     /**
-     * Funzione che serve a sostituire il precedente fragment con OverviewPathFragment
-     *
-     * @param bundle, contiene il nome del percorso di cui si deve visualizzare la descrizione
-     */
-    public void nextPercorsoFragment(Bundle bundle) {
-        //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
-        try {
-            Fragment secondPage = new OverviewPathFragment();
-            nomePercorso = bundle.getString("nome_percorso");
-            secondPage.setArguments(bundle);
-
-            setValuePath();
-
-            createFragment(secondPage);
-        }
-        catch (IllegalArgumentException e) {
-            Log.e("PercorsoActivity.class", "nextPercorsoFragment -> IllegalArgumentException sollevata.");
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Funzione che serve a sostituire il precedente fragment con SceltaStanzeFragment
-     */
-    public void nextSceltaStanzeFragment() {
-        //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
-        Fragment thirdPage = new SceltaStanzeFragment();
-
-        createFragment(thirdPage);
-    }
-
-    /**
-     * Crea il fragment per visualizzare un'opera.
-     * @param bundle contiene la stringa json dell'oggetto opera da istanziare.
-     */
-    public void nextOperaFragment(Bundle bundle) {
-        Fragment operaFragment = new OperaFragment();
-        operaFragment.setArguments(bundle);
-
-        createFragment(operaFragment);
-    }
-
-    /**
-     * Funzione che si occupa si aprire il fragment per scannerrizare il qr code di una stanza,
-     * quindi settare cosa fare una volta che il qr è stato letto
-     *
-     * @param idClickedRoom, l'id della stanza che è stata clicccata
-     */
-    public void nextQRScannerFragmentOfRoomSelection(String idClickedRoom) {
-
-        actionPerfom = () -> {
-            getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.scannerFrag, new QRScannerFragment(
-                            (scanResult) -> {//i dati letti dallo scannere qr verranno gestiti come segue
-
-                                if (scanResult.equals(idClickedRoom)) {
-                                    try {
-
-                                        if (idClickedRoom.equals(path.getIdStanzaIniziale())) {
-                                            //path.setIdStanzaCorrente(idClickedRoom);
-                                            path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
-                                            nextStanzaFragment();
-                                        } else {
-                                            path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
-                                            nextStanzaFragment();
-                                        }
-
-                                    } catch (GraphException e) {
-                                       Log.e("excpetion", e.getMessage());
-                                    }
-                                } else {
-
-                                    AlertDialog.Builder alert = new AlertDialog.Builder(this);
-                                    alert.setTitle(getString(R.string.error_room_title));
-                                    alert.setMessage(getString(R.string.error_room_body));
-                                    alert.setCancelable(true);
-                                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.dismiss();
-                                        }
-                                    });
-                                    alert.show();
-                                }
-                            }
-                    ), null)
-                    .commit();
-        };
-
-        checkCameraPermission();
-    }
-
-    /**
-     * Funzione che si occupa si aprire il fragment per scannerrizare il qr code di un opera,
-     * quindi settare cosa fare una volta che il qr è stato letto
-     */
-    public void nextQRScannerFragmentOfSingleRomm() {
-
-        actionPerfom = () -> {
-            getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.scannerFrag, new QRScannerFragment(
-                            (scanResult) -> {//i dati letti dallo scannere qr verranno gestiti come segue
-
-                                //code..
-                            }
-                    ), null)
-                    .commit();
-        };
-
-        checkCameraPermission();
-    }
-
-
-    /**
-     * Funzione che serve a sostituire il precedente fragment con StanzaFragment
-     */
-    public void nextStanzaFragment() {
-        // Controllo dei permessi
-        if(getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            String[] permissions;
-
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {    // Se la versione dell'sdk è maggiore a 31
-                permissions = new String[] {Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.ACCESS_FINE_LOCATION};
-            } else {
-                permissions = new String[] {Manifest.permission.ACCESS_FINE_LOCATION};
-            }
-
-            permission.getPermission(permissions, Permesso.BLUETOOTH_PERMISSION_CODE, getString(R.string.bluetooth_permission_title), getString(R.string.bluetooth_permission_body));
-        }
-
-        //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
-        createFragment(new StanzaFragment());
-    }
-
-    /**
      * Funzione che serve a ritornare alla home
      */
     public void endPath() {
@@ -305,8 +140,8 @@ public class PercorsoActivity extends AppCompatActivity {
         super.onBackPressed();
 
         // Stop del service
-       Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container_fragments_route);
-        if(fragment instanceof StanzaFragment) {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container_fragments_route);
+        if (fragment instanceof StanzaFragment) {
             ((StanzaFragment) fragment).unBindService();
         }
 
@@ -361,16 +196,48 @@ public class PercorsoActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Riuso del codice per creare ed istanziare un fragment
-     * @param fragment
-     */
-    private void createFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setReorderingAllowed(true);
-        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-        transaction.replace(R.id.container_fragments_route, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+    public Permesso getPermission() {
+        return permission;
     }
+
+    public void setActionPerfom(PermissionGrantedManager actionPerfom) {
+        this.actionPerfom = actionPerfom;
+    }
+
+    public void setNomeMuseo(String nomeMuseo) {
+        this.nomeMuseo = nomeMuseo;
+    }
+
+    public void setNomePercorso(String nomePercorso) {
+        this.nomePercorso = nomePercorso;
+    }
+
+    public String getNomeMuseo() {
+        return nomeMuseo;
+    }
+
+    public String getNomePercorso() {
+        return nomePercorso;
+    }
+
+    public DatabaseReference getDb() {
+        return db;
+    }
+
+    public Task<DataSnapshot> getSnapshotVoti() {
+        return snapshotVoti;
+    }
+
+    public Task<DataSnapshot> getSnapshotNumStarts() {
+        return snapshotNumStarts;
+    }
+
+    public Percorso getPath() {
+        return path;
+    }
+
+    public LocalFileMuseoManager getLocalFileMuseoManager() {
+        return localFileMuseoManager;
+    }
+
 }

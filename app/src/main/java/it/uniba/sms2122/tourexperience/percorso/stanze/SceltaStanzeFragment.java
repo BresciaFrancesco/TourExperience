@@ -67,6 +67,10 @@ public class SceltaStanzeFragment extends Fragment {
     private Button buttonVote;
     private ImageButton imageButton;
 
+    String nomeMuseo;
+    String nomePercorso;
+
+
     private PercorsoActivity parent;
     private boolean isFirst = true;
 
@@ -88,9 +92,23 @@ public class SceltaStanzeFragment extends Fragment {
 
         if (savedInstanceState == null) {
             path = parent.getPath();
+            nomeMuseo = parent.getNomeMuseo();
+            nomePercorso = parent.getNomePercorso();
         } else {
             Gson gson = new GsonBuilder().create();
             this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
+
+            if (this.path == null) {//lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui comunque viene ricreato da 0 e non ha valori inzializzati
+
+                path = parent.getPath();
+                nomeMuseo = parent.getNomeMuseo();
+                nomePercorso = parent.getNomePercorso();
+
+            } else {
+
+                this.nomePercorso = savedInstanceState.getString("nomePercorso");
+                this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
+            }
         }
 
 
@@ -126,8 +144,7 @@ public class SceltaStanzeFragment extends Fragment {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nomeMuseo = parent.getNomeMuseo();
-                String nomePercorso = parent.getNomePercorso();
+
 
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
@@ -212,9 +229,6 @@ public class SceltaStanzeFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        String nomeMuseo = path.getNomeMuseo();
-        String nomePercorso = path.getNomePercorso();
-
         if (isFirst) {
             listaStanze.add(path.getStanzaCorrente());
             textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
@@ -233,7 +247,10 @@ public class SceltaStanzeFragment extends Fragment {
         } else {
             Gson gson = new GsonBuilder().create();
             this.museumn = gson.fromJson(savedInstanceState.getSerializable("museumn").toString(), Museo.class);
-            imageView.setImageURI(Uri.parse(museumn.getFileUri()));
+            if(museumn == null) //lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui comunque viene ricreato da 0
+                museumn = cacheMuseums.get(nomeMuseo);
+            else
+                imageView.setImageURI(Uri.parse(museumn.getFileUri()));
         }
 
 
@@ -254,5 +271,8 @@ public class SceltaStanzeFragment extends Fragment {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         outState.putSerializable("path", gson.toJson(this.path));
         outState.putSerializable("museumn", gson.toJson(this.museumn));
+        outState.putString("nomePercorso", this.nomePercorso);
+        outState.putString("nomeMuseo", this.nomePercorso);
     }
+
 }

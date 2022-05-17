@@ -136,7 +136,9 @@ public class FragmentManagerOfPercorsoActivity {
                     .add(R.id.scannerFrag, new QRScannerFragment(
                             (scanResult) -> {//i dati letti dallo scannere qr verranno gestiti come segue
 
-                                //code..
+                                Bundle bundle = new Bundle();
+                                bundle.putString("idOpera", scanResult);
+                                nextOperaFragment(bundle);
                             }
                     ), null)
                     .commit();

@@ -31,7 +31,7 @@ public class OperaFragment extends Fragment {
     private Opera opera;
     private ImageAndDescriptionFragment fragment;
     private LocalFilePercorsoManager localFilePercorsoManager;
-    private final FragmentManager fragmentManager = getParentFragmentManager();
+    private FragmentManager fragmentManager;
     private final int requestCodeGC = 900007;
 
 
@@ -45,6 +45,8 @@ public class OperaFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        fragmentManager = getParentFragmentManager();
 
         Bundle bundle = getArguments();
         String operaJson = Objects.requireNonNull(bundle).getString("OperaJson");

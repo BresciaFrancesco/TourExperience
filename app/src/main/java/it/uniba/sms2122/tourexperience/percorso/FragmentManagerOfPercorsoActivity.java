@@ -6,14 +6,23 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
+
+import java.util.Map;
+
 import it.uniba.sms2122.tourexperience.QRscanner.QRScannerFragment;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
+import it.uniba.sms2122.tourexperience.model.Opera;
+import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
@@ -125,26 +134,47 @@ public class FragmentManagerOfPercorsoActivity {
     }
 
     /**
-     * Funzione che si occupa si aprire il fragment per scannerrizare il qr code di un opera,
-     * quindi settare cosa fare una volta che il qr è stato letto
+     *
+     * Funzione che si occupa si aprire il fragment per scannerrizare il QR code di un'opera,
+     * poi legge il risultato del QR e se tutto è corretto, ottiene e serializza l'oggetto opera
+     * corrispondente e infine lo passa tramite bundle al metodo per creare il fragment dell'opera.
+     * @param stanza stanza da cui parte la scannerizzazione del QR code e che dovrebbe contenere
+     *               l'oggetto opera che serve.
      */
-    public void nextQRScannerFragmentOfSingleRomm() {
+    public void nextQRScannerFragmentOfForOpera(final Stanza stanza) {
 
-        percorsoActivity.setActionPerfom( () -> {
+        percorsoActivity.setActionPerfom( () ->
             percorsoActivity.getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.scannerFrag, new QRScannerFragment(
-                            (scanResult) -> {//i dati letti dallo scannere qr verranno gestiti come segue
-
-                                Bundle bundle = new Bundle();
-                                bundle.putString("idOpera", scanResult);
-                                nextOperaFragment(bundle);
-                            }
-                    ), null)
-                    .commit();
-        });
+            .setReorderingAllowed(true)
+            .add(R.id.scannerFrag, new QRScannerFragment((scanResult) -> {
+                try {
+                    String operaJson = new Gson().toJson(stanza.getOperaByID(scanResult));
+                    Bundle bundle = new Bundle();
+                    bundle.putString("OperaJson", operaJson);
+                    nextOperaFragment(bundle);
+                }
+                catch (IllegalArgumentException e) {
+                    exceptionScanQROpera(e, "IllegalArgumentException", "QR code ha ritornato un id errato.");
+                } catch (NullPointerException e) {
+                    exceptionScanQROpera(e, "NullPointerException", "Opera non presente.");
+                } catch (JsonParseException e) {
+                    exceptionScanQROpera(e, "JsonParseException", "Parsing della classe Opera fallito.");
+                }
+            }), null).commit());
 
         percorsoActivity.checkCameraPermission();
+    }
+
+    /**
+     * Permette di non ripetere il codice da inserire nel cathc di un'eccezione.
+     * @param e eccezione.
+     * @param tagError tag da inserire nel log di errore.
+     * @param messageError messaggio da inserire nel log di errore.
+     */
+    private void exceptionScanQROpera(Exception e, String tagError, String messageError) {
+        Toast.makeText(percorsoActivity.getApplicationContext(), "QR Code Error", Toast.LENGTH_SHORT).show();
+        Log.e(tagError, messageError);
+        e.printStackTrace();
     }
 
 

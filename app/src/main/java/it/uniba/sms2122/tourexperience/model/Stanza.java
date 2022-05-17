@@ -61,6 +61,11 @@ public class Stanza {
         this.descrizione = descrizione;
     }
 
+    public Opera getOperaByID(final String idOpera) {
+        notBlank(idOpera);
+        return notNull(opere.get(idOpera));
+    }
+
     /**
      * Controlla un oggetto Stanza arbitrario secondo tale contratto:
      * 0. stanza non null.

@@ -183,20 +183,23 @@ public class StanzaFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        percorsoActivity.unbindService(serviceConnection);
+        unBindService();
     }
 
     /**
-     * funzione per triggerare il click sul pulsante scansione un opera
+     * Gestisce il click del pulsante per la scannerizzazione dei QR per un'opera.
      */
     private void triggerOperaScanButton() {
-
         ConstraintLayout operaScanButton = inflater.findViewById(R.id.operaScannButton);
 
-        operaScanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((PercorsoActivity)getActivity()).getFgManagerOfPercorso().nextQRScannerFragmentOfSingleRomm();
+        operaScanButton.setOnClickListener(view -> {
+            try {
+                ((PercorsoActivity)getActivity()).getFgManagerOfPercorso()
+                    .nextQRScannerFragmentOfForOpera(stanza);
+            }
+            catch (NullPointerException e) {
+                Log.e("StanzaFragment.triggerOperaScanButton", "getActivity return null");
+                e.printStackTrace();
             }
         });
 

@@ -30,7 +30,6 @@ public class OperaFragment extends Fragment {
 
     private Opera opera;
     private ImageAndDescriptionFragment fragment;
-    private LocalFilePercorsoManager localFilePercorsoManager;
     private FragmentManager fragmentManager;
     private final int requestCodeGC = 900007;
 
@@ -54,7 +53,10 @@ public class OperaFragment extends Fragment {
 
         setActionBar(opera.getNome());
 
-        localFilePercorsoManager = new LocalFilePercorsoManager(view.getContext().getFilesDir().toString());
+        createFragmentImageAndDescription();
+    }
+
+    private void createFragmentImageAndDescription() {
         final List<String> immagineOpera = Collections.singletonList(opera.getPercorsoImg());
         fragment = new ImageAndDescriptionFragment(immagineOpera, opera.getDescrizione());
         fragmentManager.beginTransaction()
@@ -87,6 +89,8 @@ public class OperaFragment extends Fragment {
                 savedInstanceState.getString("percorsoImg"),
                 savedInstanceState.getString("descrizione")
             );
+            createFragmentImageAndDescription();
+            setActionBar(opera.getNome());
         }
         super.onViewStateRestored(savedInstanceState);
     }

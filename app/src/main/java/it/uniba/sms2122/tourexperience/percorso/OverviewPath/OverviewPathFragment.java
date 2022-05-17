@@ -55,7 +55,7 @@ public class OverviewPathFragment extends Fragment {
 
         startPathButton = inflater.findViewById(R.id.startPathButton);
 
-        startPathButton.setOnClickListener(view -> ((PercorsoActivity)getActivity()).nextSceltaStanzeFragment());
+        startPathButton.setOnClickListener(view -> ((PercorsoActivity)getActivity()).getFgManagerOfPercorso().nextSceltaStanzeFragment());
     }
 
 

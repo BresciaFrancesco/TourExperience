@@ -1,29 +1,17 @@
 package it.uniba.sms2122.tourexperience.percorso;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -32,27 +20,25 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import it.uniba.sms2122.tourexperience.QRscanner.QRScannerFragment;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
-import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
-import it.uniba.sms2122.tourexperience.main.HomeFragment;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
-import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
-import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
-import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
-import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
 import java.io.File;
-import java.util.Optional;
+import java.util.List;
 
 public class PercorsoActivity extends AppCompatActivity {
+
+
+    FragmentManagerOfPercorsoActivity fgManagerOfPercorso;
 
     Permesso permission;
     private PermissionGrantedManager actionPerfom;
@@ -61,77 +47,38 @@ public class PercorsoActivity extends AppCompatActivity {
     private String nomePercorso;
     private LocalFilePercorsoManager localFilePercorsoManager;
     private LocalFileMuseoManager localFileMuseoManager;
-    /** Attributo che memorizza il percorso scelto dall'utente */
-    private Percorso path;
-
-    // Gestione del risultato dell'attivazione del bluetooth
-    private final ActivityResultLauncher<Intent> btActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if(result.getResultCode()!= Activity.RESULT_OK) {
-                    Log.d("Bluetooth", "Acceso");
-                } else {
-                    Log.d("Bluetooth", "Non acceso");
-                }
-            }
-    );
-
-    // Gestione del risultato dell'attivazione del gps
-    private final ActivityResultLauncher<Intent> gpsActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if(result.getResultCode()!=Activity.RESULT_OK) {
-                    Log.d("GPS", "Acceso");
-                } else {
-                    Log.d("GPS", "Non acceso");
-                }
-            }
-    );
+    /**
+     * Attributo che memorizza il percorso scelto dall'utente
+     */
+    public Percorso path;
 
     private DatabaseReference db;
     private Task<DataSnapshot> snapshotVoti;
     private Task<DataSnapshot> snapshotNumStarts;
 
-    public String getNomeMuseo() {
-        return nomeMuseo;
+    public PercorsoActivity() {
+        this.fgManagerOfPercorso = new FragmentManagerOfPercorsoActivity(this);
     }
 
-    public String getNomePercorso() {
-        return nomePercorso;
+    public FragmentManagerOfPercorsoActivity getFgManagerOfPercorso() {
+        return fgManagerOfPercorso;
     }
 
-    public DatabaseReference getDb() {
-        return db;
-    }
-
-    public Task<DataSnapshot> getSnapshotVoti() {
-        return snapshotVoti;
-    }
-
-    public Task<DataSnapshot> getSnapshotNumStarts() {
-        return snapshotNumStarts;
-    }
 
     /**
      * Funzione che imposta il valore dell'attributo path ogni volta che viene selezionato un
      * determinato percoso all'interno della lista percosi relativi ad un determinato museo
      */
-    private void setValuePath() throws IllegalArgumentException {
+    protected void setValuePath() throws IllegalArgumentException {
         path = localFilePercorsoManager.getPercorso(nomeMuseo, nomePercorso);
         localFilePercorsoManager.createStanzeAndOpereInThisAndNextStanze(path);
     }
 
-    public Percorso getPath() {
-        return path;
-    }
-
-    public LocalFileMuseoManager getLocalFileMuseoManager() {
-        return localFileMuseoManager;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_percorso);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -145,11 +92,22 @@ public class PercorsoActivity extends AppCompatActivity {
          * Viene aggiunto il fragment MuseoFragment all'activity
          */
         if (savedInstanceState == null) {
+
+
             Fragment firstPage = new MuseoFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.setReorderingAllowed(true);  //ottimizza i cambiamenti di stato dei fragment in modo che le animazioni funzionino correttammente
-            transaction.add(R.id.container_fragments_route, firstPage);
-            transaction.commit();
+            fgManagerOfPercorso.createFragment(firstPage, "museoFragment");
+        }else{
+            Log.e("savedInstanceState", savedInstanceState.toString());
+
+            FragmentManager fgManager = getSupportFragmentManager();
+            List<Fragment> fgList = fgManager.getFragments();
+            for(Fragment fg : fgList){
+
+                fgManager.getFragment(savedInstanceState, fg.getTag());
+               // Fragment fragmentoToAdd = fg;
+                //fragmentoToAdd.setInitialSavedState(savedInstanceState.getParcelable("savedIstanceOf" + fragmentoToAdd.getTag()));
+
+            }
         }
 
         // cacheMuseums.get(nomeMuseo); // per ottenere l'oggetto Museo, basta fare così
@@ -158,7 +116,7 @@ public class PercorsoActivity extends AppCompatActivity {
     public boolean checkConnectivity() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(PercorsoActivity.this.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
-        if (ni!=null && ni.isAvailable() && ni.isConnected()) {
+        if (ni != null && ni.isAvailable() && ni.isConnected()) {
             db = FirebaseDatabase.getInstance().getReference("Museums").child(nomeMuseo).child(nomePercorso);
             snapshotVoti = db.child("Voti").get();
             snapshotNumStarts = db.child("Numero_starts").get();
@@ -181,148 +139,6 @@ public class PercorsoActivity extends AppCompatActivity {
     }
 
     /**
-     * Funzione che serve a sostituire il precedente fragment con OverviewPathFragment
-     *
-     * @param bundle, contiene il nome del percorso di cui si deve visualizzare la descrizione
-     */
-    public void nextPercorsoFragment(Bundle bundle) {
-        //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
-        try {
-            Fragment secondPage = new OverviewPathFragment();
-            nomePercorso = bundle.getString("nome_percorso");
-            secondPage.setArguments(bundle);
-
-            setValuePath();
-
-            createFragment(secondPage);
-        }
-        catch (IllegalArgumentException e) {
-            Log.e("PercorsoActivity.class", "nextPercorsoFragment -> IllegalArgumentException sollevata.");
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Funzione che serve a sostituire il precedente fragment con SceltaStanzeFragment
-     */
-    public void nextSceltaStanzeFragment() {
-        //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
-        Fragment thirdPage = new SceltaStanzeFragment();
-
-        createFragment(thirdPage);
-    }
-
-    /**
-     * Crea il fragment per visualizzare un'opera.
-     * @param bundle contiene la stringa json dell'oggetto opera da istanziare.
-     */
-    public void nextOperaFragment(Bundle bundle) {
-        Fragment operaFragment = new OperaFragment();
-        operaFragment.setArguments(bundle);
-
-        createFragment(operaFragment);
-    }
-
-    /**
-     * Funzione che si occupa si aprire il fragment per scannerrizare il qr code di una stanza,
-     * quindi settare cosa fare una volta che il qr è stato letto
-     *
-     * @param idClickedRoom, l'id della stanza che è stata clicccata
-     */
-    public void nextQRScannerFragmentOfRoomSelection(String idClickedRoom) {
-
-        actionPerfom = () -> {
-            getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.scannerFrag, new QRScannerFragment(
-                            (scanResult) -> {//i dati letti dallo scannere qr verranno gestiti come segue
-
-                                if (scanResult.equals(idClickedRoom)) {
-                                    try {
-
-                                        if (idClickedRoom.equals(path.getIdStanzaIniziale())) {
-                                            //path.setIdStanzaCorrente(idClickedRoom);
-                                            path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
-                                            nextStanzaFragment();
-                                        } else {
-                                            path.moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
-                                            nextStanzaFragment();
-                                        }
-
-                                    } catch (GraphException e) {
-                                       Log.e("excpetion", e.getMessage());
-                                    }
-                                } else {
-
-                                    AlertDialog.Builder alert = new AlertDialog.Builder(this);
-                                    alert.setTitle(getString(R.string.error_room_title));
-                                    alert.setMessage(getString(R.string.error_room_body));
-                                    alert.setCancelable(true);
-                                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.dismiss();
-                                        }
-                                    });
-                                    alert.show();
-                                }
-                            }
-                    ), null)
-                    .commit();
-        };
-
-        checkCameraPermission();
-    }
-
-    /**
-     * Funzione che si occupa si aprire il fragment per scannerrizare il qr code di un opera,
-     * quindi settare cosa fare una volta che il qr è stato letto
-     */
-    public void nextQRScannerFragmentOfSingleRomm() {
-
-        actionPerfom = () -> {
-            getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.scannerFrag, new QRScannerFragment(
-                            (scanResult) -> {//i dati letti dallo scannere qr verranno gestiti come segue
-
-                                //code..
-                            }
-                    ), null)
-                    .commit();
-        };
-
-        checkCameraPermission();
-    }
-
-
-    /**
-     * Funzione che serve a sostituire il precedente fragment con StanzaFragment
-     */
-    public void nextStanzaFragment() {
-        // Controllo dei permessi
-        if(getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            boolean permissionsAccepted = false;
-            String[] permissions;
-
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {    // Se la versione dell'sdk è maggiore a 31
-                permissions = new String[] {Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.ACCESS_FINE_LOCATION};
-            } else {
-                permissions = new String[] {Manifest.permission.ACCESS_FINE_LOCATION};
-            }
-
-            permissionsAccepted = permission.getPermission(permissions, Permesso.BLUETOOTH_PERMISSION_CODE, getString(R.string.bluetooth_permission_title), getString(R.string.bluetooth_permission_body));
-            // Attivo il bluetooth e la geolocalizzazione solo se tutti i permessi sono stati accettati
-            if(permissionsAccepted) {
-                enableBt();
-                enableLocation();
-            }
-        }
-        //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
-        createFragment(new StanzaFragment());
-    }
-
-    /**
      * Funzione che serve a ritornare alla home
      */
     public void endPath() {
@@ -339,8 +155,8 @@ public class PercorsoActivity extends AppCompatActivity {
         super.onBackPressed();
 
         // Stop del service
-       Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container_fragments_route);
-        if(fragment instanceof StanzaFragment && ((StanzaFragment) fragment).isBounded()) {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container_fragments_route);
+        if (fragment instanceof StanzaFragment) {
             ((StanzaFragment) fragment).unBindService();
         }
 
@@ -381,17 +197,89 @@ public class PercorsoActivity extends AppCompatActivity {
                 }
                 break;
 
-            case Permesso.BLUETOOTH_PERMISSION_CODE:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    enableBt();
-                    enableLocation();
-                }
-                break;
-
             default:
                 Log.v("switch", "default");
         }
     }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+
+        //FragmentManager.BackStackEntry backStackEntry = fgManager.getBackStackEntryAt(fgManager.getBackStackEntryCount()-1);
+        //Fragment lastFragmentInStack = fgManager.findFragmentByTag(backStackEntry.getName());
+        //Bundle bundleOfLastFragmentInstack = lastFragmentInStack.getArguments();
+        //fgManager.saveFragmentInstanceState(lastFragmentInStack);
+        //outState.putBundle("lastFragmentInstackSavedInstance", bundleOfLastFragmentInstack);
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        FragmentManager fgManager = getSupportFragmentManager();
+        List<Fragment> fgList = fgManager.getFragments();
+        for(Fragment fg : fgList){
+            //outState.putSerializable("savedIstanceOf" + fg.getTag(), gson.toJson(fgManager.saveFragmentInstanceState(fg)));
+            outState.putParcelable("savedIstanceOf" + fg.getTag(), fgManager.saveFragmentInstanceState(fg));
+        }
+
+        outState.putSerializable("path", gson.toJson(this.path));
+
+       /* outState.putSerializable("localFilePercorsoManager", gson.toJson(this.localFilePercorsoManager));
+        outState.putSerializable("localFileMuseoManager", gson.toJson(this.localFileMuseoManager));*/
+
+        /*private LocalFilePercorsoManager localFilePercorsoManager;
+        private LocalFileMuseoManager localFileMuseoManager;*/
+
+        outState.putString("nomeMuseo", this.nomeMuseo);
+        outState.putString("nomePercorso", this.nomePercorso);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        Gson gson = new GsonBuilder().create();
+
+        FragmentManager fgManager = getSupportFragmentManager();
+        List<Fragment> fgList = fgManager.getFragments();
+        for(Fragment fg : fgList){
+
+            fgManager.putFragment(savedInstanceState, fg.getTag(), fg);
+            //fgManager.beginTransaction().remove(fg).commit();
+            //fgManager.popBackStack();
+            //this.fgManagerOfPercorso.createFragment(fg, fg.getTag());
+            //fg.setInitialSavedState(savedInstanceState.getParcelable("savedIstanceOf" + fg.getTag()));
+            //fgManager.res
+            //fg.setInitialSavedState(null);
+
+            //fg.setInitialSavedState(gson.fromJson(savedInstanceState.getSerializable("savedIstanceOf" + fg.getTag()).toString(), Fragment.SavedState.class));
+
+        }
+
+        this.path =  gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
+
+        /*this.localFilePercorsoManager = gson.fromJson(savedInstanceState.getSerializable("localFilePercorsoManager").toString(),LocalFilePercorsoManager.class);
+        this.localFileMuseoManager = gson.fromJson(savedInstanceState.getSerializable("localFileMuseoManager").toString(),LocalFileMuseoManager.class);*/
+
+        this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
+        this.nomePercorso = savedInstanceState.getString("nomePercorso");
+
+        /*FragmentManager fgManager = getSupportFragmentManager();
+        List<Fragment> fgList = fgManager.getFragments();
+        for(Fragment fg : fgList){
+            fgManager.saveFragmentInstanceState(fg);
+        }*/
+
+        //FragmentManager.BackStackEntry backStackEntry = fgManager.getBackStackEntryAt(fgManager.getBackStackEntryCount()-1);
+        //Fragment lastFragmentInStack = fgManager.findFragmentByTag(backStackEntry.getName());
+        //fgManager.restoreBackStack("sceltaStanzeFragment");
+        //fgManager.popBackStack(backStackEntry.getName(),Integer.parseInt(null));
+        //Bundle bundleToRestoreOfLastFragmentInstack = savedInstanceState.getBundle("lastFragmentInstackSavedInstance");
+        //lastFragmentInStack.setInitialSavedState(bundleToRestoreOfLastFragmentInstack);
+
+
+    }
+
 
     /**
      * Classe che viene instanziata per rendere dinamiche le operazioni che il programma deve fare l'utente ha concesso il permesso della camera
@@ -402,38 +290,48 @@ public class PercorsoActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Riuso del codice per creare ed istanziare un fragment
-     * @param fragment
-     */
-    private void createFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setReorderingAllowed(true);
-        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-        transaction.replace(R.id.container_fragments_route, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+    public Permesso getPermission() {
+        return permission;
     }
 
-    /**
-     * Metodo per far attivare il bluetooth all'utente
-     */
-    private void enableBt() {
-        BluetoothAdapter bluetoothAdapter = ((BluetoothManager) this.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-        if(!bluetoothAdapter.isEnabled()) {
-            Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            btActivityResultLauncher.launch(enableBluetooth);
-        }
+    public void setActionPerfom(PermissionGrantedManager actionPerfom) {
+        this.actionPerfom = actionPerfom;
     }
 
-    /**
-     * Metodo per far attivare la geolocalizzazione all'utente
-     */
-    private void enableLocation() {
-        LocationManager locationManager = ((LocationManager) this.getSystemService(Context.LOCATION_SERVICE));
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !locationManager.isLocationEnabled()) || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Intent enableGps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            gpsActivityResultLauncher.launch(enableGps);
-        }
+    public void setNomeMuseo(String nomeMuseo) {
+        this.nomeMuseo = nomeMuseo;
     }
+
+    public void setNomePercorso(String nomePercorso) {
+        this.nomePercorso = nomePercorso;
+    }
+
+    public String getNomeMuseo() {
+        return nomeMuseo;
+    }
+
+    public String getNomePercorso() {
+        return nomePercorso;
+    }
+
+    public DatabaseReference getDb() {
+        return db;
+    }
+
+    public Task<DataSnapshot> getSnapshotVoti() {
+        return snapshotVoti;
+    }
+
+    public Task<DataSnapshot> getSnapshotNumStarts() {
+        return snapshotNumStarts;
+    }
+
+    public Percorso getPath() {
+        return path;
+    }
+
+    public LocalFileMuseoManager getLocalFileMuseoManager() {
+        return localFileMuseoManager;
+    }
+
 }

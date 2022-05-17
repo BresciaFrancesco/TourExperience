@@ -78,7 +78,7 @@ public class MuseoFragment extends Fragment {
         adapter.setOnItemClickListener(str -> {
             Bundle bundle = new Bundle();
             bundle.putString("nome_percorso", nomiPercorsi.get(Integer.parseInt(str)));
-            ((PercorsoActivity) getActivity()).nextPercorsoFragment(bundle);
+            ((PercorsoActivity) getActivity()).getFgManagerOfPercorso().nextPercorsoFragment(bundle);
         });
     }
 

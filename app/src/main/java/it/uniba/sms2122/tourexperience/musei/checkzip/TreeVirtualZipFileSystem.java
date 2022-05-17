@@ -16,7 +16,7 @@ import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cacheMuseums;
  */
 public class TreeVirtualZipFileSystem {
 
-    private final long MAX_DIM = 30000000; // 30 MB
+    private final long MAX_DIM = 10000000; // 10 MB
     private final Tree root = new Tree("root", new HashMap<>());
     private final String separatore = "/";
 

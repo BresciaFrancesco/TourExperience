@@ -31,6 +31,10 @@ public class Validate {
     private static final String DEFAULT_NOT_EMPTY_COLLECTION_EX_MESSAGE = "The validated collection is empty";
     private static final String DEFAULT_NOT_EMPTY_MAP_EX_MESSAGE = "The validated map is empty";
 
+
+    public static final int MAX_ID_OPERA = 45;
+
+
     private Validate() {}
 
     // isTrue

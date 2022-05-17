@@ -1,6 +1,5 @@
 package it.uniba.sms2122.tourexperience.graph;
 
-import static it.uniba.sms2122.tourexperience.utility.Validate.notBlank;
 import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
 
 import java.util.ArrayList;
@@ -11,6 +10,9 @@ import java.util.Set;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphRunTimeException;
 import it.uniba.sms2122.tourexperience.model.Stanza;
+import it.uniba.sms2122.tourexperience.musei.checkzip.domainprimitive.Descrizione;
+import it.uniba.sms2122.tourexperience.musei.checkzip.domainprimitive.IdStanza;
+import it.uniba.sms2122.tourexperience.musei.checkzip.domainprimitive.Nome;
 
 /**
  * Classe che rappresenta un grafo per muoversi all'interno di percorso
@@ -149,17 +151,22 @@ public class Percorso {
      */
     public static void checkAll(final Percorso test) throws NullPointerException, IllegalArgumentException {
         notNull(test);
-        notBlank(test.getNomeMuseo(), "Nome museo vuoto");
-        notBlank(test.getNomePercorso(), "Nome percorso vuoto");
-        notBlank(test.getIdStanzaCorrente(), "Id stanza corrente vuoto");
-        notBlank(test.getIdStanzaFinale(), "Id stanza finale vuoto");
-        notBlank(test.getDescrizionePercorso(), "Descrizione vuota");
+
+        Nome.check(test.getNomeMuseo());
+        Nome.check(test.getNomePercorso());
+        IdStanza.check(test.getIdStanzaCorrente());
+        IdStanza.check(test.getIdStanzaFinale());
+        Descrizione.check(test.getDescrizionePercorso());
+
         final Set<String> keySet = test.mappaStanze.keySet();
         for (String key : keySet) {
             final Vertex v = notNull(test.mappaStanze.get(key), "Non è presente una stanza nella mappa del grafo");
+            IdStanza.check(key);
+
             final Set<String> edges = v.getEdges();
             for (String edge : edges) {
                 notNull(test.mappaStanze.get(edge), "Archi sbagliati");
+                IdStanza.check(edge);
             }
         }
     }

@@ -105,8 +105,8 @@ public class LocalFilePercorsoManager extends LocalFileManager {
                                 nomeMuseo,
                                 "Stanze",
                                 stanza.getNome(),
-                                opera.getNome(),
-                                opera.getNome()+IMG_EXTENSION
+                                path.getFileName().toString(),
+                                path.getFileName().toString()+IMG_EXTENSION
                         ).toString());
                     newOpereForStanza.put(opera.getId(), opera);
                 }

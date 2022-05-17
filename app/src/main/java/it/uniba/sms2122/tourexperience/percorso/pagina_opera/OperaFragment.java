@@ -30,8 +30,7 @@ public class OperaFragment extends Fragment {
 
     private Opera opera;
     private ImageAndDescriptionFragment fragment;
-    private LocalFilePercorsoManager localFilePercorsoManager;
-    private final FragmentManager fragmentManager = getParentFragmentManager();
+    private FragmentManager fragmentManager;
     private final int requestCodeGC = 900007;
 
 
@@ -46,13 +45,18 @@ public class OperaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        fragmentManager = getParentFragmentManager();
+
         Bundle bundle = getArguments();
         String operaJson = Objects.requireNonNull(bundle).getString("OperaJson");
         this.opera = new Gson().fromJson(Objects.requireNonNull(operaJson), Opera.class);
 
         setActionBar(opera.getNome());
 
-        localFilePercorsoManager = new LocalFilePercorsoManager(view.getContext().getFilesDir().toString());
+        createFragmentImageAndDescription();
+    }
+
+    private void createFragmentImageAndDescription() {
         final List<String> immagineOpera = Collections.singletonList(opera.getPercorsoImg());
         fragment = new ImageAndDescriptionFragment(immagineOpera, opera.getDescrizione());
         fragmentManager.beginTransaction()
@@ -85,6 +89,8 @@ public class OperaFragment extends Fragment {
                 savedInstanceState.getString("percorsoImg"),
                 savedInstanceState.getString("descrizione")
             );
+            createFragmentImageAndDescription();
+            setActionBar(opera.getNome());
         }
         super.onViewStateRestored(savedInstanceState);
     }

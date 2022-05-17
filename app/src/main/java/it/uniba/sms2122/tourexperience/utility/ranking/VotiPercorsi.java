@@ -1,4 +1,4 @@
-package it.uniba.sms2122.tourexperience.graph;
+package it.uniba.sms2122.tourexperience.utility.ranking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class VotiPercorsi {
         String aux = "";
 
         for (int i = 0; i < stringaVoti.length(); i++){
-            if(stringaVoti.charAt(i) != ',') {
+            if(stringaVoti.charAt(i) != ';') {
                 aux = aux.concat(String.valueOf(stringaVoti.charAt(i)));
             } else {
                 voti.add(Float.valueOf(aux));
@@ -39,5 +39,9 @@ public class VotiPercorsi {
         }
 
         return media/voti.size();
+    }
+
+    public String getStringaVoti() {
+        return stringaVoti;
     }
 }

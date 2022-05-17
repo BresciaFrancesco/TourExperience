@@ -19,7 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
-import it.uniba.sms2122.tourexperience.graph.VotiPercorsi;
+import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 
 public class OverviewPathFragment extends Fragment {

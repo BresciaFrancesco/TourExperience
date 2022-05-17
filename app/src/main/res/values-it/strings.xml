@@ -137,4 +137,9 @@
     <string name="title_classifica_visitati">Percorsi più visitati</string>
     <string name="description_classifica_visitati">Classifica dei percorsi presenti all\'interno dell\'applicazione che sono stati visitati maggiormente dagli utenti</string>
     <string name="rankings">Classifiche</string>
+    <string name="value">Valore:</string>
+    <string name="no_value">Nessun valore</string>
+    <string name="pos">Posizione: %1$s</string>
+    <string name="share">Condividi</string>
+
 </resources>

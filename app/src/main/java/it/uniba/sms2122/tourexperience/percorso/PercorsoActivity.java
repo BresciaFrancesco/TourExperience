@@ -122,7 +122,7 @@ public class PercorsoActivity extends AppCompatActivity {
             snapshotNumStarts = db.child("Numero_starts").get();
             return true;
         } else {
-            Toast.makeText(PercorsoActivity.this.getApplicationContext(), PercorsoActivity.this.getApplicationContext().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+            Toast.makeText(PercorsoActivity.this, getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
             return false;
         }
     }

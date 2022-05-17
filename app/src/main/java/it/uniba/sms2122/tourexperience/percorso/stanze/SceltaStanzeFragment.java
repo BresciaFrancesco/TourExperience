@@ -140,7 +140,7 @@ public class SceltaStanzeFragment extends Fragment {
                             if(voti.equals("-1"))
                                 voti = result;
                             else
-                                voti = voti.concat("," + result);
+                                voti = voti.concat(";" + result);
                             parent.getDb().child("Voti").setValue(voti).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {

@@ -142,5 +142,9 @@
     <string name="title_classifica_visitati">Most visited paths</string>
     <string name="description_classifica_visitati">Ranking of the most visited paths that were visited most by users</string>
     <string name="rankings">Rankings</string>
+    <string name="value">Value:</string>
+    <string name="no_value">No value</string>
+    <string name="pos">Position: %1$s</string>
+    <string name="share">Share</string>
 
 </resources>

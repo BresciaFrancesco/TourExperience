@@ -132,5 +132,14 @@
     <string name="try_again">Riprova</string>
     <string name="attention">Attenzione !</string>
     <string name="msg_attention">Non è stato possibile registrare la tua votazione poichè non è presente connessione ad internet</string>
+    <string name="title_classifica_voti">Migliori percorsi</string>
+    <string name="description_classifica_voti">Classifica dei percorsi presenti all\'interno dell\'applicazione che hanno avuto una migliore recensione da parte dei vari utenti che li hanno svolti</string>
+    <string name="title_classifica_visitati">Percorsi più visitati</string>
+    <string name="description_classifica_visitati">Classifica dei percorsi presenti all\'interno dell\'applicazione che sono stati visitati maggiormente dagli utenti</string>
+    <string name="rankings">Classifiche</string>
+    <string name="value">Valore:</string>
+    <string name="no_value">Nessun valore</string>
+    <string name="pos">Posizione: %1$s</string>
+    <string name="share">Condividi</string>
 
 </resources>

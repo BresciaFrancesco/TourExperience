@@ -9,16 +9,27 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
@@ -26,6 +37,9 @@ import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
+import it.uniba.sms2122.tourexperience.utility.ranking.FileRanking;
+import it.uniba.sms2122.tourexperience.utility.ranking.MuseoDatabase;
+import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 
@@ -35,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;
     private SceltaMuseiFragment sceltaMuseiFragment;
+    private List<MuseoDatabase> museoDatabaseList;
+    private DatabaseReference db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
 
         sceltaMuseiFragment = new SceltaMuseiFragment();
+        museoDatabaseList = new ArrayList<>();
     }
 
     @Override
@@ -110,6 +127,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home, menu);
@@ -124,14 +145,9 @@ public class MainActivity extends AppCompatActivity {
         switch (itemId){
 
             case R.id.profile_pic:
-
                 Intent openProfileIntent = new Intent(this, ProfileActivity.class);
                 startActivity(openProfileIntent);
                 return  true;
-
-            case R.id.language:
-
-                //code for language setting
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -200,6 +216,19 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
+    public void replaceRankingFragment(Bundle bundle){
+        RankingFragment rankingFragment = new RankingFragment();
+        rankingFragment.setArguments(bundle);
+
+        //passare al SceltaMuseiFragment
+        fragmentManager.beginTransaction()
+                .setReorderingAllowed(true)
+                .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
+                .replace(R.id.content_fragment_container_view, rankingFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     /**
      * Passa alla prossima activity e le fornisce il nome del museo selezionato.
      * @param nomeMuseo nome del museo selezionato, da passare alla prossima activity.
@@ -238,5 +267,86 @@ public class MainActivity extends AppCompatActivity {
             sceltaMuseiFragment = new SceltaMuseiFragment();
         }
         return sceltaMuseiFragment;
+    }
+
+    public boolean checkConnectivityForRanking() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(MainActivity.this.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        if (ni!=null && ni.isAvailable() && ni.isConnected()) {
+            db = FirebaseDatabase.getInstance().getReference("Museums");
+            Task<DataSnapshot> snapshot = db.get();
+            snapshot.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+                    String[] children = dataSnapshot.getValue().toString().split("tipologia=");
+                    for (int j = 0; j < children.length-1; j++){
+                        String child[] = children[j].split(",");
+
+                        MuseoDatabase museoDatabase = new MuseoDatabase();
+                        for(int i = 0; i < child.length; i++){
+                            String nomeMuseo = getNomeMuseo(child[i]);
+                            String percorso = getNomePercorso(child[i]);
+                            String voto = getVoto(child[i]);
+                            String numeroStarts = getNumeroStarts(child[i]);
+
+                            if(nomeMuseo != null) {
+                                museoDatabase.setNomeMuseo(nomeMuseo);
+                            }
+                            else if(percorso != null){
+                                museoDatabase.addNomePercorso(percorso);
+                                VotiPercorsi votiPercorsi = new VotiPercorsi(voto);
+                                museoDatabase.addVoti(votiPercorsi);
+
+                            }
+                            else if(numeroStarts != null){
+                                museoDatabase.addNumeroStarts(numeroStarts);
+                            }
+                        }
+                        museoDatabaseList.add(museoDatabase);
+                    }
+                }
+            });
+            return true;
+        } else {
+            Toast.makeText(MainActivity.this, getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+    private String getNomeMuseo(String child){
+        String nome = null;
+        if (child.contains("nome")) {
+            nome = child.substring(child.indexOf("=") + 1);
+        }
+
+        return nome;
+    }
+
+    private String getNomePercorso(String child){
+        String percorso = null;
+        if (child.contains("Percorso_")) {
+            percorso = "Percorso_" + child.substring((child.indexOf("_") + 1), (child.lastIndexOf("{") - 1));
+        }
+        return percorso;
+    }
+
+    private String getVoto(String child){
+        String voto = null;
+        if (child.contains("Voti")) {
+            voto = child.substring(child.lastIndexOf("=") + 1);
+        }
+        return voto;
+    }
+
+    private String getNumeroStarts(String child){
+        String numeroStarts = null;
+        if (child.contains("Numero_starts")) {
+            numeroStarts = (child.substring(child.lastIndexOf("=") + 1)).replace("}", "");
+        }
+        return numeroStarts;
+    }
+
+    public List<MuseoDatabase> getMuseoDatabaseList() {
+        return museoDatabaseList;
     }
 }

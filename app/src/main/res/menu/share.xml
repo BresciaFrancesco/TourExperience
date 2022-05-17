@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Profile -->
+    <!-- Share -->
     <item
-        android:id="@+id/profile_pic"
-        android:icon="@drawable/profile_pic"
-        android:title="@string/profile"
+        android:id="@+id/shareItem"
+        android:icon="@android:drawable/ic_menu_share"
+        android:title="@string/share"
         app:showAsAction="always"/>
 </menu>

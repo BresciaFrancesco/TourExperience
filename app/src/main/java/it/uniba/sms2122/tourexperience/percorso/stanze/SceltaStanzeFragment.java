@@ -210,7 +210,13 @@ public class SceltaStanzeFragment extends Fragment {
             listaStanze = parent.getPath().getAdiacentNodes();
             textView.setText(getString(R.string.museum ,nomeMuseo ) + "\n" + getString(R.string.area, parent.getPath().getStanzaCorrente().getNome()));
         }
-        imageView.setImageURI(Uri.parse(cacheMuseums.get(nomeMuseo).getFileUri()));
+
+        try{
+            imageView.setImageURI(Uri.parse(cacheMuseums.get(nomeMuseo).getFileUri()));
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
 
 
         // Sending reference and data to Adapter

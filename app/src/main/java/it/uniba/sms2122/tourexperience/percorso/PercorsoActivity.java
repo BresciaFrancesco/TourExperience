@@ -96,19 +96,16 @@ public class PercorsoActivity extends AppCompatActivity {
 
             Fragment firstPage = new MuseoFragment();
             fgManagerOfPercorso.createFragment(firstPage, "museoFragment");
-        }else{
-            Log.e("savedInstanceState", savedInstanceState.toString());
+        }/*else{
 
             FragmentManager fgManager = getSupportFragmentManager();
             List<Fragment> fgList = fgManager.getFragments();
             for(Fragment fg : fgList){
 
                 fgManager.getFragment(savedInstanceState, fg.getTag());
-               // Fragment fragmentoToAdd = fg;
-                //fragmentoToAdd.setInitialSavedState(savedInstanceState.getParcelable("savedIstanceOf" + fragmentoToAdd.getTag()));
 
             }
-        }
+        }*/
 
         // cacheMuseums.get(nomeMuseo); // per ottenere l'oggetto Museo, basta fare così
     }
@@ -122,7 +119,7 @@ public class PercorsoActivity extends AppCompatActivity {
             snapshotNumStarts = db.child("Numero_starts").get();
             return true;
         } else {
-            Toast.makeText(PercorsoActivity.this.getApplicationContext(), PercorsoActivity.this.getApplicationContext().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+            Toast.makeText(PercorsoActivity.this, getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -152,6 +149,9 @@ public class PercorsoActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+        //getSupportFragmentManager().findFragmentById(R.id.container_fragments_route).setInitialSavedState(null);
+
         super.onBackPressed();
 
         // Stop del service
@@ -206,30 +206,18 @@ public class PercorsoActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-
-        //FragmentManager.BackStackEntry backStackEntry = fgManager.getBackStackEntryAt(fgManager.getBackStackEntryCount()-1);
-        //Fragment lastFragmentInStack = fgManager.findFragmentByTag(backStackEntry.getName());
-        //Bundle bundleOfLastFragmentInstack = lastFragmentInStack.getArguments();
-        //fgManager.saveFragmentInstanceState(lastFragmentInStack);
-        //outState.putBundle("lastFragmentInstackSavedInstance", bundleOfLastFragmentInstack);
-
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        FragmentManager fgManager = getSupportFragmentManager();
+       /* FragmentManager fgManager = getSupportFragmentManager();
         List<Fragment> fgList = fgManager.getFragments();
         for(Fragment fg : fgList){
-            //outState.putSerializable("savedIstanceOf" + fg.getTag(), gson.toJson(fgManager.saveFragmentInstanceState(fg)));
-            outState.putParcelable("savedIstanceOf" + fg.getTag(), fgManager.saveFragmentInstanceState(fg));
-        }
+
+            fgManager.putFragment(outState, fg.getTag(), fg);
+
+        }*/
+
 
         outState.putSerializable("path", gson.toJson(this.path));
-
-       /* outState.putSerializable("localFilePercorsoManager", gson.toJson(this.localFilePercorsoManager));
-        outState.putSerializable("localFileMuseoManager", gson.toJson(this.localFileMuseoManager));*/
-
-        /*private LocalFilePercorsoManager localFilePercorsoManager;
-        private LocalFileMuseoManager localFileMuseoManager;*/
-
         outState.putString("nomeMuseo", this.nomeMuseo);
         outState.putString("nomePercorso", this.nomePercorso);
     }
@@ -240,43 +228,18 @@ public class PercorsoActivity extends AppCompatActivity {
 
         Gson gson = new GsonBuilder().create();
 
-        FragmentManager fgManager = getSupportFragmentManager();
+        /*FragmentManager fgManager = getSupportFragmentManager();
         List<Fragment> fgList = fgManager.getFragments();
         for(Fragment fg : fgList){
 
             fgManager.putFragment(savedInstanceState, fg.getTag(), fg);
-            //fgManager.beginTransaction().remove(fg).commit();
-            //fgManager.popBackStack();
-            //this.fgManagerOfPercorso.createFragment(fg, fg.getTag());
-            //fg.setInitialSavedState(savedInstanceState.getParcelable("savedIstanceOf" + fg.getTag()));
-            //fgManager.res
-            //fg.setInitialSavedState(null);
 
-            //fg.setInitialSavedState(gson.fromJson(savedInstanceState.getSerializable("savedIstanceOf" + fg.getTag()).toString(), Fragment.SavedState.class));
-
-        }
+        }*/
 
         this.path =  gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
 
-        /*this.localFilePercorsoManager = gson.fromJson(savedInstanceState.getSerializable("localFilePercorsoManager").toString(),LocalFilePercorsoManager.class);
-        this.localFileMuseoManager = gson.fromJson(savedInstanceState.getSerializable("localFileMuseoManager").toString(),LocalFileMuseoManager.class);*/
-
         this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
         this.nomePercorso = savedInstanceState.getString("nomePercorso");
-
-        /*FragmentManager fgManager = getSupportFragmentManager();
-        List<Fragment> fgList = fgManager.getFragments();
-        for(Fragment fg : fgList){
-            fgManager.saveFragmentInstanceState(fg);
-        }*/
-
-        //FragmentManager.BackStackEntry backStackEntry = fgManager.getBackStackEntryAt(fgManager.getBackStackEntryCount()-1);
-        //Fragment lastFragmentInStack = fgManager.findFragmentByTag(backStackEntry.getName());
-        //fgManager.restoreBackStack("sceltaStanzeFragment");
-        //fgManager.popBackStack(backStackEntry.getName(),Integer.parseInt(null));
-        //Bundle bundleToRestoreOfLastFragmentInstack = savedInstanceState.getBundle("lastFragmentInstackSavedInstance");
-        //lastFragmentInStack.setInitialSavedState(bundleToRestoreOfLastFragmentInstack);
-
 
     }
 

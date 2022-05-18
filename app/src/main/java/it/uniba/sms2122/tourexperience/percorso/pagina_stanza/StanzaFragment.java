@@ -31,6 +31,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.Serializable;
 import java.util.Map;
 
@@ -118,8 +121,14 @@ public class StanzaFragment extends Fragment {
 
         percorsoActivity = (PercorsoActivity) getActivity();
         permission = new Permesso(percorsoActivity);
-        path = percorsoActivity.getPath();
         localFilePercorsoManager = new LocalFilePercorsoManager(requireContext().getFilesDir().toString());
+
+        if(savedInstanceState == null){
+            path = percorsoActivity.getPath();}
+        else{
+            Gson gson = new GsonBuilder().create();
+            this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
+        }
 
         textView = view.findViewById(R.id.stanza_description);
         recycleView = view.findViewById(R.id.opere_recycle_view);
@@ -263,6 +272,14 @@ public class StanzaFragment extends Fragment {
         if(bounded) {
             percorsoActivity.unbindService(serviceConnection);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        outState.putSerializable("path", gson.toJson(this.path));
     }
 
 }

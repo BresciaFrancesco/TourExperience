@@ -33,19 +33,28 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.graph.Percorso;
+import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SceltaStanzeFragment} factory method to
  * create an instance of this fragment.
  */
 public class SceltaStanzeFragment extends Fragment {
+
+    private Percorso path;
+
+    private Museo museumn;
 
     private RecyclerView recyclerView;
     private List<Stanza> listaStanze;
@@ -58,8 +67,12 @@ public class SceltaStanzeFragment extends Fragment {
     private Button buttonVote;
     private ImageButton imageButton;
 
+    String nomeMuseo;
+    String nomePercorso;
+
+
     private PercorsoActivity parent;
-    private boolean isFirst = true;
+    private String lastStanza;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,6 +88,30 @@ public class SceltaStanzeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        parent = (PercorsoActivity) getActivity();
+
+        if (savedInstanceState == null) {
+            path = parent.getPath();
+            nomeMuseo = parent.getNomeMuseo();
+            nomePercorso = parent.getNomePercorso();
+        } else {
+            Gson gson = new GsonBuilder().create();
+            this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
+
+            if (this.path == null) {//lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui comunque viene ricreato da 0 e non ha valori inzializzati
+
+                path = parent.getPath();
+                nomeMuseo = parent.getNomeMuseo();
+                nomePercorso = parent.getNomePercorso();
+
+            } else {
+
+                this.nomePercorso = savedInstanceState.getString("nomePercorso");
+                this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
+            }
+        }
+
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewRooms);
         // Setting the layout as linear layout for vertical orientation
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -85,7 +122,7 @@ public class SceltaStanzeFragment extends Fragment {
         ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
         ratingBar.setNumStars(5);
         //finding the specific RatingBar with its unique ID
-        LayerDrawable stars=(LayerDrawable)ratingBar.getProgressDrawable();
+        LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
 
         //Use for changing the color of RatingBar
         stars.getDrawable(1).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
@@ -100,7 +137,6 @@ public class SceltaStanzeFragment extends Fragment {
         rateLayout = (RelativeLayout) view.findViewById(R.id.votePath);
         imageButton = (ImageButton) view.findViewById(R.id.share);
 
-        parent = (PercorsoActivity) getActivity();
         listaStanze = new ArrayList<>();
     }
 
@@ -108,13 +144,12 @@ public class SceltaStanzeFragment extends Fragment {
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String nomeMuseo = parent.getNomeMuseo();
-                String nomePercorso = parent.getNomePercorso();
+
 
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.msg_share)
-                        + "\n" +getString(R.string.museum ,nomeMuseo)
+                        + "\n" + getString(R.string.museum, nomeMuseo)
                         + "\n" + getString(R.string.path, nomePercorso)
                         + "\n" + getString(R.string.vote, Float.toString(ratingBar.getRating())));
                 sendIntent.setType("text/plain");
@@ -130,26 +165,25 @@ public class SceltaStanzeFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if(parent.checkConnectivity()){
+                if (parent.checkConnectivity()) {
                     String result = Float.toString(ratingBar.getRating());
                     parent.getSnapshotVoti().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                         @Override
                         public void onSuccess(DataSnapshot dataSnapshot) {
                             String voti = dataSnapshot.getValue(String.class);
 
-                            if(voti.equals("-1"))
+                            if (voti.equals("-1"))
                                 voti = result;
                             else
-                                voti = voti.concat("," + result);
+                                voti = voti.concat(";" + result);
                             parent.getDb().child("Voti").setValue(voti).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        Toast.makeText(getContext(),R.string.path_end_success,Toast.LENGTH_LONG).show();
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(getContext(), R.string.path_end_success, Toast.LENGTH_LONG).show();
                                         parent.endPath();
-                                    }
-                                    else{
-                                        Toast.makeText(getContext(),R.string.path_end_fail,Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(getContext(), R.string.path_end_fail, Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
@@ -195,22 +229,37 @@ public class SceltaStanzeFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        String nomeMuseo = parent.getNomeMuseo();
-        String nomePercorso = parent.getNomePercorso();
-
-        if(isFirst){
-            listaStanze.add(parent.getPath().getStanzaCorrente());
-            textView.setText(getString(R.string.museum ,nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
-            isFirst = false;
-        }else if(parent.getPath().getIdStanzaCorrente().equals(parent.getPath().getIdStanzaFinale())){
-            textView.setText(getString(R.string.museum ,nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
+        if (lastStanza == null) { //Primo avvio del fragment
+            listaStanze.add(path.getStanzaCorrente());
+            textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
+        } //Torna indietro o qr chiuso
+        else if (path.getIdStanzaCorrente().equals(path.getIdStanzaFinale()) && !path.getIdStanzaCorrente().equals(lastStanza)) {
+            textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
             listaStanzeLayout.setVisibility(View.GONE);
             rateLayout.setVisibility(View.VISIBLE);
-        }else {
-            listaStanze = parent.getPath().getAdiacentNodes();
-            textView.setText(getString(R.string.museum ,nomeMuseo ) + "\n" + getString(R.string.area, parent.getPath().getStanzaCorrente().getNome()));
+        } else if (!path.getIdStanzaCorrente().equals(lastStanza)) {
+            listaStanze = path.getAdiacentNodes();
+            textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.area, path.getStanzaCorrente().getNome()));
         }
-        imageView.setImageURI(Uri.parse(cacheMuseums.get(nomeMuseo).getFileUri()));
+
+        lastStanza = path.getIdStanzaCorrente();
+
+        if (savedInstanceState == null) {
+            museumn = cacheMuseums.get(nomeMuseo);
+        } else {
+            Gson gson = new GsonBuilder().create();
+            this.museumn = gson.fromJson(savedInstanceState.getSerializable("museumn").toString(), Museo.class);
+            if(museumn == null) //lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui comunque viene ricreato da 0
+                museumn = cacheMuseums.get(nomeMuseo);
+            else{
+                try{
+                    imageView.setImageURI(Uri.parse(museumn.getFileUri()));
+                } catch (NullPointerException e){
+                    e.printStackTrace();
+                }
+            }
+
+        }
 
 
         // Sending reference and data to Adapter
@@ -222,4 +271,16 @@ public class SceltaStanzeFragment extends Fragment {
     public Bundle getSavedInstanceState() {
         return savedInstanceState;
     }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        outState.putSerializable("path", gson.toJson(this.path));
+        outState.putSerializable("museumn", gson.toJson(this.museumn));
+        outState.putString("nomePercorso", this.nomePercorso);
+        outState.putString("nomeMuseo", this.nomePercorso);
+    }
+
 }

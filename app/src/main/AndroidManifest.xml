@@ -26,6 +26,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TourExperience">
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="it.uniba.sms2122.tourexperience.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
+
         <service
             android:name=".operadetection.BleService"
             android:enabled="true"

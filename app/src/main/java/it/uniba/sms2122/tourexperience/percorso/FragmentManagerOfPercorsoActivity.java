@@ -88,45 +88,46 @@ public class FragmentManagerOfPercorsoActivity {
      *
      * @param idClickedRoom, l'id della stanza che è stata clicccata
      */
-    public void nextQRScannerFragmentOfRoomSelection(String idClickedRoom) {
+    public void openQRScannerFragmentOfRoomSelection(String idClickedRoom) {
+
+        QRScannerFragment qrScanner = new QRScannerFragment();
+        qrScanner.setScannerDataManager((scanResult) -> {//i dati letti dallo scannere qr verranno gestiti come segue
+
+            if (scanResult.equals(idClickedRoom)) {
+                try {
+
+                    if (idClickedRoom.equals(percorsoActivity.getPath().getIdStanzaIniziale())) {
+                        //path.setIdStanzaCorrente(idClickedRoom);
+                        percorsoActivity.getPath().moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
+                        nextStanzaFragment();
+                    } else {
+                        percorsoActivity.getPath().moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
+                        nextStanzaFragment();
+                    }
+
+                } catch (GraphException e) {
+                    Log.e("excpetion", e.getMessage());
+                }
+            } else {
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(percorsoActivity);
+                alert.setTitle(percorsoActivity.getString(R.string.error_room_title));
+                alert.setMessage(percorsoActivity.getString(R.string.error_room_body));
+                alert.setCancelable(true);
+                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                alert.show();
+            }
+        });
 
         percorsoActivity.setActionPerfom(() -> {
             percorsoActivity.getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.scannerFrag, new QRScannerFragment(
-                            (scanResult) -> {//i dati letti dallo scannere qr verranno gestiti come segue
-
-                                if (scanResult.equals(idClickedRoom)) {
-                                    try {
-
-                                        if (idClickedRoom.equals(percorsoActivity.getPath().getIdStanzaIniziale())) {
-                                            //path.setIdStanzaCorrente(idClickedRoom);
-                                            percorsoActivity.getPath().moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
-                                            nextStanzaFragment();
-                                        } else {
-                                            percorsoActivity.getPath().moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
-                                            nextStanzaFragment();
-                                        }
-
-                                    } catch (GraphException e) {
-                                        Log.e("excpetion", e.getMessage());
-                                    }
-                                } else {
-
-                                    AlertDialog.Builder alert = new AlertDialog.Builder(percorsoActivity);
-                                    alert.setTitle(percorsoActivity.getString(R.string.error_room_title));
-                                    alert.setMessage(percorsoActivity.getString(R.string.error_room_body));
-                                    alert.setCancelable(true);
-                                    alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.dismiss();
-                                        }
-                                    });
-                                    alert.show();
-                                }
-                            }
-                    ), null)
+                    .add(R.id.scannerFrag, qrScanner, null)
                     .commit();
         });
 
@@ -141,26 +142,29 @@ public class FragmentManagerOfPercorsoActivity {
      * @param stanza stanza da cui parte la scannerizzazione del QR code e che dovrebbe contenere
      *               l'oggetto opera che serve.
      */
-    public void nextQRScannerFragmentOfForOpera(final Stanza stanza) {
+    public void openQRScannerFragmentOfForOpera(final Stanza stanza) {
+
+        QRScannerFragment qrScanner = new QRScannerFragment();
+        qrScanner.setScannerDataManager((scanResult) -> {
+            try {
+                String operaJson = new Gson().toJson(stanza.getOperaByID(scanResult));
+                Bundle bundle = new Bundle();
+                bundle.putString("OperaJson", operaJson);
+                nextOperaFragment(bundle);
+            }
+            catch (IllegalArgumentException e) {
+                exceptionScanQROpera(e, "IllegalArgumentException", "QR code ha ritornato un id errato.");
+            } catch (NullPointerException e) {
+                exceptionScanQROpera(e, "NullPointerException", "Opera non presente.");
+            } catch (JsonParseException e) {
+                exceptionScanQROpera(e, "JsonParseException", "Parsing della classe Opera fallito.");
+            }
+        });
 
         percorsoActivity.setActionPerfom( () ->
             percorsoActivity.getSupportFragmentManager().beginTransaction()
             .setReorderingAllowed(true)
-            .add(R.id.scannerFrag, new QRScannerFragment((scanResult) -> {
-                try {
-                    String operaJson = new Gson().toJson(stanza.getOperaByID(scanResult));
-                    Bundle bundle = new Bundle();
-                    bundle.putString("OperaJson", operaJson);
-                    nextOperaFragment(bundle);
-                }
-                catch (IllegalArgumentException e) {
-                    exceptionScanQROpera(e, "IllegalArgumentException", "QR code ha ritornato un id errato.");
-                } catch (NullPointerException e) {
-                    exceptionScanQROpera(e, "NullPointerException", "Opera non presente.");
-                } catch (JsonParseException e) {
-                    exceptionScanQROpera(e, "JsonParseException", "Parsing della classe Opera fallito.");
-                }
-            }), null).commit());
+            .add(R.id.scannerFrag, qrScanner, null).commit());
 
         percorsoActivity.checkCameraPermission();
     }

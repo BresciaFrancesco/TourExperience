@@ -102,17 +102,7 @@ public class PercorsoActivity extends AppCompatActivity {
             this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
             this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
             this.nomePercorso = savedInstanceState.getString("nomePercorso");
-        }/*else{
-
-            FragmentManager fgManager = getSupportFragmentManager();
-            List<Fragment> fgList = fgManager.getFragments();
-            for(Fragment fg : fgList){
-
-                fgManager.getFragment(savedInstanceState, fg.getTag());
-
-            }
-        }*/
-
+        }
         // cacheMuseums.get(nomeMuseo); // per ottenere l'oggetto Museo, basta fare così
     }
 
@@ -155,9 +145,6 @@ public class PercorsoActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
-        //getSupportFragmentManager().findFragmentById(R.id.container_fragments_route).setInitialSavedState(null);
-
         super.onBackPressed();
 
         // Stop del service

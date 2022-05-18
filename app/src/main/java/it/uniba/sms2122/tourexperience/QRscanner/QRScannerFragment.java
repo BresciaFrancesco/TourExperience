@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.zxing.Result;
 
 import java.util.zip.Inflater;
@@ -28,14 +30,16 @@ import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 public class QRScannerFragment extends Fragment {
 
     private CodeScanner mCodeScanner;
+
     QRscannerDataManager scannerDataManager;
 
+    public QRScannerFragment(){}
+
     /**
-     * Costruttore
-     *
-     * @param scannerDataManager, un oggetto da instanziare tramite lambda expression per decidere che fare con i dati letto dallo scanner dei qr
+     * Funzione per settare l'oggetto che gestisce i dati letti
+     * @param scannerDataManager un oggetto da instanziare tramite lambda expression per decidere che fare con i dati letto dallo scanner dei qr
      */
-    public QRScannerFragment(QRscannerDataManager scannerDataManager) {
+    public void setScannerDataManager(QRscannerDataManager scannerDataManager) {
         this.scannerDataManager = scannerDataManager;
     }
 
@@ -44,11 +48,16 @@ public class QRScannerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        if(scannerDataManager == null){//è avvenuto un cambio di configurazione
+
+            //chiudo lo scanner perche ho bisogno di farlo riaprire per caricare l'ggetto che gestisce la lettura del qr
+            getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+        }
+
         Fragment thisFragment = this;
         final Activity parentActivity = getActivity();
         View root = inflater.inflate(R.layout.qr_scanner_fragment, container, false);
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
-
 
         triggerCloseScannerButton(root);
 

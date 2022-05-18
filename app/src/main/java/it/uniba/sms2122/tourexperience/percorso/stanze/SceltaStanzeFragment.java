@@ -72,7 +72,7 @@ public class SceltaStanzeFragment extends Fragment {
 
 
     private PercorsoActivity parent;
-    private boolean isFirst = true;
+    private String lastStanza;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -229,18 +229,20 @@ public class SceltaStanzeFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (isFirst) {
+        if (lastStanza == null) { //Primo avvio del fragment
             listaStanze.add(path.getStanzaCorrente());
             textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
-            isFirst = false;
-        } else if (path.getIdStanzaCorrente().equals(path.getIdStanzaFinale())) {
+        } //Torna indietro o qr chiuso
+        else if (path.getIdStanzaCorrente().equals(path.getIdStanzaFinale()) && !path.getIdStanzaCorrente().equals(lastStanza)) {
             textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
             listaStanzeLayout.setVisibility(View.GONE);
             rateLayout.setVisibility(View.VISIBLE);
-        } else {
+        } else if (!path.getIdStanzaCorrente().equals(lastStanza)) {
             listaStanze = path.getAdiacentNodes();
             textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.area, path.getStanzaCorrente().getNome()));
         }
+
+        lastStanza = path.getIdStanzaCorrente();
 
         if (savedInstanceState == null) {
             museumn = cacheMuseums.get(nomeMuseo);

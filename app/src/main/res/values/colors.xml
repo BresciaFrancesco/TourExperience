@@ -18,4 +18,5 @@
     <color name="rating_star_on">#FFC107</color>
     <color name="rating_star_off">#DDDDDC</color>
     <color name="mtrl_fab_button_default">#784BA5</color>
+    <color name="gray_for_options">#797979</color>
 </resources>

@@ -11,11 +11,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
@@ -23,6 +26,8 @@ import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 
 public class OverviewPathFragment extends Fragment {
+
+    Percorso path;
 
     View inflater;
 
@@ -43,6 +48,22 @@ public class OverviewPathFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        if (savedInstanceState == null) {
+            path = ((PercorsoActivity)getActivity()).getPath();
+
+        } else {
+            Gson gson = new GsonBuilder().create();
+            this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
+
+            /*if (this.path == null) {//lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui comunque viene ricreato da 0 e non ha valori inzializzati
+
+                path = parent.getPath();
+                nomeMuseo = parent.getNomeMuseo();
+                nomePercorso = parent.getNomePercorso();
+
+            } */
+        }
 
         setDynamicValuesOnView();
         triggerStartPathButton();
@@ -65,7 +86,6 @@ public class OverviewPathFragment extends Fragment {
     private void setDynamicValuesOnView() {
 
         PercorsoActivity parent = (PercorsoActivity) getActivity();
-        Percorso path = parent.getPath();
 
         pathNameTextView = inflater.findViewById(R.id.pathName);
         pathNameTextView.setText(path.getNomePercorso());
@@ -96,4 +116,11 @@ public class OverviewPathFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        outState.putSerializable("path", gson.toJson(this.path));
+    }
 }

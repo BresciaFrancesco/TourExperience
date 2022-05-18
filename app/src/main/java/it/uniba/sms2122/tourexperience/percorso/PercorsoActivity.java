@@ -96,6 +96,12 @@ public class PercorsoActivity extends AppCompatActivity {
 
             Fragment firstPage = new MuseoFragment();
             fgManagerOfPercorso.createFragment(firstPage, "museoFragment");
+        } else {
+            Gson gson = new GsonBuilder().create();
+
+            this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
+            this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
+            this.nomePercorso = savedInstanceState.getString("nomePercorso");
         }/*else{
 
             FragmentManager fgManager = getSupportFragmentManager();
@@ -208,39 +214,9 @@ public class PercorsoActivity extends AppCompatActivity {
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-       /* FragmentManager fgManager = getSupportFragmentManager();
-        List<Fragment> fgList = fgManager.getFragments();
-        for(Fragment fg : fgList){
-
-            fgManager.putFragment(outState, fg.getTag(), fg);
-
-        }*/
-
-
         outState.putSerializable("path", gson.toJson(this.path));
         outState.putString("nomeMuseo", this.nomeMuseo);
         outState.putString("nomePercorso", this.nomePercorso);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        Gson gson = new GsonBuilder().create();
-
-        /*FragmentManager fgManager = getSupportFragmentManager();
-        List<Fragment> fgList = fgManager.getFragments();
-        for(Fragment fg : fgList){
-
-            fgManager.putFragment(savedInstanceState, fg.getTag(), fg);
-
-        }*/
-
-        this.path =  gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
-
-        this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
-        this.nomePercorso = savedInstanceState.getString("nomePercorso");
-
     }
 
 

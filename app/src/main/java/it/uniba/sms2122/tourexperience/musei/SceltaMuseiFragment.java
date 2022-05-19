@@ -307,6 +307,7 @@ public class SceltaMuseiFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
         Log.v("SceltaMuseiFragment", "chiamato onSaveInstanceState()");
         if (listaMusei != null && !isListaMuseiEmpty()) {
             ArrayList<String> nomiMusei = new ArrayList<>();
@@ -327,12 +328,12 @@ public class SceltaMuseiFragment extends Fragment {
             outState.putStringArrayList("tipologie_musei", tipologieMusei);
             outState.putStringArrayList("immagini_musei", uriImmagini);
         }
-        super.onSaveInstanceState(outState);
     }
 
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
         Log.v("SceltaMuseiFragment", "chiamato onViewStateRestored()");
         MainActivity activity = (MainActivity)getActivity();
         if (activity != null) {
@@ -362,7 +363,6 @@ public class SceltaMuseiFragment extends Fragment {
                 ));
             }
         }
-        super.onViewStateRestored(savedInstanceState);
     }
 
 

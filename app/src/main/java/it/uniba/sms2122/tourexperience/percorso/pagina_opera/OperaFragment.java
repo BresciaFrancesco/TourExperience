@@ -26,8 +26,6 @@ import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 public class OperaFragment extends Fragment {
 
     private Opera opera;
-    private ImageAndDescriptionFragment fragment;
-    private FragmentManager fragmentManager;
     private final int requestCodeGC = 900007;
 
 
@@ -42,28 +40,23 @@ public class OperaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        fragmentManager = getParentFragmentManager();
-
         Bundle bundle = getArguments();
         String operaJson = Objects.requireNonNull(bundle).getString("OperaJson");
         this.opera = new Gson().fromJson(Objects.requireNonNull(operaJson), Opera.class);
 
         setActionBar(opera.getNome());
 
-        createFragmentImageAndDescription();
-    }
-
-    private void createFragmentImageAndDescription() {
-        fragment = new ImageAndDescriptionFragment(opera.getPercorsoImg(), opera.getDescrizione());
+        FragmentManager fragmentManager = getParentFragmentManager();
+        ImageAndDescriptionFragment fragment = new ImageAndDescriptionFragment(opera.getPercorsoImg(), opera.getDescrizione());
         fragmentManager.beginTransaction()
             .setReorderingAllowed(true)
             .add(R.id.imageanddescription_fragment_container_view, fragment)
             .commit();
     }
 
-
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
         Log.v("OperaFragment", "chiamato onSaveInstanceState()");
         if (opera != null) {
             outState.putString("id", opera.getId());
@@ -71,12 +64,12 @@ public class OperaFragment extends Fragment {
             outState.putString("percorsoImg", opera.getPercorsoImg());
             outState.putString("descrizione", opera.getDescrizione());
         }
-        super.onSaveInstanceState(outState);
     }
 
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
         Log.v("OperaFragment", "chiamato onViewStateRestored()");
         if(savedInstanceState != null && !savedInstanceState.isEmpty()) {
             this.opera = new Opera(
@@ -85,10 +78,8 @@ public class OperaFragment extends Fragment {
                 savedInstanceState.getString("percorsoImg"),
                 savedInstanceState.getString("descrizione")
             );
-            createFragmentImageAndDescription();
-            setActionBar(opera.getNome());
+            //setActionBar(opera.getNome());
         }
-        super.onViewStateRestored(savedInstanceState);
     }
 
     /**

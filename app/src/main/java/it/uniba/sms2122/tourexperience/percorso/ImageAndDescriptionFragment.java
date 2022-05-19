@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
 
@@ -31,11 +26,18 @@ public class ImageAndDescriptionFragment extends Fragment {
     private String description;
     private TextView descriptionTextView;
 
+    /**
+     * Costruttore senza parametri per il ripristino del fragment automatico di android
+     */
+    public ImageAndDescriptionFragment() {
+        this.imagePath = "";
+        this.description = "Empty Description";
+    }
+
     public ImageAndDescriptionFragment(String imagePath, String description) {
         this.imagePath = imagePath;
         this.description = description;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public class ImageAndDescriptionFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
         Log.v("ImageAndDescriptionFragment", "chiamato onSaveInstanceState()");
         if (this.imagePath != null) {
             outState.putString("imagePath", this.imagePath);
@@ -71,12 +74,12 @@ public class ImageAndDescriptionFragment extends Fragment {
         if (this.description != null) {
             outState.putString("description", this.description);
         }
-        super.onSaveInstanceState(outState);
     }
 
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
         Log.v("ImageAndDescriptionFragment", "chiamato onViewStateRestored()");
         if(savedInstanceState != null && !savedInstanceState.isEmpty()) {
             String description = savedInstanceState.getString("description");
@@ -84,7 +87,6 @@ public class ImageAndDescriptionFragment extends Fragment {
                 description = "";
             }
             this.description = description;
-            descriptionTextView.setText(this.description);
 
             String imagePath = savedInstanceState.getString("imagePath");
             if (imagePath == null) {
@@ -92,6 +94,5 @@ public class ImageAndDescriptionFragment extends Fragment {
             }
             this.imagePath = imagePath;
         }
-        super.onViewStateRestored(savedInstanceState);
     }
 }

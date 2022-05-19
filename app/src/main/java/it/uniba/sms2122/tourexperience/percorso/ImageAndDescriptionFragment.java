@@ -1,5 +1,6 @@
-package it.uniba.sms2122.tourexperience.imageanddescription;
+package it.uniba.sms2122.tourexperience.percorso;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,13 +26,13 @@ import it.uniba.sms2122.tourexperience.R;
  * (come nella pagina dei musei o delle opere)
  */
 public class ImageAndDescriptionFragment extends Fragment {
-    private List<String> imagesPaths;
-    private ViewPager2 imgViewPager;
+    private String imagePath;
+    private ImageView image;
     private String description;
     private TextView descriptionTextView;
 
-    public ImageAndDescriptionFragment(List<String> imagesPaths, String description) {
-        this.imagesPaths = imagesPaths;
+    public ImageAndDescriptionFragment(String imagePath, String description) {
+        this.imagePath = imagePath;
         this.description = description;
     }
 
@@ -51,20 +53,20 @@ public class ImageAndDescriptionFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Inizializzo la descrizione
-        descriptionTextView = view.findViewById(R.id.stanza_description);
+        descriptionTextView = view.findViewById(R.id.description);
         descriptionTextView.setText(description);
 
-        // Inizializzo il view pager
-        imgViewPager = view.findViewById(R.id.image_viewpager);
-        imgViewPager.setAdapter(new ImageAdapter(imagesPaths));
+        // Inizializzo l'immagine
+        image = view.findViewById(R.id.image);
+        image.setImageURI(Uri.parse(imagePath));
     }
 
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         Log.v("ImageAndDescriptionFragment", "chiamato onSaveInstanceState()");
-        if (this.imagesPaths != null) {
-            outState.putStringArrayList("imagesPaths", new ArrayList<>(this.imagesPaths));
+        if (this.imagePath != null) {
+            outState.putString("imagePath", this.imagePath);
         }
         if (this.description != null) {
             outState.putString("description", this.description);
@@ -84,12 +86,11 @@ public class ImageAndDescriptionFragment extends Fragment {
             this.description = description;
             descriptionTextView.setText(this.description);
 
-            List<String> imagesPaths = savedInstanceState.getStringArrayList("imagesPaths");
-            if (imagesPaths == null) {
-                imagesPaths = Collections.singletonList("");
+            String imagePath = savedInstanceState.getString("imagePath");
+            if (imagePath == null) {
+                imagePath = "";
             }
-            this.imagesPaths = imagesPaths;
-            imgViewPager.setAdapter(new ImageAdapter(this.imagesPaths));
+            this.imagePath = imagePath;
         }
         super.onViewStateRestored(savedInstanceState);
     }

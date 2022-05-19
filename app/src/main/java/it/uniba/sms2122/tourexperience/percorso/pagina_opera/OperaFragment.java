@@ -15,15 +15,12 @@ import android.view.ViewGroup;
 
 import com.google.gson.Gson;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
-import it.uniba.sms2122.tourexperience.imageanddescription.ImageAndDescriptionFragment;
+import it.uniba.sms2122.tourexperience.percorso.ImageAndDescriptionFragment;
 import it.uniba.sms2122.tourexperience.model.Opera;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
-import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
 
 public class OperaFragment extends Fragment {
@@ -57,8 +54,7 @@ public class OperaFragment extends Fragment {
     }
 
     private void createFragmentImageAndDescription() {
-        final List<String> immagineOpera = Collections.singletonList(opera.getPercorsoImg());
-        fragment = new ImageAndDescriptionFragment(immagineOpera, opera.getDescrizione());
+        fragment = new ImageAndDescriptionFragment(opera.getPercorsoImg(), opera.getDescrizione());
         fragmentManager.beginTransaction()
             .setReorderingAllowed(true)
             .add(R.id.imageanddescription_fragment_container_view, fragment)

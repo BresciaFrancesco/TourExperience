@@ -152,12 +152,8 @@ public class FragmentManagerOfPercorsoActivity {
                 bundle.putString("OperaJson", operaJson);
                 nextOperaFragment(bundle);
             }
-            catch (IllegalArgumentException e) {
-                exceptionScanQROpera(e, "IllegalArgumentException", "QR code ha ritornato un id errato.");
-            } catch (NullPointerException e) {
-                exceptionScanQROpera(e, "NullPointerException", "Opera non presente.");
-            } catch (JsonParseException e) {
-                exceptionScanQROpera(e, "JsonParseException", "Parsing della classe Opera fallito.");
+            catch (IllegalArgumentException | NullPointerException | JsonParseException e) {
+                exceptionScanQROpera(e);
             }
         });
 
@@ -171,13 +167,17 @@ public class FragmentManagerOfPercorsoActivity {
 
     /**
      * Permette di non ripetere il codice da inserire nel cathc di un'eccezione.
+     * Crea un AlertDialog per l'utente in cui spiega il problema avvenuto nello
+     * scan del QR per un'opera.
      * @param e eccezione.
-     * @param tagError tag da inserire nel log di errore.
-     * @param messageError messaggio da inserire nel log di errore.
      */
-    private void exceptionScanQROpera(Exception e, String tagError, String messageError) {
-        Toast.makeText(percorsoActivity.getApplicationContext(), "QR Code Error", Toast.LENGTH_SHORT).show();
-        Log.e(tagError, messageError);
+    private void exceptionScanQROpera(Exception e) {
+        new AlertDialog.Builder(percorsoActivity)
+        .setTitle(percorsoActivity.getString(R.string.error_opera_title))
+        .setMessage(percorsoActivity.getString(R.string.error_opera_body))
+        .setCancelable(true)
+        .setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss())
+        .show();
         e.printStackTrace();
     }
 

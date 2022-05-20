@@ -32,7 +32,6 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        System.out.println("SEI DENTRO");
 
         createLocalDirectoryIfNotExists(getFilesDir(), mainDirectory);
         options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
@@ -49,7 +48,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             userHolder.getUser(
                     //Caso: Utente è loggato
                     (user) -> {
-                        System.out.println("CIao");
                         check.set(false);
                         Intent intent = new Intent(this, MainActivity.class);
                         startActivity(intent);
@@ -57,25 +55,20 @@ public class SplashScreenActivity extends AppCompatActivity {
                     },
                     //Caso: Utente non è loggato
                     () -> {
-                        System.out.println("CIao1");
                         // Verifica se si tratta della prima apertura o no
                         SharedPreferences prefs = getSharedPreferences(BuildConfig.SHARED_PREFS, MODE_PRIVATE);
                         if(!prefs.contains(BuildConfig.SP_FIRST_OPENING)) {
                             SharedPreferences.Editor editor = prefs.edit();
                             editor.putBoolean(BuildConfig.SP_FIRST_OPENING, true);
                             editor.apply();
-                            System.out.println("2");
                         }
 
                         if(prefs.getBoolean(BuildConfig.SP_FIRST_OPENING, true)) {
-                            System.out.println("3");
                             startActivity(new Intent(this, WelcomeActivity.class));
-                            finish();
                         } else {
-                            System.out.println("4");
                             startActivity(new Intent(this, FirstActivity.class));
-                            finish();
                         }
+                        finish();
                     }
             );
         } else {

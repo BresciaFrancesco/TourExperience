@@ -18,10 +18,12 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <ProgressBar
-        style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
+        android:indeterminate="true"
+        android:progressTint="@color/white"
+        style="?android:attr/progressBarStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logoImg" />

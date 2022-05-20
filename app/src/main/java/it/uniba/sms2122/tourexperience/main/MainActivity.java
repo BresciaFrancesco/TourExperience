@@ -105,9 +105,6 @@ public class MainActivity extends AppCompatActivity {
                             .replace(R.id.content_fragment_container_view, HomeFragment.class, null)
                             .commit();
                     return true;
-                case R.id.history:
-
-                    return true;
                 case R.id.museums:
                     if (f instanceof SceltaMuseiFragment) return false;
                     fragmentManager.beginTransaction()

@@ -93,8 +93,9 @@ public class UserHolder extends AbstractHolder {
                     }
                 }
             });
+        } else {
+            failure.doFail();
         }
-        failure.doFail();
     }
 
     /**

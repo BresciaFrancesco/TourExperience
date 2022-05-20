@@ -126,6 +126,11 @@ public class StanzaFragment extends Fragment {
         else{
             Gson gson = new GsonBuilder().create();
             this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
+
+            if (this.path == null) {//lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui comunque viene ricreato da 0 e non ha valori inzializzati
+
+                path = percorsoActivity.getPath();
+            }
         }
 
         textView = view.findViewById(R.id.stanza_description);

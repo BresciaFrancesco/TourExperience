@@ -20,33 +20,14 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/tourexperience"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/tourexperience"
         android:supportsRtl="true"
         android:theme="@style/Theme.TourExperience">
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="it.uniba.sms2122.tourexperience.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/filepaths" />
-        </provider>
-
-
-        <service
-            android:name=".operadetection.BleService"
-            android:enabled="true"
-            android:exported="false"/>
-
         <activity
-            android:name=".percorso.PercorsoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".FirstActivity"
+            android:name=".SplashScreenActivity"
             android:exported="true"
             android:windowSoftInputMode="stateAlwaysHidden|adjustNothing">
             <intent-filter>
@@ -55,6 +36,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="it.uniba.sms2122.tourexperience.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
+        <service
+            android:name=".operadetection.BleService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name=".percorso.PercorsoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FirstActivity"
+            android:exported="false"/>
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
@@ -80,3 +83,4 @@
     </application>
 
 </manifest>
+

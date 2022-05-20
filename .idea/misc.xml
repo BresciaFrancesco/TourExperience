@@ -4,15 +4,20 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../../../layout/custom_preview.xml" value="0.17291666666666666" />
+        <entry key="..\:/TourExperience/app/src/main/res/drawable-anydpi/logo.xml" value="0.2135" />
         <entry key="..\:/TourExperience/app/src/main/res/drawable/button_shape.xml" value="0.2975" />
+        <entry key="..\:/TourExperience/app/src/main/res/drawable/progress_bg.xml" value="0.121" />
         <entry key="..\:/TourExperience/app/src/main/res/drawable/textview_circle_border.xml" value="0.1965" />
         <entry key="..\:/TourExperience/app/src/main/res/drawable/top_rounded.xml" value="0.264" />
+        <entry key="..\:/TourExperience/app/src/main/res/layout/activity_first.xml" value="0.10989583333333333" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/activity_login.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/activity_main.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/activity_museo.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/activity_opera.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/activity_percorso.xml" value="0.18541666666666667" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/activity_registration.xml" value="0.18541666666666667" />
+        <entry key="..\:/TourExperience/app/src/main/res/layout/activity_splash_screen.xml" value="0.2" />
+        <entry key="..\:/TourExperience/app/src/main/res/layout/activity_welcome.xml" value="0.1" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_home.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_museo.xml" value="0.4" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_ranking.xml" value="0.2" />
@@ -27,6 +32,9 @@
         <entry key="..\:/TourExperience/app/src/main/res/layout/ranking_item.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/menu/home.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/menu/share.xml" value="0.3625" />
+        <entry key="..\:/TourExperience/app/src/main/res/mipmap-anydpi-v26/TourExperience.xml" value="0.1775" />
+        <entry key="..\:/TourExperience/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1775" />
+        <entry key="..\:/TourExperience/app/src/main/res/mipmap-anydpi-v26/tourexperience.xml" value="0.2135" />
         <entry key="..\:/Users/Utente/AppData/Local/Android/Sdk/platforms/android-31/data/res/layout/simple_list_item_1.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable-anydpi/favorites.xml" value="0.316" />
         <entry key="..\:/Users/Utente/Desktop/ProgettoAndroid/TourExperience/app/src/main/res/drawable/button_shape.xml" value="0.1935" />

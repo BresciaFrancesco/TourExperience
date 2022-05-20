@@ -24,9 +24,7 @@ public class FirstActivity extends AppCompatActivity {
     private TextView textViewGuest;
     private ActionBar actionBar;
 
-    private UserHolder userHolder;
     private ActivityOptions options;
-    private final String mainDirectory = "Museums";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,47 +35,13 @@ public class FirstActivity extends AppCompatActivity {
         btnRegistration = (Button) findViewById(R.id.idBtnMainRegistration);
         textViewGuest = (TextView) findViewById(R.id.idTextViewGuest);
 
-        createLocalDirectoryIfNotExists(getFilesDir(), mainDirectory);
+        setOnClickListenerBtnLogin();
+        setOnClickListenerBtnRegistration();
+        setOnClickListenerTextViewGuest();
 
-        userHolder = UserHolder.getInstance();
-        userHolder.getUser(
-                //Caso: Utente è loggato
-                (user) -> {
-
-                    btnLogin.setVisibility(View.GONE);
-                    btnRegistration.setVisibility(View.GONE);
-                    textViewGuest.setVisibility(View.GONE);
-                    findViewById(R.id.idImgLogo).setVisibility(View.GONE);
-
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-                    supportFinishAfterTransition(); // Non si può tornare indietro con il pulsane Back
-                },
-                //Caso: Utente non è loggato
-                () -> {
-                    // Verifica se si tratta della prima apertura o no
-                    SharedPreferences prefs = getSharedPreferences(BuildConfig.SHARED_PREFS, MODE_PRIVATE);
-                    if(!prefs.contains(BuildConfig.SP_FIRST_OPENING)) {
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putBoolean(BuildConfig.SP_FIRST_OPENING, true);
-                        editor.apply();
-                    }
-                    if(prefs.getBoolean(BuildConfig.SP_FIRST_OPENING, true)) {
-                        startActivity(new Intent(this, WelcomeActivity.class));
-                        finish();
-                        return;
-                    }
-
-                    setOnClickListenerBtnLogin();
-                    setOnClickListenerBtnRegistration();
-                    setOnClickListenerTextViewGuest();
-
-
-                    options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
-                    actionBar = getSupportActionBar();
-                    actionBar.setTitle("Tour Experience");
-                }
-        );
+        options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
+        actionBar = getSupportActionBar();
+        actionBar.setTitle("Tour Experience");
     }
 
     /**

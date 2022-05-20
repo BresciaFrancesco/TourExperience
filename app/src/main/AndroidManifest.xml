@@ -25,7 +25,9 @@
         android:roundIcon="@mipmap/tourexperience"
         android:supportsRtl="true"
         android:theme="@style/Theme.TourExperience">
-
+        <activity
+            android:name=".games.SpotDifference.SpotDifferences"
+            android:exported="false" />
         <activity
             android:name=".SplashScreenActivity"
             android:exported="true"
@@ -57,7 +59,7 @@
             android:exported="false" />
         <activity
             android:name=".FirstActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
@@ -83,4 +85,3 @@
     </application>
 
 </manifest>
-

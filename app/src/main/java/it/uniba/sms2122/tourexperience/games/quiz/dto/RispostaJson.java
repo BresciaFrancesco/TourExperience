@@ -6,7 +6,7 @@ package it.uniba.sms2122.tourexperience.games.quiz.dto;
 public class RispostaJson {
     private String id;
     private String risposta;
-    private Double punti;
+    private Boolean isTrue;
 
     private RispostaJson() {}
 
@@ -18,8 +18,8 @@ public class RispostaJson {
         return risposta;
     }
 
-    public double getPunti() {
-        return (punti == null) ? 0.0 : punti;
+    public boolean isTrue() {
+        return (isTrue != null) ? isTrue : false;
     }
 
 }

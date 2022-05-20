@@ -4,31 +4,24 @@ import static it.uniba.sms2122.tourexperience.utility.Validate.inclusiveBetween;
 import static it.uniba.sms2122.tourexperience.utility.Validate.notBlank;
 import static it.uniba.sms2122.tourexperience.utility.Validate.matchesPattern;
 
-import org.jetbrains.annotations.TestOnly;
-
 /**
  * Pattern: Domain Primitive.
  * Rappresenta una Domain Primitive, ovvero un Value Object la cui
  * correttezza è completamente controllata in fase di creazione.
  * Un oggetto Testo o è corretto o non esiste.
  */
-public class Testo {
-    private static final String REGEX_PATTERN = "¿?[A-Z][\\p{Print}&&[^<>\";]]*[\\p{Alpha}?.:]";
+public class Titolo {
+    private static final String REGEX_PATTERN = "[A-Z][\\p{Alnum} ]*[\\p{Alpha}]|[A-Z]";
     private final String value;
 
-    public Testo(final String testo) {
-        notBlank(testo);
-        inclusiveBetween(1, 100, testo.length());
-        matchesPattern(testo, REGEX_PATTERN, "Il testo non è accettato dal pattern " + REGEX_PATTERN);
-        value = testo;
+    public Titolo(final String titolo) {
+        notBlank(titolo);
+        inclusiveBetween(1, 40, titolo.length());
+        matchesPattern(titolo, REGEX_PATTERN, "Il titolo non è accettato dal pattern " + REGEX_PATTERN);
+        value = titolo;
     }
 
     public String value() {
         return value;
-    }
-
-    @TestOnly
-    public static String getRegexPattern() {
-        return REGEX_PATTERN;
     }
 }

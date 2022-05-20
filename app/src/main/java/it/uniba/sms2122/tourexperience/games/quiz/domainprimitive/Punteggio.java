@@ -11,16 +11,16 @@ import static it.uniba.sms2122.tourexperience.utility.Validate.inclusiveBetween;
  * Un oggetto Punteggio o è corretto o non esiste.
  */
 public class Punteggio {
-    private final Double value;
+    private final int value;
 
-    public Punteggio(final Double punteggio) {
+    public Punteggio(final Integer punteggio) {
         notNull(punteggio);
         notNaN(punteggio);
-        inclusiveBetween(0, 100, punteggio);
+        inclusiveBetween(0, 100, punteggio.intValue());
         value = punteggio;
     }
 
-    public Double value() {
+    public int value() {
         return value;
     }
 

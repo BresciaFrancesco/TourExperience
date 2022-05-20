@@ -7,8 +7,8 @@ import java.util.List;
  */
 public class QuizJson {
     private String titolo;
-    private Double valoreTotale;
-    private Double punteggioCorrente;
+    private Integer valoreTotale;
+    private Integer punteggioCorrente;
     private List<DomandaJson> domande;
 
     private QuizJson() {}
@@ -21,11 +21,11 @@ public class QuizJson {
         return domande;
     }
 
-    public Double getValoreTotale() {
+    public Integer getValoreTotale() {
         return valoreTotale;
     }
 
-    public Double getPunteggioCorrente() {
+    public Integer getPunteggioCorrente() {
         return punteggioCorrente;
     }
 

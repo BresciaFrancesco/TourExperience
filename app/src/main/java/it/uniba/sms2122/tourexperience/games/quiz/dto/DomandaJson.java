@@ -8,7 +8,7 @@ import java.util.List;
 public class DomandaJson {
     private String id;
     private String domanda;
-    private Double valore;
+    private Integer valore;
     private List<RispostaJson> risposte;
 
     private DomandaJson() {}
@@ -25,7 +25,7 @@ public class DomandaJson {
         return risposte;
     }
 
-    public Double getValore() {
+    public Integer getValore() {
         return valore;
     }
 

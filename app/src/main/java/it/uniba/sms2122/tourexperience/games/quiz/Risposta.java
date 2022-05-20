@@ -3,6 +3,7 @@ package it.uniba.sms2122.tourexperience.games.quiz;
 import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
 
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.ID;
+import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.IsRispostaEsatta;
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.Punteggio;
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.Testo;
 
@@ -14,12 +15,12 @@ import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.Testo;
 public class Risposta {
     private final ID id;
     private final Testo risposta;
-    private final Punteggio punti;
+    private final IsRispostaEsatta isTrue;
 
-    public Risposta(final ID id, final Testo risposta, final Punteggio punti) {
+    public Risposta(final ID id, final Testo risposta, final IsRispostaEsatta isTrue) {
         this.id = notNull(id);
         this.risposta = notNull(risposta);
-        this.punti = notNull(punti);
+        this.isTrue = notNull(isTrue);
     }
 
     public ID getId() {
@@ -30,7 +31,7 @@ public class Risposta {
         return risposta;
     }
 
-    public Punteggio getPunti() {
-        return punti;
+    public IsRispostaEsatta isTrue() {
+        return isTrue;
     }
 }

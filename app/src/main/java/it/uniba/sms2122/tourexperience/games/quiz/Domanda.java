@@ -21,19 +21,17 @@ public class Domanda {
     private final Punteggio valore;
     private final List<Risposta> risposte;
 
-    public Domanda(final ID id, final Testo domanda, final List<Risposta> risposte) {
+    public Domanda(final ID id, final Testo domanda, final Punteggio valore, final List<Risposta> risposte) {
         this.id = notNull(id);
         this.domanda = notNull(domanda);
         notNull(risposte);
         inclusiveBetween(1, 6, risposte.size());
 
-        Punteggio acc = new Punteggio(0.0);
         for (Risposta ris : risposte) {
             notNull(ris);
-            acc = acc.add(ris.getPunti());
         }
         this.risposte = risposte;
-        this.valore = acc;
+        this.valore = notNull(valore);
     }
 
     public ID getId() {

@@ -7,6 +7,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -26,14 +28,16 @@ import com.google.gson.GsonBuilder;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
+import it.uniba.sms2122.tourexperience.percorso.fine_percorso.FinePercorsoFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
+import it.uniba.sms2122.tourexperience.registration.RegistrationFragmentSecondPage;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
 import java.io.File;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PercorsoActivity extends AppCompatActivity {
 
@@ -120,6 +124,18 @@ public class PercorsoActivity extends AppCompatActivity {
         }
     }
 
+    private boolean lastFragmentIsSceltaStanzeFragment() {
+        boolean flag = false;
+        if(getSupportFragmentManager().getBackStackEntryCount() != 0){
+            String fragmentTag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
+            if (fragmentTag.equals("sceltaStanzeFragment")){
+                flag = true;
+            }
+        }
+
+        return flag;
+    }
+
     // Gestisce il pulsante "back" nella action bar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -145,17 +161,38 @@ public class PercorsoActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if(!lastFragmentIsSceltaStanzeFragment()){
+            if(getSupportFragmentManager().getBackStackEntryCount() < 2){
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+            super.onBackPressed();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.interrupt);
+            builder.setTitle(R.string.attention);
+            builder.setIcon(R.drawable.ic_baseline_error_24);
 
-        // Stop del service
+            builder.setCancelable(false);
+            builder.setPositiveButton(R.string.SI, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    endPath();
+                }
+            });
+
+            builder.setNegativeButton(R.string.NO, null);
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container_fragments_route);
         if (fragment instanceof StanzaFragment) {
             ((StanzaFragment) fragment).unBindService();
         }
 
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
-
 
     /**
      * funzione per sapere se il permesso della camera è gia stato concesso o meno,

@@ -148,5 +148,7 @@
     <string name="no_value">No value</string>
     <string name="pos">Position: %1$s</string>
     <string name="share">Share</string>
+    <string name="interrupt">Do you really want to interrupt the path?</string>
+    <string name="end_path">End Path</string>
 
 </resources>

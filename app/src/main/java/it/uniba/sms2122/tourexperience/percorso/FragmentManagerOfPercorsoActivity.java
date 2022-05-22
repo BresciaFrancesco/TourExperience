@@ -24,6 +24,7 @@ import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.model.Opera;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
+import it.uniba.sms2122.tourexperience.percorso.fine_percorso.FinePercorsoFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
@@ -57,6 +58,11 @@ public class FragmentManagerOfPercorsoActivity {
             Log.e("PercorsoActivity.class", "nextPercorsoFragment -> IllegalArgumentException sollevata.");
             e.printStackTrace();
         }
+    }
+
+    public void nextFinePercorsoFragment() {
+        FinePercorsoFragment finePercorsoFragment = new FinePercorsoFragment();
+        createFragment(finePercorsoFragment, "finePercorsoFragment");
     }
 
     /**

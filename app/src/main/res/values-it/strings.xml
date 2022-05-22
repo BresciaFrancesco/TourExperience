@@ -143,5 +143,7 @@
     <string name="no_value">Nessun valore</string>
     <string name="pos">Posizione: %1$s</string>
     <string name="share">Condividi</string>
+    <string name="interrupt">Vuoi veramente interrompere il percorso?</string>
+    <string name="end_path">Termina percorso</string>
 
 </resources>

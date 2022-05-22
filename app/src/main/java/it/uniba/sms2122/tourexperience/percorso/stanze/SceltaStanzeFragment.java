@@ -5,34 +5,25 @@ import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -41,6 +32,7 @@ import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
+import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
@@ -61,18 +53,18 @@ public class SceltaStanzeFragment extends Fragment {
     private ImageView imageView;
     private TextView textView;
     private Bundle savedInstanceState;
-    private FrameLayout listaStanzeLayout;
-    private RelativeLayout rateLayout;
-    private RatingBar ratingBar;
-    private Button buttonVote;
-    private ImageButton imageButton;
 
-    String nomeMuseo;
-    String nomePercorso;
-
+    private String nomeMuseo;
+    private String nomePercorso;
 
     private PercorsoActivity parent;
     private String lastStanza;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,6 +81,7 @@ public class SceltaStanzeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         parent = (PercorsoActivity) getActivity();
+        parent.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         if (savedInstanceState == null) {
             path = parent.getPath();
@@ -119,110 +112,12 @@ public class SceltaStanzeFragment extends Fragment {
         textView = (TextView) view.findViewById(R.id.nome_item_museo);
         imageView = (ImageView) view.findViewById(R.id.icona_item_museo);
 
-        ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
-        ratingBar.setNumStars(5);
-        //finding the specific RatingBar with its unique ID
-        LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
-
-        //Use for changing the color of RatingBar
-        stars.getDrawable(1).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
-
-        buttonVote = (Button) view.findViewById(R.id.btnEndPath);
-        buttonVoteSetOnClickListener();
-
-        imageButton = (ImageButton) view.findViewById(R.id.share);
-        shareButtonSetOnClick();
-
-        listaStanzeLayout = (FrameLayout) view.findViewById(R.id.rooms_layout);
-        rateLayout = (RelativeLayout) view.findViewById(R.id.votePath);
-        imageButton = (ImageButton) view.findViewById(R.id.share);
-
+        try{
+            imageView.setImageURI(Uri.parse(cacheMuseums.get(nomeMuseo).getFileUri()));
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
         listaStanze = new ArrayList<>();
-    }
-
-    private void shareButtonSetOnClick() {
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.msg_share)
-                        + "\n" + getString(R.string.museum, nomeMuseo)
-                        + "\n" + getString(R.string.path, nomePercorso)
-                        + "\n" + getString(R.string.vote, Float.toString(ratingBar.getRating())));
-                sendIntent.setType("text/plain");
-
-                Intent shareIntent = Intent.createChooser(sendIntent, null);
-                startActivity(shareIntent);
-            }
-        });
-    }
-
-    private void buttonVoteSetOnClickListener() {
-        buttonVote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (parent.checkConnectivity()) {
-                    String result = Float.toString(ratingBar.getRating());
-                    parent.getSnapshotVoti().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                        @Override
-                        public void onSuccess(DataSnapshot dataSnapshot) {
-                            String voti = dataSnapshot.getValue(String.class);
-
-                            if (voti.equals("-1"))
-                                voti = result;
-                            else
-                                voti = voti.concat(";" + result);
-                            parent.getDb().child("Voti").setValue(voti).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(getContext(), R.string.path_end_success, Toast.LENGTH_LONG).show();
-                                        parent.endPath();
-                                    } else {
-                                        Toast.makeText(getContext(), R.string.path_end_fail, Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-                        }
-                    });
-
-                    parent.getSnapshotNumStarts().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                        @Override
-                        public void onSuccess(DataSnapshot dataSnapshot) {
-                            Integer numStarts = dataSnapshot.getValue(Integer.class);
-                            numStarts++;
-                            parent.getDb().child("Numero_stats").setValue(numStarts);
-                        }
-                    });
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setMessage(R.string.msg_attention);
-                    builder.setTitle(R.string.attention);
-
-                    builder.setCancelable(false);
-                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            parent.endPath();
-                        }
-                    });
-
-                    builder.setNegativeButton(R.string.try_again, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
-                        }
-                    });
-
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                }
-            }
-        });
     }
 
     @Override
@@ -234,10 +129,8 @@ public class SceltaStanzeFragment extends Fragment {
             textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
         } //Torna indietro o qr chiuso
         else if (path.getIdStanzaCorrente().equals(path.getIdStanzaFinale()) && !path.getIdStanzaCorrente().equals(lastStanza)) {
-            textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
-            listaStanzeLayout.setVisibility(View.GONE);
-            rateLayout.setVisibility(View.VISIBLE);
-        } else if (!path.getIdStanzaCorrente().equals(lastStanza)) {
+            ((PercorsoActivity) getActivity()).getFgManagerOfPercorso().nextFinePercorsoFragment();
+        } else {
             listaStanze = path.getAdiacentNodes();
             textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.area, path.getStanzaCorrente().getNome()));
         }
@@ -261,11 +154,51 @@ public class SceltaStanzeFragment extends Fragment {
 
         }
 
-
         // Sending reference and data to Adapter
         StanzeAdpter adapter = new StanzeAdpter(getContext(), listaStanze, parent);
         // Setting Adapter to RecyclerView
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        parent.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.path, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+
+        switch (itemId) {
+            case R.id.endPath:
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage(R.string.interrupt);
+                builder.setTitle(R.string.attention);
+                builder.setIcon(R.drawable.ic_baseline_error_24);
+
+                builder.setCancelable(false);
+                builder.setPositiveButton(R.string.SI, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        parent.endPath();
+                    }
+                });
+
+                builder.setNegativeButton(R.string.NO, null);
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public Bundle getSavedInstanceState() {
@@ -280,7 +213,7 @@ public class SceltaStanzeFragment extends Fragment {
         outState.putSerializable("path", gson.toJson(this.path));
         outState.putSerializable("museumn", gson.toJson(this.museumn));
         outState.putString("nomePercorso", this.nomePercorso);
-        outState.putString("nomeMuseo", this.nomePercorso);
+        outState.putString("nomeMuseo", this.nomeMuseo);
     }
 
 }

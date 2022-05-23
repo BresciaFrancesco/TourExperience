@@ -146,4 +146,19 @@
     <string name="interrupt">Vuoi veramente interrompere il percorso?</string>
     <string name="end_path">Termina percorso</string>
 
+    <string name="quiz_incompatibile">Quiz incompatibile</string>
+    <string name="termina">Termina</string>
+    <string name="ripeti_quiz">Ripeti quiz</string>
+    <string name="conferma">Conferma</string>
+    <string name="quiz_non_completato">Quiz non completato</string>
+    <string name="quiz_score">%1$d/%2$d Punti accumulati</string>
+    <string name="quiz_total">%1$d Punti</string>
+    <string name="generic_error">Si è verificato un errore</string>
+    <string name="quiz_question">%1$d. %2$s</string>
+    <string name="continua">Continua</string>
+    <string name="quiz_import_message">
+        È possibile importare solo un file .json. Il file json deve essere strutturato in accordo alle regole TourExperience quiz.
+        Qualsiasi file .json non conforme sarà rigettato. Il file .json deve avere codifica UTF-8.
+    </string>
+
 </resources>

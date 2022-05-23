@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
-                android:text="Quiz incompatibile"
+                android:text="@string/quiz_incompatibile"
                 android:textAlignment="center"
                 android:textColor="@color/main_blue"
                 android:textSize="25dp"
@@ -51,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/main_blue"
-                    android:text="Termina"
+                    android:text="@string/termina"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -61,7 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/main_blue"
-                    android:text="Ripeti quiz"
+                    android:text="@string/ripeti_quiz"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -84,7 +84,7 @@
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginBottom="10dp"
                 android:backgroundTint="@color/main_blue"
-                android:text="Conferma"
+                android:text="@string/conferma"
                 android:visibility="gone" />
 
         </LinearLayout>

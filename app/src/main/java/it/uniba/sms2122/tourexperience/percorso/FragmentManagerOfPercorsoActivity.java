@@ -148,15 +148,18 @@ public class FragmentManagerOfPercorsoActivity {
      * corrispondente e infine lo passa tramite bundle al metodo per creare il fragment dell'opera.
      * @param stanza stanza da cui parte la scannerizzazione del QR code e che dovrebbe contenere
      *               l'oggetto opera che serve.
+     * @param nomeMuseo nome del museo.
      */
-    public void openQRScannerFragmentOfForOpera(final Stanza stanza) {
+    public void openQRScannerFragmentOfForOpera(final Stanza stanza, final String nomeMuseo) {
 
         QRScannerFragment qrScanner = new QRScannerFragment();
         qrScanner.setScannerDataManager((scanResult) -> {
             try {
                 String operaJson = new Gson().toJson(stanza.getOperaByID(scanResult));
                 Bundle bundle = new Bundle();
-                bundle.putString("OperaJson", operaJson);
+                bundle.putString(OperaFragment.OPERA_JSON, operaJson);
+                bundle.putString(OperaFragment.NOME_STANZA, stanza.getNome());
+                bundle.putString(OperaFragment.NOME_MUSEO, nomeMuseo);
                 nextOperaFragment(bundle);
             }
             catch (IllegalArgumentException | NullPointerException | JsonParseException e) {

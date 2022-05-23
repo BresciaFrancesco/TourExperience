@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
@@ -163,15 +164,20 @@ public class SceltaMuseiFragment extends Fragment {
 
         cloudFab.setOnClickListener(view2 -> NetworkConnectivity.check(isConnected -> {
             if (!isConnected) {
-                Toast.makeText(getContext(), getContext().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), view.getContext().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                 return;
             }
-            //progressBar.setVisibility(View.VISIBLE);
             recyclerView.setAdapter(null);
             hideFabOptions();
             mAddFab.setImageResource(R.drawable.ic_baseline_close_24);
-            MainActivity activity = (MainActivity) getActivity();
-            activity.getSupportActionBar().setTitle(R.string.museums_cloud_import);
+            try {
+                MainActivity activity = (MainActivity) requireActivity();
+                Objects.requireNonNull(activity.getSupportActionBar()).setTitle(R.string.museums_cloud_import);
+            }
+            catch (NullPointerException | IllegalStateException e) {
+                Log.e("SceltaMuseiFragment", "Set title impossibile");
+                e.printStackTrace();
+            }
             Back backToMuseumsList = new BackToMuseumsList(this, mAddFab);
             // Il FAB torna allo stato iniziale e la lista di musei torna a contenere i musei presenti in cache
             mAddFab.setOnClickListener((view3) -> {
@@ -252,15 +258,21 @@ public class SceltaMuseiFragment extends Fragment {
         // Gestisce solo l'ottenimento del file .zip / .json, avvenuto tramite Intent implicito.
         if (requestCode == requestCodeGC) {
             if (resultCode == MainActivity.RESULT_OK) {
-                Uri returnUri = data.getData();
-                String mimeType = getActivity().getContentResolver().getType(returnUri);
-                String fileName = DocumentFile.fromSingleUri(getContext(), returnUri).getName();
-                OpenFile dto = new OpenFileAndroidStorageDTO(getContext(), returnUri);
-                String resultMessage = localFileManager.saveImport(fileName, mimeType, dto, this);
-                Toast.makeText(getContext(), resultMessage, Toast.LENGTH_SHORT).show();
-            } else {
-                Log.e("SceltaMuseiFragment.onActivityResult", "resultCode " + resultCode);
-            }
+                if (data != null) {
+                    try {
+                        Uri returnUri = data.getData();
+                        String mimeType = requireActivity().getContentResolver().getType(returnUri);
+                        String fileName = Objects.requireNonNull(DocumentFile.fromSingleUri(requireContext(), returnUri)).getName();
+                        OpenFile dto = new OpenFileAndroidStorageDTO(requireContext(), returnUri);
+                        String resultMessage = localFileManager.saveImport(fileName, mimeType, dto, this);
+                        Toast.makeText(getContext(), resultMessage, Toast.LENGTH_SHORT).show();
+                    }
+                    catch (NullPointerException | IllegalStateException e) {
+                        Log.e("SceltaMuseiFragment.onActivityResult", "qualcosa è null, guardare lo Stack Trace");
+                        e.printStackTrace();
+                    }
+                } else Log.e("SceltaMuseiFragment.onActivityResult", "data è null");
+            } else Log.e("SceltaMuseiFragment.onActivityResult", "resultCode " + resultCode);
         }
     }
 

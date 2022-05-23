@@ -207,7 +207,7 @@ public class StanzaFragment extends Fragment {
         operaScanButton.setOnClickListener(view -> {
             try {
                 ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso()
-                    .openQRScannerFragmentOfForOpera(stanza);
+                    .openQRScannerFragmentOfForOpera(stanza, percorsoActivity.getNomeMuseo());
             }
             catch (NullPointerException | IllegalStateException  e) {
                 Log.e("StanzaFragment.triggerOperaScanButton", "requireActivity return null ex or illegal state ex");

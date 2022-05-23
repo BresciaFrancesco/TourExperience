@@ -26,6 +26,7 @@ import com.google.gson.JsonParseException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.games.quiz.dto.QuizJson;
@@ -99,6 +100,7 @@ public class QuizFragment extends Fragment {
             quiz = gson.fromJson(savedInstanceState.getString(QUIZ_COMPLETO), Quiz.class);
         }
 
+        final Context context = view.getContext();
         scrollView = view.findViewById(R.id.quiz_scroll_view);
         final LinearLayout linearLayout = view.findViewById(R.id.linear_layout_quiz);
         title = view.findViewById(R.id.quiz_title);
@@ -124,17 +126,17 @@ public class QuizFragment extends Fragment {
 
             title.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
             title.setText(quiz.getTitolo().value());
-            points.setText(quiz.getValoreTotale().value() + " Punti");
+            points.setText(context.getString(R.string.quiz_total, quiz.getValoreTotale().value()));
             for (final Domanda domanda : quiz.getDomande()) {
 
                 View cardView = inflater.inflate(R.layout.quiz_card, viewGroup, false);
 
                 final TextView domandaTxt = cardView.findViewById(R.id.domanda_txtview);
                 domandaTxt.setId(domanda.getId().value());
-                domandaTxt.setText((i+1) + ". " + domanda.getDomanda().value());
+                domandaTxt.setText(context.getString(R.string.quiz_question, (i+1), domanda.getDomanda().value()));
 
                 final TextView puntiTxt = cardView.findViewById(R.id.punti_txtview);
-                puntiTxt.setText(domanda.getValore().value() + " punti");
+                puntiTxt.setText(context.getString(R.string.quiz_total, domanda.getValore().value()));
 
                 final RadioGroup radioGroup = cardView.findViewById(R.id.radio_group_risposte);
                 for (final Risposta risposta : domanda.getRisposte()) {
@@ -153,7 +155,7 @@ public class QuizFragment extends Fragment {
 
     private void confermaQuizSicuro(View view) {
         if (!isQuizCompletato()) {
-            Toast.makeText(getContext(), "Quiz non completato", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), view.getContext().getString(R.string.quiz_non_completato), Toast.LENGTH_SHORT).show();
             return;
         }
         quiz.increasePunteggio(confermaQuiz(view));
@@ -176,7 +178,7 @@ public class QuizFragment extends Fragment {
                 }
             }
         }
-        points.setText(punteggio.value() + "/" + quiz.getValoreTotale().value() + " Punti accumulati");
+        points.setText(view.getContext().getString(R.string.quiz_score, punteggio.value(), quiz.getValoreTotale().value()));
         constraintLayoutForFinalBtns.setVisibility(View.VISIBLE);
         goToTop();
         confermaBtn.setVisibility(View.GONE);
@@ -198,7 +200,7 @@ public class QuizFragment extends Fragment {
         }
         constraintLayoutForFinalBtns.setVisibility(View.GONE);
         confermaBtn.setVisibility(View.VISIBLE);
-        points.setText(quiz.getValoreTotale().value() + " Punti");
+        points.setText(view.getContext().getString(R.string.quiz_total, quiz.getValoreTotale().value()));
         quiz.resetPunteggio();
     }
 
@@ -208,7 +210,7 @@ public class QuizFragment extends Fragment {
         }
         catch (NullPointerException | IllegalStateException e) {
             e.printStackTrace();
-            Toast.makeText(getContext(), "Si è verificato un errore", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), view.getContext().getString(R.string.generic_error), Toast.LENGTH_SHORT).show();
         }
     }
 

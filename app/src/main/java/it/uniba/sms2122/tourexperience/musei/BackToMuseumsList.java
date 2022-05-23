@@ -6,6 +6,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
@@ -38,7 +39,7 @@ public class BackToMuseumsList implements Back {
             fragment.attachNewAdapter(new MuseiAdapter(fragment, fragment.getListaMusei(), true));
             fab.setImageResource(R.drawable.ic_baseline_add_24);
             fab.setOnClickListener(fragment::listenerFabMusei);
-            ((MainActivity)fragment.requireActivity()).getSupportActionBar().setTitle(R.string.museums);
+            Objects.requireNonNull(((MainActivity) fragment.requireActivity()).getSupportActionBar()).setTitle(R.string.museums);
         }
         catch (NullPointerException | IllegalStateException e) {
             e.printStackTrace();

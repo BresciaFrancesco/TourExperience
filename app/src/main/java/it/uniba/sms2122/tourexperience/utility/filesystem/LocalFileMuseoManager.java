@@ -156,7 +156,7 @@ public class LocalFileMuseoManager extends LocalFileManager {
     public String saveImport(final String fileName, final String mimeType,
                              final OpenFile dto, final SceltaMuseiFragment frag) {
         try {
-            Context context = frag.getContext();
+            Context context = frag.requireContext();
             String resultMessage = context.getString(R.string.mime_type_error);
 
             if (mimeType.equals(JSON.mimeType())) {
@@ -182,7 +182,7 @@ public class LocalFileMuseoManager extends LocalFileManager {
             }
             return resultMessage;
         }
-        catch (NullPointerException | IOException e) {
+        catch (NullPointerException | IllegalStateException | IOException e) {
             e.printStackTrace();
             return "Error";
         }

@@ -19,13 +19,12 @@ import java.util.Map;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.model.Opera;
 import it.uniba.sms2122.tourexperience.model.Stanza;
-
 import static it.uniba.sms2122.tourexperience.utility.Validate.*;
 
 
 public class LocalFilePercorsoManager extends LocalFileManager {
 
-    private final Gson gson = new Gson();
+    protected final Gson gson = new Gson();
 
 
     public LocalFilePercorsoManager(String generalPath) {
@@ -139,4 +138,5 @@ public class LocalFilePercorsoManager extends LocalFileManager {
         }
         return stanza;
     }
+
 }

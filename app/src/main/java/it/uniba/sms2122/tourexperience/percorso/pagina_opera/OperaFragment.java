@@ -1,11 +1,15 @@
 package it.uniba.sms2122.tourexperience.percorso.pagina_opera;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -13,20 +17,38 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.percorso.ImageAndDescriptionFragment;
 import it.uniba.sms2122.tourexperience.model.Opera;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileGamesManager;
+import it.uniba.sms2122.tourexperience.utility.filesystem.zip.DTO.OpenFileAndroidStorageDTO;
+import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 
 
 public class OperaFragment extends Fragment {
 
+    public static final String OPERA_JSON = "OperaJson";
+    public static final String NOME_STANZA = "NomeStanza";
+    public static final String NOME_MUSEO = "NomeMuseo";
+
+    private static final String OPERA_ID = "id";
+    private static final String OPERA_NOME = "nome";
+    private static final String OPERA_PERCORSO_IMG = "percorsoImg";
+    private static final String OPERA_DESCRIZIONE = "descrizione";
+
     private Opera opera;
+    private String nomeMuseo;
+    private String nomeStanza;
+    private LocalFileGamesManager localFileGamesManager;
     private final int requestCodeGC = 900007;
 
 
@@ -41,77 +63,146 @@ public class OperaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Bundle bundle = getArguments();
-        String operaJson = Objects.requireNonNull(bundle).getString("OperaJson");
-        this.opera = new Gson().fromJson(Objects.requireNonNull(operaJson), Opera.class);
-
-        final ConstraintLayout quizButton = view.findViewById(R.id.quiz_layout);
-        quizButton.setOnClickListener((view2) -> {
-            String json = "{\n" +
-                    "    \"titolo\": \"Quiz prova\",\n" +
-                    "    \"domande\": [\n" +
-                    "        {\n" +
-                    "            \"domanda\": \"Quanto fa 2+2?\",\n" +
-                    "            \"valore\": 50,\n" +
-                    "            \"risposte\": [\n" +
-                    "                {\"risposta\": \"Fa 3\"},\n" +
-                    "                {\"risposta\": \"Fa 5\"},\n" +
-                    "                {\"risposta\": \"Fa 4\", \"isTrue\": true},\n" +
-                    "                {\"risposta\": \"Fa 2\"}\n" +
-                    "            ]\n" +
-                    "        },\n" +
-                    "        {\n" +
-                    "            \"domanda\": \"Quale di queste espressioni ha come risultato +4?\",\n" +
-                    "            \"valore\": 50,\n" +
-                    "            \"risposte\": [\n" +
-                    "                {\"risposta\": \"2 + 4\"},\n" +
-                    "                {\"risposta\": \"2 x (2+2)\"},\n" +
-                    "                {\"risposta\": \"2 / 2\"},\n" +
-                    "                {\"risposta\": \"8 - 3\"},\n" +
-                    "                {\"risposta\": \"4 - 8\"},\n" +
-                    "                {\"risposta\": \"(50 / 4) - (4.25 x 2)\", \"isTrue\": true}\n" +
-                    "            ]\n" +
-                    "        }\n" +
-                    "    ]\n" +
-                    "}";
-            ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFragmentQuiz(json);
-        });
-
+        if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
+            // Ripristino tramite bundle
+            this.opera = new Opera(
+                savedInstanceState.getString(OPERA_ID),
+                savedInstanceState.getString(OPERA_NOME),
+                savedInstanceState.getString(OPERA_PERCORSO_IMG),
+                savedInstanceState.getString(OPERA_DESCRIZIONE)
+            );
+            this.nomeMuseo = savedInstanceState.getString(NOME_MUSEO);
+            this.nomeStanza = savedInstanceState.getString(NOME_STANZA);
+        } else {
+            // Inizializzazione tramite bundle
+            final Bundle bundle = getArguments();
+            final String operaJson = Objects.requireNonNull(bundle).getString(OPERA_JSON);
+            this.opera = new Gson().fromJson(Objects.requireNonNull(operaJson), Opera.class);
+            this.nomeMuseo = bundle.getString(NOME_MUSEO);
+            this.nomeStanza = bundle.getString(NOME_STANZA);
+        }
         setActionBar(opera.getNome());
-
         FragmentManager fragmentManager = getParentFragmentManager();
         ImageAndDescriptionFragment fragment = new ImageAndDescriptionFragment(opera.getPercorsoImg(), opera.getDescrizione());
         fragmentManager.beginTransaction()
             .setReorderingAllowed(true)
             .add(R.id.imageanddescription_fragment_container_view, fragment)
             .commit();
+
+        localFileGamesManager = new LocalFileGamesManager(
+                view.getContext().getFilesDir().toString(),
+                nomeMuseo,
+                nomeStanza,
+                opera.getNome()
+        );
+
+        final ConstraintLayout quizButton = view.findViewById(R.id.quiz_layout);
+        quizButton.setOnClickListener((view2) -> {
+            if (!localFileGamesManager.existsQuiz()) {
+                Toast.makeText(view.getContext(), "Non è presente alcun quiz per questa opera", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                String json = localFileGamesManager.loadQuizJson();
+                ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFragmentQuiz(json);
+            }
+            catch (IOException e) {
+                Toast.makeText(view.getContext(), "Errore nell'apertura del quiz", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+//            String json = "{\n" +
+//                    "    \"titolo\": \"Quiz prova\",\n" +
+//                    "    \"domande\": [\n" +
+//                    "        {\n" +
+//                    "            \"domanda\": \"Quanto fa 2+2?\",\n" +
+//                    "            \"valore\": 50,\n" +
+//                    "            \"risposte\": [\n" +
+//                    "                {\"risposta\": \"Fa 3\"},\n" +
+//                    "                {\"risposta\": \"Fa 5\"},\n" +
+//                    "                {\"risposta\": \"Fa 4\", \"isTrue\": true},\n" +
+//                    "                {\"risposta\": \"Fa 2\"}\n" +
+//                    "            ]\n" +
+//                    "        },\n" +
+//                    "        {\n" +
+//                    "            \"domanda\": \"Quale di queste espressioni ha come risultato +4?\",\n" +
+//                    "            \"valore\": 50,\n" +
+//                    "            \"risposte\": [\n" +
+//                    "                {\"risposta\": \"2 + 4\"},\n" +
+//                    "                {\"risposta\": \"2 x (2+2)\"},\n" +
+//                    "                {\"risposta\": \"2 / 2\"},\n" +
+//                    "                {\"risposta\": \"8 - 3\"},\n" +
+//                    "                {\"risposta\": \"4 - 8\"},\n" +
+//                    "                {\"risposta\": \"(50 / 4) - (4.25 x 2)\", \"isTrue\": true}\n" +
+//                    "            ]\n" +
+//                    "        }\n" +
+//                    "    ]\n" +
+//                    "}";
+        });
+
+        Button quizOptions = view.findViewById(R.id.quiz_option_btn);
+        quizOptions.setOnClickListener((view2) -> {
+            new AlertDialog.Builder(view2.getContext())
+                .setTitle(getString(R.string.local_import_dialog_title))
+                .setMessage(getString(R.string.quiz_import_message))
+                .setPositiveButton(view2.getContext().getString(R.string.continua),
+                    (dialog, whichButton) -> {
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        intent.setType("application/json");
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        startActivityForResult(intent, requestCodeGC);
+                    })
+                .setNegativeButton(view2.getContext().getString(R.string.NO),
+                    (dialog, whichButton) -> dialog.dismiss())
+                .show();
+        });
     }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == requestCodeGC) {
+            if (resultCode == PercorsoActivity.RESULT_OK) {
+                if (data != null) {
+                    try {
+                        Uri returnUri = data.getData();
+                        String mimeType = requireActivity().getContentResolver().getType(returnUri);
+                        OpenFile dto = new OpenFileAndroidStorageDTO(requireContext(), returnUri);
+                        final String message = localFileGamesManager.saveQuizJson(mimeType, dto, this);
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    catch (NullPointerException | IllegalStateException e) {
+                        Log.e("OperaFragment.onActivityResult", "qualcosa è null, guardare lo Stack Trace");
+                        e.printStackTrace();
+                    }
+                } else Log.e("OperaFragment.onActivityResult", "data è null");
+            } else Log.e("OperaFragment.onActivityResult", "resultCode " + resultCode);
+        }
+        Toast.makeText(requireContext(), getString(R.string.generic_error), Toast.LENGTH_SHORT).show();
+    }
+
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.v("OperaFragment", "chiamato onSaveInstanceState()");
         if (opera != null) {
-            outState.putString("id", opera.getId());
-            outState.putString("nome", opera.getNome());
-            outState.putString("percorsoImg", opera.getPercorsoImg());
-            outState.putString("descrizione", opera.getDescrizione());
+            outState.putString(OPERA_ID, opera.getId());
+            outState.putString(OPERA_NOME, opera.getNome());
+            outState.putString(OPERA_PERCORSO_IMG, opera.getPercorsoImg());
+            outState.putString(OPERA_DESCRIZIONE, opera.getDescrizione());
+        }
+        if (nomeStanza != null) {
+            outState.putString(NOME_STANZA, nomeStanza);
+        }
+        if (nomeMuseo != null) {
+            outState.putString(NOME_MUSEO, nomeMuseo);
         }
     }
-
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        Log.v("OperaFragment", "chiamato onViewStateRestored()");
-        if(savedInstanceState != null && !savedInstanceState.isEmpty()) {
-            this.opera = new Opera(
-                savedInstanceState.getString("id"),
-                savedInstanceState.getString("nome"),
-                savedInstanceState.getString("percorsoImg"),
-                savedInstanceState.getString("descrizione")
-            );
-        }
     }
 
     /**

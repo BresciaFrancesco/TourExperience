@@ -32,12 +32,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import it.uniba.sms2122.tourexperience.FirstActivity;
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.SplashScreenActivity;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FinePercorsoFragment#newInstance} factory method to
+ * Use the {@link FinePercorsoFragment} factory method to
  * create an instance of this fragment.
  */
 public class FinePercorsoFragment extends Fragment {
@@ -148,63 +151,67 @@ public class FinePercorsoFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if (parent.checkConnectivity()) {
-                    String result = Float.toString(ratingBar.getRating());
-                    parent.getSnapshotVoti().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                        @Override
-                        public void onSuccess(DataSnapshot dataSnapshot) {
-                            String voti = dataSnapshot.getValue(String.class);
+                NetworkConnectivity.check(isConnected -> {
+                    if (!isConnected) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setMessage(R.string.msg_attention);
+                        builder.setTitle(R.string.attention);
+                        builder.setIcon(R.drawable.ic_baseline_error_24);
 
-                            if (voti.equals("-1"))
-                                voti = result;
-                            else
-                                voti = voti.concat(";" + result);
-                            parent.getDb().child("Voti").setValue(voti).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(getContext(), R.string.path_end_success, Toast.LENGTH_LONG).show();
-                                        parent.endPath();
-                                    } else {
-                                        Toast.makeText(getContext(), R.string.path_end_fail, Toast.LENGTH_LONG).show();
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                parent.endPath();
+                            }
+                        });
+
+                        builder.setNegativeButton(R.string.try_again, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+
+                        return;
+                    }else {
+                        String result = Float.toString(ratingBar.getRating());
+                        parent.getSnapshotVoti().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            @Override
+                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                String voti = dataSnapshot.getValue(String.class);
+
+                                if (voti.equals("-1"))
+                                    voti = result;
+                                else
+                                    voti = voti.concat(";" + result);
+                                parent.getDb().child("Voti").setValue(voti).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(getContext(), R.string.path_end_success, Toast.LENGTH_LONG).show();
+                                            parent.endPath();
+                                        } else {
+                                            Toast.makeText(getContext(), R.string.path_end_fail, Toast.LENGTH_LONG).show();
+                                        }
                                     }
-                                }
-                            });
-                        }
-                    });
+                                });
+                            }
+                        });
 
-                    parent.getSnapshotNumStarts().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                        @Override
-                        public void onSuccess(DataSnapshot dataSnapshot) {
-                            Integer numStarts = dataSnapshot.getValue(Integer.class);
-                            numStarts++;
-                            parent.getDb().child("Numero_stats").setValue(numStarts);
-                        }
-                    });
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                    builder.setMessage(R.string.msg_attention);
-                    builder.setTitle(R.string.attention);
-                    builder.setIcon(R.drawable.ic_baseline_error_24);
-
-                    builder.setCancelable(false);
-                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            parent.endPath();
-                        }
-                    });
-
-                    builder.setNegativeButton(R.string.try_again, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
-                        }
-                    });
-
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                }
+                        parent.getSnapshotNumStarts().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            @Override
+                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                Integer numStarts = dataSnapshot.getValue(Integer.class);
+                                numStarts++;
+                                parent.getDb().child("Numero_stats").setValue(numStarts);
+                            }
+                        });
+                    }
+                });
             }
         });
     }

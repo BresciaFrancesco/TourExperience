@@ -57,8 +57,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        NetworkConnectivity.init(this);
-
         userHolder = UserHolder.getInstance();
         userHolder.getUser(
                 (user) -> {

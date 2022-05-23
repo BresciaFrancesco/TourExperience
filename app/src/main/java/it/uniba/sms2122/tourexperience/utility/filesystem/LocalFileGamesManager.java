@@ -27,9 +27,13 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 public class LocalFileGamesManager extends LocalFilePercorsoManager {
     private final Path pathOperaForGames;
 
-    public LocalFileGamesManager(final String generalPath, final String nomeMuseo,
-                                 final String nomeStanza, final String nomeOpera) {
-        super(generalPath);
+    public LocalFileGamesManager(final String path, String nomeMuseo,
+                                 String nomeStanza, String nomeOpera) {
+        super(path);
+        // Capitalizzo le stringhe
+        nomeMuseo = nomeMuseo.substring(0,1).toUpperCase() + nomeMuseo.substring(1).toLowerCase();
+        nomeStanza = nomeStanza.substring(0,1).toUpperCase() + nomeStanza.substring(1).toLowerCase();
+        nomeOpera = nomeOpera.substring(0,1).toUpperCase() + nomeOpera.substring(1).toLowerCase();
         this.pathOperaForGames = Paths.get(generalPath, nomeMuseo, "Stanze", nomeStanza, nomeOpera);
     }
 
@@ -84,7 +88,7 @@ public class LocalFileGamesManager extends LocalFilePercorsoManager {
                     BufferedWriter writer = new BufferedWriter(new FileWriter(pathToWrite));
                     writer.write(gson.toJson(quizJson));
                     writer.close();
-                    resultMessage = "File json importato correttamente";
+                    resultMessage = context.getString(R.string.file_json_importato);
                 }
             }
             else {
@@ -94,7 +98,7 @@ public class LocalFileGamesManager extends LocalFilePercorsoManager {
         }
         catch (NullPointerException | IllegalArgumentException | JsonParseException e) {
             e.printStackTrace();
-            return "Il quiz importato non è compatibile";
+            return frag.requireContext().getString(R.string.quiz_incompatibile);
         }
         catch (IllegalStateException | IOException e) {
             e.printStackTrace();

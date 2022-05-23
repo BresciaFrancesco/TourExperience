@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -99,7 +98,17 @@ public class OperaFragment extends Fragment {
         final ConstraintLayout quizButton = view.findViewById(R.id.quiz_layout);
         quizButton.setOnClickListener((view2) -> {
             if (!localFileGamesManager.existsQuiz()) {
-                Toast.makeText(view.getContext(), "Non è presente alcun quiz per questa opera", Toast.LENGTH_SHORT).show();
+                new AlertDialog.Builder(view2.getContext())
+                    .setTitle("Quiz")
+                    .setMessage(getString(R.string.quiz_import_request))
+                    .setPositiveButton(getString(R.string.importa_quiz),
+                        (dialog, whichButton) -> {
+                            dialog.dismiss();
+                            startImportQuiz(view2);
+                        })
+                    .setNeutralButton(view2.getContext().getString(R.string.NO),
+                            (dialog, whichButton) -> dialog.dismiss())
+                    .show();
                 return;
             }
             try {
@@ -107,56 +116,30 @@ public class OperaFragment extends Fragment {
                 ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFragmentQuiz(json);
             }
             catch (IOException e) {
-                Toast.makeText(view.getContext(), "Errore nell'apertura del quiz", Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), getString(R.string.errore_apertura_quiz), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
-//            String json = "{\n" +
-//                    "    \"titolo\": \"Quiz prova\",\n" +
-//                    "    \"domande\": [\n" +
-//                    "        {\n" +
-//                    "            \"domanda\": \"Quanto fa 2+2?\",\n" +
-//                    "            \"valore\": 50,\n" +
-//                    "            \"risposte\": [\n" +
-//                    "                {\"risposta\": \"Fa 3\"},\n" +
-//                    "                {\"risposta\": \"Fa 5\"},\n" +
-//                    "                {\"risposta\": \"Fa 4\", \"isTrue\": true},\n" +
-//                    "                {\"risposta\": \"Fa 2\"}\n" +
-//                    "            ]\n" +
-//                    "        },\n" +
-//                    "        {\n" +
-//                    "            \"domanda\": \"Quale di queste espressioni ha come risultato +4?\",\n" +
-//                    "            \"valore\": 50,\n" +
-//                    "            \"risposte\": [\n" +
-//                    "                {\"risposta\": \"2 + 4\"},\n" +
-//                    "                {\"risposta\": \"2 x (2+2)\"},\n" +
-//                    "                {\"risposta\": \"2 / 2\"},\n" +
-//                    "                {\"risposta\": \"8 - 3\"},\n" +
-//                    "                {\"risposta\": \"4 - 8\"},\n" +
-//                    "                {\"risposta\": \"(50 / 4) - (4.25 x 2)\", \"isTrue\": true}\n" +
-//                    "            ]\n" +
-//                    "        }\n" +
-//                    "    ]\n" +
-//                    "}";
         });
 
         Button quizOptions = view.findViewById(R.id.quiz_option_btn);
-        quizOptions.setOnClickListener((view2) -> {
-            new AlertDialog.Builder(view2.getContext())
-                .setTitle(getString(R.string.local_import_dialog_title))
-                .setMessage(getString(R.string.quiz_import_message))
-                .setPositiveButton(view2.getContext().getString(R.string.continua),
-                    (dialog, whichButton) -> {
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.setType("application/json");
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        startActivityForResult(intent, requestCodeGC);
-                    })
-                .setNegativeButton(view2.getContext().getString(R.string.NO),
-                    (dialog, whichButton) -> dialog.dismiss())
-                .show();
-        });
+        quizOptions.setOnClickListener(this::startImportQuiz);
     }
 
+    private void startImportQuiz(final View view) {
+        new AlertDialog.Builder(view.getContext())
+            .setTitle(getString(R.string.local_import_dialog_title))
+            .setMessage(getString(R.string.quiz_import_message))
+            .setPositiveButton(view.getContext().getString(R.string.continua),
+                (dialog, whichButton) -> {
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("application/json");
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    startActivityForResult(intent, requestCodeGC);
+                })
+            .setNeutralButton(view.getContext().getString(R.string.NO),
+                    (dialog, whichButton) -> dialog.dismiss())
+            .show();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

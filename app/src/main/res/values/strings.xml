@@ -165,5 +165,9 @@
         It is possible to import only a .json file. Json file must be structured according to the TourExperience quiz rules.
         Any non-compliant .json file will be rejected. The .json file must be UTF-8 encoded.
     </string>
+    <string name="file_json_importato">Json file imported successfully</string>
+    <string name="quiz_import_request">There is no quiz for this work. Do you want to import a quiz?</string>
+    <string name="importa_quiz">Import quiz</string>
+    <string name="errore_apertura_quiz">Error opening the quiz</string>
 
 </resources>

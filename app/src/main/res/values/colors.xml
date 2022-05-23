@@ -19,4 +19,8 @@
     <color name="rating_star_off">#DDDDDC</color>
     <color name="mtrl_fab_button_default">#784BA5</color>
     <color name="gray_for_options">#797979</color>
+
+    <color name="error_red_card">#FF9B9B</color>
+    <color name="success_green_card">#9EDA88</color>
+    <color name="color_card_quiz">#E0E2EF</color>
 </resources>

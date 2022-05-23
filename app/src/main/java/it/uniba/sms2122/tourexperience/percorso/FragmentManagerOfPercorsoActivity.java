@@ -26,6 +26,7 @@ import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.fine_percorso.FinePercorsoFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_opera.OperaFragment;
+import it.uniba.sms2122.tourexperience.percorso.pagina_opera.QuizFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
@@ -212,6 +213,14 @@ public class FragmentManagerOfPercorsoActivity {
 
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         createFragment(new StanzaFragment(), "stanzaFragment");
+    }
+
+    /**
+     * Crea il fragment per il quiz di un'opera.
+     * @param json stringa json del quiz da passare al fragment.
+     */
+    public void nextFragmentQuiz(final String json) {
+        createFragment(QuizFragment.newInstance(json), "quizFragment");
     }
 
     /**

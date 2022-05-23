@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -44,6 +45,38 @@ public class OperaFragment extends Fragment {
         String operaJson = Objects.requireNonNull(bundle).getString("OperaJson");
         this.opera = new Gson().fromJson(Objects.requireNonNull(operaJson), Opera.class);
 
+        final ConstraintLayout quizButton = view.findViewById(R.id.quiz_layout);
+        quizButton.setOnClickListener((view2) -> {
+            String json = "{\n" +
+                    "    \"titolo\": \"Quiz prova\",\n" +
+                    "    \"domande\": [\n" +
+                    "        {\n" +
+                    "            \"domanda\": \"Quanto fa 2+2?\",\n" +
+                    "            \"valore\": 50,\n" +
+                    "            \"risposte\": [\n" +
+                    "                {\"risposta\": \"Fa 3\"},\n" +
+                    "                {\"risposta\": \"Fa 5\"},\n" +
+                    "                {\"risposta\": \"Fa 4\", \"isTrue\": true},\n" +
+                    "                {\"risposta\": \"Fa 2\"}\n" +
+                    "            ]\n" +
+                    "        },\n" +
+                    "        {\n" +
+                    "            \"domanda\": \"Quale di queste espressioni ha come risultato +4?\",\n" +
+                    "            \"valore\": 50,\n" +
+                    "            \"risposte\": [\n" +
+                    "                {\"risposta\": \"2 + 4\"},\n" +
+                    "                {\"risposta\": \"2 x (2+2)\"},\n" +
+                    "                {\"risposta\": \"2 / 2\"},\n" +
+                    "                {\"risposta\": \"8 - 3\"},\n" +
+                    "                {\"risposta\": \"4 - 8\"},\n" +
+                    "                {\"risposta\": \"(50 / 4) - (4.25 x 2)\", \"isTrue\": true}\n" +
+                    "            ]\n" +
+                    "        }\n" +
+                    "    ]\n" +
+                    "}";
+            ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFragmentQuiz(json);
+        });
+
         setActionBar(opera.getNome());
 
         FragmentManager fragmentManager = getParentFragmentManager();
@@ -78,7 +111,6 @@ public class OperaFragment extends Fragment {
                 savedInstanceState.getString("percorsoImg"),
                 savedInstanceState.getString("descrizione")
             );
-            //setActionBar(opera.getNome());
         }
     }
 

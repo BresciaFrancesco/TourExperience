@@ -1,12 +1,14 @@
 package it.uniba.sms2122.tourexperience.games.quiz;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static it.uniba.sms2122.tourexperience.utility.Validate.inclusiveBetween;
 import static it.uniba.sms2122.tourexperience.utility.Validate.isTrue;
 import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
+
+import android.view.View;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.ID;
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.IsRispostaEsatta;
@@ -16,6 +18,7 @@ import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.Titolo;
 import it.uniba.sms2122.tourexperience.games.quiz.dto.DomandaJson;
 import it.uniba.sms2122.tourexperience.games.quiz.dto.QuizJson;
 import it.uniba.sms2122.tourexperience.games.quiz.dto.RispostaJson;
+
 
 /**
  * Pattern: Value Object (from DDD) with Domain Primitives (from "Secure by Design").
@@ -28,7 +31,7 @@ public class Quiz {
     private final List<Domanda> domande;
     private Punteggio punteggioCorrente;
 
-    public Quiz(final Titolo titolo, final List<Domanda> domande) {
+    private Quiz(final Titolo titolo, final List<Domanda> domande) {
         this.titolo = notNull(titolo);
         notNull(domande);
         inclusiveBetween(1, 15, domande.size());
@@ -75,8 +78,14 @@ public class Quiz {
         punteggioCorrente = p;
     }
 
+    public void resetPunteggio() {
+        punteggioCorrente = new Punteggio(0);
+    }
+
     /**
      * Crea un oggetto Quiz completo e corretto.
+     * Come ID di domande e risposte, utilizza la classe di Android View
+     * per generare viewId univoci da utilizzare nell'interfaccia.
      * @param quizJson oggetto DTO creato da un parser json come Gson.
      * @return un nuovo oggetto Quiz completo e corretto.
      * @throws NullPointerException se l'oggetto Quiz non è corretto.
@@ -85,22 +94,21 @@ public class Quiz {
     public static Quiz buildFromJson(final QuizJson quizJson)
             throws NullPointerException, IllegalArgumentException
     {
-        List<Risposta> listaTempRis = new ArrayList<>();
         List<Domanda> listaTempDom = new ArrayList<>();
 
         List<DomandaJson> domande = quizJson.getDomande();
         for (DomandaJson dom : domande) {
-            listaTempRis.clear();
+            List<Risposta> listaTempRis = new ArrayList<>();
             List<RispostaJson> risposte = dom.getRisposte();
             for (RispostaJson ris : risposte) {
                 Risposta r = new Risposta(
-                        new ID(ris.getId()),
+                        new ID(View.generateViewId()),
                         new Testo(ris.getRisposta()),
                         new IsRispostaEsatta(ris.isTrue()));
                 listaTempRis.add(r);
             }
             Domanda d = new Domanda(
-                    new ID(dom.getId()),
+                    new ID(View.generateViewId()),
                     new Testo(dom.getDomanda()),
                     new Punteggio(dom.getValore()),
                     listaTempRis);
@@ -109,4 +117,5 @@ public class Quiz {
 
         return new Quiz(new Titolo(quizJson.getTitolo()), listaTempDom);
     }
+
 }

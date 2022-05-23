@@ -69,9 +69,8 @@
 
                 <Button
                     android:id="@+id/quiz_option_btn"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/ic_baseline_settings_24"
                     app:backgroundTint="@color/gray_for_options"
                     app:layout_constraintBottom_toBottomOf="parent"

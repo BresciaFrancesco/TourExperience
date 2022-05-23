@@ -1,8 +1,8 @@
 package it.uniba.sms2122.tourexperience.games.quiz.domainprimitive;
 
 import static it.uniba.sms2122.tourexperience.utility.Validate.inclusiveBetween;
-import static it.uniba.sms2122.tourexperience.utility.Validate.notBlank;
-import static it.uniba.sms2122.tourexperience.utility.Validate.matchesPattern;
+import static it.uniba.sms2122.tourexperience.utility.Validate.notNaN;
+import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
 
 /**
  * Pattern: Domain Primitive.
@@ -11,17 +11,16 @@ import static it.uniba.sms2122.tourexperience.utility.Validate.matchesPattern;
  * Un oggetto ID o è corretto o non esiste.
  */
 public class ID {
-    private static final String REGEX_PATTERN = "[0-9][0-9]?";
-    private final String value;
+    private final int value;
 
-    public ID(final String id) {
-        notBlank(id);
-        inclusiveBetween(1, 2, id.length());
-        matchesPattern(id, REGEX_PATTERN, "L'id non è accetato dal pattern " + REGEX_PATTERN);
+    public ID(final Integer id) {
+        notNull(id);
+        notNaN(id);
+        inclusiveBetween(Integer.MIN_VALUE, Integer.MAX_VALUE, id.intValue());
         value = id;
     }
 
-    public String value() {
+    public int value() {
         return value;
     }
 }

@@ -7,8 +7,6 @@ import java.util.List;
  */
 public class QuizJson {
     private String titolo;
-    private Integer valoreTotale;
-    private Integer punteggioCorrente;
     private List<DomandaJson> domande;
 
     private QuizJson() {}
@@ -19,14 +17,6 @@ public class QuizJson {
 
     public List<DomandaJson> getDomande() {
         return domande;
-    }
-
-    public Integer getValoreTotale() {
-        return valoreTotale;
-    }
-
-    public Integer getPunteggioCorrente() {
-        return punteggioCorrente;
     }
 
 }

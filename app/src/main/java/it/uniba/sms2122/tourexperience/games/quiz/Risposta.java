@@ -4,7 +4,6 @@ import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
 
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.ID;
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.IsRispostaEsatta;
-import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.Punteggio;
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.Testo;
 
 /**

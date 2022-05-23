@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:elevation="5dp"
+    app:cardCornerRadius="8dp"
+    app:cardMaxElevation="8dp"
+    app:cardUseCompatPadding="true"
+    android:layout_margin="5dp">
+
+    <LinearLayout
+        android:id="@+id/quiz_card_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/color_card_quiz"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/domanda_txtview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Domanda prova"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/punti_txtview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Punti"
+            android:textSize="18dp"
+            android:textColor="@color/main_red"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginBottom="5dp"/>
+
+        <RadioGroup
+            android:id="@+id/radio_group_risposte"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="5dp">
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

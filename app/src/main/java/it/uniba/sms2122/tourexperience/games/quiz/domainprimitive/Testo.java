@@ -1,10 +1,8 @@
 package it.uniba.sms2122.tourexperience.games.quiz.domainprimitive;
 
 import static it.uniba.sms2122.tourexperience.utility.Validate.inclusiveBetween;
-import static it.uniba.sms2122.tourexperience.utility.Validate.notBlank;
 import static it.uniba.sms2122.tourexperience.utility.Validate.matchesPattern;
-
-import org.jetbrains.annotations.TestOnly;
+import static it.uniba.sms2122.tourexperience.utility.Validate.notBlank;
 
 /**
  * Pattern: Domain Primitive.
@@ -13,7 +11,7 @@ import org.jetbrains.annotations.TestOnly;
  * Un oggetto Testo o è corretto o non esiste.
  */
 public class Testo {
-    private static final String REGEX_PATTERN = "¿?[A-Z][\\p{Print}&&[^<>\";]]*[\\p{Alpha}?.:]";
+    private static final String REGEX_PATTERN = "¿?[\\p{Print}&&[^<>\";]]+";
     private final String value;
 
     public Testo(final String testo) {
@@ -25,10 +23,5 @@ public class Testo {
 
     public String value() {
         return value;
-    }
-
-    @TestOnly
-    public static String getRegexPattern() {
-        return REGEX_PATTERN;
     }
 }

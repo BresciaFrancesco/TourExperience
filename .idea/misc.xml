@@ -5,9 +5,7 @@
       <map>
         <entry key="../../../../../../../../layout/custom_preview.xml" value="0.17291666666666666" />
         <entry key="..\:/TourExperience/app/src/main/res/drawable-anydpi/logo.xml" value="0.2135" />
-        <entry key="..\:/TourExperience/app/src/main/res/drawable-anydpi/profile_pic.xml" value="0.2815" />
         <entry key="..\:/TourExperience/app/src/main/res/drawable/button_shape.xml" value="0.2975" />
-        <entry key="..\:/TourExperience/app/src/main/res/drawable/progress_back.xml" value="0.2135" />
         <entry key="..\:/TourExperience/app/src/main/res/drawable/progress_bg.xml" value="0.121" />
         <entry key="..\:/TourExperience/app/src/main/res/drawable/textview_circle_border.xml" value="0.1965" />
         <entry key="..\:/TourExperience/app/src/main/res/drawable/top_rounded.xml" value="0.264" />
@@ -20,27 +18,19 @@
         <entry key="..\:/TourExperience/app/src/main/res/layout/activity_registration.xml" value="0.18541666666666667" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/activity_splash_screen.xml" value="0.2" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/activity_welcome.xml" value="0.1" />
-        <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_bottom_welcome.xml" value="0.18854166666666666" />
-        <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_fine_percorso.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_home.xml" value="0.3625" />
-        <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_image_and_description.xml" value="0.18854166666666666" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_museo.xml" value="0.4" />
-        <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_opera.xml" value="0.18854166666666666" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_ranking.xml" value="0.2" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_registration_first_page.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_registration_second_page.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_scelta_musei.xml" value="0.18854166666666666" />
-        <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_scelta_stanze.xml" value="0.2" />
-        <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_stanza.xml" value="0.18854166666666666" />
+        <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_scelta_stanze.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/fragment_welcome.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/item_recycle_view.xml" value="0.18541666666666667" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/list_item.xml" value="0.18541666666666667" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/overview_path_fragment.xml" value="0.18854166666666666" />
-        <entry key="..\:/TourExperience/app/src/main/res/layout/qr_scanner_fragment.xml" value="0.18854166666666666" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/ranking_item.xml" value="0.3625" />
-        <entry key="..\:/TourExperience/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="..\:/TourExperience/app/src/main/res/menu/home.xml" value="0.3625" />
-        <entry key="..\:/TourExperience/app/src/main/res/menu/path.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/menu/share.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/mipmap-anydpi-v26/TourExperience.xml" value="0.1775" />
         <entry key="..\:/TourExperience/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1775" />
@@ -108,6 +98,7 @@
         <entry key="app/src/main/res/layout/fragment_image_and_description.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/layout/fragment_museo.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/fragment_opera.xml" value="0.3260416666666667" />
+        <entry key="app/src/main/res/layout/fragment_quiz.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/layout/fragment_registration_first_page.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/fragment_scelta_musei.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/layout/fragment_scelta_stanze.xml" value="0.35625" />
@@ -120,6 +111,7 @@
         <entry key="app/src/main/res/layout/opera_item.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/opera_list_item.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/prova.xml" value="0.3260416666666667" />
+        <entry key="app/src/main/res/layout/quiz_card.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.24375" />
         <entry key="app/src/main/res/menu/bottom_nav_view.xml" value="0.24375" />
         <entry key="app/src/main/res/menu/home.xml" value="0.25" />

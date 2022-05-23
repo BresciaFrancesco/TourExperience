@@ -1,10 +1,10 @@
 package it.uniba.sms2122.tourexperience.games.quiz;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static it.uniba.sms2122.tourexperience.utility.Validate.inclusiveBetween;
 import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.ID;
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.Punteggio;

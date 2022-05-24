@@ -39,7 +39,7 @@ public class BleService extends IntentService {
     private BluetoothLeScanner scanner;
     private Map<String, Opera> opereInStanza;
 
-    private static final int RSSI_CALIBRATION = 177;    // Valore per calibrare l'rssi restituito dal bluetooth per calcolare una distanza più precisa
+    private static final int RSSI_CALIBRATION = 210;    // Valore per calibrare l'rssi restituito dal bluetooth per calcolare una distanza più precisa
     private static final String TAG = "BleService";
     private static final double MAX_DISTANCE = 0.5; // Valore espresso in metri
     public static final int SECONDS_FOR_DETECTION = 4;

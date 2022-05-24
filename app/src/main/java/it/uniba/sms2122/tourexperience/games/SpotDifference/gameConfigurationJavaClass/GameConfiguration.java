@@ -1,34 +1,27 @@
 package it.uniba.sms2122.tourexperience.games.SpotDifference.gameConfigurationJavaClass;
 
-import android.util.Log;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import java.io.IOException;
-import java.io.StringReader;
+import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.games.SpotDifference.configurationObject.DifferencesCoordinates;
 
 public class GameConfiguration {
 
-    FirebaseStorage storage = FirebaseStorage.getInstance("gs://spotdifferencetest.appspot.com");
-    StorageReference storageRef = storage.getReference();
-
-    StorageReference XMLconfigFileRef;
-    //byte[] xmlConfigFileToString;
-
-    SetGameImages setImages;
-
     AppCompatActivity activityToConfig;
     String artToConfig;
+
+    ConstraintLayout image1Container;
+    ConstraintLayout image2Container;
+
+    SetDifferencesButtonCordinates setDifferencesButtonCordinates;
 
     SetDifferencesButtonClick setAllClickOfDifferencesBtn;
     //SetDifferenceBtnCordinates setAllCordinatesOfDifferencesBtn;
@@ -38,44 +31,52 @@ public class GameConfiguration {
         this.activityToConfig = activityToConfig;
         this.artToConfig = artToConfig;
 
-        setImages = new SetGameImages(activityToConfig);
-
-        XMLconfigFileRef = storageRef.child(artToConfig + "Config.xml");
-
         setConfigFile();
 
-        //setImagesToGame();//setto la due immagini da far stampare sull'activity
+        setGameImages();//setto la due immagini da far stampare sull'activity
 
-        // setAllCordinatesOfDifferencesBtn = new SetDifferenceBtnCordinates(activityToConfig);
-
-
+        //setto la posizione delle differenze e triggero il click su di esse
+        setDifferencesButtonCordinates = new SetDifferencesButtonCordinates(image1Container, image2Container);
         setAllClickOfDifferencesBtn = new SetDifferencesButtonClick(activityToConfig);
 
     }
 
+
     /**
-     * scarico il file di configurazione e lo parso
+     * leggo il file di configurazione e lo parso
      */
     private void setConfigFile() {
 
-        final long ONE_MEGABYTE = 1024 * 1024 * 5;
+        String configurationFile = null;//da inizializzare con il json di configurazione del gioco
 
-        XMLconfigFileRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-
-            @Override
-            public void onSuccess(byte[] bytes) {
-
-                //parse json configuration file
+        Gson gson = new Gson();
+        gson.fromJson(configurationFile, DifferencesCoordinates.class);
 
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("exception", e.toString());
-            }
-        });
     }
+
+
+    /**
+     * funzione per settare la immagine da visualizzare con cui giocare
+     */
+    private void setGameImages(){
+
+        //setto la prima immagine
+        image1Container = activityToConfig.findViewById(R.id.image1Container);//recupero la view su cui settare il bacìkground
+        Bitmap image1 = null;//da inizilizzare con l'immagine da recuperare in locale
+        Drawable image1Drawable = new BitmapDrawable(image1);//converto la bitmap in risorsa drawable
+        image1Container.setBackground(image1Drawable);
+
+
+        //setto la seconda immagine
+        image2Container = activityToConfig.findViewById(R.id.image2Container);//recupero la view su cui settare il bacìkground
+        Bitmap image2 = null;//da inizilizzare con l'immagine da recuperare in locale
+        Drawable image2Drawable = new BitmapDrawable(image2);//converto la bitmap in risorsa drawable
+        image2Container.setBackground(image1Drawable);
+    }
+
+
+
 
 
 

@@ -28,7 +28,7 @@ public class SetDifferencesButtonClick {
     }
 
     /**
-     * funzione per riempire l'hasmamp delle differenze con con le diverse view rappresentanti delle differenze presenti nella prima immagine
+     * funzione per riempire l'hasmamp delle differenze con con le diverse view rappresentanti le differenze presenti nella prima immagine
      */
     private void allDifferencesViewFillWithImage1ViewDifferences() {
 
@@ -46,7 +46,7 @@ public class SetDifferencesButtonClick {
     }
 
     /**
-     * funzione per riempire l'hasmamp delle differenze con con le diverse view rappresentanti delle differenze presenti nella seconda immagine
+     * funzione per riempire l'hasmamp delle differenze con con le diverse view rappresentanti le differenze presenti nella seconda immagine
      */
     private void allDifferencesViewFillWithImage2ViewDifferences() {
 
@@ -63,7 +63,6 @@ public class SetDifferencesButtonClick {
             allDifferencesView.put("reflex_differenceBtn" + (j + 1), foundCircle);
             j++;
         }
-        Log.e("size of hasmap", String.valueOf(allDifferencesView.size()));
 
     }
 

@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -57,6 +58,9 @@ public class StanzaFragment extends Fragment {
     private BleService service;
     private boolean bounded = false;
     private boolean canScanWithBluetooh = false;
+    private View inflater;
+    private ScrollView nearbyOperasScrollView;
+    private TextView stanzaDescription;
 
     // Gestione del risultato dell'attivazione del bluetooth
     private final ActivityResultLauncher<Intent> btActivityResultLauncher = registerForActivityResult(
@@ -90,6 +94,7 @@ public class StanzaFragment extends Fragment {
             BleService.LocalBinder binder = (BleService.LocalBinder) iBinder;
             service = binder.getService();
             bounded = true;
+            nearbyOperasScrollView.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -103,8 +108,6 @@ public class StanzaFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
-    View inflater;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -135,6 +138,7 @@ public class StanzaFragment extends Fragment {
 
         textView = view.findViewById(R.id.stanza_description);
         recycleView = view.findViewById(R.id.opere_recycle_view);
+        nearbyOperasScrollView = view.findViewById(R.id.nearby_operas_scroll_view);
 
         /* Caricamento delle opere */
         String idStanzaCorrente = path.getIdStanzaCorrente();
@@ -152,14 +156,6 @@ public class StanzaFragment extends Fragment {
 
         adapter = new NearbyOperasAdapter(getContext());
         recycleView.setAdapter(adapter);
-
-        /* TODO: implementare bundle per opera_activity
-        adapter.notifyDataSetChanged();
-        adapter.setOnItemClickListener(str -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("nome_percorso", nomiPercorsi.get(Integer.parseInt(str)));
-            ((PercorsoActivity) getActivity()).nextPercorsoFragment(bundle);
-        }); */
 
         triggerOperaScanButton();
     }
@@ -202,7 +198,7 @@ public class StanzaFragment extends Fragment {
      * Gestisce il click del pulsante per la scannerizzazione dei QR per un'opera.
      */
     private void triggerOperaScanButton() {
-        ConstraintLayout operaScanButton = inflater.findViewById(R.id.operaScannButton);
+        ConstraintLayout operaScanButton = inflater.findViewById(R.id.operaScanButton);
 
         operaScanButton.setOnClickListener(view -> {
             try {

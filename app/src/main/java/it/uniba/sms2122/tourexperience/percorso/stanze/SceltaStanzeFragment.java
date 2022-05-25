@@ -10,11 +10,13 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -118,6 +120,8 @@ public class SceltaStanzeFragment extends Fragment {
             e.printStackTrace();
         }
         listaStanze = new ArrayList<>();
+        setActionBar(this.nomeMuseo + " - " + this.nomePercorso);
+        ((PercorsoActivity)requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     @Override
@@ -216,4 +220,17 @@ public class SceltaStanzeFragment extends Fragment {
         outState.putString("nomeMuseo", this.nomeMuseo);
     }
 
+    /**
+     * Imposta la action bar con pulsante back e titolo.
+     * @param title titolo da impostare per l'action bar.
+     */
+    private void setActionBar(final String title) {
+        try {
+            final ActionBar actionBar = ((PercorsoActivity) requireActivity()).getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(true); // abilita il pulsante "back" nella action bar
+            actionBar.setTitle(title);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+    }
 }

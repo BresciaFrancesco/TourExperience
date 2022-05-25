@@ -82,7 +82,7 @@ public class OperaFragment extends Fragment {
             this.nomeMuseo = bundle.getString(NOME_MUSEO);
             this.nomeStanza = bundle.getString(NOME_STANZA);
         }
-        setActionBar(opera.getNome());
+        //setActionBar(opera.getNome());
         FragmentManager fragmentManager = getParentFragmentManager();
         ImageAndDescriptionFragment fragment = new ImageAndDescriptionFragment(opera.getPercorsoImg(), opera.getDescrizione());
         fragmentManager.beginTransaction()
@@ -189,20 +189,4 @@ public class OperaFragment extends Fragment {
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
     }
-
-    /**
-     * Imposta la action bar con pulsante back e titolo.
-     * @param title titolo da impostare per l'action bar.
-     */
-    private void setActionBar(final String title) {
-        try {
-            final ActionBar actionBar = ((PercorsoActivity) requireActivity()).getSupportActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true); // abilita il pulsante "back" nella action bar
-            actionBar.setTitle(title);
-        } catch (NullPointerException e) {
-            Log.e("OperaFragment", "ActionBar null");
-            e.printStackTrace();
-        }
-    }
-
 }

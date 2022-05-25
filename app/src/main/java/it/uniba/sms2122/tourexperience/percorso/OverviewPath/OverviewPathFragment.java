@@ -104,7 +104,7 @@ public class OverviewPathFragment extends Fragment {
                         ratingBar.setVisibility(View.GONE);
                     } else {
                         ratingBar.setRating(media);
-                        textRatingBar.setText(String.valueOf(media));
+                        textRatingBar.setText(String.valueOf(Math.round(votiPercorsi.calcolaMedia() * 100.0) / 100.0));
                     }
                 }
             });

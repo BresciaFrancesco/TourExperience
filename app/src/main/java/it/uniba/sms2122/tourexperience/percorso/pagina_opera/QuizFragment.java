@@ -1,6 +1,7 @@
 package it.uniba.sms2122.tourexperience.percorso.pagina_opera;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -26,9 +29,9 @@ import com.google.gson.JsonParseException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.games.quiz.ContainerRadioLinear;
 import it.uniba.sms2122.tourexperience.games.quiz.dto.QuizJson;
 import it.uniba.sms2122.tourexperience.games.quiz.Domanda;
 import it.uniba.sms2122.tourexperience.games.quiz.Quiz;
@@ -55,7 +58,7 @@ public class QuizFragment extends Fragment {
     private Button confermaBtn;
     private ScrollView scrollView;
     private ConstraintLayout constraintLayoutForFinalBtns;
-    private List<RadioGroup> risposteRadioGroups;
+    private List<ContainerRadioLinear> risposteRadioLinear;
     private List<LinearLayout> cardLinearLayoutList;
 
     public QuizFragment() {
@@ -119,7 +122,7 @@ public class QuizFragment extends Fragment {
             setActionBar("Quiz");
             quiz = (quiz == null) ? Quiz.buildFromJson(gson.fromJson(quizJson, QuizJson.class)) : quiz;
             cardLinearLayoutList = new ArrayList<>(quiz.getDomande().size());
-            risposteRadioGroups = new ArrayList<>(quiz.getDomande().size());
+            risposteRadioLinear = new ArrayList<>(quiz.getDomande().size());
             confermaBtn.setVisibility(View.VISIBLE);
             confermaBtn.setOnClickListener(this::confermaQuizSicuro);
             int i = 0;
@@ -136,13 +139,26 @@ public class QuizFragment extends Fragment {
                 domandaTxt.setText(context.getString(R.string.quiz_question, (i+1), domanda.getDomanda().value()));
 
                 final TextView puntiTxt = cardView.findViewById(R.id.punti_txtview);
-                puntiTxt.setText(context.getString(R.string.quiz_total, domanda.getValore().value()));
 
-                final RadioGroup radioGroup = cardView.findViewById(R.id.radio_group_risposte);
-                for (final Risposta risposta : domanda.getRisposte()) {
-                    radioGroup.addView(createRadioButton(cardView.getContext(), risposta));
+                if (domanda.countRisposteCorrette() > 1) {
+                    puntiTxt.setText(context.getString(R.string.quiz_total_plus_error, (int)domanda.getValore().value()));
+                    final LinearLayout linearLayoutGroup = cardView.findViewById(R.id.mcq_risposte);
+                    linearLayoutGroup.setVisibility(View.VISIBLE);
+                    int idx = 0;
+                    for (final Risposta risposta : domanda.getRisposte()) {
+                        linearLayoutGroup.addView(createButton(new CheckBox(cardView.getContext()), risposta), idx++);
+                    }
+                    risposteRadioLinear.add(i, new ContainerRadioLinear(linearLayoutGroup));
                 }
-                risposteRadioGroups.add(i, radioGroup);
+                else {
+                    puntiTxt.setText(context.getString(R.string.quiz_total, (int)domanda.getValore().value()));
+                    final RadioGroup radioGroup = cardView.findViewById(R.id.radio_group_risposte);
+                    radioGroup.setVisibility(View.VISIBLE);
+                    for (final Risposta risposta : domanda.getRisposte()) {
+                        radioGroup.addView(createButton(new RadioButton(cardView.getContext()), risposta));
+                    }
+                    risposteRadioLinear.add(i, new ContainerRadioLinear(radioGroup));
+                }
                 cardLinearLayoutList.add(i, cardView.findViewById(R.id.quiz_card_linear_layout));
                 linearLayout.addView(cardView);
                 i++;
@@ -161,13 +177,58 @@ public class QuizFragment extends Fragment {
         quiz.increasePunteggio(confermaQuiz(view));
     }
 
+//    private Punteggio confermaQuiz(View view) {
+//        Punteggio punteggio = new Punteggio(0.0);
+//        final List<Domanda> domande = quiz.getDomande();
+//        for (int i = 0; i < domande.size(); i++) {
+//            final int radioCheckedId = risposteRadioGroups.get(i).getCheckedRadioButtonId();
+//            for (final Risposta risposta : domande.get(i).getRisposte()) {
+//                if (radioCheckedId == risposta.getId().value()) {
+//                    if (risposta.isTrue().value()) {
+//                        punteggio = punteggio.add(domande.get(i).getValore());
+//                        cardLinearLayoutList.get(i).setBackgroundColor(view.getContext().getColor(R.color.success_green_card));
+//                    } else {
+//                        cardLinearLayoutList.get(i).setBackgroundColor(view.getContext().getColor(R.color.error_red_card));
+//                    }
+//                    break;
+//                }
+//            }
+//        }
+//        points.setText(view.getContext().getString(R.string.quiz_score, punteggio.value(), quiz.getValoreTotale().value()));
+//        constraintLayoutForFinalBtns.setVisibility(View.VISIBLE);
+//        goToTop();
+//        confermaBtn.setVisibility(View.GONE);
+//        return punteggio;
+//    }
+//
+//    private boolean isQuizCompletato() {
+//        for (final RadioGroup rg : risposteRadioGroups) {
+//            if (rg.getCheckedRadioButtonId() == -1)
+//                return false;
+//        }
+//        return true;
+//    }
+//
+//    private void ripetiQuiz(View view) {
+//        for (int i = 0; i < risposteRadioGroups.size(); i++) {
+//            risposteRadioGroups.get(i).clearCheck();
+//            cardLinearLayoutList.get(i).setBackgroundColor(view.getContext().getColor(R.color.color_card_quiz));
+//        }
+//        constraintLayoutForFinalBtns.setVisibility(View.GONE);
+//        confermaBtn.setVisibility(View.VISIBLE);
+//        points.setText(view.getContext().getString(R.string.quiz_total, quiz.getValoreTotale().value()));
+//        quiz.resetPunteggio();
+//    }
+
     private Punteggio confermaQuiz(View view) {
-        Punteggio punteggio = new Punteggio(0);
+        Punteggio punteggio = new Punteggio(0.0);
         final List<Domanda> domande = quiz.getDomande();
         for (int i = 0; i < domande.size(); i++) {
-            final int radioCheckedId = risposteRadioGroups.get(i).getCheckedRadioButtonId();
-            for (final Risposta risposta : domande.get(i).getRisposte()) {
-                if (radioCheckedId == risposta.getId().value()) {
+            final ContainerRadioLinear container = risposteRadioLinear.get(i);
+            if (container.isRadioGroup()) {
+                final int radioCheckedId = ((RadioGroup) container.getView()).getCheckedRadioButtonId();
+                for (final Risposta risposta : domande.get(i).getRisposte()) {
+                    if (radioCheckedId != risposta.getId().value()) continue;
                     if (risposta.isTrue().value()) {
                         punteggio = punteggio.add(domande.get(i).getValore());
                         cardLinearLayoutList.get(i).setBackgroundColor(view.getContext().getColor(R.color.success_green_card));
@@ -176,9 +237,39 @@ public class QuizFragment extends Fragment {
                     }
                     break;
                 }
+            } else {
+                int countTrue = 0;
+                int totalChecked = 0;
+                final LinearLayout ll = (LinearLayout) container.getView();
+                Punteggio tmpPunteggio = new Punteggio(0.0);
+                for (int j = 0; j < domande.get(i).getRisposte().size(); j++) {
+                    final CheckBox cb =  (CheckBox) ll.getChildAt(j);
+                    if (!cb.isChecked()) continue;
+                    totalChecked++;
+                    for (final Risposta risposta : domande.get(i).getRisposte()) {
+                        if (cb.getId() != risposta.getId().value()) continue;
+                        if (risposta.isTrue().value()) {
+                            cb.setTextColor(Color.parseColor("#278910"));
+                            countTrue++;
+                            tmpPunteggio = tmpPunteggio.add(
+                                    new Punteggio(domande.get(i).getValore().value() / domande.get(i).countRisposteCorrette())
+                            );
+                        } else {
+                            cb.setTextColor(Color.RED);
+                        }
+                        break;
+                    }
+                }
+                if (countTrue == domande.get(i).countRisposteCorrette() && countTrue == totalChecked) {
+                    punteggio = punteggio.add(domande.get(i).getValore());
+                    cardLinearLayoutList.get(i).setBackgroundColor(view.getContext().getColor(R.color.success_green_card));
+                } else {
+                    punteggio = punteggio.add(new Punteggio(tmpPunteggio.value() - (totalChecked - countTrue)));
+                    cardLinearLayoutList.get(i).setBackgroundColor(view.getContext().getColor(R.color.error_red_card));
+                }
             }
         }
-        points.setText(view.getContext().getString(R.string.quiz_score, punteggio.value(), quiz.getValoreTotale().value()));
+        points.setText(view.getContext().getString(R.string.quiz_score, Math.round(punteggio.value()), Math.round(quiz.getValoreTotale().value())));
         constraintLayoutForFinalBtns.setVisibility(View.VISIBLE);
         goToTop();
         confermaBtn.setVisibility(View.GONE);
@@ -186,21 +277,48 @@ public class QuizFragment extends Fragment {
     }
 
     private boolean isQuizCompletato() {
-        for (final RadioGroup rg : risposteRadioGroups) {
-            if (rg.getCheckedRadioButtonId() == -1)
-                return false;
+        int i = 0;
+        final List<Domanda> domande = quiz.getDomande();
+        for (final ContainerRadioLinear container : risposteRadioLinear) {
+            if (container.isRadioGroup()) {
+                if (((RadioGroup) container.getView()).getCheckedRadioButtonId() == -1)
+                    return false;
+            } else {
+                final LinearLayout ll = (LinearLayout) container.getView();
+                final int size = domande.get(i).getRisposte().size();
+                boolean checked = false;
+                for (int j = 0; j < size; j++) {
+                    if (((CheckBox)ll.getChildAt(j)).isChecked()) {
+                        checked = true;
+                        break;
+                    }
+                }
+                if (!checked) return false;
+            }
+            i++;
         }
         return true;
     }
 
     private void ripetiQuiz(View view) {
-        for (int i = 0; i < risposteRadioGroups.size(); i++) {
-            risposteRadioGroups.get(i).clearCheck();
+        for (int i = 0; i < risposteRadioLinear.size(); i++) {
+            final ContainerRadioLinear container = risposteRadioLinear.get(i);
+            if (container.isRadioGroup()) {
+                ((RadioGroup) container.getView()).clearCheck();
+            } else {
+                final LinearLayout ll = (LinearLayout) container.getView();
+                final int size = quiz.getDomande().get(i).getRisposte().size();
+                for (int j = 0; j < size; j++) {
+                    final CheckBox cb = (CheckBox) ll.getChildAt(j);
+                    cb.setChecked(false);
+                    cb.setTextColor(Color.BLACK);
+                }
+            }
             cardLinearLayoutList.get(i).setBackgroundColor(view.getContext().getColor(R.color.color_card_quiz));
         }
         constraintLayoutForFinalBtns.setVisibility(View.GONE);
         confermaBtn.setVisibility(View.VISIBLE);
-        points.setText(view.getContext().getString(R.string.quiz_total, quiz.getValoreTotale().value()));
+        points.setText(view.getContext().getString(R.string.quiz_total, (int)quiz.getValoreTotale().value()));
         quiz.resetPunteggio();
     }
 
@@ -214,13 +332,12 @@ public class QuizFragment extends Fragment {
         }
     }
 
-    private RadioButton createRadioButton(final Context context, final Risposta risposta) {
-        final RadioButton button = new RadioButton(context);
+    private static <T extends CompoundButton> T createButton(final T button, final Risposta risposta) {
         button.setId(risposta.getId().value());
         button.setText(risposta.getRisposta().value());
         button.setTextSize(18);
         RadioGroup.LayoutParams radioButtonParams = new RadioGroup.LayoutParams(
-                RadioGroup.LayoutParams.MATCH_PARENT,
+                RadioGroup.LayoutParams.WRAP_CONTENT,
                 RadioGroup.LayoutParams.WRAP_CONTENT
         );
         radioButtonParams.setMargins(0,15,0,20);

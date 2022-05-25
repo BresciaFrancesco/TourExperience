@@ -36,14 +36,14 @@ public class Quiz {
         notNull(domande);
         inclusiveBetween(1, 15, domande.size());
 
-        Punteggio acc = new Punteggio(0);
+        Punteggio acc = new Punteggio(0.0);
         for (Domanda dom : domande) {
             notNull(dom);
             acc = acc.add(dom.getValore());
         }
         this.valoreTotale = acc;
         this.domande = domande;
-        this.punteggioCorrente = new Punteggio(0);
+        this.punteggioCorrente = new Punteggio(0.0);
     }
 
     public Titolo getTitolo() {
@@ -79,7 +79,7 @@ public class Quiz {
     }
 
     public void resetPunteggio() {
-        punteggioCorrente = new Punteggio(0);
+        punteggioCorrente = new Punteggio(0.0);
     }
 
     /**

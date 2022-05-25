@@ -153,6 +153,7 @@
     <string name="quiz_non_completato">Quiz non completato</string>
     <string name="quiz_score">%1$d/%2$d Punti accumulati</string>
     <string name="quiz_total">%1$d Punti</string>
+    <string name="quiz_total_plus_error">%1$d Punti. -1 per ogni errore</string>
     <string name="generic_error">Si è verificato un errore</string>
     <string name="quiz_question">%1$d. %2$s</string>
     <string name="continua">Continua</string>

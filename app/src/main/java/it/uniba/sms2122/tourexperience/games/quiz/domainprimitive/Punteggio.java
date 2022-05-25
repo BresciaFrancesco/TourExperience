@@ -11,16 +11,16 @@ import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
  * Un oggetto Punteggio o è corretto o non esiste.
  */
 public class Punteggio {
-    private final int value;
+    private final double value;
 
-    public Punteggio(final Integer punteggio) {
+    public Punteggio(final Double punteggio) {
         notNull(punteggio);
         notNaN(punteggio);
         inclusiveBetween(0, 100, punteggio.intValue());
         value = punteggio;
     }
 
-    public int value() {
+    public double value() {
         return value;
     }
 

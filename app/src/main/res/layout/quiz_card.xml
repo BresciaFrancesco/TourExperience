@@ -39,14 +39,27 @@
             android:layout_marginHorizontal="5dp"
             android:layout_marginBottom="5dp"/>
 
+        <!-- Layout che raggruppa le risposte per domande a risposta singola -->
         <RadioGroup
             android:id="@+id/radio_group_risposte"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginHorizontal="5dp">
+            android:layout_marginHorizontal="5dp"
+            android:visibility="gone">
 
         </RadioGroup>
+
+        <!-- Layout che raggruppa le risposte per domande a risposta multipla -->
+        <LinearLayout
+            android:id="@+id/mcq_risposte"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="5dp"
+            android:visibility="gone">
+
+        </LinearLayout>
 
     </LinearLayout>
 

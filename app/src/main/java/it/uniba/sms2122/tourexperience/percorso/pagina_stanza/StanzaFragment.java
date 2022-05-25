@@ -58,7 +58,6 @@ public class StanzaFragment extends Fragment {
     private Stanza stanza;
     private Map<String, Opera> opereInStanza;
     private BleService service;
-    private boolean bounded = false;
     private boolean canScanWithBluetooh = false;
     private View inflater;
     private ScrollView nearbyOperasScrollView;
@@ -94,12 +93,11 @@ public class StanzaFragment extends Fragment {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             BleService.LocalBinder binder = (BleService.LocalBinder) iBinder;
             service = binder.getService();
-            bounded = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            bounded = false;
+            service = null;
         }
     };
 
@@ -266,7 +264,7 @@ public class StanzaFragment extends Fragment {
                         adapter.notifyDataSetChanged();
                     });
                 }
-            } while(bounded);
+            } while(service != null && service.isBound());
         }).start();
     }
 
@@ -274,7 +272,7 @@ public class StanzaFragment extends Fragment {
      * Chiama unBindService()
      */
     public void unBindService() {
-        if(bounded) {
+        if(service != null && service.isBound()) {
             percorsoActivity.unbindService(serviceConnection);
         }
     }

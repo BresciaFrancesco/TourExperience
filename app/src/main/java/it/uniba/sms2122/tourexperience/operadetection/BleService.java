@@ -32,6 +32,7 @@ import it.uniba.sms2122.tourexperience.model.Opera;
  * Service per il rilevamento delle opere tramite bluetooth low energy.
  */
 public class BleService extends IntentService {
+    private boolean bound = false;
     private final IBinder binder = new LocalBinder();
     private final Map<String, Queue<DistanceRecord>> distanceRecordMap = new HashMap<>();
 
@@ -85,12 +86,14 @@ public class BleService extends IntentService {
         } else {
             Log.e(TAG, "onBind: bluetoothAdapter is null");
         }
+        bound = true;
         return binder;
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         stopLeScan();
+        bound = false;
         return super.onUnbind(intent);
     }
 
@@ -204,6 +207,10 @@ public class BleService extends IntentService {
             }
         }
         return nearbyOperas;
+    }
+
+    public boolean isBound() {
+        return bound;
     }
 
 

@@ -31,6 +31,7 @@ import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.percorso.fine_percorso.FinePercorsoFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
+import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
 import it.uniba.sms2122.tourexperience.registration.RegistrationFragmentSecondPage;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
@@ -161,7 +162,12 @@ public class PercorsoActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container_fragments_route);
+
         if(!lastFragmentIsSceltaStanzeFragment()){
+            if (fragment instanceof StanzaFragment) {
+                ((StanzaFragment) fragment).unBindService();
+            }
             if(getSupportFragmentManager().getBackStackEntryCount() < 2){
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
@@ -185,11 +191,6 @@ public class PercorsoActivity extends AppCompatActivity {
 
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
-        }
-
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container_fragments_route);
-        if (fragment instanceof StanzaFragment) {
-            ((StanzaFragment) fragment).unBindService();
         }
 
     }

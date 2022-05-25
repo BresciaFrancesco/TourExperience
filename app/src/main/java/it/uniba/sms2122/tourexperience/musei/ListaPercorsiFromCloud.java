@@ -28,14 +28,11 @@ public class ListaPercorsiFromCloud implements ValueEventListener {
 
     private final SceltaMuseiFragment fragment;
     private final ProgressBar progressBar;
-    private final RecyclerView recyclerView;
 
     public ListaPercorsiFromCloud(final SceltaMuseiFragment fragment,
-                                  final ProgressBar progressBar,
-                                  final RecyclerView recyclerView) {
+                                  final ProgressBar progressBar) {
         this.fragment = fragment;
         this.progressBar = progressBar;
-        this.recyclerView = recyclerView;
     }
 
     @Override

@@ -162,36 +162,36 @@ public class SceltaMuseiFragment extends Fragment {
             } else openFileExplorer.run();
         });
 
-        cloudFab.setOnClickListener(view2 -> NetworkConnectivity.check(isConnected -> {
-            if (!isConnected) {
-                Toast.makeText(getContext(), view.getContext().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
-                return;
-            }
-            recyclerView.setAdapter(null);
-            hideFabOptions();
-            mAddFab.setImageResource(R.drawable.ic_baseline_close_24);
-            try {
-                MainActivity activity = (MainActivity) requireActivity();
-                Objects.requireNonNull(activity.getSupportActionBar()).setTitle(R.string.museums_cloud_import);
-            }
-            catch (NullPointerException | IllegalStateException e) {
-                Log.e("SceltaMuseiFragment", "Set title impossibile");
-                e.printStackTrace();
-            }
-            Back backToMuseumsList = new BackToMuseumsList(this, mAddFab);
-            // Il FAB torna allo stato iniziale e la lista di musei torna a contenere i musei presenti in cache
-            mAddFab.setOnClickListener((view3) -> {
-                searchView.setQueryHint(getString(R.string.search_museums));
-                backToMuseumsList.back(view3);
-            });
+        cloudFab.setOnClickListener(view2 -> {
+            if (NetworkConnectivity.check(view2.getContext())) {
+                recyclerView.setAdapter(null);
+                hideFabOptions();
+                mAddFab.setImageResource(R.drawable.ic_baseline_close_24);
+                try {
+                    MainActivity activity = (MainActivity) requireActivity();
+                    Objects.requireNonNull(activity.getSupportActionBar()).setTitle(R.string.museums_cloud_import);
+                }
+                catch (NullPointerException | IllegalStateException e) {
+                    Log.e("SceltaMuseiFragment", "Set title impossibile");
+                    e.printStackTrace();
+                }
+                Back backToMuseumsList = new BackToMuseumsList(this, mAddFab);
+                // Il FAB torna allo stato iniziale e la lista di musei torna a contenere i musei presenti in cache
+                mAddFab.setOnClickListener((view3) -> {
+                    searchView.setQueryHint(getString(R.string.search_museums));
+                    backToMuseumsList.back(view3);
+                });
 
-            // Impostando questo oggetto in ImportPercorsi, potrò evocare il suo metodo back
-            // per tornare allo stato precedente come se avessi cliccato il pulsante
-            ImportPercorsi.setBackToMuseumsList(backToMuseumsList);
-            // Ottiene da firebase tutti i percorsi
-            getListaPercorsiFromCloudStorage();
-            searchView.setQueryHint(getString(R.string.search_paths));
-        }));
+                // Impostando questo oggetto in ImportPercorsi, potrò evocare il suo metodo back
+                // per tornare allo stato precedente come se avessi cliccato il pulsante
+                ImportPercorsi.setBackToMuseumsList(backToMuseumsList);
+                // Ottiene da firebase tutti i percorsi
+                getListaPercorsiFromCloudStorage();
+                searchView.setQueryHint(getString(R.string.search_paths));
+            } else {
+                Toast.makeText(view2.getContext(), view.getContext().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -281,10 +281,8 @@ public class SceltaMuseiFragment extends Fragment {
      */
     private void getListaPercorsiFromCloudStorage() {
         generalAdapter = new MuseiAdapter(this, new ArrayList<>(), false);
-        Log.v("IMPORT_CLOUD", "start download...");
         DatabaseReference db = FirebaseDatabase.getInstance().getReference("Museums_v2");
-        ValueEventListener listener = new
-            ListaPercorsiFromCloud(this, progressBar, recyclerView);
+        ValueEventListener listener = new ListaPercorsiFromCloud(this, progressBar);
         db.addValueEventListener(listener);
     }
 

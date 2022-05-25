@@ -24,6 +24,15 @@ import androidx.appcompat.app.ActionBar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 
@@ -37,7 +46,9 @@ import it.uniba.sms2122.tourexperience.games.quiz.Domanda;
 import it.uniba.sms2122.tourexperience.games.quiz.Quiz;
 import it.uniba.sms2122.tourexperience.games.quiz.Risposta;
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.Punteggio;
+import it.uniba.sms2122.tourexperience.model.User;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -129,7 +140,7 @@ public class QuizFragment extends Fragment {
 
             title.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
             title.setText(quiz.getTitolo().value());
-            points.setText(context.getString(R.string.quiz_total, quiz.getValoreTotale().value()));
+            points.setText(context.getString(R.string.quiz_total, (int)quiz.getValoreTotale().value()));
             for (final Domanda domanda : quiz.getDomande()) {
 
                 View cardView = inflater.inflate(R.layout.quiz_card, viewGroup, false);
@@ -324,6 +335,35 @@ public class QuizFragment extends Fragment {
 
     private void terminaQuiz(View view) {
         try {
+            if (NetworkConnectivity.check(view.getContext())) {
+                final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    final DatabaseReference dbUser = FirebaseDatabase.getInstance()
+                            .getReference("Users")
+                            .child(currentUser.getUid())
+                            .child("score_quiz");
+                    dbUser.get().addOnSuccessListener(dataSnapshot -> {
+                        final double totalUserScore = ((dataSnapshot.getValue() != null)
+                                ? Double.parseDouble(dataSnapshot.getValue().toString())
+                                : 0.0)
+                                + quiz.getPunteggioCorrente().value();
+                        dbUser.setValue(totalUserScore).addOnSuccessListener(unused -> {
+                            Log.v("SalvataggioPunteggioQuiz", "Punteggio Quiz salvato");
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e("SalvataggioPunteggioQuiz", e.getMessage());
+                            e.printStackTrace();
+                        });
+                    }).addOnFailureListener(e -> {
+                        Log.e("SalvataggioPunteggioQuiz", e.getMessage());
+                        e.printStackTrace();
+                    });
+                } else {
+                    Log.v("SalvataggioPunteggioQuiz", "Utente Guest - punteggio non salvato");
+                }
+            } else {
+                Toast.makeText(view.getContext(), getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+            }
             requireActivity().getSupportFragmentManager().popBackStack();
         }
         catch (NullPointerException | IllegalStateException e) {

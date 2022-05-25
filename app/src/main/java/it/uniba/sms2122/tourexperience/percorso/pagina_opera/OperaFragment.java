@@ -64,6 +64,7 @@ public class OperaFragment extends Fragment {
 
         if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
             // Ripristino tramite bundle
+            Log.e("PROVA", "savedInstanceState");
             this.opera = new Opera(
                 savedInstanceState.getString(OPERA_ID),
                 savedInstanceState.getString(OPERA_NOME),
@@ -74,6 +75,7 @@ public class OperaFragment extends Fragment {
             this.nomeStanza = savedInstanceState.getString(NOME_STANZA);
         } else {
             // Inizializzazione tramite bundle
+            Log.e("PROVA", "getArguments");
             final Bundle bundle = getArguments();
             final String operaJson = Objects.requireNonNull(bundle).getString(OPERA_JSON);
             this.opera = new Gson().fromJson(Objects.requireNonNull(operaJson), Opera.class);

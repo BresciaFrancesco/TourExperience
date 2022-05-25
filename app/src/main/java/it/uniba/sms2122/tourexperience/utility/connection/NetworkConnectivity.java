@@ -10,6 +10,7 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 
+import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.utility.AppExecutors;
 
 /**
@@ -21,6 +22,13 @@ public class NetworkConnectivity {
 
     private static AppExecutors appExecutors;
     private static Context context;
+
+
+    public static boolean check(final Context context) {
+        final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        final NetworkInfo ni = cm.getActiveNetworkInfo();
+        return ni != null && ni.isAvailable() && ni.isConnected();
+    }
 
     /**
      * Initialization should be done in Application class and only one time.

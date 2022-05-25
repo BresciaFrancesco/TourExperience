@@ -34,6 +34,7 @@ import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
 import it.uniba.sms2122.tourexperience.registration.RegistrationFragmentSecondPage;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
@@ -112,9 +113,7 @@ public class PercorsoActivity extends AppCompatActivity {
     }
 
     public boolean checkConnectivity() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(PercorsoActivity.this.CONNECTIVITY_SERVICE);
-        NetworkInfo ni = cm.getActiveNetworkInfo();
-        if (ni != null && ni.isAvailable() && ni.isConnected()) {
+        if (NetworkConnectivity.check(getApplicationContext())) {
             db = FirebaseDatabase.getInstance().getReference("Museums").child(nomeMuseo).child(nomePercorso);
             snapshotVoti = db.child("Voti").get();
             snapshotNumStarts = db.child("Numero_starts").get();

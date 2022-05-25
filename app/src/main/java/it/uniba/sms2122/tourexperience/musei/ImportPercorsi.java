@@ -57,20 +57,18 @@ public class ImportPercorsi {
      */
     public void downloadMuseoPercorso(final String nomePercorso,
                                       final String nomeMuseo) {
-        NetworkConnectivity.check(isConnected -> {
-            if (!isConnected) {
-                Toast.makeText(context, context.getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
-                return;
-            }
+        if (NetworkConnectivity.check(context)) {
             if (cacheMuseums.get(nomeMuseo) == null &&
                     cacheMuseums.get(nomeMuseo.toLowerCase()) == null) {
                 downloadAll_v2(nomePercorso, nomeMuseo);
             } else {
                 downloadPercorso(nomePercorso, nomeMuseo, false)
-                .addOnFailureListener(e ->
-                    fail("DOWNLOAD_PERCORSO", e.getMessage()));
+                    .addOnFailureListener(e ->
+                        fail("DOWNLOAD_PERCORSO", e.getMessage()));
             }
-        });
+        } else {
+            Toast.makeText(context, context.getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+        }
     }
 
 

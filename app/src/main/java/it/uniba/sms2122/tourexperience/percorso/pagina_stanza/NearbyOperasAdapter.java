@@ -42,12 +42,12 @@ public class NearbyOperasAdapter extends RecyclerView.Adapter<NearbyOperasAdapte
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.textview.setText(nearbyOperas.get(position).getNome());
         holder.imageView.setImageURI(Uri.parse(nearbyOperas.get(position).getPercorsoImg()));
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        /*holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onItemClickListener.onClick(Integer.toString(holder.getAbsoluteAdapterPosition()));
             }
-        });
+        });*/
     }
 
     @Override

@@ -46,8 +46,10 @@ import it.uniba.sms2122.tourexperience.utility.Permesso;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
 public class StanzaFragment extends Fragment {
-    TextView textView;
-    RecyclerView recycleView;
+    private static final String TAG = "StanzaFragment";
+
+    private TextView textView;
+    private RecyclerView recycleView;
     private Permesso permission;
     private NearbyOperasAdapter adapter;
     private PercorsoActivity percorsoActivity;
@@ -60,7 +62,6 @@ public class StanzaFragment extends Fragment {
     private boolean canScanWithBluetooh = false;
     private View inflater;
     private ScrollView nearbyOperasScrollView;
-    private TextView stanzaDescription;
 
     // Gestione del risultato dell'attivazione del bluetooth
     private final ActivityResultLauncher<Intent> btActivityResultLauncher = registerForActivityResult(
@@ -94,7 +95,6 @@ public class StanzaFragment extends Fragment {
             BleService.LocalBinder binder = (BleService.LocalBinder) iBinder;
             service = binder.getService();
             bounded = true;
-            nearbyOperasScrollView.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -178,6 +178,7 @@ public class StanzaFragment extends Fragment {
              */
             if(permission.hasPermissions(permessi)) {
                 checkSensorsStateAndStartService();
+                nearbyOperasScrollView.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -232,14 +233,19 @@ public class StanzaFragment extends Fragment {
         }
         else if(bluetoothAdapter.isEnabled() &&
                 (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && locationManager.isLocationEnabled()) || locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            bindService();
+            try {
+                bindService();
+            }
+            catch(NullPointerException ex) {
+                Log.e(TAG, "checkSensorsStateAndStartService: " + ex.getMessage());
+            }
         }
     }
 
     /**
      * Chiama bindService() e fa partire il thread
      */
-    private void bindService() {
+    private void bindService() throws NullPointerException {
         Intent intent = new Intent(requireContext(), BleService.class);
         intent.putExtra("opere", (Serializable) opereInStanza);
         percorsoActivity.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);

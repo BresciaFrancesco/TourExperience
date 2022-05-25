@@ -26,7 +26,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,34 +36,38 @@ import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
-import it.uniba.sms2122.tourexperience.utility.ranking.FileRanking;
 import it.uniba.sms2122.tourexperience.utility.ranking.MuseoDatabase;
 import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
-import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 
 
 public class MainActivity extends AppCompatActivity {
-    private UserHolder userHolder;
-    private FragmentManager fragmentManager = getSupportFragmentManager();
+    private final FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;
     private SceltaMuseiFragment sceltaMuseiFragment;
     private List<MuseoDatabase> museoDatabaseList;
-    private DatabaseReference db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        userHolder = UserHolder.getInstance();
-        userHolder.getUser(
-                (user) -> {
-                    String title = getString(R.string.hello, user.getName());
-                    Objects.requireNonNull(getSupportActionBar()).setTitle(title);
-                },
-                () -> {}
-        );
+        /*
+         * Ottengo l'utente attualmente loggato.
+         */
+        UserHolder userHolder = UserHolder.getInstance();
+        try {
+            userHolder.getUser(
+                    (user) -> {
+                        String title = getString(R.string.hello, user.getName());
+                        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
+                    },
+                    () -> {}
+            );
+        }
+        catch(NullPointerException ex) {
+            ex.printStackTrace();
+        }
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         /*
@@ -122,8 +125,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Imposta il titolo della action bar
+     * @param title Il titolo da impostare
+     */
     public void setActionBarTitle(String title) {
-        getSupportActionBar().setTitle(title);
+        try {
+            Objects.requireNonNull(getSupportActionBar()).setTitle(title);
+        }
+        catch(NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -134,19 +146,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         int itemId = item.getItemId();
 
-        switch (itemId){
-
-            case R.id.profile_pic:
-                Intent openProfileIntent = new Intent(this, ProfileActivity.class);
-                startActivity(openProfileIntent);
-                return  true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+        if(itemId == R.id.profile_pic) {
+            Intent openProfileIntent = new Intent(this, ProfileActivity.class);
+            startActivity(openProfileIntent);
+            return  true;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -196,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Funzione che serve a sostituire il precedente fragment con SceltaMuseiFragment
+     * @param bundle I dati da passare al fragment
      */
     public void replaceSceltaMuseiFragment(Bundle bundle){
         SceltaMuseiFragment sceltaMuseiFragment = new SceltaMuseiFragment();
@@ -211,6 +220,10 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
+    /**
+     * Effettua il replace del fragment attuale con quello relativo al ranking
+     * @param bundle I dati da passare al fragment
+     */
     public void replaceRankingFragment(Bundle bundle){
         RankingFragment rankingFragment = new RankingFragment();
         rankingFragment.setArguments(bundle);
@@ -265,35 +278,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean checkConnectivityForRanking() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(MainActivity.this.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(MainActivity.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
         if (ni!=null && ni.isAvailable() && ni.isConnected()) {
-            db = FirebaseDatabase.getInstance().getReference("Museums");
+            DatabaseReference db = FirebaseDatabase.getInstance().getReference("Museums");
             Task<DataSnapshot> snapshot = db.get();
             snapshot.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                 @Override
                 public void onSuccess(DataSnapshot dataSnapshot) {
                     String[] children = dataSnapshot.getValue().toString().split("tipologia=");
                     for (int j = 0; j < children.length-1; j++){
-                        String child[] = children[j].split(",");
+                        String[] child = children[j].split(",");
 
                         MuseoDatabase museoDatabase = new MuseoDatabase();
-                        for(int i = 0; i < child.length; i++){
-                            String nomeMuseo = getNomeMuseo(child[i]);
-                            String percorso = getNomePercorso(child[i]);
-                            String voto = getVoto(child[i]);
-                            String numeroStarts = getNumeroStarts(child[i]);
+                        for (String s : child) {
+                            String nomeMuseo = getNomeMuseo(s);
+                            String percorso = getNomePercorso(s);
+                            String voto = getVoto(s);
+                            String numeroStarts = getNumeroStarts(s);
 
-                            if(nomeMuseo != null) {
+                            if (nomeMuseo != null) {
                                 museoDatabase.setNomeMuseo(nomeMuseo);
-                            }
-                            else if(percorso != null){
+                            } else if (percorso != null) {
                                 museoDatabase.addNomePercorso(percorso);
                                 VotiPercorsi votiPercorsi = new VotiPercorsi(voto);
                                 museoDatabase.addVoti(votiPercorsi);
 
-                            }
-                            else if(numeroStarts != null){
+                            } else if (numeroStarts != null) {
                                 museoDatabase.addNumeroStarts(numeroStarts);
                             }
                         }

@@ -167,5 +167,7 @@
     <string name="errore_apertura_quiz">Errore nell\'apertura del quiz</string>
     <string name="scan_qr_code_opera">Scansiona il codice qr di un\'opera</string>
     <string name="operas_close_to_you">Opere vicino a te</string>
+    <string name="profile_pic_alert_title">Vuoi accedere o registrarti?</string>
+    <string name="profile_pic_alert_message">Accedi o registrati a TourExperience per valutare i percorsi che più ti piacciono e accedere a tante funzionalità esclusive!</string>
 
 </resources>

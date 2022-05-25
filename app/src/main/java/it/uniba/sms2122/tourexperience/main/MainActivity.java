@@ -7,7 +7,9 @@ import androidx.fragment.app.FragmentManager;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import it.uniba.sms2122.tourexperience.FirstActivity;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
@@ -42,6 +45,7 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 
 
 public class MainActivity extends AppCompatActivity {
+    private UserHolder userHolder;
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;
     private SceltaMuseiFragment sceltaMuseiFragment;
@@ -55,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         /*
          * Ottengo l'utente attualmente loggato.
          */
-        UserHolder userHolder = UserHolder.getInstance();
+        userHolder = UserHolder.getInstance();
         try {
             userHolder.getUser(
                     (user) -> {
@@ -149,9 +153,21 @@ public class MainActivity extends AppCompatActivity {
         int itemId = item.getItemId();
 
         if(itemId == R.id.profile_pic) {
-            Intent openProfileIntent = new Intent(this, ProfileActivity.class);
-            startActivity(openProfileIntent);
-            return  true;
+            userHolder.getUser(
+                    user -> {
+                        Intent openProfileIntent = new Intent(MainActivity.this, ProfileActivity.class);
+                        startActivity(openProfileIntent);
+                    },
+                    () -> new AlertDialog.Builder(MainActivity.this)
+                            .setTitle(getString(R.string.profile_pic_alert_title))
+                            .setMessage(getString(R.string.profile_pic_alert_message))
+                            .setNegativeButton(R.string.NO, null)
+                            .setPositiveButton(R.string.SI, (dialogInterface, i) -> {
+                                Intent firstPageIntent = new Intent(MainActivity.this, FirstActivity.class);
+                                startActivity(firstPageIntent);
+                                finish();
+                            }).show()
+            );
         }
 
         return super.onOptionsItemSelected(item);

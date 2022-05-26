@@ -24,13 +24,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
@@ -46,7 +41,6 @@ import it.uniba.sms2122.tourexperience.games.quiz.Domanda;
 import it.uniba.sms2122.tourexperience.games.quiz.Quiz;
 import it.uniba.sms2122.tourexperience.games.quiz.Risposta;
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.Punteggio;
-import it.uniba.sms2122.tourexperience.model.User;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 
@@ -110,8 +104,10 @@ public class QuizFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Ripristina i dati salvati da uno stato precedente se e solo se non sono nulli.
         if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
-            quiz = gson.fromJson(savedInstanceState.getString(QUIZ_COMPLETO), Quiz.class);
+            if (savedInstanceState.getString(QUIZ_COMPLETO) != null)
+                quiz = gson.fromJson(savedInstanceState.getString(QUIZ_COMPLETO), Quiz.class);
         }
 
         final Context context = view.getContext();
@@ -187,49 +183,6 @@ public class QuizFragment extends Fragment {
         }
         quiz.increasePunteggio(confermaQuiz(view));
     }
-
-//    private Punteggio confermaQuiz(View view) {
-//        Punteggio punteggio = new Punteggio(0.0);
-//        final List<Domanda> domande = quiz.getDomande();
-//        for (int i = 0; i < domande.size(); i++) {
-//            final int radioCheckedId = risposteRadioGroups.get(i).getCheckedRadioButtonId();
-//            for (final Risposta risposta : domande.get(i).getRisposte()) {
-//                if (radioCheckedId == risposta.getId().value()) {
-//                    if (risposta.isTrue().value()) {
-//                        punteggio = punteggio.add(domande.get(i).getValore());
-//                        cardLinearLayoutList.get(i).setBackgroundColor(view.getContext().getColor(R.color.success_green_card));
-//                    } else {
-//                        cardLinearLayoutList.get(i).setBackgroundColor(view.getContext().getColor(R.color.error_red_card));
-//                    }
-//                    break;
-//                }
-//            }
-//        }
-//        points.setText(view.getContext().getString(R.string.quiz_score, punteggio.value(), quiz.getValoreTotale().value()));
-//        constraintLayoutForFinalBtns.setVisibility(View.VISIBLE);
-//        goToTop();
-//        confermaBtn.setVisibility(View.GONE);
-//        return punteggio;
-//    }
-//
-//    private boolean isQuizCompletato() {
-//        for (final RadioGroup rg : risposteRadioGroups) {
-//            if (rg.getCheckedRadioButtonId() == -1)
-//                return false;
-//        }
-//        return true;
-//    }
-//
-//    private void ripetiQuiz(View view) {
-//        for (int i = 0; i < risposteRadioGroups.size(); i++) {
-//            risposteRadioGroups.get(i).clearCheck();
-//            cardLinearLayoutList.get(i).setBackgroundColor(view.getContext().getColor(R.color.color_card_quiz));
-//        }
-//        constraintLayoutForFinalBtns.setVisibility(View.GONE);
-//        confermaBtn.setVisibility(View.VISIBLE);
-//        points.setText(view.getContext().getString(R.string.quiz_total, quiz.getValoreTotale().value()));
-//        quiz.resetPunteggio();
-//    }
 
     private Punteggio confermaQuiz(View view) {
         Punteggio punteggio = new Punteggio(0.0);
@@ -377,7 +330,7 @@ public class QuizFragment extends Fragment {
         button.setText(risposta.getRisposta().value());
         button.setTextSize(18);
         RadioGroup.LayoutParams radioButtonParams = new RadioGroup.LayoutParams(
-                RadioGroup.LayoutParams.WRAP_CONTENT,
+                RadioGroup.LayoutParams.MATCH_PARENT,
                 RadioGroup.LayoutParams.WRAP_CONTENT
         );
         radioButtonParams.setMargins(0,15,0,20);

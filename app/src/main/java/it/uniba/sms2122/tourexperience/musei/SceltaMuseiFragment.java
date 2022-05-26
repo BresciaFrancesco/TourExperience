@@ -48,6 +48,13 @@ import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 public class SceltaMuseiFragment extends Fragment {
 
+    private static final String NOMI_MUSEI = "nomi_musei";
+    private static final String CITTA_MUSEI = "citta_musei";
+    private static final String DESCRIZIONI_MUSEI = "descrizione_musei";
+    private static final String TIPOLOGIE_MUSEI = "tipologie_musei";
+    private static final String IMMAGINI_MUSEI = "immagini_musei";
+
+
     private SearchView searchView;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -119,6 +126,8 @@ public class SceltaMuseiFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        ripristino(savedInstanceState);
 
         File filesDir = view.getContext().getFilesDir();
         localFileManager = new LocalFileMuseoManager(filesDir.toString());
@@ -332,11 +341,11 @@ public class SceltaMuseiFragment extends Fragment {
                 tipologieMusei.add(listaMusei.get(i).getTipologia());
                 uriImmagini.add(listaMusei.get(i).getFileUri());
             }
-            outState.putStringArrayList("nomi_musei", nomiMusei);
-            outState.putStringArrayList("citta_musei", cittaMusei);
-            outState.putStringArrayList("descrizione_musei", descrizioneMusei);
-            outState.putStringArrayList("tipologie_musei", tipologieMusei);
-            outState.putStringArrayList("immagini_musei", uriImmagini);
+            outState.putStringArrayList(NOMI_MUSEI, nomiMusei);
+            outState.putStringArrayList(CITTA_MUSEI, cittaMusei);
+            outState.putStringArrayList(DESCRIZIONI_MUSEI, descrizioneMusei);
+            outState.putStringArrayList(TIPOLOGIE_MUSEI, tipologieMusei);
+            outState.putStringArrayList(IMMAGINI_MUSEI, uriImmagini);
         }
     }
 
@@ -351,27 +360,37 @@ public class SceltaMuseiFragment extends Fragment {
             if (actionBar != null)
                 actionBar.setTitle(R.string.museums);
         }
-        if(savedInstanceState != null && !savedInstanceState.isEmpty()) {
-            listaMusei = new ArrayList<>();
-            Log.v("SceltaMuseiFragment", "ripristino stato precedente della lista musei");
-            ArrayList<String> nomiMusei = savedInstanceState.getStringArrayList("nomi_musei");
-            if (nomiMusei == null || nomiMusei.isEmpty()) {
-                super.onViewStateRestored(savedInstanceState);
-                return;
-            }
-            ArrayList<String> cittaMusei = savedInstanceState.getStringArrayList("citta_musei");
-            ArrayList<String> descrizioneMusei = savedInstanceState.getStringArrayList("descrizione_musei");
-            ArrayList<String> tipologieMusei = savedInstanceState.getStringArrayList("tipologie_musei");
-            ArrayList<String> uriImmagini = savedInstanceState.getStringArrayList("immagini_musei");
-            for (int i = 0; i < nomiMusei.size(); i++) {
-                listaMusei.add(new Museo(
-                        nomiMusei.get(i),
-                        cittaMusei.get(i),
-                        descrizioneMusei.get(i),
-                        tipologieMusei.get(i),
-                        uriImmagini.get(i)
-                ));
-            }
+    }
+
+    /**
+     * Ripristina i dati salvati da uno stato precedente se e solo se non sono nulli.
+     * @param savedInstanceState bundle dello stato precedente.
+     */
+    private void ripristino(final Bundle savedInstanceState) {
+        if(savedInstanceState == null || savedInstanceState.isEmpty())
+            return;
+        listaMusei = new ArrayList<>();
+        final ArrayList<String> nomiMusei = savedInstanceState.getStringArrayList(NOMI_MUSEI);
+        if (nomiMusei == null || nomiMusei.isEmpty() ||
+            nomiMusei.get(0) == null || nomiMusei.get(0).isEmpty())
+            return;
+        final ArrayList<String> cittaMusei = savedInstanceState.getStringArrayList(CITTA_MUSEI);
+        final ArrayList<String> descrizioneMusei = savedInstanceState.getStringArrayList(DESCRIZIONI_MUSEI);
+        final ArrayList<String> tipologieMusei = savedInstanceState.getStringArrayList(TIPOLOGIE_MUSEI);
+        final ArrayList<String> uriImmagini = savedInstanceState.getStringArrayList(IMMAGINI_MUSEI);
+        if (cittaMusei == null || descrizioneMusei == null ||
+            tipologieMusei == null || uriImmagini == null)
+            return;
+
+        Log.v("SceltaMuseiFragment ripristino", "ripristino stato precedente della lista musei");
+        for (int i = 0; i < nomiMusei.size(); i++) {
+            listaMusei.add(new Museo(
+                nomiMusei.get(i),
+                cittaMusei.get(i),
+                descrizioneMusei.get(i),
+                tipologieMusei.get(i),
+                uriImmagini.get(i)
+            ));
         }
     }
 

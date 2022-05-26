@@ -21,6 +21,8 @@ import it.uniba.sms2122.tourexperience.R;
  * (come nella pagina dei musei o delle opere)
  */
 public class ImageAndDescriptionFragment extends Fragment {
+    private static final String IMAGE_PATH = "imagePath";
+    private static final String DESCRIPTION = "description";
     private String imagePath;
     private ImageView image;
     private String description;
@@ -54,6 +56,8 @@ public class ImageAndDescriptionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ripristino(savedInstanceState);
+
         // Inizializzo la descrizione
         descriptionTextView = view.findViewById(R.id.description);
         descriptionTextView.setText(description);
@@ -69,30 +73,30 @@ public class ImageAndDescriptionFragment extends Fragment {
         super.onSaveInstanceState(outState);
         Log.v("ImageAndDescriptionFragment", "chiamato onSaveInstanceState()");
         if (this.imagePath != null) {
-            outState.putString("imagePath", this.imagePath);
+            outState.putString(IMAGE_PATH, this.imagePath);
         }
         if (this.description != null) {
-            outState.putString("description", this.description);
+            outState.putString(DESCRIPTION, this.description);
         }
+    }
+
+    /**
+     * Ripristina i dati salvati da uno stato precedente se e solo se non sono nulli.
+     * @param savedInstanceState bundle dello stato precedente.
+     */
+    public void ripristino(final Bundle savedInstanceState) {
+        if (savedInstanceState == null || savedInstanceState.isEmpty())
+            return;
+        if (savedInstanceState.getString(IMAGE_PATH) == null ||
+            savedInstanceState.getString(DESCRIPTION) == null)
+            return;
+        imagePath = savedInstanceState.getString(IMAGE_PATH);
+        description = savedInstanceState.getString(DESCRIPTION);
     }
 
 
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        Log.v("ImageAndDescriptionFragment", "chiamato onViewStateRestored()");
-        if(savedInstanceState != null && !savedInstanceState.isEmpty()) {
-            String description = savedInstanceState.getString("description");
-            if (description == null) {
-                description = "";
-            }
-            this.description = description;
-
-            String imagePath = savedInstanceState.getString("imagePath");
-            if (imagePath == null) {
-                imagePath = "";
-            }
-            this.imagePath = imagePath;
-        }
     }
 }

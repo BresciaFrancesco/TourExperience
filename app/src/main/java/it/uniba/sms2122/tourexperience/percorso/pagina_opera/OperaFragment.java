@@ -62,20 +62,7 @@ public class OperaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
-            // Ripristino tramite bundle
-            Log.e("PROVA", "savedInstanceState");
-            this.opera = new Opera(
-                savedInstanceState.getString(OPERA_ID),
-                savedInstanceState.getString(OPERA_NOME),
-                savedInstanceState.getString(OPERA_PERCORSO_IMG),
-                savedInstanceState.getString(OPERA_DESCRIZIONE)
-            );
-            this.nomeMuseo = savedInstanceState.getString(NOME_MUSEO);
-            this.nomeStanza = savedInstanceState.getString(NOME_STANZA);
-        } else {
-            // Inizializzazione tramite bundle
-            Log.e("PROVA", "getArguments");
+        if (!ripristino(savedInstanceState)) {
             final Bundle bundle = getArguments();
             final String operaJson = Objects.requireNonNull(bundle).getString(OPERA_JSON);
             this.opera = new Gson().fromJson(Objects.requireNonNull(operaJson), Opera.class);
@@ -188,6 +175,34 @@ public class OperaFragment extends Fragment {
     @Override
     public void onViewStateRestored(@NonNull Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
+    }
+
+    /**
+     * Ripristina i dati salvati da uno stato precedente se e solo se non sono nulli.
+     * @param savedInstanceState bundle dello stato precedente.
+     */
+    private boolean ripristino(final Bundle savedInstanceState) {
+        if (savedInstanceState == null || savedInstanceState.isEmpty())
+            return false;
+        final String tmpMuseo = savedInstanceState.getString(NOME_MUSEO);
+        if (tmpMuseo == null || tmpMuseo.isEmpty()) return false;
+        if (savedInstanceState.getString(NOME_STANZA) == null ||
+            savedInstanceState.getString(OPERA_ID) == null ||
+            savedInstanceState.getString(OPERA_NOME) == null ||
+            savedInstanceState.getString(OPERA_PERCORSO_IMG) == null ||
+            savedInstanceState.getString(OPERA_DESCRIZIONE) == null)
+            return false;
+
+        Log.v("RIPRISTINO OperaFragment", "Ripristino effettuato correttamente.");
+        nomeMuseo = tmpMuseo;
+        nomeStanza = savedInstanceState.getString(NOME_STANZA);
+        opera = new Opera(
+            savedInstanceState.getString(OPERA_ID),
+            savedInstanceState.getString(OPERA_NOME),
+            savedInstanceState.getString(OPERA_PERCORSO_IMG),
+            savedInstanceState.getString(OPERA_DESCRIZIONE)
+        );
+        return true;
     }
 
     /**

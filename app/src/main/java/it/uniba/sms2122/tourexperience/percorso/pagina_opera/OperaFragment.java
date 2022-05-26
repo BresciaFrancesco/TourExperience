@@ -69,7 +69,7 @@ public class OperaFragment extends Fragment {
             this.nomeMuseo = bundle.getString(NOME_MUSEO);
             this.nomeStanza = bundle.getString(NOME_STANZA);
         }
-        setActionBar(opera.getNome());
+        //setActionBar(opera.getNome());
         FragmentManager fragmentManager = getParentFragmentManager();
         ImageAndDescriptionFragment fragment = new ImageAndDescriptionFragment(opera.getPercorsoImg(), opera.getDescrizione());
         fragmentManager.beginTransaction()

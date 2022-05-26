@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                         String title = getString(R.string.hello, user.getName());
                         Objects.requireNonNull(getSupportActionBar()).setTitle(title);
                     },
-                    () -> {}
+                    (String errorMsg) -> {}
             );
         }
         catch(NullPointerException ex) {
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent openProfileIntent = new Intent(MainActivity.this, ProfileActivity.class);
                         startActivity(openProfileIntent);
                     },
-                    () -> new AlertDialog.Builder(MainActivity.this)
+                    (String errorMsg) -> new AlertDialog.Builder(MainActivity.this)
                             .setTitle(getString(R.string.profile_pic_alert_title))
                             .setMessage(getString(R.string.profile_pic_alert_message))
                             .setNegativeButton(R.string.NO, null)

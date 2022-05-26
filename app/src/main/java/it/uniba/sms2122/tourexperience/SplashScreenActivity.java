@@ -61,7 +61,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     finish(); // Non si può tornare indietro con il pulsane Back
                 },
                 //Caso: Utente non è loggato
-                () -> {
+                (String errorMsg) -> {
                     // Verifica se si tratta della prima apertura o no
                     SharedPreferences prefs = getSharedPreferences(BuildConfig.SHARED_PREFS, MODE_PRIVATE);
                     if(!prefs.contains(BuildConfig.SP_FIRST_OPENING)) {

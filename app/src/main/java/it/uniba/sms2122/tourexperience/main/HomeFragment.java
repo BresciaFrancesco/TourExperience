@@ -65,7 +65,7 @@ public class HomeFragment extends Fragment {
                     String title = getString(R.string.hello, user.getName());
                     Objects.requireNonNull(((MainActivity)requireActivity()).getSupportActionBar()).setTitle(title);
                 },
-                () -> {}
+                (String errorMsg) -> {}
         );
 
         autoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.autocomplete);

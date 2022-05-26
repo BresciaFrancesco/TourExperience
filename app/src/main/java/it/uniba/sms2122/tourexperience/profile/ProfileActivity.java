@@ -59,8 +59,8 @@ public class ProfileActivity extends AppCompatActivity {
                 (user) -> {
                     userIstance = user;
                 },
-                () -> {
-                });
+                (String errorMsg) -> {}
+        );
 
         setDynamicUserData();
     }

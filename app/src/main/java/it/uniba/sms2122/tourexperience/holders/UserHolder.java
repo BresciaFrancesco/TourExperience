@@ -12,14 +12,21 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import it.uniba.sms2122.tourexperience.model.User;
 import it.uniba.sms2122.tourexperience.profile.UserPasswordManager;
+import it.uniba.sms2122.tourexperience.utility.listeners.FailureListener;
+import it.uniba.sms2122.tourexperience.utility.listeners.SuccessDataListener;
+import it.uniba.sms2122.tourexperience.utility.listeners.SuccessListener;
 
 /**
  * @author Catignano Francesco
  */
-public class UserHolder extends AbstractHolder {
+public class UserHolder {
+    private static final String URI = "https://tour-experience-default-rtdb.europe-west1.firebasedatabase.app";
+    private static final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance(URI);
+
     private static final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private static DatabaseReference reference;
     private static final String TABLE_NAME = "Users";
@@ -40,7 +47,7 @@ public class UserHolder extends AbstractHolder {
      * @param success   Interfaccia per realizzare il metodo di successo (realizzabile con una lambda expression)
      * @param failure   Interfaccia per realizzare il metodo di fallimento (realizzabile con una lambda expression)
      */
-    public void register(String email, String password, String name, String surname, String dateBirth, SuccessListener success, FailureDataListener failure) {
+    public void register(String email, String password, String name, String surname, String dateBirth, SuccessListener success, FailureListener failure) {
         firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -52,15 +59,15 @@ public class UserHolder extends AbstractHolder {
                         @Override
                         public void onComplete(@NonNull Task<Void> taskUserValueSet) {
                             if (taskUserValueSet.isSuccessful()) {
-                                success.doSuccess();
+                                success.onSuccess();
                             } else {
                                 firebaseAuth.getCurrentUser().delete();
-                                failure.doFail(taskUserValueSet.getException() != null ? taskUserValueSet.getException().toString() : "");
+                                failure.onFail(taskUserValueSet.getException() != null ? taskUserValueSet.getException().toString() : "");
                             }
                         }
                     });
                 } else {
-                    failure.doFail(task.getException() != null ? task.getException().toString() : "");
+                    failure.onFail(task.getException() != null ? task.getException().toString() : "");
                 }
             }
         });
@@ -69,9 +76,9 @@ public class UserHolder extends AbstractHolder {
     /**
      * Restituisce l'utente prendendolo eventualmente da Firebase
      */
-    public void getUser(SuccessDataListener success, FailureListener failure) {
+    public void getUser(SuccessDataListener<User> success, FailureListener failure) {
         if (user != null) {
-            success.doSuccess(user);
+            success.onSuccess(user);
             return;
         }
 
@@ -89,12 +96,12 @@ public class UserHolder extends AbstractHolder {
                                 (String) dataSnapshot.child("surname").getValue(),
                                 (String) dataSnapshot.child("dateBirth").getValue()
                         );
-                        success.doSuccess(user);
+                        success.onSuccess(user);
                     }
                 }
             });
         } else {
-            failure.doFail();
+            failure.onFail(null);
         }
     }
 
@@ -112,7 +119,7 @@ public class UserHolder extends AbstractHolder {
      * @param success Interfaccia per realizzare il metodo di successo (realizzabile con una lambda expression)
      * @param failure Interfaccia per realizzare il metodo di fallimento (realizzabile con una lambda expression)
      */
-    public void updateIfDirty(SuccessListener success, FailureDataListener failure) {
+    public void updateIfDirty(SuccessListener success, FailureListener failure) {
         if (user != null && user.isDirty()) {
             //riautenticazione utente poiche firebase per operazioni delicate quali cambio email,password o dati di auth in genere richiede la riautenticazione
             AuthCredential credential = EmailAuthProvider.getCredential(currentUser.getEmail(), UserPasswordManager.getPassword().toString());
@@ -145,9 +152,9 @@ public class UserHolder extends AbstractHolder {
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
                                                             user.setDirty(false);
-                                                            success.doSuccess();
+                                                            success.onSuccess();
                                                         } else {
-                                                            failure.doFail(task.getException() == null ? "" : task.getException().toString());
+                                                            failure.onFail(task.getException() == null ? "" : task.getException().toString());
                                                         }
                                                     }
                                                 });
@@ -156,12 +163,12 @@ public class UserHolder extends AbstractHolder {
                                     });
                                 } else {
 
-                                    failure.doFail(task.getException() == null ? "" : task.getException().toString());
+                                    failure.onFail(task.getException() == null ? "" : task.getException().toString());
                                 }
                             }
                         });
                     } else {
-                        failure.doFail(task.getException() == null ? "" : task.getException().toString());
+                        failure.onFail(task.getException() == null ? "" : task.getException().toString());
                     }
 
 
@@ -186,7 +193,6 @@ public class UserHolder extends AbstractHolder {
      * Costruttore privato di UserHolder per applicare il pattern singleton.
      */
     private UserHolder() {
-        super();
         reference = firebaseDatabase.getReference(TABLE_NAME);
     }
 }

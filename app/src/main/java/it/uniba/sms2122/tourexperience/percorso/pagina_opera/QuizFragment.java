@@ -51,10 +51,10 @@ import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
  */
 public class QuizFragment extends Fragment {
 
-    // the fragment initialization parameter
     private static final String QUIZ_JSON = "quizJson";
     private static final String QUIZ_COMPLETO = "QuizJsonCompleto";
     private static final String BTN_CONFERMA_CLICCATO = "confermaBtnClicked";
+
     private final Gson gson = new Gson();
     private Quiz quiz;
     private String quizJson;
@@ -125,6 +125,7 @@ public class QuizFragment extends Fragment {
         final Button terminaQuizBtn = view.findViewById(R.id.termina_quiz_btn);
         terminaQuizBtn.setOnClickListener(this::terminaQuiz);
 
+        // Creo l'interfaccia del Quiz dinamicamente
         try {
             setActionBar("Quiz");
             quiz = (quiz == null) ? Quiz.buildFromJson(gson.fromJson(quizJson, QuizJson.class)) : quiz;
@@ -147,6 +148,7 @@ public class QuizFragment extends Fragment {
 
                 final TextView puntiTxt = cardView.findViewById(R.id.punti_txtview);
 
+                // Controllo se si tratta di domande a risposta multipla o...
                 if (domanda.countRisposteCorrette() > 1) {
                     puntiTxt.setText(context.getString(R.string.quiz_total_plus_error, (int)domanda.getValore().value()));
                     final LinearLayout linearLayoutGroup = cardView.findViewById(R.id.mcq_risposte);
@@ -157,6 +159,7 @@ public class QuizFragment extends Fragment {
                     }
                     risposteRadioLinear.add(i, new ContainerRadioLinear(linearLayoutGroup));
                 }
+                // domande a risposta singola.
                 else {
                     puntiTxt.setText(context.getString(R.string.quiz_total, (int)domanda.getValore().value()));
                     final RadioGroup radioGroup = cardView.findViewById(R.id.radio_group_risposte);
@@ -176,6 +179,11 @@ public class QuizFragment extends Fragment {
         }
     }
 
+    /**
+     * Esegue la conferma del quiz solo dopo aver controllato che
+     * il quiz sia stato davvero completato.
+     * @param view
+     */
     private void confermaQuizSicuro(View view) {
         if (!isQuizCompletato()) {
             Toast.makeText(getContext(), view.getContext().getString(R.string.quiz_non_completato), Toast.LENGTH_SHORT).show();
@@ -184,6 +192,12 @@ public class QuizFragment extends Fragment {
         quiz.increasePunteggio(confermaQuiz(view));
     }
 
+    /**
+     * Esegue la conferma del quiz, segnando il punteggio ottenuto, le risposte esatte
+     * ed errate e modificato opportunamente la UI per segnarlare i risultati all'utente.
+     * @param view
+     * @return punteggio ottenuto.
+     */
     private Punteggio confermaQuiz(View view) {
         Punteggio punteggio = new Punteggio(0.0);
         final List<Domanda> domande = quiz.getDomande();
@@ -240,6 +254,11 @@ public class QuizFragment extends Fragment {
         return punteggio;
     }
 
+    /**
+     * Controlla se il quiz è stato completato, ovvero se tutte le domande hanno
+     * almeno una risposta segnata.
+     * @return true se il quiz è stato completato, false altrimenti.
+     */
     private boolean isQuizCompletato() {
         int i = 0;
         final List<Domanda> domande = quiz.getDomande();
@@ -264,6 +283,11 @@ public class QuizFragment extends Fragment {
         return true;
     }
 
+    /**
+     * Resetta il quiz confermato. Resetta i punteggi, i risultati e l'UI
+     * e permette di ripetere il quiz come se non fosse mai stato completato.
+     * @param view
+     */
     private void ripetiQuiz(View view) {
         for (int i = 0; i < risposteRadioLinear.size(); i++) {
             final ContainerRadioLinear container = risposteRadioLinear.get(i);
@@ -286,6 +310,12 @@ public class QuizFragment extends Fragment {
         quiz.resetPunteggio();
     }
 
+    /**
+     * Conclude il quiz, salvando i risultati in cloud e tornando al fragment precedente.
+     * Si comporta diversamente in base alla presenza/assenza di connessione e alla
+     * tipologia di utente (normale o guest).
+     * @param view
+     */
     private void terminaQuiz(View view) {
         try {
             if (NetworkConnectivity.check(view.getContext())) {
@@ -300,19 +330,18 @@ public class QuizFragment extends Fragment {
                                 ? Double.parseDouble(dataSnapshot.getValue().toString())
                                 : 0.0)
                                 + quiz.getPunteggioCorrente().value();
-                        dbUser.setValue(totalUserScore).addOnSuccessListener(unused -> {
-                            Log.v("SalvataggioPunteggioQuiz", "Punteggio Quiz salvato");
-                        })
+                        dbUser.setValue(totalUserScore).addOnSuccessListener(unused ->
+                            Toast.makeText(getContext(), getString(R.string.quiz_score_saved), Toast.LENGTH_SHORT).show())
                         .addOnFailureListener(e -> {
-                            Log.e("SalvataggioPunteggioQuiz", e.getMessage());
+                            Toast.makeText(getContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         });
                     }).addOnFailureListener(e -> {
-                        Log.e("SalvataggioPunteggioQuiz", e.getMessage());
+                        Toast.makeText(getContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     });
                 } else {
-                    Log.v("SalvataggioPunteggioQuiz", "Utente Guest - punteggio non salvato");
+                    Toast.makeText(getContext(), getString(R.string.quiz_score_guest_user), Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Toast.makeText(view.getContext(), getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
@@ -325,6 +354,14 @@ public class QuizFragment extends Fragment {
         }
     }
 
+    /**
+     * Permette di settare dinamicamente pulsanti. Usato per settare dinamicamente
+     * RadioButton e ChechBox.
+     * @param button pulsante creato.
+     * @param risposta testo da associare al pulsante (risposta ad una domanda).
+     * @param <T> deve estendere CompoundButton.
+     * @return il pulsante settato.
+     */
     private static <T extends CompoundButton> T createButton(final T button, final Risposta risposta) {
         button.setId(risposta.getId().value());
         button.setText(risposta.getRisposta().value());
@@ -338,6 +375,9 @@ public class QuizFragment extends Fragment {
         return button;
     }
 
+    /**
+     * Torna al top della UI.
+     */
     private void goToTop() {
         scrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

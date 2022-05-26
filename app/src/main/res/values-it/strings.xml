@@ -162,6 +162,9 @@
         È possibile importare solo un file .json. Il file json deve essere strutturato in accordo alle regole TourExperience quiz.
         Qualsiasi file .json non conforme sarà rigettato. Il file .json deve avere codifica UTF-8.
     </string>
+    <string name="quiz_score_saved">Quiz score salvato con successo</string>
+    <string name="quiz_score_not_saved">Quiz score non salvato</string>
+    <string name="quiz_score_guest_user">Come utente Guest, il tuo punteggio non può essere salvato</string>
     <string name="file_json_importato">File json importato correttamente</string>
     <string name="quiz_import_request">Non è presente nessun quiz per questa opera. Vuoi importare un quiz?</string>
     <string name="importa_quiz">Importa quiz</string>

@@ -1,5 +1,6 @@
 package it.uniba.sms2122.tourexperience.percorso.pagina_opera;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -230,7 +233,7 @@ public class QuizFragment extends Fragment {
                             cb.setTextColor(Color.parseColor("#278910"));
                             countTrue++;
                             tmpPunteggio = tmpPunteggio.add(
-                                    new Punteggio(domande.get(i).getValore().value() / domande.get(i).countRisposteCorrette())
+                                new Punteggio(domande.get(i).getValore().value() / domande.get(i).countRisposteCorrette())
                             );
                         } else {
                             cb.setTextColor(Color.RED);
@@ -242,7 +245,11 @@ public class QuizFragment extends Fragment {
                     punteggio = punteggio.add(domande.get(i).getValore());
                     cardLinearLayoutList.get(i).setBackgroundColor(view.getContext().getColor(R.color.success_green_card));
                 } else {
-                    punteggio = punteggio.add(new Punteggio(tmpPunteggio.value() - (totalChecked - countTrue)));
+                    try {
+                        punteggio = punteggio.add(new Punteggio(tmpPunteggio.value() - (totalChecked - countTrue)));
+                    } catch (IllegalArgumentException e) {
+                        punteggio = new Punteggio(0.0);
+                    }
                     cardLinearLayoutList.get(i).setBackgroundColor(view.getContext().getColor(R.color.error_red_card));
                 }
             }
@@ -318,6 +325,7 @@ public class QuizFragment extends Fragment {
      */
     private void terminaQuiz(View view) {
         try {
+            final Activity act = getActivity();
             if (NetworkConnectivity.check(view.getContext())) {
                 final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (currentUser != null) {
@@ -325,32 +333,43 @@ public class QuizFragment extends Fragment {
                             .getReference("Users")
                             .child(currentUser.getUid())
                             .child("score_quiz");
-                    dbUser.get().addOnSuccessListener(dataSnapshot -> {
-                        final double totalUserScore = ((dataSnapshot.getValue() != null)
-                                ? Double.parseDouble(dataSnapshot.getValue().toString())
-                                : 0.0)
-                                + quiz.getPunteggioCorrente().value();
-                        dbUser.setValue(totalUserScore).addOnSuccessListener(unused ->
-                            Toast.makeText(getContext(), getString(R.string.quiz_score_saved), Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(getContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
-                            e.printStackTrace();
-                        });
-                    }).addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
+                    dbUser.get().addOnCompleteListener(taskGet -> {
+                        if (taskGet.isSuccessful()) {
+                            final double totalUserScore = ((taskGet.getResult().getValue() != null)
+                                    ? Double.parseDouble(taskGet.getResult().getValue().toString())
+                                    : 0.0)
+                                    + quiz.getPunteggioCorrente().value();
+                            dbUser.setValue(totalUserScore).addOnCompleteListener(task -> {
+                                try {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_saved), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
+                                        task.getException().printStackTrace();
+                                    }
+                                } catch (NullPointerException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        } else {
+                            Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
+                            taskGet.getException().printStackTrace();
+                        }
                     });
                 } else {
-                    Toast.makeText(getContext(), getString(R.string.quiz_score_guest_user), Toast.LENGTH_SHORT).show();
+                    try {
+                        Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_guest_user), Toast.LENGTH_SHORT).show();
+                    } catch (NullPointerException e) {e.printStackTrace();}
                 }
             } else {
-                Toast.makeText(view.getContext(), getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+                try {
+                    Toast.makeText(act.getApplicationContext(), getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+                } catch (NullPointerException e) {e.printStackTrace();}
             }
             requireActivity().getSupportFragmentManager().popBackStack();
         }
         catch (NullPointerException | IllegalStateException e) {
             e.printStackTrace();
-            Toast.makeText(getContext(), view.getContext().getString(R.string.generic_error), Toast.LENGTH_SHORT).show();
         }
     }
 

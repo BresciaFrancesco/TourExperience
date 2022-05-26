@@ -39,6 +39,9 @@ import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
+import it.uniba.sms2122.tourexperience.utility.listeners.FailureListener;
+import it.uniba.sms2122.tourexperience.utility.listeners.SuccessDataListener;
+import it.uniba.sms2122.tourexperience.utility.listeners.SuccessListener;
 import it.uniba.sms2122.tourexperience.utility.ranking.MuseoDatabase;
 import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
@@ -296,43 +299,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean checkConnectivityForRanking() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(MainActivity.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
-        if (ni!=null && ni.isAvailable() && ni.isConnected()) {
-            DatabaseReference db = FirebaseDatabase.getInstance().getReference("Museums");
-            Task<DataSnapshot> snapshot = db.get();
-            snapshot.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                @Override
-                public void onSuccess(DataSnapshot dataSnapshot) {
-                    String[] children = dataSnapshot.getValue().toString().split("tipologia=");
-                    for (int j = 0; j < children.length-1; j++){
-                        String[] child = children[j].split(",");
-
-                        MuseoDatabase museoDatabase = new MuseoDatabase();
-                        for (String s : child) {
-                            String nomeMuseo = getNomeMuseo(s);
-                            String percorso = getNomePercorso(s);
-                            String voto = getVoto(s);
-                            String numeroStarts = getNumeroStarts(s);
-
-                            if (nomeMuseo != null) {
-                                museoDatabase.setNomeMuseo(nomeMuseo);
-                            } else if (percorso != null) {
-                                museoDatabase.addNomePercorso(percorso);
-                                VotiPercorsi votiPercorsi = new VotiPercorsi(voto);
-                                museoDatabase.addVoti(votiPercorsi);
-
-                            } else if (numeroStarts != null) {
-                                museoDatabase.addNumeroStarts(numeroStarts);
-                            }
-                        }
-                        museoDatabaseList.add(museoDatabase);
-                    }
-                }
-            });
-            return true;
-        } else {
-            Toast.makeText(MainActivity.this, getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
-            return false;
-        }
+        return ni!=null && ni.isAvailable() && ni.isConnected();
     }
 
     private String getNomeMuseo(String child){
@@ -368,7 +335,42 @@ public class MainActivity extends AppCompatActivity {
         return numeroStarts;
     }
 
-    public List<MuseoDatabase> getMuseoDatabaseList() {
-        return museoDatabaseList;
+    public void getMuseoDatabaseList(SuccessDataListener<List<MuseoDatabase>> successListener, FailureListener failureListener) {
+        if(checkConnectivityForRanking()) {
+            DatabaseReference db = FirebaseDatabase.getInstance().getReference("Museums");
+            Task<DataSnapshot> snapshot = db.get();
+            snapshot.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+                    String[] children = dataSnapshot.getValue().toString().split("tipologia=");
+                    for (int j = 0; j < children.length-1; j++){
+                        String[] child = children[j].split(",");
+
+                        MuseoDatabase museoDatabase = new MuseoDatabase();
+                        for (String s : child) {
+                            String nomeMuseo = getNomeMuseo(s);
+                            String percorso = getNomePercorso(s);
+                            String voto = getVoto(s);
+                            String numeroStarts = getNumeroStarts(s);
+
+                            if (nomeMuseo != null) {
+                                museoDatabase.setNomeMuseo(nomeMuseo);
+                            } else if (percorso != null) {
+                                museoDatabase.addNomePercorso(percorso);
+                                VotiPercorsi votiPercorsi = new VotiPercorsi(voto);
+                                museoDatabase.addVoti(votiPercorsi);
+
+                            } else if (numeroStarts != null) {
+                                museoDatabase.addNumeroStarts(numeroStarts);
+                            }
+                        }
+                        museoDatabaseList.add(museoDatabase);
+                    }
+                    successListener.onSuccess(museoDatabaseList);
+                }
+            });
+        } else {
+            failureListener.onFail(getString(R.string.no_connection));
+        }
     }
 }

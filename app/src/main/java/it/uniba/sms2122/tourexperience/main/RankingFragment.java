@@ -19,7 +19,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -49,6 +51,7 @@ import it.uniba.sms2122.tourexperience.utility.ranking.MuseoDatabase;
  */
 public class RankingFragment extends Fragment {
     private TextView title;
+    private ProgressBar progressBar;
     private RecyclerView recyclerView;
     private FileRanking fileRanking;
 
@@ -99,34 +102,44 @@ public class RankingFragment extends Fragment {
 
         title = (TextView) view.findViewById(R.id.title_ranking);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewRankings);
+        progressBar = view.findViewById(R.id.ranking_progress_bar);
+
+        progressBar.setVisibility(View.VISIBLE);
 
         int ranking = getArguments().getInt("ranking");
-        List<MuseoDatabase> museoDatabaseList = ((MainActivity) getActivity()).getMuseoDatabaseList();
-
         if(ranking == 2)
             title.setText(R.string.title_classifica_visitati);
 
-        List<Map.Entry<String, String>> titleOrdered = new ArrayList<>(initializeTitle(museoDatabaseList, ranking).entrySet());
-        Collections.sort(titleOrdered, Comparator.comparing(Map.Entry<String, String>::getValue).reversed());
+        ((MainActivity) getActivity()).getMuseoDatabaseList(
+                (List<MuseoDatabase> museoDatabaseList) -> {
+                    List<Map.Entry<String, String>> titleOrdered = new ArrayList<>(initializeTitle(museoDatabaseList, ranking).entrySet());
+                    titleOrdered.sort(Comparator.comparing(Map.Entry<String, String>::getValue).reversed());
+                    File txtsFolder = LocalFileManager.createLocalDirectoryIfNotExists(getActivity().getFilesDir(), "txts");
+                    File txt = new File (txtsFolder, "ranking.txt");
 
-        File txtsFolder = LocalFileManager.createLocalDirectoryIfNotExists(getActivity().getFilesDir(), "txts");
-        File txt = new File (txtsFolder, "ranking.txt");
+                    if(txt.exists())
+                        txt.delete();
 
-        if(txt.exists())
-            txt.delete();
+                    try {
+                        txt.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    fileRanking = new FileRanking(txt);
 
-        try {
-            txt.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        fileRanking = new FileRanking(txt);
+                    for(int i = 0; i < titleOrdered.size(); i++)
+                        fileRanking.writeToFile(getString(R.string.pos, String.valueOf(i+1)) + "\n" + titleOrdered.get(i).getKey() + titleOrdered.get(i).getValue() + "\n\n");
 
-        for(int i = 0; i < titleOrdered.size(); i++)
-            fileRanking.writeToFile(getString(R.string.pos, String.valueOf(i+1)) + "\n" + titleOrdered.get(i).getKey() + titleOrdered.get(i).getValue() + "\n\n");
-
-        RankingAdapter rankingAdapter = new RankingAdapter(getContext(), ((MainActivity) getActivity()).getMuseoDatabaseList(), ranking, titleOrdered);
-        recyclerView.setAdapter(rankingAdapter);
+                    RankingAdapter rankingAdapter = new RankingAdapter(getContext(), museoDatabaseList, ranking, titleOrdered);
+                    recyclerView.setAdapter(rankingAdapter);
+                    progressBar.setVisibility(View.GONE);
+                },
+                (String errorMsg) -> {
+                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    requireActivity().onBackPressed();
+                }
+        );
     }
 
     private HashMap<String, String> initializeTitle(List<MuseoDatabase> museoDatabaseList, int ranking) {

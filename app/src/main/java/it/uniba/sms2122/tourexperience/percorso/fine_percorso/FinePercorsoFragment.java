@@ -1,6 +1,6 @@
 package it.uniba.sms2122.tourexperience.percorso.fine_percorso;
 
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cacheMuseums;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getMuseoByName;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -29,12 +29,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import it.uniba.sms2122.tourexperience.FirstActivity;
 import it.uniba.sms2122.tourexperience.R;
-import it.uniba.sms2122.tourexperience.SplashScreenActivity;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 
@@ -94,7 +90,7 @@ public class FinePercorsoFragment extends Fragment {
 
         textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
         try{
-            imageView.setImageURI(Uri.parse(cacheMuseums.get(nomeMuseo).getFileUri()));
+            imageView.setImageURI(Uri.parse(getMuseoByName(nomeMuseo, view.getContext()).getFileUri()));
         } catch (NullPointerException e){
             e.printStackTrace();
         }
@@ -121,7 +117,7 @@ public class FinePercorsoFragment extends Fragment {
 
         if(savedInstanceState != null){
             try{
-                imageView.setImageURI(Uri.parse(cacheMuseums.get(nomeMuseo).getFileUri()));
+                imageView.setImageURI(Uri.parse(getMuseoByName(nomeMuseo, getContext()).getFileUri()));
             } catch (NullPointerException e){
                 e.printStackTrace();
             }

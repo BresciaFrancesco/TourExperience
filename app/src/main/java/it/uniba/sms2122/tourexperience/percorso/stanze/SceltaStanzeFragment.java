@@ -4,19 +4,16 @@ import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +31,6 @@ import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
-import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
@@ -115,7 +111,7 @@ public class SceltaStanzeFragment extends Fragment {
         imageView = (ImageView) view.findViewById(R.id.icona_item_museo);
 
         try{
-            imageView.setImageURI(Uri.parse(cacheMuseums.get(nomeMuseo).getFileUri()));
+            imageView.setImageURI(Uri.parse(getMuseoByName(nomeMuseo, view.getContext()).getFileUri()));
         } catch (NullPointerException e){
             e.printStackTrace();
         }
@@ -142,12 +138,12 @@ public class SceltaStanzeFragment extends Fragment {
         lastStanza = path.getIdStanzaCorrente();
 
         if (savedInstanceState == null) {
-            museumn = cacheMuseums.get(nomeMuseo);
+            museumn = getMuseoByName(nomeMuseo, getContext());
         } else {
             Gson gson = new GsonBuilder().create();
             this.museumn = gson.fromJson(savedInstanceState.getSerializable("museumn").toString(), Museo.class);
             if(museumn == null) //lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui comunque viene ricreato da 0
-                museumn = cacheMuseums.get(nomeMuseo);
+                museumn = getMuseoByName(nomeMuseo, getContext());
             else{
                 try{
                     imageView.setImageURI(Uri.parse(museumn.getFileUri()));

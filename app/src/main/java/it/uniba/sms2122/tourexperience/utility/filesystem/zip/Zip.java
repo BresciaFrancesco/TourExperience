@@ -2,6 +2,7 @@ package it.uniba.sms2122.tourexperience.utility.filesystem.zip;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cacheMuseums;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getMuseoByName;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -141,7 +142,7 @@ public class Zip {
             throws IOException, JsonSyntaxException, JsonIOException
     {
         Museo museo = localFileManager.getMuseoByName(nomeMuseo);
-        if (cacheMuseums.get(nomeMuseo) == null) {
+        if (getMuseoByName(nomeMuseo, frag.getContext()) == null) {
             cacheMuseums.put(nomeMuseo, museo);
             List<Museo> listaPrincipale = frag.getListaMusei();
             if (frag.isListaMuseiEmpty()) {

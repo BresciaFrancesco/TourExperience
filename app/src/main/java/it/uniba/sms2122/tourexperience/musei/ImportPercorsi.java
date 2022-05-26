@@ -58,8 +58,8 @@ public class ImportPercorsi {
     public void downloadMuseoPercorso(final String nomePercorso,
                                       final String nomeMuseo) {
         if (NetworkConnectivity.check(context)) {
-            if (cacheMuseums.get(nomeMuseo) == null &&
-                    cacheMuseums.get(nomeMuseo.toLowerCase()) == null) {
+            if (getMuseoByName(nomeMuseo, context) == null &&
+                    getMuseoByName(nomeMuseo.toLowerCase(), context) == null) {
                 downloadAll_v2(nomePercorso, nomeMuseo);
             } else {
                 downloadPercorso(nomePercorso, nomeMuseo, false)

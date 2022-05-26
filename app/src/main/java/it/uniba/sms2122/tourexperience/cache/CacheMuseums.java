@@ -1,5 +1,9 @@
 package it.uniba.sms2122.tourexperience.cache;
 
+import android.content.Context;
+import android.util.Log;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import it.uniba.sms2122.tourexperience.model.Museo;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 
 /**
  * Permette di salvare la lista dei musei caricata dal filesystem locale,
@@ -31,6 +36,59 @@ public class CacheMuseums {
 
     /** Costruttore privato perché la classe non è istanziabile */
     private CacheMuseums() {}
+
+    /**
+     * Ritorna il museo associato alla chiave "nomeMuseo". Se il museo non è presente,
+     * controlla che la cache non sia vuota. Se non è vuota, ritorna null, altrimenti
+     * cerca nel filesystem locale per ottenere tutti i musei salvati. Se trova dei musei,
+     * riempie la cache e la interroga nuovamente, altrimenti ritorna null.
+     * @param nomeMuseo chiave di ricerca per la cache.
+     * @param context android context.
+     * @return Museo associato alla chiave o null.
+     */
+    public static Museo getMuseoByName(final String nomeMuseo, final Context context) {
+        Museo m = cacheMuseums.get(nomeMuseo);
+        if (m != null || !cacheMuseums.isEmpty())
+            return m;
+        try {
+            final LocalFileMuseoManager localFileManager = new LocalFileMuseoManager(context.getFilesDir().toString());
+            final List<Museo> tmpMusei = localFileManager.getListMusei();
+            if (tmpMusei != null && !tmpMusei.isEmpty()) {
+                replaceMuseumsInCache(tmpMusei);
+                return cacheMuseums.get(nomeMuseo);
+            }
+        } catch (IOException e) {
+            Log.e("CACHE - getMuseoByName", "Cache vuota e file non reperibili");
+            e.printStackTrace();
+        }
+        return m;
+    }
+
+    /**
+     * Ritorna il set dei percorsi associato alla chiave "nomeMuseo". Se il set non è presente,
+     * controlla che la cache non sia vuota. Se non è vuota, ritorna null, altrimenti
+     * cerca nel filesystem locale per ottenere tutti i percorsi salvati. Se trova dei
+     * percorsi, riempie la cache e la interroga nuovamente, altrimenti ritorna null.
+     * @param nomeMuseo chiave di ricerca per la cache.
+     * @param context android context.
+     * @return Museo associato alla chiave o null.
+     */
+    public static Set<String> getPercorsiByMuseo(final String nomeMuseo, final Context context) {
+        Set<String> p = cachePercorsiInLocale.get(nomeMuseo);
+        if (p != null || !cachePercorsiInLocale.isEmpty())
+            return p;
+        try {
+            new LocalFileMuseoManager(context.getFilesDir().toString())
+                    .getPercorsiInLocale();
+            if (!cachePercorsiInLocale.isEmpty())
+                return cachePercorsiInLocale.get(nomeMuseo);
+        }
+        catch (IOException e) {
+            Log.e("CACHE - getPercorsiByMuseo", "Cache vuota e file non reperibili");
+            e.printStackTrace();
+        }
+        return p;
+    }
 
     /**
      * Ritorna tutti i musei nella cache sotto forma di lista.

@@ -1,6 +1,6 @@
 package it.uniba.sms2122.tourexperience.percorso.pagina_museo;
 
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getPercorsiByMuseo;
 
 import android.os.Bundle;
 
@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +18,10 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import it.uniba.sms2122.tourexperience.R;
-import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
-import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 
 public class MuseoFragment extends Fragment {
 
@@ -69,7 +65,7 @@ public class MuseoFragment extends Fragment {
         }
 
         // Prende i nomi dei percorsi dalla cache locale
-        nomiPercorsi.addAll(cachePercorsiInLocale.get(nomeMuseo));
+        nomiPercorsi.addAll(getPercorsiByMuseo(nomeMuseo, view.getContext()));
 
         RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(),nomiPercorsi);
         recycleView.setAdapter(adapter);

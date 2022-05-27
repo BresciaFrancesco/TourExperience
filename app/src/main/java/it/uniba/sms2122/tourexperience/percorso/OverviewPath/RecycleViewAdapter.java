@@ -40,7 +40,12 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.textview.setText(names.get(position));
-        holder.imageView.setImageURI(Uri.parse(images.get(position)));
+        try{
+            holder.imageView.setImageURI(Uri.parse(images.get(position)));
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override

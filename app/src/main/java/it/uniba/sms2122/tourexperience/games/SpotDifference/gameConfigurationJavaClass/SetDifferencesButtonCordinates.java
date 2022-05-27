@@ -8,13 +8,14 @@ import it.uniba.sms2122.tourexperience.games.SpotDifference.configurationObject.
 
 public class SetDifferencesButtonCordinates {
 
-    DifferencesCoordinates diffCordintes = new DifferencesCoordinates();
+    DifferencesCoordinates diffCordinates;
 
     ConstraintLayout image1Container;
     ConstraintLayout image2Container;
 
-    public  SetDifferencesButtonCordinates(ConstraintLayout image1Container, ConstraintLayout image2Container){
+    public SetDifferencesButtonCordinates(ConstraintLayout image1Container, ConstraintLayout image2Container, DifferencesCoordinates diffCordinates) {
 
+        this.diffCordinates = diffCordinates;
         this.image1Container = image1Container;
         this.image2Container = image2Container;
 
@@ -27,20 +28,20 @@ public class SetDifferencesButtonCordinates {
      */
     private void setCordinatesOfDifferencesButton() {
 
-        float diff1xCordinate = diffCordintes.getXofDifference1();
-        float diff1yCordinate = diffCordintes.getYofDifference1();
+        float diff1xCordinate = diffCordinates.getXofDifference1();
+        float diff1yCordinate = diffCordinates.getYofDifference1();
         setCordinatesOfDifferenceButton1onImage1(diff1xCordinate, diff1yCordinate);
         setCordinatesOfDifferenceButton1onImage2(diff1xCordinate, diff1yCordinate);
 
 
-        float diff2xCordinate = diffCordintes.getXofDifference2();
-        float diff2yCordinate = diffCordintes.getYofDifference2();
+        float diff2xCordinate = diffCordinates.getXofDifference2();
+        float diff2yCordinate = diffCordinates.getYofDifference2();
         setCordinatesOfDifferenceButton2onImage1(diff2xCordinate, diff2yCordinate);
         setCordinatesOfDifferenceButton2onImage2(diff2xCordinate, diff2yCordinate);
 
 
-        float diff3xCordinate = diffCordintes.getXofDifference3();
-        float diff3yCordinate = diffCordintes.getYofDifference3();
+        float diff3xCordinate = diffCordinates.getXofDifference3();
+        float diff3yCordinate = diffCordinates.getYofDifference3();
         setCordinatesOfDifferenceButton3onImage1(diff3xCordinate, diff3yCordinate);
         setCordinatesOfDifferenceButton3onImage2(diff3xCordinate, diff3yCordinate);
 
@@ -48,6 +49,7 @@ public class SetDifferencesButtonCordinates {
 
     /**
      * funzioner per settare le cordinate della prima differenza sulla prima immagine
+     *
      * @param diff1xCordinate
      * @param diff1yCordinate
      */
@@ -62,6 +64,7 @@ public class SetDifferencesButtonCordinates {
 
     /**
      * funzioner per settare le cordinate della seconda differenza sulla prima immagine
+     *
      * @param diff2xCordinate
      * @param diff2yCordinate
      */
@@ -76,6 +79,7 @@ public class SetDifferencesButtonCordinates {
 
     /**
      * funzioner per settare le cordinate della terza differenza sulla prima immagine
+     *
      * @param diff3xCordinate
      * @param diff3yCordinate
      */
@@ -89,6 +93,7 @@ public class SetDifferencesButtonCordinates {
 
     /**
      * funzioner per settare le cordinate della prima differenza sulla seconda immagine
+     *
      * @param diff1xCordinate
      * @param diff1yCordinate
      */
@@ -103,6 +108,7 @@ public class SetDifferencesButtonCordinates {
 
     /**
      * funzioner per settare le cordinate della seconda differenza sulla seconda immagine
+     *
      * @param diff2xCordinate
      * @param diff2yCordinate
      */
@@ -115,9 +121,9 @@ public class SetDifferencesButtonCordinates {
     }
 
 
-
     /**
      * funzioner per settare le cordinate della terza differenza sulla seconda immagine
+     *
      * @param diff3xCordinate
      * @param diff3yCordinate
      */

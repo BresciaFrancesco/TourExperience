@@ -3,6 +3,8 @@ package it.uniba.sms2122.tourexperience.utility.filesystem;
 import static it.uniba.sms2122.tourexperience.utility.filesystem.zip.MimeType.JSON;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.google.gson.JsonParseException;
@@ -139,12 +141,9 @@ public class LocalFileGamesManager extends LocalFilePercorsoManager {
      * @return il percoso completo dell'immagine che si vuole caricare sul gioco
      * @throws IOException
      */
-    public String loadSpotTheDifferenceImageOf(String imageFileName) throws IOException {
-        List<String> stringhe = Files.readAllLines(Paths.get(pathOperaForGames.toString(), "spotTheDifference", imageFileName + ".webp"));
-        StringBuilder sb = new StringBuilder();
-        for (String s : stringhe) {
-            sb.append(s);
-        }
-        return sb.toString();
+    public Bitmap loadSpotTheDifferenceImageOf(String imageFileName) throws IOException {
+
+        Bitmap image = BitmapFactory.decodeFile(Paths.get(pathOperaForGames.toString(), "spotTheDifference", imageFileName + ".webp").toString());
+        return image;
     }
 }

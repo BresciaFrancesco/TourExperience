@@ -6,9 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".percorso.pagina_opera.OperaFragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <!-- Image and description -->
         <androidx.fragment.app.FragmentContainerView
@@ -18,68 +19,138 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Interazione -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/quiz_card"
-            android:layout_below="@+id/imageanddescription_fragment_container_view"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
-            android:elevation="5dp"
-            app:cardCornerRadius="8dp"
-            app:cardMaxElevation="8dp"
-            app:cardUseCompatPadding="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.483"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.041"
-            android:layout_margin="10dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/quiz_layout"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/quiz_card"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#E0E2EF">
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:elevation="5dp"
+                app:cardCornerRadius="8dp"
+                app:cardMaxElevation="8dp"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.483"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.041">
 
-                <ImageView
-                    android:id="@+id/quiz_image"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/ic_baseline_fact_check_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/main_blue" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/quiz_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#E0E2EF">
 
-                <TextView
-                    android:id="@+id/quiz_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Quiz"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/quiz_option_btn"
-                    app:layout_constraintHorizontal_bias="0.061"
-                    app:layout_constraintStart_toEndOf="@+id/quiz_image"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_editor_absoluteX="95dp"
-                    app:layout_editor_absoluteY="15dp" />
+                    <ImageView
+                        android:id="@+id/quiz_image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_baseline_fact_check_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/main_blue" />
 
-                <Button
-                    android:id="@+id/quiz_option_btn"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/ic_baseline_add_to_home_screen_24"
-                    app:backgroundTint="@color/gray_for_options"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/quiz_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Quiz"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/quiz_option_btn"
+                        app:layout_constraintHorizontal_bias="0.061"
+                        app:layout_constraintStart_toEndOf="@+id/quiz_image"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_editor_absoluteX="95dp"
+                        app:layout_editor_absoluteY="15dp" />
 
-        </androidx.cardview.widget.CardView>
+                    <Button
+                        android:id="@+id/quiz_option_btn"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/ic_baseline_add_to_home_screen_24"
+                        app:backgroundTint="@color/gray_for_options"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/spotTheDifference_card"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:elevation="5dp"
+                app:cardCornerRadius="8dp"
+                app:cardMaxElevation="8dp"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.483"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.041">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/spotTheDifference_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#E0E2EF">
+
+                    <ImageView
+                        android:id="@+id/spotTheDifference_image"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_baseline_fact_check_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/main_blue" />
+
+                    <TextView
+                        android:id="@+id/spotTheDifference_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/spot_the_difference_title_game"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/spotTheDifference_option_btn"
+                        app:layout_constraintHorizontal_bias="0.061"
+                        app:layout_constraintStart_toEndOf="@+id/spotTheDifference_image"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_editor_absoluteX="95dp"
+                        app:layout_editor_absoluteY="15dp" />
+
+                    <Button
+                        android:id="@+id/spotTheDifference_option_btn"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/ic_baseline_add_to_home_screen_24"
+                        app:backgroundTint="@color/gray_for_options"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </ScrollView>

@@ -194,4 +194,6 @@
     <string name="original">Original</string>
     <string name="lively">Lively</string>
     <string name="monotonous">Monotonous</string>
+
+    <string name="spot_the_difference_title_game">Trova le differenze</string>
 </resources>

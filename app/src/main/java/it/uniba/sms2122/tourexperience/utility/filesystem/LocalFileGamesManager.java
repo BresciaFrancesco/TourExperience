@@ -105,4 +105,46 @@ public class LocalFileGamesManager extends LocalFilePercorsoManager {
             return "Error";
         }
     }
+
+
+    /**
+     *  Funzione per capire se una data opera ha o non ha il gioco trova le differenze
+     * @return true se l'opera ha il gioco, false altrimenti
+     */
+    public boolean existsSpotTheDifference() {
+        final File quizDir = new File(Paths.get(pathOperaForGames.toString(), "spotTheDifference").toString());
+        if (quizDir.exists()) {
+            final File quizConfigFile = new File(Paths.get(quizDir.toPath().toString(), "configuration.json").toString());
+            return quizConfigFile.exists();
+        }
+        return false;
+    }
+
+    /**
+     * Funzione per recuperare il json di configurazione del minigioco trova le differenze
+     * @return il percoso completo del file json di configurazione
+     * @throws IOException
+     */
+    public String loadSpotTheDifferenceConfigurationFile() throws IOException {
+        List<String> stringhe = Files.readAllLines(Paths.get(pathOperaForGames.toString(), "spotTheDifference", "configuration.json"));
+        StringBuilder sb = new StringBuilder();
+        for (String s : stringhe) {
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Funzione per recuperare una singola immagine da settare nel gioco trova le differenze
+     * @return il percoso completo dell'immagine che si vuole caricare sul gioco
+     * @throws IOException
+     */
+    public String loadSpotTheDifferenceImageOf(String imageFileName) throws IOException {
+        List<String> stringhe = Files.readAllLines(Paths.get(pathOperaForGames.toString(), "spotTheDifference", imageFileName + ".webp"));
+        StringBuilder sb = new StringBuilder();
+        for (String s : stringhe) {
+            sb.append(s);
+        }
+        return sb.toString();
+    }
 }

@@ -31,8 +31,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0"
-                android:background="@drawable/find_difference_circle_button"/>
+                app:layout_constraintVertical_bias="0" />
 
             <ImageView
                 android:id="@+id/differenceBtn2"
@@ -45,8 +44,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                android:background="@drawable/find_difference_circle_button"/>
+                app:layout_constraintVertical_bias="0.0" />
 
             <ImageView
                 android:id="@+id/differenceBtn3"
@@ -59,8 +57,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0"
-                android:background="@drawable/find_difference_circle_button"/>
+                app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -86,11 +83,11 @@
                 android:scaleType="centerCrop"
                 android:tag="differenceBtn"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.396"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.156"/>
+                app:layout_constraintVertical_bias="0"/>
 
             <ImageView
                 android:id="@+id/reflex_differenceBtn2"
@@ -99,11 +96,11 @@
                 android:scaleType="centerCrop"
                 android:tag="differenceBtn"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.818"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.457" />
+                app:layout_constraintVertical_bias="0" />
 
             <ImageView
                 android:id="@+id/reflex_differenceBtn3"
@@ -112,11 +109,11 @@
                 android:scaleType="centerCrop"
                 android:tag="differenceBtn"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="0.286"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.828" />
+                app:layout_constraintVertical_bias="0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -22,9 +22,11 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.games.SpotDifference.SpotDifferences;
 import it.uniba.sms2122.tourexperience.percorso.ImageAndDescriptionFragment;
 import it.uniba.sms2122.tourexperience.model.Opera;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
@@ -84,6 +86,33 @@ public class OperaFragment extends Fragment {
                 opera.getNome()
         );
 
+        triggerQuizButton(view);
+        triggerSpotTheDifferenceButton(view);
+    }
+
+    private void triggerSpotTheDifferenceButton(View view) {
+
+        ArrayList<String> artData = new ArrayList<String>();
+        artData.add(this.nomeMuseo);
+        artData.add(this.nomeStanza);
+        artData.add(this.opera.getNome());
+
+        ConstraintLayout quizButton = view.findViewById(R.id.spotTheDifference_layout);
+
+        quizButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(getActivity(),SpotDifferences.class);
+                intent.putExtra("museumName", nomeMuseo);
+                intent.putExtra("roomName", nomeStanza);
+                intent.putExtra("artName", opera.getNome());
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void triggerQuizButton(@NonNull View view) {
         final ConstraintLayout quizButton = view.findViewById(R.id.quiz_layout);
         quizButton.setOnClickListener((view2) -> {
             if (!localFileGamesManager.existsQuiz()) {

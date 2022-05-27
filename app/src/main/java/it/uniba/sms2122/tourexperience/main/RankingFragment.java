@@ -1,7 +1,6 @@
 package it.uniba.sms2122.tourexperience.main;
 
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -23,13 +22,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,10 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 import it.uniba.sms2122.tourexperience.R;
-import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
-import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
-import it.uniba.sms2122.tourexperience.utility.ranking.FileRanking;
+import it.uniba.sms2122.tourexperience.utility.ranking.FileShare;
 import it.uniba.sms2122.tourexperience.utility.ranking.MuseoDatabase;
 
 /**
@@ -53,7 +45,7 @@ public class RankingFragment extends Fragment {
     private TextView title;
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
-    private FileRanking fileRanking;
+    private FileShare fileShare;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,7 +74,7 @@ public class RankingFragment extends Fragment {
 
         switch (itemId) {
             case R.id.shareItem:
-                Uri uri = FileProvider.getUriForFile(getContext(), "it.uniba.sms2122.tourexperience.fileprovider", fileRanking.getTxtRanking());
+                Uri uri = FileProvider.getUriForFile(getContext(), "it.uniba.sms2122.tourexperience.fileprovider", fileShare.getTxt());
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
@@ -125,10 +117,10 @@ public class RankingFragment extends Fragment {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    fileRanking = new FileRanking(txt);
+                    fileShare = new FileShare(txt);
 
                     for(int i = 0; i < titleOrdered.size(); i++)
-                        fileRanking.writeToFile(getString(R.string.pos, String.valueOf(i+1)) + "\n" + titleOrdered.get(i).getKey() + titleOrdered.get(i).getValue() + "\n\n");
+                        fileShare.writeToFile(getString(R.string.pos, String.valueOf(i+1)) + "\n" + titleOrdered.get(i).getKey() + titleOrdered.get(i).getValue() + "\n\n");
 
                     RankingAdapter rankingAdapter = new RankingAdapter(getContext(), museoDatabaseList, ranking, titleOrdered);
                     recyclerView.setAdapter(rankingAdapter);
@@ -147,7 +139,7 @@ public class RankingFragment extends Fragment {
         for (int i = 0; i < museoDatabaseList.size(); i++){
             if(ranking == 1) {
                 for (String key : museoDatabaseList.get(i).getVoti().keySet()) {
-                    String media = String.valueOf(museoDatabaseList.get(i).getVoti().get(key).calcolaMedia());
+                    String media = String.valueOf(Math.round(museoDatabaseList.get(i).getVoti().get(key).calcolaMedia()* 100.0) / 100.0);
                     if(media.equals("-1.0"))
                         media = " " + getString(R.string.no_value);
                     title.put(museoDatabaseList.get(i).getNomeMuseo() + "\n" + key + "\n" + getString(R.string.value), media);

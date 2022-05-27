@@ -127,7 +127,7 @@
     <string name="error_opera_title">Wrong opera</string>
     <string name="error_room_body">The clicked room does not correspond to the next expected room on the selected route</string>
     <string name="error_opera_body">The clicked opera does not correspond to any opera in this room</string>
-    <string name="path_end">Submit and End the path</string>
+    <string name="path_end">End of the path</string>
     <string name="rate_path">End Path\n Give a vote!!!</string>
     <string name="path_end_success">End path success</string>
     <string name="path_end_fail">End path fail</string>
@@ -179,4 +179,18 @@
     <string name="profile_pic_alert_title">Do you want to login or sign up?</string>
     <string name="profile_pic_alert_message">Log in or register on TourExperience to evaluate the routes you like best and access many exclusive features!</string>
 
+    <!--Domande e risposte relative al questionario finale-->
+    <string name="question_1">Provide a review of the path</string>
+    <string name="question_2">Would you recommend this route to a friend? </string>
+    <string name="question_3">Does this path respond to your expectations?</string>
+    <string name="question_4">What adjectives reflect this path?</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string name="boring">Boring</string>
+    <string name="fun">Fun</string>
+    <string name="original">Original</string>
+    <string name="lively">Lively</string>
+    <string name="monotonous">Monotonous</string>
 </resources>

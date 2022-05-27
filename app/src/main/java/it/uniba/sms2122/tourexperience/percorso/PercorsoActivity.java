@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -98,8 +99,6 @@ public class PercorsoActivity extends AppCompatActivity {
          * Viene aggiunto il fragment MuseoFragment all'activity
          */
         if (savedInstanceState == null) {
-
-
             Fragment firstPage = new MuseoFragment();
             fgManagerOfPercorso.createFragment(firstPage, "museoFragment");
         } else {
@@ -108,6 +107,7 @@ public class PercorsoActivity extends AppCompatActivity {
             this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
             this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
             this.nomePercorso = savedInstanceState.getString("nomePercorso");
+            this.db = gson.fromJson(savedInstanceState.getSerializable("db").toString(), DatabaseReference.class);
         }
         // cacheMuseums.get(nomeMuseo); // per ottenere l'oggetto Museo, basta fare così
     }

@@ -123,7 +123,7 @@
     <string name="error_opera_title">Opera errata</string>
     <string name="error_room_body">"La stanza cliccata non corrisponde alla prossima stanza prevista del percorso selezionato"</string>
     <string name="error_opera_body">L\'opera cliccata non corrisponde a nessuna opera in questa stanza</string>
-    <string name="path_end">Invia e Termina il percorso</string>
+    <string name="path_end">Fine del percorso</string>
     <string name="rate_path">Fine del percorso\n Dai un voto!!!</string>
     <string name="path_end_success">Percorso terminato con successo</string>
     <string name="path_end_fail">Percorso terminato senza successo</string>
@@ -174,4 +174,18 @@
     <string name="profile_pic_alert_title">Vuoi accedere o registrarti?</string>
     <string name="profile_pic_alert_message">Accedi o registrati a TourExperience per valutare i percorsi che più ti piacciono e accedere a tante funzionalità esclusive!</string>
 
+    <!--Domande e risposte relative al questionario finale-->
+    <string name="question_1">Dai una valutazione al percorso</string>
+    <string name="question_2">Consiglieresti questo percorso ad un amico? </string>
+    <string name="question_3">Questo percorso soddisfa le tue aspettative?</string>
+    <string name="question_4">Quali aggettivi rispecchiano questo percorso?</string>
+
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    
+    <string name="boring">Noioso</string>
+    <string name="fun">Divertente</string>
+    <string name="original">Originale</string>
+    <string name="lively">Vivace</string>
+    <string name="monotonous">Monotono</string>
 </resources>

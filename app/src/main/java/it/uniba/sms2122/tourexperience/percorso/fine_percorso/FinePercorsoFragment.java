@@ -10,29 +10,39 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 
+import java.io.File;
+import java.io.IOException;
+
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.cache.CacheMuseums;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
+import it.uniba.sms2122.tourexperience.utility.ranking.FileShare;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,8 +57,16 @@ public class FinePercorsoFragment extends Fragment {
 
     private RatingBar ratingBar;
     private Button buttonVote;
-    private ImageButton imageButton;
+    private Button buttonSkip;
+    private RadioGroup radioGroupQuestion2;
+    private RadioGroup radioGroupQuestion3;
+    private CheckBox checkBox1;
+    private CheckBox checkBox2;
+    private CheckBox checkBox3;
+    private CheckBox checkBox4;
+    private CheckBox checkBox5;
 
+    private FileShare fileShare;
     private PercorsoActivity parent;
     private String nomeMuseo;
     private String nomePercorso;
@@ -57,6 +75,7 @@ public class FinePercorsoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
+        setHasOptionsMenu(true);
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_fine_percorso, container, false);
@@ -69,59 +88,153 @@ public class FinePercorsoFragment extends Fragment {
         parent = (PercorsoActivity) getActivity();
         parent.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        if (savedInstanceState == null) {
-            nomeMuseo = parent.getNomeMuseo();
-            nomePercorso = parent.getNomePercorso();
-        } else {
-            this.nomePercorso = savedInstanceState.getString("nomePercorso");
-            this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
+        radioGroupQuestion2 = (RadioGroup) view.findViewById(R.id.radio_group_question_2);
+        radioGroupQuestion3 = (RadioGroup) view.findViewById(R.id.radio_group_question_3);
 
-            //lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui comunque viene ricreato da 0 e non ha valori inzializzati
-            if (this.nomeMuseo == null) {
-                nomeMuseo = parent.getNomeMuseo();
-            }
-            if (this.nomePercorso == null){
-                nomePercorso = parent.getNomePercorso();
-            }
-        }
+        checkBox1 = (CheckBox) view.findViewById(R.id.checkbox_question4_id1);
+        checkBox2 = (CheckBox) view.findViewById(R.id.checkbox_question4_id2);
+        checkBox3 = (CheckBox) view.findViewById(R.id.checkbox_question4_id3);
+        checkBox4 = (CheckBox) view.findViewById(R.id.checkbox_question4_id4);
+        checkBox5 = (CheckBox) view.findViewById(R.id.checkbox_question4_id5);
 
         textView = (TextView) view.findViewById(R.id.nome_item_museo_end);
         imageView = (ImageView) view.findViewById(R.id.icona_item_museo_end);
 
-        textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
+        ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
+        LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
+        stars.getDrawable(1).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
+
+        buttonVote = (Button) view.findViewById(R.id.end_quiz);
+        buttonVoteSetOnClickListener();
+        buttonSkip = (Button) view.findViewById(R.id.skip_quiz);
+        buttonSkipSetOnClickListener();
+
+        if (savedInstanceState == null) {
+            nomeMuseo = parent.getNomeMuseo();
+            nomePercorso = parent.getNomePercorso();
+        } else {
+            this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
+            this.nomePercorso = savedInstanceState.getString("nomePercorso");
+            //lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui comunque viene ricreato da 0 e non ha valori inzializzati
+            if (this.nomeMuseo == null) {
+                nomeMuseo = parent.getNomeMuseo();
+            }
+            if (this.nomePercorso == null) {
+                nomePercorso = parent.getNomePercorso();
+            }
+        }
+
+        textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path_end));
         try{
             imageView.setImageURI(Uri.parse(getMuseoByName(nomeMuseo, view.getContext()).getFileUri()));
         } catch (NullPointerException e){
             e.printStackTrace();
         }
+    }
 
-        ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
-        ratingBar.setNumStars(5);
+    private boolean isQuizComplete() {
+        boolean isQuizComplete = true;
 
-        //finding the specific RatingBar with its unique ID
-        LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
+        if(radioGroupQuestion2.getCheckedRadioButtonId() == -1){
+            isQuizComplete = false;
+        } else if(radioGroupQuestion3.getCheckedRadioButtonId() == -1){
+            isQuizComplete = false;
+        } else if(!checkBox1.isChecked() && !checkBox2.isChecked() && !checkBox3.isChecked() && !checkBox4.isChecked() && !checkBox5.isChecked()){
+            isQuizComplete = false;
+        }
 
-        //Use for changing the color of RatingBar
-        stars.getDrawable(1).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
+        return isQuizComplete;
+    }
 
-        buttonVote = (Button) view.findViewById(R.id.btnEndPath);
-        buttonVoteSetOnClickListener();
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.share, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
-        imageButton = (ImageButton) view.findViewById(R.id.share);
-        shareButtonSetOnClick();
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+
+        switch (itemId) {
+            case R.id.shareItem:
+                if(isQuizComplete()){
+                    writeFileShare();
+                    Uri uri = FileProvider.getUriForFile(getContext(), "it.uniba.sms2122.tourexperience.fileprovider", fileShare.getTxt());
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                    sendIntent.setType("text/plain");
+
+                    Intent shareIntent = Intent.createChooser(sendIntent, null);
+                    startActivity(shareIntent);
+                } else {
+                    Toast.makeText(getContext(), getContext().getString(R.string.quiz_non_completato), Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
+        File txtsFolder = LocalFileManager.createLocalDirectoryIfNotExists(getActivity().getFilesDir(), "txts");
+        File txt = new File (txtsFolder, "form.txt");
+
+        if(txt.exists())
+            txt.delete();
+
+        try {
+            txt.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        fileShare = new FileShare(txt);
+
         if(savedInstanceState != null){
             try{
-                imageView.setImageURI(Uri.parse(getMuseoByName(nomeMuseo, getContext()).getFileUri()));
+                imageView.setImageURI(Uri.parse(CacheMuseums.cacheMuseums.get(nomeMuseo).getFileUri()));
             } catch (NullPointerException e){
                 e.printStackTrace();
             }
         }
+    }
+
+    private void writeFileShare() {
+        String answer;
+        fileShare.writeToFile(getString(R.string.museum, nomeMuseo) + " , " + getString(R.string.path, nomePercorso) + "\n\n");
+        fileShare.writeToFile(getString(R.string.question_1) + "\n" + Math.round(ratingBar.getRating() * 100.0) / 100.0 + "\n\n");
+        if(radioGroupQuestion2.getCheckedRadioButtonId() == R.id.radio_question2_id1)
+            answer = getString(R.string.yes);
+        else
+            answer = getString(R.string.no);
+
+        fileShare.writeToFile(getString(R.string.question_2) + "\n" + answer + "\n\n");
+
+        System.out.println(radioGroupQuestion2.getCheckedRadioButtonId());
+
+        if(radioGroupQuestion2.getCheckedRadioButtonId() == R.id.radio_question3_id1)
+            answer = getString(R.string.yes);
+        else
+            answer = getString(R.string.no);
+        fileShare.writeToFile(getString(R.string.question_3) + "\n" + answer + "\n\n");
+
+        answer = null;
+        if(checkBox1.isChecked())
+            answer = getString(R.string.fun) + ", ";
+        if(checkBox2.isChecked())
+            answer += getString(R.string.boring) + ", ";
+        if(checkBox3.isChecked())
+            answer += getString(R.string.original) + ", ";
+        if(checkBox4.isChecked())
+            answer += getString(R.string.lively) + ", ";
+        if(checkBox5.isChecked())
+            answer += getString(R.string.monotonous);
+
+        fileShare.writeToFile(getString(R.string.question_4) + "\n" + answer + "\n\n");
     }
 
     @Override
@@ -138,10 +251,20 @@ public class FinePercorsoFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putString("nomePercorso", this.nomePercorso);
         outState.putString("nomeMuseo", this.nomeMuseo);
+        outState.putString("nomePercorso", this.nomePercorso);
     }
 
+    private void buttonSkipSetOnClickListener() {
+        buttonSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                parent.endPath();
+                increaseNumeroStarts();
+            }
+        });
+    }
+    
     private void buttonVoteSetOnClickListener() {
         buttonVote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,60 +297,47 @@ public class FinePercorsoFragment extends Fragment {
 
                         return;
                     }else {
-                        String result = Float.toString(ratingBar.getRating());
-                        parent.getSnapshotVoti().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                            @Override
-                            public void onSuccess(DataSnapshot dataSnapshot) {
-                                String voti = dataSnapshot.getValue(String.class);
+                        if (isQuizComplete()){
+                            String result = String.valueOf(ratingBar.getRating());
+                            parent.getSnapshotVoti().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                @Override
+                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                    String voti = dataSnapshot.getValue(String.class);
 
-                                if (voti.equals("-1"))
-                                    voti = result;
-                                else
-                                    voti = voti.concat(";" + result);
-                                parent.getDb().child("Voti").setValue(voti).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(getContext(), R.string.path_end_success, Toast.LENGTH_LONG).show();
-                                            parent.endPath();
-                                        } else {
-                                            Toast.makeText(getContext(), R.string.path_end_fail, Toast.LENGTH_LONG).show();
+                                    if (voti.equals("-1"))
+                                        voti = result;
+                                    else
+                                        voti = voti.concat(";" + result);
+                                    parent.getDb().child("Voti").setValue(voti).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(getContext(), R.string.path_end_success, Toast.LENGTH_LONG).show();
+                                                parent.endPath();
+                                            } else {
+                                                Toast.makeText(getContext(), R.string.path_end_fail, Toast.LENGTH_LONG).show();
+                                            }
                                         }
-                                    }
-                                });
-                            }
-                        });
-
-                        parent.getSnapshotNumStarts().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                            @Override
-                            public void onSuccess(DataSnapshot dataSnapshot) {
-                                Integer numStarts = dataSnapshot.getValue(Integer.class);
-                                numStarts++;
-                                parent.getDb().child("Numero_stats").setValue(numStarts);
-                            }
-                        });
+                                    });
+                                }
+                            });
+                            increaseNumeroStarts();
+                        } else {
+                            Toast.makeText(getContext(), getContext().getString(R.string.quiz_non_completato), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             }
         });
     }
 
-    private void shareButtonSetOnClick() {
-        imageButton.setOnClickListener(new View.OnClickListener() {
+    private void increaseNumeroStarts() {
+        parent.getSnapshotNumStarts().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onClick(View view) {
-
-
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.msg_share)
-                        + "\n" + getString(R.string.museum, nomeMuseo)
-                        + "\n" + getString(R.string.path, nomePercorso)
-                        + "\n" + getString(R.string.vote, Float.toString(ratingBar.getRating())));
-                sendIntent.setType("text/plain");
-
-                Intent shareIntent = Intent.createChooser(sendIntent, null);
-                startActivity(shareIntent);
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                Integer numStarts = dataSnapshot.getValue(Integer.class);
+                numStarts++;
+                parent.getDb().child("Numero_starts").setValue(numStarts);
             }
         });
     }

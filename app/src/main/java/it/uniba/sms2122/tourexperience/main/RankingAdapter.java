@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import it.uniba.sms2122.tourexperience.R;
-import it.uniba.sms2122.tourexperience.utility.ranking.FileRanking;
 import it.uniba.sms2122.tourexperience.utility.ranking.MuseoDatabase;
 
 public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.ViewHolder> {

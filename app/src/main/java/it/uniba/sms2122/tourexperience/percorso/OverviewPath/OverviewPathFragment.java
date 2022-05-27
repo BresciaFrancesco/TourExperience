@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,7 +19,10 @@ import androidx.fragment.app.Fragment;
 
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -36,6 +40,7 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.model.Stanza;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 
@@ -51,6 +56,9 @@ public class OverviewPathFragment extends Fragment {
     Button startPathButton;
     RatingBar ratingBar;
     TextView textRatingBar;
+
+    DatabaseReference db;
+    Task<DataSnapshot> snapshotVoti;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -116,8 +124,8 @@ public class OverviewPathFragment extends Fragment {
         ratingBar = inflater.findViewById(R.id.scorePath);
         textRatingBar = inflater.findViewById(R.id.txtScorePath);
 
-        if(parent.checkConnectivity()) {
-            parent.getSnapshotVoti().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        if(checkConnectivity()) {
+            snapshotVoti.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                 @Override
                 public void onSuccess(DataSnapshot dataSnapshot) {
                     String voti = dataSnapshot.getValue(String.class);
@@ -201,5 +209,16 @@ public class OverviewPathFragment extends Fragment {
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         outState.putSerializable("path", gson.toJson(this.path));
+    }
+
+    public boolean checkConnectivity() {
+        if (NetworkConnectivity.check(getContext())) {
+            db = FirebaseDatabase.getInstance().getReference("Museums").child(path.getNomeMuseo()).child(path.getNomePercorso());
+            snapshotVoti = db.child("Voti").get();
+            return true;
+        } else {
+            Toast.makeText(getContext(), getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 }

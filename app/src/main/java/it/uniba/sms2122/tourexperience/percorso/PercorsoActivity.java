@@ -57,11 +57,6 @@ public class PercorsoActivity extends AppCompatActivity {
     /** Attributo che memorizza il percorso scelto dall'utente */
     public Percorso path;
 
-    private DatabaseReference db;
-    private Task<DataSnapshot> snapshotVoti;
-    private Task<DataSnapshot> snapshotNumStarts;
-
-
     public PercorsoActivity() {
         this.fgManagerOfPercorso = new FragmentManagerOfPercorsoActivity(this);
     }
@@ -101,18 +96,6 @@ public class PercorsoActivity extends AppCompatActivity {
             nomeMuseo = getIntent().getStringExtra("nome_museo");
         }
 
-    }
-
-    public boolean checkConnectivity() {
-        if (NetworkConnectivity.check(getApplicationContext())) {
-            db = FirebaseDatabase.getInstance().getReference("Museums").child(nomeMuseo).child(nomePercorso);
-            snapshotVoti = db.child("Voti").get();
-            snapshotNumStarts = db.child("Numero_starts").get();
-            return true;
-        } else {
-            Toast.makeText(PercorsoActivity.this, getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
-            return false;
-        }
     }
 
     private boolean lastFragmentIsSceltaStanzeFragment() {
@@ -288,18 +271,6 @@ public class PercorsoActivity extends AppCompatActivity {
 
     public String getNomePercorso() {
         return nomePercorso;
-    }
-
-    public DatabaseReference getDb() {
-        return db;
-    }
-
-    public Task<DataSnapshot> getSnapshotVoti() {
-        return snapshotVoti;
-    }
-
-    public Task<DataSnapshot> getSnapshotNumStarts() {
-        return snapshotNumStarts;
     }
 
     public Percorso getPath() {

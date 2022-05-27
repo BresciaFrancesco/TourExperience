@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,6 +73,10 @@ public class FinePercorsoFragment extends Fragment {
     private String nomeMuseo;
     private String nomePercorso;
 
+    private DatabaseReference db;
+    private Task<DataSnapshot> snapshotVoti;
+    private Task<DataSnapshot> snapshotNumStarts;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,9 +111,7 @@ public class FinePercorsoFragment extends Fragment {
         stars.getDrawable(1).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
 
         buttonVote = (Button) view.findViewById(R.id.end_quiz);
-        buttonVoteSetOnClickListener();
         buttonSkip = (Button) view.findViewById(R.id.skip_quiz);
-        buttonSkipSetOnClickListener();
 
         if (savedInstanceState == null) {
             nomeMuseo = parent.getNomeMuseo();
@@ -130,6 +134,11 @@ public class FinePercorsoFragment extends Fragment {
         } catch (NullPointerException e){
             e.printStackTrace();
         }
+
+        if(checkConnectivity()){
+            buttonVoteSetOnClickListener();
+        }
+        buttonSkipSetOnClickListener();
     }
 
     private boolean isQuizComplete() {
@@ -260,7 +269,8 @@ public class FinePercorsoFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 parent.endPath();
-                increaseNumeroStarts();
+                if(checkConnectivity())
+                    increaseNumeroStarts();
             }
         });
     }
@@ -299,7 +309,7 @@ public class FinePercorsoFragment extends Fragment {
                     }else {
                         if (isQuizComplete()){
                             String result = String.valueOf(ratingBar.getRating());
-                            parent.getSnapshotVoti().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            snapshotVoti.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                 @Override
                                 public void onSuccess(DataSnapshot dataSnapshot) {
                                     String voti = dataSnapshot.getValue(String.class);
@@ -308,7 +318,7 @@ public class FinePercorsoFragment extends Fragment {
                                         voti = result;
                                     else
                                         voti = voti.concat(";" + result);
-                                    parent.getDb().child("Voti").setValue(voti).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    db.child("Voti").setValue(voti).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
@@ -332,13 +342,25 @@ public class FinePercorsoFragment extends Fragment {
     }
 
     private void increaseNumeroStarts() {
-        parent.getSnapshotNumStarts().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        snapshotNumStarts.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 Integer numStarts = dataSnapshot.getValue(Integer.class);
                 numStarts++;
-                parent.getDb().child("Numero_starts").setValue(numStarts);
+                db.child("Numero_starts").setValue(numStarts);
             }
         });
+    }
+
+    public boolean checkConnectivity() {
+        if (NetworkConnectivity.check(getContext())) {
+            db = FirebaseDatabase.getInstance().getReference("Museums").child(nomeMuseo).child(nomePercorso);
+            snapshotVoti = db.child("Voti").get();
+            snapshotNumStarts = db.child("Numero_starts").get();
+            return true;
+        } else {
+            Toast.makeText(getContext(), getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+            return false;
+        }
     }
 }

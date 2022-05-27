@@ -103,6 +103,7 @@
     <string name="do_not_show_again">OK e non mostrare più</string>
     <string name="path_from_cloud_empty">Non ci sono percorsi da importare</string>
     <string name="available_routes">Percorsi disponibili</string>
+    <string name="available_rooms">Stanze disponibili</string>
     <string name="nearby_areas">Zone vicine</string>
     <string name="museum">Museo: %1$s</string>
     <string name="path">Percorso: %1$s</string>

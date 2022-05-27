@@ -52,7 +52,12 @@ public class PercorsoActivity extends AppCompatActivity {
 
     private String nomeMuseo;
     private String nomePercorso;
-    private LocalFilePercorsoManager localFilePercorsoManager;
+
+    public LocalFilePercorsoManager getLocalFilePercorsoManager() {
+        return localFilePercorsoManager;
+    }
+
+    protected LocalFilePercorsoManager localFilePercorsoManager;
     private LocalFileMuseoManager localFileMuseoManager;
     /** Attributo che memorizza il percorso scelto dall'utente */
     public Percorso path;

@@ -1,6 +1,7 @@
 package it.uniba.sms2122.tourexperience.percorso.OverviewPath;
 
 
+import android.icu.util.ULocale;
 import android.os.Bundle;
 import android.util.ArraySet;
 import android.util.Log;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,6 +35,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 
@@ -40,9 +43,11 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.model.Stanza;
+import it.uniba.sms2122.tourexperience.percorso.OverviewPath.RecycleViewAdapter;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
 public class OverviewPathFragment extends Fragment {
 
@@ -50,15 +55,17 @@ public class OverviewPathFragment extends Fragment {
     ArrayList<Stanza> stanze;
     View inflater;
 
+    RecyclerView recyclerView;
     TextView pathNameTextView;
     TextView pathDescriptionTextView;
-    TextView pathRoomsOverview;
     Button startPathButton;
     RatingBar ratingBar;
     TextView textRatingBar;
 
     DatabaseReference db;
     Task<DataSnapshot> snapshotVoti;
+
+    LocalFilePercorsoManager localFilePercorsoManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,12 +91,19 @@ public class OverviewPathFragment extends Fragment {
             }
         }
 
+        // Serve per caricare immediatamente le stanze e le opere
+        localFilePercorsoManager = ((PercorsoActivity) getActivity()).getLocalFilePercorsoManager();
+
         // Durante la visita al grafo, il puntatore viene alla stanza corrente viene spostato,
         // quindi occorre ripristinarlo dopo la visita.
         stanze = new ArrayList<>();
         String idStanzaCorrente = path.getIdStanzaCorrente();
         setListaStanze();
         path.setIdStanzaCorrente(idStanzaCorrente);
+
+        recyclerView = view.findViewById(R.id.rooms_recycle_view);
+        RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(),getListaNomiStanze(),getListaOpereStanze());
+        recyclerView.setAdapter(adapter);
 
         setDynamicValuesOnView();
         triggerStartPathButton();
@@ -117,9 +131,6 @@ public class OverviewPathFragment extends Fragment {
 
         pathDescriptionTextView = inflater.findViewById(R.id.pathDescription);
         pathDescriptionTextView.setText(path.getDescrizionePercorso());
-
-        pathRoomsOverview = inflater.findViewById(R.id.listaStanze);
-        pathRoomsOverview.setText(printList());
 
         ratingBar = inflater.findViewById(R.id.scorePath);
         textRatingBar = inflater.findViewById(R.id.txtScorePath);
@@ -192,13 +203,20 @@ public class OverviewPathFragment extends Fragment {
         return Integer.parseInt(id);
     }
 
-    // Stampa la lista di stanze del percorso
-    // Nota: le opere per ogni stanza le posso recuperare da qui
-    private String printList() {
-        String lista = "";
+    // Ritorna la lista dei nomi delle stanze del percorso
+    private ArrayList<String> getListaNomiStanze() {
+        ArrayList<String> lista = new ArrayList<>();
+        for(Stanza stanza : stanze)
+            lista.add(stanza.getNome());
+        return lista;
+    }
+
+    // Ritorna la lista delle opere principali delle stanze del percorso
+    private ArrayList<String> getListaOpereStanze() {
+        ArrayList<String> lista = new ArrayList<>();
         for(Stanza stanza : stanze) {
-            lista += stanza.getNome();
-            lista += "\n";
+            Log.v("DEBUG",stanza.toString());
+            lista.add(stanza.getOpere().get(stanza.getId() + "0000").getPercorsoImg());
         }
         return lista;
     }

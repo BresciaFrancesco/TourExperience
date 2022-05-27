@@ -35,17 +35,10 @@
                 android:textSize="20dp"
                 android:textColor="@color/black"/>
 
-            <TextView
-                android:id="@+id/listaStanze"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="listaStanze"
-                android:textSize="20dp" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
                 android:orientation="horizontal">
 
                 <RatingBar
@@ -79,5 +72,33 @@
             android:layout_marginBottom="25dp"
             android:background="@drawable/button_shape"
             android:text="@string/start" />
+
+        <LinearLayout
+            android:id="@+id/rooms_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/top_rounded">
+
+            <TextView
+                android:id="@+id/rooms_title"
+                style="@style/heading_text_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|top"
+                android:text="@string/available_rooms"
+                android:textStyle="bold"
+                android:textColor="@color/white" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rooms_recycle_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

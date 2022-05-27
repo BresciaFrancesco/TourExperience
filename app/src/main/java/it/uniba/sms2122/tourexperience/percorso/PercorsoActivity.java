@@ -54,14 +54,13 @@ public class PercorsoActivity extends AppCompatActivity {
     private String nomePercorso;
     private LocalFilePercorsoManager localFilePercorsoManager;
     private LocalFileMuseoManager localFileMuseoManager;
-    /**
-     * Attributo che memorizza il percorso scelto dall'utente
-     */
+    /** Attributo che memorizza il percorso scelto dall'utente */
     public Percorso path;
 
     private DatabaseReference db;
     private Task<DataSnapshot> snapshotVoti;
     private Task<DataSnapshot> snapshotNumStarts;
+
 
     public PercorsoActivity() {
         this.fgManagerOfPercorso = new FragmentManagerOfPercorsoActivity(this);
@@ -70,7 +69,6 @@ public class PercorsoActivity extends AppCompatActivity {
     public FragmentManagerOfPercorsoActivity getFgManagerOfPercorso() {
         return fgManagerOfPercorso;
     }
-
 
     /**
      * Funzione che imposta il valore dell'attributo path ogni volta che viene selezionato un
@@ -87,29 +85,22 @@ public class PercorsoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_percorso);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
 
-        nomeMuseo = getIntent().getStringExtra("nome_museo");
         localFilePercorsoManager = new LocalFilePercorsoManager(getApplicationContext().getFilesDir().toString());
         localFileMuseoManager = new LocalFileMuseoManager(getApplicationContext().getFilesDir().toString());
 
-        File filesDir = getApplicationContext().getFilesDir();
-
-        /**
-         * Viene aggiunto il fragment MuseoFragment all'activity
-         */
-        if (savedInstanceState == null) {
+        // Viene aggiunto il fragment MuseoFragment all'activity
+        if (!ripristino(savedInstanceState)) {
             Fragment firstPage = new MuseoFragment();
             fgManagerOfPercorso.createFragment(firstPage, "museoFragment");
-        } else {
-            Gson gson = new GsonBuilder().create();
-
-            this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
-            this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
-            this.nomePercorso = savedInstanceState.getString("nomePercorso");
-            this.db = gson.fromJson(savedInstanceState.getSerializable("db").toString(), DatabaseReference.class);
+            nomeMuseo = getIntent().getStringExtra("nome_museo");
         }
-        // cacheMuseums.get(nomeMuseo); // per ottenere l'oggetto Museo, basta fare così
+
     }
 
     public boolean checkConnectivity() {
@@ -126,13 +117,16 @@ public class PercorsoActivity extends AppCompatActivity {
 
     private boolean lastFragmentIsSceltaStanzeFragment() {
         boolean flag = false;
-        if(getSupportFragmentManager().getBackStackEntryCount() != 0){
-            String fragmentTag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
-            if (fragmentTag.equals("sceltaStanzeFragment")){
-                flag = true;
+        try {
+            if(getSupportFragmentManager().getBackStackEntryCount() != 0){
+                String fragmentTag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
+                if (fragmentTag.equals("sceltaStanzeFragment")){
+                    flag = true;
+                }
             }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
-
         return flag;
     }
 
@@ -241,6 +235,25 @@ public class PercorsoActivity extends AppCompatActivity {
         outState.putSerializable("path", gson.toJson(this.path));
         outState.putString("nomeMuseo", this.nomeMuseo);
         outState.putString("nomePercorso", this.nomePercorso);
+    }
+
+    /**
+     * Ripristina i dati dopo la distruzione dell'istanza da parte di android.
+     * @param savedInstanceState
+     * @return true se il ripristino è stato eseguito, false altrimenti.
+     */
+    private boolean ripristino(final Bundle savedInstanceState) {
+        if (savedInstanceState == null || savedInstanceState.isEmpty())
+            return false;
+        final Percorso tmpPath = new Gson().fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
+        final String tmpNomeMuseo = savedInstanceState.getString("nomeMuseo");
+        final String tmpNomePercorso = savedInstanceState.getString("nomePercorso");
+        if (tmpNomeMuseo == null || tmpNomeMuseo.isEmpty() || tmpPath == null || tmpNomePercorso == null)
+            return false;
+        path = tmpPath;
+        nomeMuseo = tmpNomeMuseo;
+        nomePercorso = tmpNomePercorso;
+        return true;
     }
 
 

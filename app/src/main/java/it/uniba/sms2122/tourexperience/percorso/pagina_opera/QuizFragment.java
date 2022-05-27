@@ -347,24 +347,24 @@ public class QuizFragment extends Fragment {
                                         Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
                                         task.getException().printStackTrace();
                                     }
-                                } catch (NullPointerException e) {
-                                    e.printStackTrace();
-                                }
+                                } catch (NullPointerException e) { e.printStackTrace(); }
                             });
                         } else {
-                            Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
-                            taskGet.getException().printStackTrace();
+                            try {
+                                Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
+                                taskGet.getException().printStackTrace();
+                            } catch (NullPointerException e) { e.printStackTrace(); }
                         }
                     });
                 } else {
                     try {
                         Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_guest_user), Toast.LENGTH_SHORT).show();
-                    } catch (NullPointerException e) {e.printStackTrace();}
+                    } catch (NullPointerException e) { e.printStackTrace(); }
                 }
             } else {
                 try {
                     Toast.makeText(act.getApplicationContext(), getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
-                } catch (NullPointerException e) {e.printStackTrace();}
+                } catch (NullPointerException e) { e.printStackTrace(); }
             }
             requireActivity().getSupportFragmentManager().popBackStack();
         }

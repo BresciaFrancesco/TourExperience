@@ -45,19 +45,10 @@ public class SpotDifferences extends AppCompatActivity {
                 parentIntent.getStringExtra("roomName"),
                 artName);
 
-        /*try {
-            Log.e("path jsonfile configuration", gameFileManager.loadSpotTheDifferenceConfigurationFile());
-            Log.e("image jsonfile configuration", gameFileManager.loadSpotTheDifferenceImageOf(artName.replace(" ", "_").toLowerCase(Locale.ROOT)).toString());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
         try {
             configuration = new GameConfiguration(this, gameFileManager, artName.replace(" ", "_").toLowerCase(Locale.ROOT));
         } catch (IOException e) {
-            Toast.makeText(this, "impossibile configurare il gioco",
-                    Toast.LENGTH_LONG).show();
+           e.printStackTrace();
         }
 
     }

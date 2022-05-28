@@ -169,6 +169,7 @@
     <string name="file_json_importato">File json importato correttamente</string>
     <string name="quiz_import_request">Non è presente nessun quiz per questa opera. Vuoi importare un quiz?</string>
     <string name="importa_quiz">Importa quiz</string>
+    <string name="quiz_svolto">Hai già completato questo Quiz in questo Percorso</string>
     <string name="errore_apertura_quiz">Errore nell\'apertura del quiz</string>
     <string name="scan_qr_code_opera">Scansiona il codice qr di un\'opera</string>
     <string name="operas_close_to_you">Opere vicino a te</string>

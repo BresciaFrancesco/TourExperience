@@ -7,7 +7,6 @@ import static it.uniba.sms2122.tourexperience.database.CacheScoreGames.COLUMN_GA
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 
 public class CacheScoreGamesQuery {
 

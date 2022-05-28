@@ -1,9 +1,7 @@
 package it.uniba.sms2122.tourexperience.percorso.OverviewPath;
 
 
-import android.icu.util.ULocale;
 import android.os.Bundle;
-import android.util.ArraySet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,22 +25,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.database.CacheGames;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
-import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.model.Stanza;
-import it.uniba.sms2122.tourexperience.percorso.OverviewPath.RecycleViewAdapter;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
@@ -91,6 +80,12 @@ public class OverviewPathFragment extends Fragment {
             }
         }
 
+        // Elimino tutti i dati da questa cache,
+        // ovvero elimino tutti i minigiochi già svolti,
+        // affinché possa svolgerli ancora
+        final CacheGames cacheGames = new CacheGames(view.getContext());
+        cacheGames.deleteAll();
+
         // Serve per caricare immediatamente le stanze e le opere
         localFilePercorsoManager = ((PercorsoActivity) getActivity()).getLocalFilePercorsoManager();
 
@@ -123,9 +118,6 @@ public class OverviewPathFragment extends Fragment {
      * Funzione che si occupa di settare i reali valori dinamici delle viste che formano questa fragment
      */
     private void setDynamicValuesOnView() {
-
-        PercorsoActivity parent = (PercorsoActivity) getActivity();
-
         pathNameTextView = inflater.findViewById(R.id.pathName);
         pathNameTextView.setText(path.getNomePercorso());
 
@@ -175,9 +167,7 @@ public class OverviewPathFragment extends Fragment {
             // Sposto il puntatore sul nodo adiacente
             try {
                 path.moveTo(corrente.getId());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            } catch (Exception ignored) {}
 
             if(!visitato[correnteID]) {
                 // Segno il nodo come visitato

@@ -1,7 +1,6 @@
 package it.uniba.sms2122.tourexperience.database;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class CacheScoreGames {

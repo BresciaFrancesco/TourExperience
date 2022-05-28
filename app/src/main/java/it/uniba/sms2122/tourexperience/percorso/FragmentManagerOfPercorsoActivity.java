@@ -221,9 +221,10 @@ public class FragmentManagerOfPercorsoActivity {
     /**
      * Crea il fragment per il quiz di un'opera.
      * @param json stringa json del quiz da passare al fragment.
+     * @param nomeOpera nome dell'opera.
      */
-    public void nextFragmentQuiz(final String json) {
-        createFragment(QuizFragment.newInstance(json), "quizFragment");
+    public void nextFragmentQuiz(final String json, final String nomeOpera) {
+        createFragment(QuizFragment.newInstance(json, nomeOpera), "quizFragment");
     }
 
     /**

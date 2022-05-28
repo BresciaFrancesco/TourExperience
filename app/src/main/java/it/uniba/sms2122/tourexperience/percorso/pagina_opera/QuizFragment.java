@@ -38,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.database.CacheGames;
+import it.uniba.sms2122.tourexperience.database.GameTypes;
 import it.uniba.sms2122.tourexperience.games.quiz.ContainerRadioLinear;
 import it.uniba.sms2122.tourexperience.games.quiz.dto.QuizJson;
 import it.uniba.sms2122.tourexperience.games.quiz.Domanda;
@@ -55,12 +57,14 @@ import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 public class QuizFragment extends Fragment {
 
     private static final String QUIZ_JSON = "quizJson";
+    private static final String NOME_OPERA = "nomeOpera";
     private static final String QUIZ_COMPLETO = "QuizJsonCompleto";
     private static final String BTN_CONFERMA_CLICCATO = "confermaBtnClicked";
 
     private final Gson gson = new Gson();
     private Quiz quiz;
     private String quizJson;
+    private String nomeOpera;
     private TextView title;
     private TextView points;
     private Button confermaBtn;
@@ -78,12 +82,14 @@ public class QuizFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param quizJson json string per un quiz completo.
+     * @param nomeOpera nome dell'opera.
      * @return una nuova istanza di un fragment QuizFragment.
      */
-    public static QuizFragment newInstance(final String quizJson) {
+    public static QuizFragment newInstance(final String quizJson, final String nomeOpera) {
         QuizFragment fragment = new QuizFragment();
         Bundle args = new Bundle();
         args.putString(QUIZ_JSON, quizJson);
+        args.putString(NOME_OPERA, nomeOpera);
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,6 +99,7 @@ public class QuizFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             quizJson = getArguments().getString(QUIZ_JSON);
+            nomeOpera = getArguments().getString(NOME_OPERA);
         }
     }
 
@@ -111,6 +118,8 @@ public class QuizFragment extends Fragment {
         if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
             if (savedInstanceState.getString(QUIZ_COMPLETO) != null)
                 quiz = gson.fromJson(savedInstanceState.getString(QUIZ_COMPLETO), Quiz.class);
+            if (savedInstanceState.getString(NOME_OPERA) != null)
+                nomeOpera = savedInstanceState.getString(NOME_OPERA);
         }
 
         final Context context = view.getContext();
@@ -326,51 +335,87 @@ public class QuizFragment extends Fragment {
     private void terminaQuiz(View view) {
         try {
             final Activity act = getActivity();
+            // Controllo connessione internet
             if (NetworkConnectivity.check(view.getContext())) {
+
                 final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (currentUser != null) {
-                    final DatabaseReference dbUser = FirebaseDatabase.getInstance()
-                            .getReference("Users")
-                            .child(currentUser.getUid())
-                            .child("score_quiz");
-                    dbUser.get().addOnCompleteListener(taskGet -> {
-                        if (taskGet.isSuccessful()) {
-                            final double totalUserScore = ((taskGet.getResult().getValue() != null)
-                                    ? Double.parseDouble(taskGet.getResult().getValue().toString())
-                                    : 0.0)
-                                    + quiz.getPunteggioCorrente().value();
-                            dbUser.setValue(totalUserScore).addOnCompleteListener(task -> {
-                                try {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_saved), Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
-                                        task.getException().printStackTrace();
-                                    }
-                                } catch (NullPointerException e) { e.printStackTrace(); }
-                            });
-                        } else {
-                            try {
-                                Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
-                                taskGet.getException().printStackTrace();
-                            } catch (NullPointerException e) { e.printStackTrace(); }
-                        }
-                    });
+                    getAndSaveOnCloud(currentUser, act);
                 } else {
                     try {
                         Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_guest_user), Toast.LENGTH_SHORT).show();
                     } catch (NullPointerException e) { e.printStackTrace(); }
                 }
-            } else {
+            }
+            else { // Non c'è connessione
                 try {
                     Toast.makeText(act.getApplicationContext(), getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
                 } catch (NullPointerException e) { e.printStackTrace(); }
             }
+
+            // Salvo nel db locale lo svolgimento di questo quiz durante questo percorso
+            final CacheGames cacheGames = new CacheGames(view.getContext());
+            if (!cacheGames.addOne(nomeOpera, GameTypes.QUIZ)) {
+                Log.e("Salvataggio svolgimento quiz", "cacheGames.addOne ha ritornato false");
+            }
+
+            // Torno al fragment precedente dell'Opera, eliminando questo del Quiz
             requireActivity().getSupportFragmentManager().popBackStack();
         }
         catch (NullPointerException | IllegalStateException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Ottiene lo score (se presente) dal Cloud e lo somma al nuovo score ottenuto.
+     * Se non è presente nessuno score, inserisce direttamente il nuovo score ottenuto.
+     * @param currentUser utente correntemente loggato in Cloud.
+     * @param act Activity principale di questo fragment.
+     */
+    private void getAndSaveOnCloud(final FirebaseUser currentUser, final Activity act) {
+        final DatabaseReference dbUser = FirebaseDatabase.getInstance()
+                .getReference("Users")
+                .child(currentUser.getUid())
+                .child("score_quiz");
+        dbUser.get().addOnCompleteListener(taskGet -> {
+            if (taskGet.isSuccessful()) {
+                final double totalUserScore = ((taskGet.getResult().getValue() != null)
+                        ? Double.parseDouble(taskGet.getResult().getValue().toString())
+                        : 0.0)
+                        + quiz.getPunteggioCorrente().value();
+                saveScoreOnCloud(dbUser, act, totalUserScore);
+            } else {
+                try {
+                    Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
+                    taskGet.getException().printStackTrace();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    /**
+     * Salva il nuovo score in cloud.
+     * @param dbUser Reference del database in cloud allo score del quiz.
+     * @param act Activity principale di questo fragment.
+     * @param totalUserScore Nuovo score totale da salvare in Cloud.
+     */
+    private void saveScoreOnCloud(final DatabaseReference dbUser, final Activity act,
+                                  final double totalUserScore) {
+        dbUser.setValue(totalUserScore).addOnCompleteListener(task -> {
+            try {
+                if (task.isSuccessful()) {
+                    Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_saved), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
+                    task.getException().printStackTrace();
+                }
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     /**
@@ -410,12 +455,12 @@ public class QuizFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (quiz != null) {
+        if (quiz != null)
             outState.putString(QUIZ_COMPLETO, gson.toJson(quiz));
-        }
-        if (confermaBtn != null) {
+        if (confermaBtn != null)
             outState.putBoolean(BTN_CONFERMA_CLICCATO, confermaBtn.getVisibility() == View.GONE);
-        }
+        if (nomeOpera != null)
+            outState.putString(NOME_OPERA, nomeOpera);
     }
 
     @Override

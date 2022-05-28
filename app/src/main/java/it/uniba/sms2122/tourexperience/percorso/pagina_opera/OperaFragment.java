@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -75,9 +76,9 @@ public class OperaFragment extends Fragment {
         FragmentManager fragmentManager = getParentFragmentManager();
         ImageAndDescriptionFragment fragment = new ImageAndDescriptionFragment(opera.getPercorsoImg(), opera.getDescrizione());
         fragmentManager.beginTransaction()
-            .setReorderingAllowed(true)
-            .add(R.id.imageanddescription_fragment_container_view, fragment)
-            .commit();
+                .setReorderingAllowed(true)
+                .add(R.id.imageanddescription_fragment_container_view, fragment)
+                .commit();
 
         localFileGamesManager = new LocalFileGamesManager(
                 view.getContext().getFilesDir().toString(),
@@ -87,27 +88,47 @@ public class OperaFragment extends Fragment {
         );
 
         triggerQuizButton(view);
-        triggerSpotTheDifferenceButton(view);
+        showSpotDifferenceGameCard(view);
+
     }
 
-    private void triggerSpotTheDifferenceButton(View view) {
+    /**
+     * funzione per far visualizzare il bottone per giocare a trova le differenze solo se la data opera ha il minigioco
+     *
+     * @param view il layout da cui selezionare gli elementi grafici da gestire
+     */
+    private void showSpotDifferenceGameCard(View view) {
+
+        if (localFileGamesManager.existsSpotTheDifference()) {
+
+
+            //faccio visualizzare la card
+            CardView spotDifferenceGameCard = view.findViewById(R.id.spotTheDifference_card);
+            spotDifferenceGameCard.setVisibility(View.VISIBLE);
+
+            //triggero il click per far partire il gioco
+            ConstraintLayout spotDifferenceGameButton = view.findViewById(R.id.spotTheDifference_layout);
+            triggerSpotTheDifferenceButton(spotDifferenceGameButton);
+        }
+    }
+
+    private void triggerSpotTheDifferenceButton(ConstraintLayout spotDifferenceGameButton) {
 
         ArrayList<String> artData = new ArrayList<String>();
         artData.add(this.nomeMuseo);
         artData.add(this.nomeStanza);
         artData.add(this.opera.getNome());
 
-        ConstraintLayout quizButton = view.findViewById(R.id.spotTheDifference_layout);
-
-        quizButton.setOnClickListener(new View.OnClickListener() {
+        spotDifferenceGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(getActivity(),SpotDifferences.class);
+                Intent intent = new Intent(getActivity(), SpotDifferences.class);
                 intent.putExtra("museumName", nomeMuseo);
                 intent.putExtra("roomName", nomeStanza);
                 intent.putExtra("artName", opera.getNome());
                 startActivity(intent);
+
             }
         });
     }
@@ -117,23 +138,22 @@ public class OperaFragment extends Fragment {
         quizButton.setOnClickListener((view2) -> {
             if (!localFileGamesManager.existsQuiz()) {
                 new AlertDialog.Builder(view2.getContext())
-                    .setTitle("Quiz")
-                    .setMessage(getString(R.string.quiz_import_request))
-                    .setPositiveButton(getString(R.string.importa_quiz),
-                        (dialog, whichButton) -> {
-                            dialog.dismiss();
-                            startImportQuiz(view2);
-                        })
-                    .setNeutralButton(view2.getContext().getString(R.string.NO),
-                            (dialog, whichButton) -> dialog.dismiss())
-                    .show();
+                        .setTitle("Quiz")
+                        .setMessage(getString(R.string.quiz_import_request))
+                        .setPositiveButton(getString(R.string.importa_quiz),
+                                (dialog, whichButton) -> {
+                                    dialog.dismiss();
+                                    startImportQuiz(view2);
+                                })
+                        .setNeutralButton(view2.getContext().getString(R.string.NO),
+                                (dialog, whichButton) -> dialog.dismiss())
+                        .show();
                 return;
             }
             try {
                 String json = localFileGamesManager.loadQuizJson();
                 ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFragmentQuiz(json);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 Toast.makeText(view.getContext(), getString(R.string.errore_apertura_quiz), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
@@ -145,18 +165,18 @@ public class OperaFragment extends Fragment {
 
     private void startImportQuiz(final View view) {
         new AlertDialog.Builder(view.getContext())
-            .setTitle(getString(R.string.local_import_dialog_title))
-            .setMessage(getString(R.string.quiz_import_message))
-            .setPositiveButton(view.getContext().getString(R.string.continua),
-                (dialog, whichButton) -> {
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("application/json");
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    startActivityForResult(intent, requestCodeGC);
-                })
-            .setNeutralButton(view.getContext().getString(R.string.NO),
-                    (dialog, whichButton) -> dialog.dismiss())
-            .show();
+                .setTitle(getString(R.string.local_import_dialog_title))
+                .setMessage(getString(R.string.quiz_import_message))
+                .setPositiveButton(view.getContext().getString(R.string.continua),
+                        (dialog, whichButton) -> {
+                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                            intent.setType("application/json");
+                            intent.addCategory(Intent.CATEGORY_OPENABLE);
+                            startActivityForResult(intent, requestCodeGC);
+                        })
+                .setNeutralButton(view.getContext().getString(R.string.NO),
+                        (dialog, whichButton) -> dialog.dismiss())
+                .show();
     }
 
     @Override
@@ -172,8 +192,7 @@ public class OperaFragment extends Fragment {
                         final String message = localFileGamesManager.saveQuizJson(mimeType, dto, this);
                         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
                         return;
-                    }
-                    catch (NullPointerException | IllegalStateException e) {
+                    } catch (NullPointerException | IllegalStateException e) {
                         Log.e("OperaFragment.onActivityResult", "qualcosa è null, guardare lo Stack Trace");
                         e.printStackTrace();
                     }
@@ -208,6 +227,7 @@ public class OperaFragment extends Fragment {
 
     /**
      * Ripristina i dati salvati da uno stato precedente se e solo se non sono nulli.
+     *
      * @param savedInstanceState bundle dello stato precedente.
      */
     private boolean ripristino(final Bundle savedInstanceState) {
@@ -216,26 +236,27 @@ public class OperaFragment extends Fragment {
         final String tmpMuseo = savedInstanceState.getString(NOME_MUSEO);
         if (tmpMuseo == null || tmpMuseo.isEmpty()) return false;
         if (savedInstanceState.getString(NOME_STANZA) == null ||
-            savedInstanceState.getString(OPERA_ID) == null ||
-            savedInstanceState.getString(OPERA_NOME) == null ||
-            savedInstanceState.getString(OPERA_PERCORSO_IMG) == null ||
-            savedInstanceState.getString(OPERA_DESCRIZIONE) == null)
+                savedInstanceState.getString(OPERA_ID) == null ||
+                savedInstanceState.getString(OPERA_NOME) == null ||
+                savedInstanceState.getString(OPERA_PERCORSO_IMG) == null ||
+                savedInstanceState.getString(OPERA_DESCRIZIONE) == null)
             return false;
 
         Log.v("RIPRISTINO OperaFragment", "Ripristino effettuato correttamente.");
         nomeMuseo = tmpMuseo;
         nomeStanza = savedInstanceState.getString(NOME_STANZA);
         opera = new Opera(
-            savedInstanceState.getString(OPERA_ID),
-            savedInstanceState.getString(OPERA_NOME),
-            savedInstanceState.getString(OPERA_PERCORSO_IMG),
-            savedInstanceState.getString(OPERA_DESCRIZIONE)
+                savedInstanceState.getString(OPERA_ID),
+                savedInstanceState.getString(OPERA_NOME),
+                savedInstanceState.getString(OPERA_PERCORSO_IMG),
+                savedInstanceState.getString(OPERA_DESCRIZIONE)
         );
         return true;
     }
 
     /**
      * Imposta la action bar con pulsante back e titolo.
+     *
      * @param title titolo da impostare per l'action bar.
      */
     private void setActionBar(final String title) {

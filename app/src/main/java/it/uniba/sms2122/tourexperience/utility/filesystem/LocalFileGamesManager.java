@@ -36,7 +36,7 @@ public class LocalFileGamesManager extends LocalFilePercorsoManager {
         nomeMuseo = nomeMuseo.substring(0,1).toUpperCase() + nomeMuseo.substring(1).toLowerCase();
         nomeStanza = nomeStanza.substring(0,1).toUpperCase() + nomeStanza.substring(1).toLowerCase();
         nomeOpera = nomeOpera.substring(0,1).toUpperCase() + nomeOpera.substring(1).toLowerCase();
-        this.pathOperaForGames = Paths.get(generalPath, nomeMuseo, "Stanze", nomeStanza, nomeOpera);
+        pathOperaForGames = Paths.get(generalPath, nomeMuseo, "Stanze", nomeStanza, nomeOpera);
     }
 
     public boolean existsQuiz() {
@@ -114,9 +114,9 @@ public class LocalFileGamesManager extends LocalFilePercorsoManager {
      * @return true se l'opera ha il gioco, false altrimenti
      */
     public boolean existsSpotTheDifference() {
-        final File quizDir = new File(Paths.get(pathOperaForGames.toString(), "spotTheDifference").toString());
-        if (quizDir.exists()) {
-            final File quizConfigFile = new File(Paths.get(quizDir.toPath().toString(), "configuration.json").toString());
+        final File spotTheDifferenceDir = new File(Paths.get(pathOperaForGames.toString(), "spotTheDifference").toString());
+        if (spotTheDifferenceDir.exists()) {
+            final File quizConfigFile = new File(Paths.get(spotTheDifferenceDir.toPath().toString(), "configuration.json").toString());
             return quizConfigFile.exists();
         }
         return false;

@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.database.CacheGames;
+import it.uniba.sms2122.tourexperience.database.GameTypes;
 import it.uniba.sms2122.tourexperience.games.SpotDifference.SpotDifferences;
 import it.uniba.sms2122.tourexperience.percorso.ImageAndDescriptionFragment;
 import it.uniba.sms2122.tourexperience.model.Opera;
@@ -71,7 +73,7 @@ public class OperaFragment extends Fragment {
             this.nomeMuseo = bundle.getString(NOME_MUSEO);
             this.nomeStanza = bundle.getString(NOME_STANZA);
         }
-        //setActionBar(opera.getNome());
+        setActionBar(opera.getNome());
         FragmentManager fragmentManager = getParentFragmentManager();
         ImageAndDescriptionFragment fragment = new ImageAndDescriptionFragment(opera.getPercorsoImg(), opera.getDescrizione());
         fragmentManager.beginTransaction()

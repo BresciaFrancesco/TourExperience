@@ -24,4 +24,8 @@ public class Testo {
     public String value() {
         return value;
     }
+
+    public static String getRegexPattern() {
+        return REGEX_PATTERN;
+    }
 }

@@ -40,8 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/item_museo_end"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginHorizontal="10dp">
 
         <Button
             android:id="@+id/end_quiz"
@@ -67,7 +66,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="170dp"
+        android:layout_marginTop="150dp"
         app:layout_constraintTop_toBottomOf="@id/votePath">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -102,7 +101,7 @@
                         android:layout_marginTop="5dp"
                         android:text="@string/question_1"
                         android:textColor="@color/black"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                     <RatingBar
                         android:id="@+id/ratingBar"
@@ -141,13 +140,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="5dp"
                         android:layout_marginTop="5dp"
-                        android:text="@string/question_1"
+                        android:text="@string/question_2"
                         android:textColor="@color/black"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                     <RadioGroup
                         android:id="@+id/radio_group_question_2"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -158,14 +157,14 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/radio_question2_id1"
                             android:text="@string/yes"
-                            android:textSize="18dp"/>
+                            android:textSize="18sp"/>
 
                         <RadioButton
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/radio_question2_id2"
                             android:text="@string/no"
-                            android:textSize="18dp"/>
+                            android:textSize="18sp"/>
                     </RadioGroup>
                 </LinearLayout>
 
@@ -196,13 +195,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="5dp"
                         android:layout_marginTop="5dp"
-                        android:text="@string/question_1"
+                        android:text="@string/question_3"
                         android:textColor="@color/black"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                     <RadioGroup
                         android:id="@+id/radio_group_question_3"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -213,14 +212,14 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/radio_question3_id1"
                             android:text="@string/yes"
-                            android:textSize="18dp"/>
+                            android:textSize="18sp"/>
 
                         <RadioButton
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/radio_question3_id2"
                             android:text="@string/no"
-                            android:textSize="18dp"/>
+                            android:textSize="18sp"/>
                     </RadioGroup>
                 </LinearLayout>
 
@@ -251,44 +250,44 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="5dp"
                         android:layout_marginTop="5dp"
-                        android:text="@string/question_1"
+                        android:text="@string/question_4"
                         android:textColor="@color/black"
-                        android:textSize="20dp" />
+                        android:textSize="20sp" />
 
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/checkbox_question4_id1"
                         android:text="@string/fun"
-                        android:textSize="18dp"/>
+                        android:textSize="18sp"/>
 
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/checkbox_question4_id2"
                         android:text="@string/boring"
-                        android:textSize="18dp"/>
+                        android:textSize="18sp"/>
 
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/checkbox_question4_id3"
                         android:text="@string/original"
-                        android:textSize="18dp"/>
+                        android:textSize="18sp"/>
 
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/checkbox_question4_id4"
                         android:text="@string/lively"
-                        android:textSize="18dp"/>
+                        android:textSize="18sp"/>
 
                     <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/checkbox_question4_id5"
                         android:text="@string/monotonous"
-                        android:textSize="18dp"/>
+                        android:textSize="18sp"/>
 
                 </LinearLayout>
 

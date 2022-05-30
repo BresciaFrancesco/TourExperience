@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:fontFamily="sans-serif-light"
-        android:text="Descrizione..."
+        android:text="@string/description"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="18sp"

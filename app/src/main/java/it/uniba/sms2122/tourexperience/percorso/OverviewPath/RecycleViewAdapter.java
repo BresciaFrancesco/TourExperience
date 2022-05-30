@@ -2,7 +2,6 @@ package it.uniba.sms2122.tourexperience.percorso.OverviewPath;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +18,9 @@ import it.uniba.sms2122.tourexperience.R;
 
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder> {
 
-    private Context context;
-    private ArrayList<String> names;
-    private ArrayList<String> images;
+    private final Context context;
+    private final ArrayList<String> names;
+    private final ArrayList<String> images;
 
     public RecycleViewAdapter(Context context, ArrayList<String> names, ArrayList<String> images) {
         this.context = context;

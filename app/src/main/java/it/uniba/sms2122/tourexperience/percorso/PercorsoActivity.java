@@ -1,61 +1,40 @@
 package it.uniba.sms2122.tourexperience.percorso;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import android.Manifest;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
-import android.view.MenuItem;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
-import it.uniba.sms2122.tourexperience.percorso.fine_percorso.FinePercorsoFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_museo.MuseoFragment;
 import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
-import it.uniba.sms2122.tourexperience.percorso.stanze.SceltaStanzeFragment;
-import it.uniba.sms2122.tourexperience.registration.RegistrationFragmentSecondPage;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
-import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
-
-import java.io.File;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PercorsoActivity extends AppCompatActivity {
 
 
-    FragmentManagerOfPercorsoActivity fgManagerOfPercorso;
-
-    Permesso permission;
+    private FragmentManagerOfPercorsoActivity fgManagerOfPercorso;
+    private Permesso permission;
     private PermissionGrantedManager actionPerfom;
 
     private String nomeMuseo;
-    private String nomePercorso;
-
-    public LocalFilePercorsoManager getLocalFilePercorsoManager() {
-        return localFilePercorsoManager;
-    }
 
     protected LocalFilePercorsoManager localFilePercorsoManager;
     private LocalFileMuseoManager localFileMuseoManager;
@@ -70,15 +49,14 @@ public class PercorsoActivity extends AppCompatActivity {
         return fgManagerOfPercorso;
     }
 
-    /**
-     * Funzione che imposta il valore dell'attributo path ogni volta che viene selezionato un
-     * determinato percoso all'interno della lista percosi relativi ad un determinato museo
-     */
-    protected void setValuePath() throws IllegalArgumentException {
+    public LocalFilePercorsoManager getLocalFilePercorsoManager() {
+        return localFilePercorsoManager;
+    }
+
+    public void setValuePath(String nomePercorso) throws IllegalArgumentException {
         path = localFilePercorsoManager.getPercorso(nomeMuseo, nomePercorso);
         localFilePercorsoManager.createStanzeAndOpereInThisAndNextStanze(path);
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +64,7 @@ public class PercorsoActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_percorso);
         try {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -108,7 +86,24 @@ public class PercorsoActivity extends AppCompatActivity {
         try {
             if(getSupportFragmentManager().getBackStackEntryCount() != 0){
                 String fragmentTag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
+                assert fragmentTag != null;
                 if (fragmentTag.equals("sceltaStanzeFragment")){
+                    flag = true;
+                }
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
+    private boolean lastFragmentIsFinePercorsoFragment() {
+        boolean flag = false;
+        try {
+            if(getSupportFragmentManager().getBackStackEntryCount() != 0){
+                String fragmentTag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
+                assert fragmentTag != null;
+                if (fragmentTag.equals("finePercorsoFragment")){
                     flag = true;
                 }
             }
@@ -145,35 +140,31 @@ public class PercorsoActivity extends AppCompatActivity {
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container_fragments_route);
 
-        if(!lastFragmentIsSceltaStanzeFragment()){
-            if (fragment instanceof StanzaFragment) {
-                ((StanzaFragment) fragment).unBindService();
-            }
-            if(getSupportFragmentManager().getBackStackEntryCount() < 2){
-                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            }
-            super.onBackPressed();
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-        } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.interrupt);
-            builder.setTitle(R.string.attention);
-            builder.setIcon(R.drawable.ic_baseline_error_24);
-
-            builder.setCancelable(false);
-            builder.setPositiveButton(R.string.SI, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    endPath();
+        if(!lastFragmentIsFinePercorsoFragment()){
+            if(!lastFragmentIsSceltaStanzeFragment()){
+                if (fragment instanceof StanzaFragment) {
+                    ((StanzaFragment) fragment).unBindService();
                 }
-            });
+                if(getSupportFragmentManager().getBackStackEntryCount() < 2){
+                    getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+                super.onBackPressed();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.interrupt);
+                builder.setTitle(R.string.attention);
+                builder.setIcon(R.drawable.ic_baseline_error_24);
 
-            builder.setNegativeButton(R.string.NO, null);
+                builder.setCancelable(false);
+                builder.setPositiveButton(R.string.SI, (dialogInterface, i) -> endPath());
 
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
+                builder.setNegativeButton(R.string.NO, null);
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
         }
-
     }
 
     /**
@@ -222,12 +213,11 @@ public class PercorsoActivity extends AppCompatActivity {
 
         outState.putSerializable("path", gson.toJson(this.path));
         outState.putString("nomeMuseo", this.nomeMuseo);
-        outState.putString("nomePercorso", this.nomePercorso);
     }
 
     /**
      * Ripristina i dati dopo la distruzione dell'istanza da parte di android.
-     * @param savedInstanceState
+     * @param savedInstanceState, bundle per il ripristiono dello stato
      * @return true se il ripristino è stato eseguito, false altrimenti.
      */
     private boolean ripristino(final Bundle savedInstanceState) {
@@ -235,12 +225,10 @@ public class PercorsoActivity extends AppCompatActivity {
             return false;
         final Percorso tmpPath = new Gson().fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
         final String tmpNomeMuseo = savedInstanceState.getString("nomeMuseo");
-        final String tmpNomePercorso = savedInstanceState.getString("nomePercorso");
-        if (tmpNomeMuseo == null || tmpNomeMuseo.isEmpty() || tmpPath == null || tmpNomePercorso == null)
+        if (tmpNomeMuseo == null || tmpNomeMuseo.isEmpty() || tmpPath == null )
             return false;
         path = tmpPath;
         nomeMuseo = tmpNomeMuseo;
-        nomePercorso = tmpNomePercorso;
         return true;
     }
 
@@ -266,16 +254,8 @@ public class PercorsoActivity extends AppCompatActivity {
         this.nomeMuseo = nomeMuseo;
     }
 
-    public void setNomePercorso(String nomePercorso) {
-        this.nomePercorso = nomePercorso;
-    }
-
     public String getNomeMuseo() {
         return nomeMuseo;
-    }
-
-    public String getNomePercorso() {
-        return nomePercorso;
     }
 
     public Percorso getPath() {

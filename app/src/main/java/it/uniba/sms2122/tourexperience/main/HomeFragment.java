@@ -68,7 +68,7 @@ public class HomeFragment extends Fragment {
                 (String errorMsg) -> {}
         );
 
-        autoCompleteTextView = (AutoCompleteTextView) view.findViewById(R.id.autocomplete);
+        autoCompleteTextView = view.findViewById(R.id.autocomplete);
         // setThreshold() is used to specify the number of characters after which
         // the dropdown with the autocomplete suggestions list would be displayed.
         autoCompleteTextView.setThreshold(1);
@@ -90,25 +90,19 @@ public class HomeFragment extends Fragment {
         classificaVoti = view.findViewById(R.id.classifica_voti);
         classificaVisitati = view.findViewById(R.id.classifica_visitai);
 
-        classificaVoti.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(((MainActivity)getActivity()).checkConnectivityForRanking()){
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("ranking", 1);
-                    ((MainActivity) HomeFragment.this.getActivity()).replaceRankingFragment(bundle);
-                }
+        classificaVoti.setOnClickListener(view1 -> {
+            if(((MainActivity)requireActivity()).checkConnectivityForRanking()){
+                Bundle bundle = new Bundle();
+                bundle.putInt("ranking", 1);
+                ((MainActivity) requireActivity()).replaceRankingFragment(bundle);
             }
         });
 
-        classificaVisitati.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(((MainActivity)getActivity()).checkConnectivityForRanking()) {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("ranking", 2);
-                    ((MainActivity) HomeFragment.this.getActivity()).replaceRankingFragment(bundle);
-                }
+        classificaVisitati.setOnClickListener(view12 -> {
+            if(((MainActivity)requireActivity()).checkConnectivityForRanking()) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("ranking", 2);
+                ((MainActivity) requireActivity()).replaceRankingFragment(bundle);
             }
         });
 
@@ -133,18 +127,18 @@ public class HomeFragment extends Fragment {
                 arrayList.add(tipologia);
             }
 
-            SearchAdapter adapter = new SearchAdapter(getContext(), arrayList);
+            SearchAdapter adapter = new SearchAdapter(requireContext(), arrayList);
 
             autoCompleteTextView.setAdapter(adapter);
 
             autoCompleteTextView.setOnItemClickListener((adapterView, view, i, l) -> {
                 String string = autoCompleteTextView.getText().toString();
 
-                if(!string.equals(getContext().getResources().getString(R.string.no_result_1)
-                        + "\n" + getContext().getResources().getString(R.string.no_result_2))){
+                if(!string.equals(requireContext().getResources().getString(R.string.no_result_1)
+                        + "\n" + requireContext().getResources().getString(R.string.no_result_2))){
                     Bundle bundle = new Bundle();
                     bundle.putString("search", string);
-                    ((MainActivity) HomeFragment.this.getActivity()).replaceSceltaMuseiFragment(bundle);
+                    ((MainActivity) requireActivity()).replaceSceltaMuseiFragment(bundle);
                     autoCompleteTextView.setText(R.string.empty_phrase);
                 } else {
                     autoCompleteTextView.setText(R.string.empty_phrase);

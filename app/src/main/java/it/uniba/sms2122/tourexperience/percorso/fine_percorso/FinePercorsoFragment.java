@@ -3,7 +3,6 @@ package it.uniba.sms2122.tourexperience.percorso.fine_percorso;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getMuseoByName;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -29,8 +28,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -38,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.cache.CacheMuseums;
@@ -91,31 +89,32 @@ public class FinePercorsoFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        parent = (PercorsoActivity) getActivity();
-        parent.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        parent = (PercorsoActivity) requireActivity();
+        assert parent != null;
+        Objects.requireNonNull(parent.getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
 
-        radioGroupQuestion2 = (RadioGroup) view.findViewById(R.id.radio_group_question_2);
-        radioGroupQuestion3 = (RadioGroup) view.findViewById(R.id.radio_group_question_3);
+        radioGroupQuestion2 = view.findViewById(R.id.radio_group_question_2);
+        radioGroupQuestion3 = view.findViewById(R.id.radio_group_question_3);
 
-        checkBox1 = (CheckBox) view.findViewById(R.id.checkbox_question4_id1);
-        checkBox2 = (CheckBox) view.findViewById(R.id.checkbox_question4_id2);
-        checkBox3 = (CheckBox) view.findViewById(R.id.checkbox_question4_id3);
-        checkBox4 = (CheckBox) view.findViewById(R.id.checkbox_question4_id4);
-        checkBox5 = (CheckBox) view.findViewById(R.id.checkbox_question4_id5);
+        checkBox1 = view.findViewById(R.id.checkbox_question4_id1);
+        checkBox2 = view.findViewById(R.id.checkbox_question4_id2);
+        checkBox3 = view.findViewById(R.id.checkbox_question4_id3);
+        checkBox4 = view.findViewById(R.id.checkbox_question4_id4);
+        checkBox5 = view.findViewById(R.id.checkbox_question4_id5);
 
-        textView = (TextView) view.findViewById(R.id.nome_item_museo_end);
-        imageView = (ImageView) view.findViewById(R.id.icona_item_museo_end);
+        textView = view.findViewById(R.id.nome_item_museo_end);
+        imageView = view.findViewById(R.id.icona_item_museo_end);
 
-        ratingBar = (RatingBar) view.findViewById(R.id.ratingBar);
+        ratingBar = view.findViewById(R.id.ratingBar);
         LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
         stars.getDrawable(1).setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_ATOP);
 
-        buttonVote = (Button) view.findViewById(R.id.end_quiz);
-        buttonSkip = (Button) view.findViewById(R.id.skip_quiz);
+        buttonVote = view.findViewById(R.id.end_quiz);
+        buttonSkip = view.findViewById(R.id.skip_quiz);
 
         if (savedInstanceState == null) {
             nomeMuseo = parent.getNomeMuseo();
-            nomePercorso = parent.getNomePercorso();
+            nomePercorso = parent.getPath().getNomePercorso();
         } else {
             this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
             this.nomePercorso = savedInstanceState.getString("nomePercorso");
@@ -124,7 +123,7 @@ public class FinePercorsoFragment extends Fragment {
                 nomeMuseo = parent.getNomeMuseo();
             }
             if (this.nomePercorso == null) {
-                nomePercorso = parent.getNomePercorso();
+                nomePercorso = parent.getPath().getNomePercorso();
             }
         }
 
@@ -169,7 +168,7 @@ public class FinePercorsoFragment extends Fragment {
             case R.id.shareItem:
                 if(isQuizComplete()){
                     writeFileShare();
-                    Uri uri = FileProvider.getUriForFile(getContext(), "it.uniba.sms2122.tourexperience.fileprovider", fileShare.getTxt());
+                    Uri uri = FileProvider.getUriForFile(requireContext(), "it.uniba.sms2122.tourexperience.fileprovider", fileShare.getTxt());
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
                     sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
@@ -178,7 +177,7 @@ public class FinePercorsoFragment extends Fragment {
                     Intent shareIntent = Intent.createChooser(sendIntent, null);
                     startActivity(shareIntent);
                 } else {
-                    Toast.makeText(getContext(), getContext().getString(R.string.quiz_non_completato), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), requireContext().getString(R.string.quiz_non_completato), Toast.LENGTH_SHORT).show();
                 }
                 return true;
             default:
@@ -190,7 +189,7 @@ public class FinePercorsoFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        File txtsFolder = LocalFileManager.createLocalDirectoryIfNotExists(getActivity().getFilesDir(), "txts");
+        File txtsFolder = LocalFileManager.createLocalDirectoryIfNotExists(requireActivity().getFilesDir(), "txts");
         File txt = new File (txtsFolder, "form.txt");
 
         if(txt.exists())
@@ -205,7 +204,7 @@ public class FinePercorsoFragment extends Fragment {
 
         if(savedInstanceState != null){
             try{
-                imageView.setImageURI(Uri.parse(CacheMuseums.cacheMuseums.get(nomeMuseo).getFileUri()));
+                imageView.setImageURI(Uri.parse(Objects.requireNonNull(CacheMuseums.cacheMuseums.get(nomeMuseo)).getFileUri()));
             } catch (NullPointerException e){
                 e.printStackTrace();
             }
@@ -222,8 +221,6 @@ public class FinePercorsoFragment extends Fragment {
             answer = getString(R.string.no);
 
         fileShare.writeToFile(getString(R.string.question_2) + "\n" + answer + "\n\n");
-
-        System.out.println(radioGroupQuestion2.getCheckedRadioButtonId());
 
         if(radioGroupQuestion2.getCheckedRadioButtonId() == R.id.radio_question3_id1)
             answer = getString(R.string.yes);
@@ -249,7 +246,7 @@ public class FinePercorsoFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        parent.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(parent.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
     public Bundle getSavedInstanceState() {
@@ -265,95 +262,67 @@ public class FinePercorsoFragment extends Fragment {
     }
 
     private void buttonSkipSetOnClickListener() {
-        buttonSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                parent.endPath();
-                if(checkConnectivity())
-                    increaseNumeroStarts();
-            }
+        buttonSkip.setOnClickListener(view -> {
+            parent.endPath();
+            if(checkConnectivity())
+                increaseNumeroStarts();
         });
     }
     
     private void buttonVoteSetOnClickListener() {
-        buttonVote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        buttonVote.setOnClickListener(view -> NetworkConnectivity.check(isConnected -> {
+            if (!isConnected) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage(R.string.msg_attention);
+                builder.setTitle(R.string.attention);
+                builder.setIcon(R.drawable.ic_baseline_error_24);
 
-                NetworkConnectivity.check(isConnected -> {
-                    if (!isConnected) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setMessage(R.string.msg_attention);
-                        builder.setTitle(R.string.attention);
-                        builder.setIcon(R.drawable.ic_baseline_error_24);
+                builder.setCancelable(false);
+                builder.setPositiveButton("Ok", (dialogInterface, i) -> parent.endPath());
 
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                builder.setNegativeButton(R.string.try_again, (dialogInterface, i) -> dialogInterface.cancel());
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+            }else {
+                if (isQuizComplete()){
+                    String result = String.valueOf(ratingBar.getRating());
+                    snapshotVoti.addOnSuccessListener(dataSnapshot -> {
+                        String voti = dataSnapshot.getValue(String.class);
+
+                        assert voti != null;
+                        if (voti.equals("-1"))
+                            voti = result;
+                        else
+                            voti = voti.concat(";" + result);
+                        db.child("Voti").setValue(voti).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getContext(), R.string.path_end_success, Toast.LENGTH_LONG).show();
                                 parent.endPath();
+                            } else {
+                                Toast.makeText(getContext(), R.string.path_end_fail, Toast.LENGTH_LONG).show();
                             }
                         });
-
-                        builder.setNegativeButton(R.string.try_again, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        });
-
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
-
-                        return;
-                    }else {
-                        if (isQuizComplete()){
-                            String result = String.valueOf(ratingBar.getRating());
-                            snapshotVoti.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                @Override
-                                public void onSuccess(DataSnapshot dataSnapshot) {
-                                    String voti = dataSnapshot.getValue(String.class);
-
-                                    if (voti.equals("-1"))
-                                        voti = result;
-                                    else
-                                        voti = voti.concat(";" + result);
-                                    db.child("Voti").setValue(voti).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(getContext(), R.string.path_end_success, Toast.LENGTH_LONG).show();
-                                                parent.endPath();
-                                            } else {
-                                                Toast.makeText(getContext(), R.string.path_end_fail, Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                            increaseNumeroStarts();
-                        } else {
-                            Toast.makeText(getContext(), getContext().getString(R.string.quiz_non_completato), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                    });
+                    increaseNumeroStarts();
+                } else {
+                    Toast.makeText(getContext(), requireContext().getString(R.string.quiz_non_completato), Toast.LENGTH_SHORT).show();
+                }
             }
-        });
+        }));
     }
 
     private void increaseNumeroStarts() {
-        snapshotNumStarts.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                Integer numStarts = dataSnapshot.getValue(Integer.class);
-                numStarts++;
-                db.child("Numero_starts").setValue(numStarts);
-            }
+        snapshotNumStarts.addOnSuccessListener(dataSnapshot -> {
+            Integer numStarts = dataSnapshot.getValue(Integer.class);
+            numStarts++;
+            db.child("Numero_starts").setValue(numStarts);
         });
     }
 
     public boolean checkConnectivity() {
-        if (NetworkConnectivity.check(getContext())) {
+        if (NetworkConnectivity.check(requireContext())) {
             db = FirebaseDatabase.getInstance().getReference("Museums").child(nomeMuseo).child(nomePercorso);
             snapshotVoti = db.child("Voti").get();
             snapshotNumStarts = db.child("Numero_starts").get();

@@ -135,7 +135,7 @@
     <string name="msg_share">Hey, guarda che percorso ho fatto</string>
     <string name="try_again">Riprova</string>
     <string name="attention">Attenzione !</string>
-    <string name="msg_attention">Non è stato possibile registrare la tua votazione poichè non è presente connessione ad internet</string>
+    <string name="msg_attention">Non è stato possibile registrare la tua votazione poiché non è presente connessione ad internet</string>
     <string name="title_classifica_voti">Migliori percorsi</string>
     <string name="description_classifica_voti">Classifica dei percorsi presenti all\'interno dell\'applicazione che hanno avuto una migliore recensione da parte dei vari utenti che li hanno svolti</string>
     <string name="title_classifica_visitati">Percorsi più visitati</string>
@@ -175,6 +175,7 @@
     <string name="operas_close_to_you">Opere vicino a te</string>
     <string name="profile_pic_alert_title">Vuoi accedere o registrarti?</string>
     <string name="profile_pic_alert_message">Accedi o registrati a TourExperience per valutare i percorsi che più ti piacciono e accedere a tante funzionalità esclusive!</string>
+    <string name="question_end_path">Questa è la stanza finale del percorso, vuoi terminare il percorso o continuare?</string>
 
     <!--Domande e risposte relative al questionario finale-->
     <string name="question_1">Dai una valutazione al percorso</string>
@@ -192,4 +193,5 @@
     <string name="monotonous">Monotono</string>
 
     <string name="spot_the_difference_title_game">Trova le differenze</string>
+    <string name="description">Descrizione...</string>
 </resources>

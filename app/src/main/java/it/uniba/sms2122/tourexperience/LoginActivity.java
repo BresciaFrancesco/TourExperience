@@ -1,8 +1,5 @@
 package it.uniba.sms2122.tourexperience;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -11,8 +8,13 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.registration.CheckCredentials;
@@ -41,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         checker = new CheckCredentials();
 
         actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(R.string.login);
 
@@ -49,8 +52,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setOnClickListenerLoginBtn() {
         loginBtn.setOnClickListener(view -> {
-            String email = emailEdit.getText().toString();
-            String password = passwordEdit.getText().toString();
+            String email = Objects.requireNonNull(emailEdit.getText()).toString();
+            String password = Objects.requireNonNull(passwordEdit.getText()).toString();
 
             if(checker.checkEmail(emailEdit,LoginActivity.this) && checker.checkPassword(passwordEdit,LoginActivity.this)) {
                 progressBar.setVisibility(View.VISIBLE);

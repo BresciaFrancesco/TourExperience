@@ -1,13 +1,8 @@
 package it.uniba.sms2122.tourexperience.profile;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
 import android.view.Gravity;
@@ -20,13 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.HashMap;
 import java.util.Map;
 
-
 import it.uniba.sms2122.tourexperience.FirstActivity;
 import it.uniba.sms2122.tourexperience.R;
-
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.model.User;
 
@@ -56,9 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
         //prendo l'utente attualmente loggato
         userHolder = UserHolder.getInstance();
         userHolder.getUser(
-                (user) -> {
-                    userIstance = user;
-                },
+                (user) -> userIstance = user,
                 (String errorMsg) -> {}
         );
 
@@ -85,13 +79,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         ImageView profileDataPickerBtn = findViewById(R.id.profileDataPickerBtn);
 
-        profileDataPickerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        profileDataPickerBtn.setOnClickListener(view -> {
 
-                DialogFragment datePicker = new ProfileDataPicker();
-                datePicker.show(getFragmentManager(), "datePicker");
-            }
+            DialogFragment datePicker = new ProfileDataPicker();
+            datePicker.show(getFragmentManager(), "datePicker");
         });
 
     }
@@ -101,13 +92,10 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private void setClickListenerOnLogoutButton() {
 
-        findViewById(R.id.btnLogout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userHolder.logout();
-                startActivity(new Intent(ProfileActivity.this, FirstActivity.class));
-                finish();
-            }
+        findViewById(R.id.btnLogout).setOnClickListener(view -> {
+            userHolder.logout();
+            startActivity(new Intent(ProfileActivity.this, FirstActivity.class));
+            finish();
         });
     }
 
@@ -123,43 +111,37 @@ public class ProfileActivity extends AppCompatActivity {
 
         profileDataModifyButton = findViewById(R.id.btnModify);
 
-        profileDataModifyButton.setOnClickListener(new View.OnClickListener() {
+        profileDataModifyButton.setOnClickListener(view -> {
 
-            @Override
-            public void onClick(View view) {
+            if (profileDataModifyButton.getText() == getString(R.string.modifyProfile)) {//click per modificare
 
-                if (profileDataModifyButton.getText() == getString(R.string.modifyProfile)) {//click per modificare
+                saveOldProfileDataGui();
+                profileDataModifyButton.setText(getString(R.string.confirmModifyProfile));
+                setProfileDataFieldEnable();
 
-                    saveOldProfileDataGui();
-                    profileDataModifyButton.setText(getString(R.string.confirmModifyProfile));
-                    setProfileDataFieldEnable();
+            } else if (profileDataModifyButton.getText() == getString(R.string.confirmModifyProfile)) {//click per confermare le modifiche
 
-                } else if (profileDataModifyButton.getText() == getString(R.string.confirmModifyProfile)) {//click per confermare le modifiche
+                if (validateChangedData()) {
 
-                    if (validateChangedData()) {
-
-                        showConfirmPasswordAlertDialog(getString(R.string.insert_password_for_confirm_title), getString(R.string.insert_password_for_confirm_body));
-                        profileDataModifyButton.setText(getString(R.string.modifyProfile));
-                        setProfileDataFieldDisabled();
-                    }
-
-
+                    showConfirmPasswordAlertDialog(getString(R.string.insert_password_for_confirm_title), getString(R.string.insert_password_for_confirm_body));
+                    profileDataModifyButton.setText(getString(R.string.modifyProfile));
+                    setProfileDataFieldDisabled();
                 }
 
 
             }
+
+
         });
     }
 
 
     /**
      * funzione che si occupa di leggere i dati attualmente presenti sul profilo cosi de eventualemente ripristinari in seguito e erroir di modifica
-     *
-     * @return i nuovi dati modificati dall'utent
      */
     private void saveOldProfileDataGui() {
 
-        oldDataGui = new HashMap<String, String>();
+        oldDataGui = new HashMap<>();
 
         oldDataGui.put("email", ((EditText) findViewById(R.id.editFieldEmail)).getText().toString());
         oldDataGui.put("name", ((EditText) findViewById(R.id.editFieldName)).getText().toString());
@@ -224,25 +206,25 @@ public class ProfileActivity extends AppCompatActivity {
 
         EditText emailEditField = findViewById(R.id.editFieldEmail);
         flag = ProfileDataChangeValidation.validateEmail(emailEditField, getString(R.string.email_not_valid));
-        if (flag == false) {
+        if (!flag) {
             return false;
         }
 
         EditText nameEditField = findViewById(R.id.editFieldName);
         flag = ProfileDataChangeValidation.validateGenericText(nameEditField, getString(R.string.name_not_valid));
-        if (flag == false) {
+        if (!flag) {
             return false;
         }
 
         EditText surnameEditField = findViewById(R.id.editFieldSurname);
         flag = ProfileDataChangeValidation.validateGenericText(surnameEditField, getString(R.string.surname_not_valid));
-        if (flag == false) {
+        if (!flag) {
             return false;
         }
 
         EditText birthDateEditField = findViewById(R.id.editFieldBirth);
         flag = ProfileDataChangeValidation.validateDate(birthDateEditField, getString(R.string.bithDate_not_valid));
-        if (flag == false) {
+        if (!flag) {
             return false;
         }
 
@@ -256,14 +238,14 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private HashMap<String, String> getNewProfileData() {
 
-        Map<String, String> newData = new HashMap<String, String>();
+        HashMap<String, String> newData = new HashMap<>();
 
         newData.put("email", ((EditText) findViewById(R.id.editFieldEmail)).getText().toString());
         newData.put("name", ((EditText) findViewById(R.id.editFieldName)).getText().toString());
         newData.put("surname", ((EditText) findViewById(R.id.editFieldSurname)).getText().toString());
         newData.put("birthDate", ((EditText) findViewById(R.id.editFieldBirth)).getText().toString());
 
-        return (HashMap<String, String>) newData;
+        return newData;
 
     }
 
@@ -324,16 +306,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         alert.setView(inputPassword);
 
-        alert.setPositiveButton(R.string.insert_password_for_confirm_button, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
+        alert.setPositiveButton(R.string.insert_password_for_confirm_button, (dialog, whichButton) -> {
 
-                if (!TextUtils.isEmpty(inputPassword.getText())) {
-                    UserPasswordManager.setPassword(inputPassword.getText().toString());
-                    updateProfileData(getNewProfileData());
-                } else {
-                    showConfirmPasswordAlertDialog(getString(R.string.password_required), getString(R.string.insert_password_for_confirm_body));
+            if (!TextUtils.isEmpty(inputPassword.getText())) {
+                UserPasswordManager.setPassword(inputPassword.getText().toString());
+                updateProfileData(getNewProfileData());
+            } else {
+                showConfirmPasswordAlertDialog(getString(R.string.password_required), getString(R.string.insert_password_for_confirm_body));
 
-                }
             }
         });
 

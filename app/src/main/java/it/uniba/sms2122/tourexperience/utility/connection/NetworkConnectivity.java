@@ -1,8 +1,5 @@
 package it.uniba.sms2122.tourexperience.utility.connection;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.net.URL;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -10,7 +7,10 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 
-import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
+
 import it.uniba.sms2122.tourexperience.utility.AppExecutors;
 
 /**

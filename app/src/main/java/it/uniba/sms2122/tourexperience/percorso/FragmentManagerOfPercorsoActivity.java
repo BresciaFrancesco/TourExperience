@@ -1,12 +1,10 @@
 package it.uniba.sms2122.tourexperience.percorso;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -14,14 +12,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
-
-import java.util.Map;
 
 import it.uniba.sms2122.tourexperience.QRscanner.QRScannerFragment;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
-import it.uniba.sms2122.tourexperience.model.Opera;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.percorso.OverviewPath.OverviewPathFragment;
 import it.uniba.sms2122.tourexperience.percorso.fine_percorso.FinePercorsoFragment;
@@ -45,15 +39,10 @@ public class FragmentManagerOfPercorsoActivity {
      *
      * @param bundle, contiene il nome del percorso di cui si deve visualizzare la descrizione
      */
-    public void nextPercorsoFragment(Bundle bundle) {
+    public void nextPercorsoFragment() {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         try {
             Fragment secondPage = new OverviewPathFragment();
-            percorsoActivity.setNomePercorso(bundle.getString("nome_percorso"));
-            secondPage.setArguments(bundle);
-
-            percorsoActivity.setValuePath();
-
             createFragment(secondPage, "overviewFragment");
         } catch (IllegalArgumentException e) {
             Log.e("PercorsoActivity.class", "nextPercorsoFragment -> IllegalArgumentException sollevata.");
@@ -121,22 +110,16 @@ public class FragmentManagerOfPercorsoActivity {
                 alert.setTitle(percorsoActivity.getString(R.string.error_room_title));
                 alert.setMessage(percorsoActivity.getString(R.string.error_room_body));
                 alert.setCancelable(true);
-                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
+                alert.setPositiveButton("OK", (dialogInterface, i) -> dialogInterface.dismiss());
                 alert.show();
             }
         });
 
-        percorsoActivity.setActionPerfom(() -> {
-            percorsoActivity.getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.scannerFrag, qrScanner, null)
-                    .commit();
-        });
+        percorsoActivity.setActionPerfom(() -> percorsoActivity.getSupportFragmentManager()
+                .beginTransaction()
+                .setReorderingAllowed(true)
+                .add(R.id.scannerFrag, qrScanner, null)
+                .commit());
 
         percorsoActivity.checkCameraPermission();
     }
@@ -230,8 +213,8 @@ public class FragmentManagerOfPercorsoActivity {
     /**
      * Riuso del codice per creare ed istanziare un fragment
      *
-     * @param fragment
-     * @param fragmentName
+     * @param fragment, nuovo fragment da inserire all'0interno dell'activity al posto del precedente
+     * @param fragmentName, tag relativo al nuovo fragment
      */
     protected void createFragment(Fragment fragment, String fragmentName) {
         FragmentTransaction transaction = percorsoActivity.getSupportFragmentManager().beginTransaction();

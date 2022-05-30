@@ -180,6 +180,7 @@
     <string name="operas_close_to_you">Operas close to you</string>
     <string name="profile_pic_alert_title">Do you want to login or sign up?</string>
     <string name="profile_pic_alert_message">Log in or register on TourExperience to evaluate the routes you like best and access many exclusive features!</string>
+    <string name="question_end_path">This is the final room of the path, do you want to finish the path or continue?</string>
 
     <!--Domande e risposte relative al questionario finale-->
     <string name="question_1">Provide a review of the path</string>
@@ -197,4 +198,5 @@
     <string name="monotonous">Monotonous</string>
 
     <string name="spot_the_difference_title_game">Trova le differenze</string>
+    <string name="description">Description...</string>
 </resources>

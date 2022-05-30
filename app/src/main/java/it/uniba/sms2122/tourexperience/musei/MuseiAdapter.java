@@ -1,5 +1,8 @@
 package it.uniba.sms2122.tourexperience.musei;
 
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cacheMuseums;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
+
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -23,12 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
-
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
-
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
 
 
 public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> implements Filterable {
@@ -194,12 +194,10 @@ public class MuseiAdapter extends RecyclerView.Adapter<MuseiAdapter.ViewHolder> 
                 .setMessage(context.getString(R.string.importa_msg)
                         + " " + percorso0_museo1[1].trim() + "?")
                 .setIcon(R.drawable.ic_baseline_cloud_download_24)
-                .setPositiveButton(context.getString(R.string.SI), (dialog, whichButton) -> {
-                    new ImportPercorsi(view.getContext()).downloadMuseoPercorso(
-                            percorso0_museo1[0],
-                            percorso0_museo1[1]
-                    );
-                }).setNegativeButton(context.getString(R.string.NO), null).show();
+                .setPositiveButton(context.getString(R.string.SI), (dialog, whichButton) -> new ImportPercorsi(view.getContext()).downloadMuseoPercorso(
+                        percorso0_museo1[0],
+                        percorso0_museo1[1]
+                )).setNegativeButton(context.getString(R.string.NO), null).show();
         }
 
         /**

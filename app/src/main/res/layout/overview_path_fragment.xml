@@ -7,12 +7,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:orientation="vertical"
             android:layout_weight="2"
             android:padding="25dp"
@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="pathName"
-                android:textSize="25dp"
+                android:textSize="25sp"
                 android:textColor="@color/main_blue"/>
 
             <TextView
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:text="pathDescription"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textColor="@color/black"/>
 
             <LinearLayout
@@ -45,7 +45,6 @@
                     android:id="@+id/scorePath"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
-                    android:layout_below="@+id/pathDescription"
                     android:layout_marginTop="15dp"
                     android:isIndicator="true"
                     android:numStars="5"
@@ -55,7 +54,6 @@
                     android:id="@+id/txtScorePath"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/pathDescription"
                     android:layout_marginStart="18dp"
                     android:layout_marginTop="20dp"
                     android:textSize="25sp" />

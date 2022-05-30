@@ -1,8 +1,5 @@
 package it.uniba.sms2122.tourexperience.profile;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.view.View;
 import android.widget.EditText;
 
 import java.util.regex.Pattern;

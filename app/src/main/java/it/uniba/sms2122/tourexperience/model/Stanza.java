@@ -64,6 +64,16 @@ public class Stanza {
         return notNull(opere.get(idOpera));
     }
 
+    @Override
+    public String toString() {
+        return "Stanza{" +
+                "id='" + id + '\'' +
+                ", nome='" + nome + '\'' +
+                ", descrizione='" + descrizione + '\'' +
+                ", opere=" + opere +
+                '}';
+    }
+
     /**
      * Controlla un oggetto Stanza arbitrario secondo tale contratto:
      * 0. stanza non null.

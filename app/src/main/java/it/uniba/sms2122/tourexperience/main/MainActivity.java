@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
         //passare al SceltaMuseiFragment
         fragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
-                .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
+                //.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
                 .replace(R.id.content_fragment_container_view, sceltaMuseiFragment)
                 .addToBackStack(null)
                 .commit();
@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
         //passare al SceltaMuseiFragment
         fragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
-                .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
+                //.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
                 .replace(R.id.content_fragment_container_view, rankingFragment)
                 .addToBackStack(null)
                 .commit();

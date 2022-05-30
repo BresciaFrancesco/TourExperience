@@ -41,6 +41,7 @@ public class OverviewPathFragment extends Fragment {
 
     Percorso path;
     ArrayList<Stanza> stanze;
+    ArrayList<String> opere;
     View inflater;
 
     RecyclerView recyclerView;
@@ -89,16 +90,20 @@ public class OverviewPathFragment extends Fragment {
         // Serve per caricare immediatamente le stanze e le opere
         localFilePercorsoManager = parent.getLocalFilePercorsoManager();
 
-        // Durante la visita al grafo, il puntatore viene alla stanza corrente viene spostato,
-        // quindi occorre ripristinarlo dopo la visita.
         stanze = new ArrayList<>();
+        opere = new ArrayList<>();
+
+        // Visita del grafo, caricamento stanze e opere negli array
         String idStanzaCorrente = path.getIdStanzaCorrente();
         setListaStanze();
-        path.setIdStanzaCorrente(idStanzaCorrente);
 
         recyclerView = view.findViewById(R.id.rooms_recycle_view);
         RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(),getListaNomiStanze(),getListaOpereStanze());
         recyclerView.setAdapter(adapter);
+
+        // Durante la visita al grafo, il puntatore alla stanza corrente viene spostato,
+        // quindi occorre ripristinarlo dopo la visita.
+        path.setIdStanzaCorrente(idStanzaCorrente);
 
         setDynamicValuesOnView();
         triggerStartPathButton();
@@ -112,7 +117,6 @@ public class OverviewPathFragment extends Fragment {
         startPathButton = inflater.findViewById(R.id.startPathButton);
         startPathButton.setOnClickListener(view -> ((PercorsoActivity)requireActivity()).getFgManagerOfPercorso().nextSceltaStanzeFragment());
     }
-
 
     /**
      * Funzione che si occupa di settare i reali valori dinamici delle viste che formano questa fragment
@@ -165,6 +169,7 @@ public class OverviewPathFragment extends Fragment {
             // Sposto il puntatore sul nodo adiacente
             try {
                 path.moveTo(corrente.getId());
+                localFilePercorsoManager.createStanzeAndOpereInThisAndNextStanze(path);
             } catch (Exception ignored) {}
 
             if(!visitato[correnteID]) {
@@ -203,12 +208,9 @@ public class OverviewPathFragment extends Fragment {
     private ArrayList<String> getListaOpereStanze() {
         ArrayList<String> lista = new ArrayList<>();
         for(Stanza stanza : stanze) {
-            Log.v("DEBUG",stanza.toString());
+            //Log.v("DEBUG",stanza.toString());
             lista.add(Objects.requireNonNull(stanza.getOpere().get(stanza.getId() + "0000")).getPercorsoImg());
         }
-
-        for(int i = 0;  i< lista.size(); i++)
-            System.out.println("Pos :"+ i + " " + lista.get(i) );
         return lista;
     }
 

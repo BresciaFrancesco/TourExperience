@@ -42,7 +42,7 @@ public class LocalFileGamesManager extends LocalFilePercorsoManager {
     public boolean existsQuiz() {
         final File quizDir = new File(Paths.get(pathOperaForGames.toString(), "Quiz").toString());
         if (quizDir.exists()) {
-            final File quizConfigFile = new File(Paths.get(quizDir.toPath().toString(), "Config.json").toString());
+            final File quizConfigFile = Paths.get(quizDir.toPath().toString(), "Config.json").toFile();
             return quizConfigFile.exists();
         }
         return false;
@@ -116,7 +116,7 @@ public class LocalFileGamesManager extends LocalFilePercorsoManager {
     public boolean existsSpotTheDifference() {
         final File spotTheDifferenceDir = new File(Paths.get(pathOperaForGames.toString(), "spotTheDifference").toString());
         if (spotTheDifferenceDir.exists()) {
-            final File quizConfigFile = new File(Paths.get(spotTheDifferenceDir.toPath().toString(), "configuration.json").toString());
+            final File quizConfigFile = Paths.get(spotTheDifferenceDir.toPath().toString(), "configuration.json").toFile();
             return quizConfigFile.exists();
         }
         return false;

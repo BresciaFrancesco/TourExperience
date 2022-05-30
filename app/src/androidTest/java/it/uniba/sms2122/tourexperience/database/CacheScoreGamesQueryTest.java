@@ -41,60 +41,64 @@ public class CacheScoreGamesQueryTest {
 
     @Test
     public void getScoreForQuizShouldReturn_MinusOne() throws Exception {
-        assertEquals(cacheScoreGames.getScore(db, GameTypes.QUIZ), -1);
+        assertEquals(cacheScoreGames.getScore(db, GameTypes.QUIZ, "abc123"), -1);
     }
 
     @Test
     public void getScoreForDiffShouldReturn_MinusOne() throws Exception {
-        assertEquals(cacheScoreGames.getScore(db, GameTypes.DIFF), -1);
+        assertEquals(cacheScoreGames.getScore(db, GameTypes.DIFF, "abc123"), -1);
     }
 
     @Test
     public void addScoreShouldReturnTrue() throws Exception {
-        assertTrue(cacheScoreGames.saveOne(db, GameTypes.DIFF, 10));
+        assertTrue(cacheScoreGames.saveOne(db, "abc123", GameTypes.DIFF, 10));
     }
 
     @Test
     public void getScoreShoudlReturn_10() throws Exception {
         final int score = 10;
+        final String uid = "abc123";
         final GameTypes type = GameTypes.QUIZ;
-        cacheScoreGames.saveOne(db, type, score);
+        cacheScoreGames.saveOne(db, uid, type, score);
 
-        assertEquals(score, cacheScoreGames.getScore(db, type));
+        assertEquals(score, cacheScoreGames.getScore(db, type, uid));
     }
 
     @Test
     public void updateShouldReturnTrue() throws Exception {
         final GameTypes type = GameTypes.QUIZ;
-        cacheScoreGames.saveOne(db, type, 10);
-        assertTrue(cacheScoreGames.saveOne(db, type, 11));
+        final String uid = "abc123";
+        cacheScoreGames.saveOne(db, uid, type, 10);
+        assertTrue(cacheScoreGames.saveOne(db, uid, type, 11));
     }
 
     @Test
     public void getScoreAfterUpdateShouldReturn_11() throws Exception {
         final GameTypes type = GameTypes.DIFF;
-        cacheScoreGames.saveOne(db, type, 10);
-        cacheScoreGames.saveOne(db, type, 1);
+        final String uid = "abc123";
+        cacheScoreGames.saveOne(db, uid, type, 10);
+        cacheScoreGames.saveOne(db, uid, type, 1);
 
-        assertEquals(11, cacheScoreGames.getScore(db, type));
+        assertEquals(11, cacheScoreGames.getScore(db, type, uid));
     }
 
     @Test
     public void deleteAllAfterMultipleInsertsSholdReturnTrue() throws Exception {
-        cacheScoreGames.saveOne(db, GameTypes.QUIZ, 10);
-        cacheScoreGames.saveOne(db, GameTypes.DIFF, 12);
+        cacheScoreGames.saveOne(db, "abc123", GameTypes.QUIZ, 10);
+        cacheScoreGames.saveOne(db, "123abc", GameTypes.DIFF, 12);
 
         assertTrue(cacheScoreGames.deleteAll(db));
     }
 
     @Test
     public void getScoreAfterDeleteShouldReturnMinusOne() throws Exception {
-        cacheScoreGames.saveOne(db, GameTypes.DIFF, 10);
-        cacheScoreGames.saveOne(db, GameTypes.QUIZ, 10);
+        final String uid = "abc123";
+        cacheScoreGames.saveOne(db, uid, GameTypes.DIFF, 10);
+        cacheScoreGames.saveOne(db, uid, GameTypes.QUIZ, 10);
         cacheScoreGames.deleteAll(db);
 
-        assertEquals(-1, cacheScoreGames.getScore(db, GameTypes.DIFF));
-        assertEquals(-1, cacheScoreGames.getScore(db, GameTypes.QUIZ));
+        assertEquals(-1, cacheScoreGames.getScore(db, GameTypes.DIFF, uid));
+        assertEquals(-1, cacheScoreGames.getScore(db, GameTypes.QUIZ, uid));
     }
 
 

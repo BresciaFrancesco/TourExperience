@@ -95,6 +95,7 @@
     <string name="importa_msg">Vuoi davvero importare questo percorso del museo</string>
     <string name="SI">Si</string>
     <string name="NO">Annulla</string>
+    <string name="do_not_show_again_local_import" translatable="false">do_not_show_again</string>
     <string name="local_import_dialog_title">Spiegazione Importazione</string>
     <string name="local_import_message">
         È possibile importare solo file .zip e .json. I file zip devono essere strutturati secondo le regole di TourExperience.
@@ -111,6 +112,7 @@
     <string name="area">Zona: %1$s</string>
     <string name="vote">Voto: %1$s</string>
     <string name="no_connection">Connessione internet assente</string>
+    <string name="no_connection_saved_score">Non c\'è connessione a Internet ma il punteggio è stato salvato</string>
     <string name="importing_ruote">Importazione percorso…</string>
     <string name="mime_type_error">Il file selezionato non è del tipo previsto</string>
     <string name="json_import_error">Percorso %1$s errato!</string>
@@ -194,5 +196,6 @@
     <string name="monotonous">Monotono</string>
 
     <string name="spot_the_difference_title_game">Trova le differenze</string>
+    <string name="uid_preferences" translatable="false">uid_preferences</string>
     <string name="description">Descrizione...</string>
 </resources>

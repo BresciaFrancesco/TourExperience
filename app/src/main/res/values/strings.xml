@@ -30,6 +30,7 @@
     <string name="home" translatable="false">Home</string>
     <string name="visits_history">Routes history</string>
     <string name="museums">Museums</string>
+    <string name="stats">Games stats</string>
     <string name="museums_cloud_import">Select Path to import</string>
     <string name="game_statistics">Game statistics</string>
     <string name="search_hint">Rome, Egyptian museum, …</string>
@@ -114,6 +115,7 @@
     <string name="area">Area: %1$s</string>
     <string name="vote">Vote: %1$s</string>
     <string name="no_connection">There is no internet connection</string>
+    <string name="no_connection_saved_score">There is no internet connection but the score has been saved</string>
     <string name="importing_ruote">Importing the selected route…</string>
     <string name="mime_type_error">The selected file is not of the expected type</string>
     <string name="json_import_error">Incorrect %1$s route!</string>
@@ -198,5 +200,6 @@
     <string name="monotonous">Monotonous</string>
 
     <string name="spot_the_difference_title_game">Trova le differenze</string>
+    <string name="uid_preferences" translatable="false">uid_preferences</string>
     <string name="description">Description...</string>
 </resources>

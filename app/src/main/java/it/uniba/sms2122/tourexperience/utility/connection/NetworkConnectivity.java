@@ -14,83 +14,19 @@ import javax.net.ssl.HttpsURLConnection;
 import it.uniba.sms2122.tourexperience.utility.AppExecutors;
 
 /**
- * Questa classe, insieme ad AppExecutors, permette di controllare se
- * è presenta la connessione ad internet senza l'utilizzo del comando ping,
- * non sempre utilizzabile.
+ * Questa classe permette di controllare se è presenta la connessione ad internet.
  */
 public class NetworkConnectivity {
 
-    private static AppExecutors appExecutors;
-    private static Context context;
-
-
+    /**
+     * Controlla se è presente connessione ad Internet.
+     * @param context contesto dell'app android.
+     * @return true se la connessione è presente, false altrimenti.
+     */
     public static boolean check(final Context context) {
         final ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo ni = cm.getActiveNetworkInfo();
         return ni != null && ni.isAvailable() && ni.isConnected();
     }
 
-    /**
-     * Initialization should be done in Application class and only one time.
-     *
-     * @param context Application context
-     */
-    public static void init(Context context) {
-        appExecutors = AppExecutors.getInstance();
-        NetworkConnectivity.context = context.getApplicationContext();
-    }
-
-    public static synchronized void check(ConnectivityCallback callback) {
-        appExecutors.getNetworkIO().execute(() -> {
-            if (isNetworkAvailable()) {
-                HttpsURLConnection connection = null;
-                try {
-                    connection = (HttpsURLConnection)
-                            new URL("https://clients3.google.com/generate_204").openConnection();
-                    connection.setRequestProperty("User-Agent", "Android");
-                    connection.setRequestProperty("Connection", "close");
-                    connection.setConnectTimeout(1000);
-                    connection.connect();
-
-                    boolean isConnected = connection.getResponseCode() == 204
-                            && connection.getContentLength() == 0;
-                    postCallback(callback, isConnected);
-                    connection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    postCallback(callback, false);
-                    if (connection != null) connection.disconnect();
-                }
-            } else {
-                postCallback(callback, false);
-            }
-        });
-    }
-
-    private static boolean isNetworkAvailable() {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (cm == null) return false;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            NetworkCapabilities cap = cm.getNetworkCapabilities(cm.getActiveNetwork());
-            if (cap == null) return false;
-            return cap.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
-        } else {
-            Network[] networks = cm.getAllNetworks();
-            for (Network n : networks) {
-                NetworkInfo nInfo = cm.getNetworkInfo(n);
-                if (nInfo != null && nInfo.isConnected()) return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static void postCallback(ConnectivityCallback callBack, boolean isConnected) {
-        appExecutors.mainThread().execute(() -> callBack.onDetected(isConnected));
-    }
-
-    public interface ConnectivityCallback {
-        void onDetected(boolean isConnected);
-    }
 }

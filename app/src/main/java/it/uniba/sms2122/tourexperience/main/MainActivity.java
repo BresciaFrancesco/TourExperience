@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;
     private SceltaMuseiFragment sceltaMuseiFragment;
+    private StatsFragment statsFragment;
     private List<MuseoDatabase> museoDatabaseList;
 
     @Override
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
 
         sceltaMuseiFragment = new SceltaMuseiFragment();
+        statsFragment = new StatsFragment();
         museoDatabaseList = new ArrayList<>();
     }
 
@@ -105,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                     bottomNavigationView.setItemActiveIndicatorEnabled(true);
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
-                            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left)
+                            //.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.content_fragment_container_view, HomeFragment.class, null)
                             .commit();
                     return true;
@@ -113,14 +115,21 @@ public class MainActivity extends AppCompatActivity {
                     if (f instanceof SceltaMuseiFragment) return false;
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
-                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+                            //.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                             .replace(R.id.content_fragment_container_view, safeGetSceltaMuseiFragment(), null)
-                            .addToBackStack("SceltaMuseiFragment")
+                            .addToBackStack(null)
                             .commit();
                     Objects.requireNonNull(MainActivity.this.getSupportActionBar()).setTitle(R.string.museums);
                     return true;
                 case R.id.game_statistics:
-
+                    if (f instanceof StatsFragment) return false;
+                    fragmentManager.beginTransaction()
+                            .setReorderingAllowed(true)
+                            //.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_right, R.anim.slide_out_left)
+                            .replace(R.id.content_fragment_container_view, safeGetStatsFragment(), null)
+                            .addToBackStack(null)
+                            .commit();
+                    Objects.requireNonNull(MainActivity.this.getSupportActionBar()).setTitle(R.string.stats);
                     return true;
                 default:
                     return false;
@@ -206,10 +215,11 @@ public class MainActivity extends AppCompatActivity {
                     bottomNavigationView.getMenu().getItem(0).setChecked(true);
                     break;
                 case "SceltaMuseiFragment":
+                    bottomNavigationView.getMenu().getItem(1).setChecked(true);
+                    break;
+                case "StatsFragment":
                     bottomNavigationView.getMenu().getItem(2).setChecked(true);
                     break;
-
-                    //TODO da aggiornare lo switch con casi per i fragment riguardanti la history e le statistiche e verificare che funziona
             }
         }
 
@@ -225,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         SceltaMuseiFragment sceltaMuseiFragment = new SceltaMuseiFragment();
         sceltaMuseiFragment.setArguments(bundle);
 
-        bottomNavigationView.getMenu().getItem(2).setChecked(true);
+        bottomNavigationView.getMenu().getItem(1).setChecked(true);
         //passare al SceltaMuseiFragment
         fragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
@@ -290,6 +300,18 @@ public class MainActivity extends AppCompatActivity {
             sceltaMuseiFragment = new SceltaMuseiFragment();
         }
         return sceltaMuseiFragment;
+    }
+
+    /**
+     * Ritorna il fragment statsFragment assicurandosi che non
+     * sia null, in tal caso crea un nuovo fragment.
+     * @return statsFragment, mai null.
+     */
+    private StatsFragment safeGetStatsFragment() {
+        if (statsFragment == null) {
+            statsFragment = new StatsFragment();
+        }
+        return statsFragment;
     }
 
     public boolean checkConnectivityForRanking() {

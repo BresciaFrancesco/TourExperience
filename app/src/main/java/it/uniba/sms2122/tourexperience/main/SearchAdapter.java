@@ -46,6 +46,10 @@ public class SearchAdapter extends ArrayAdapter implements Filterable {
         return museumList.get(position);
     }
 
+    /**
+     * Esegue la ricerca filtrando la lista. La ricerca avviene per nome, città e tipologia del museo.
+     * @return oggetti Filter.
+     */
     @NonNull
     @Override
     public Filter getFilter() {

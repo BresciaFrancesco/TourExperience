@@ -12,6 +12,9 @@ public class VotiPercorsi {
         inizializzaVoti();
     }
 
+    /**
+     * Converte la stringa di voti ottenuta da Firebase in una corrispondente lista di valori float
+     */
     private void inizializzaVoti (){
         voti = new ArrayList<>();
         String aux = "";
@@ -31,6 +34,10 @@ public class VotiPercorsi {
         }
     }
 
+    /**
+     * Funzione per calcorare il valore media tra i voti presenti all'interno della lista voti
+     * @return  valore medio
+     */
     public float calcolaMedia(){
         float media = 0;
 
@@ -41,7 +48,4 @@ public class VotiPercorsi {
         return media/voti.size();
     }
 
-    public String getStringaVoti() {
-        return stringaVoti;
-    }
 }

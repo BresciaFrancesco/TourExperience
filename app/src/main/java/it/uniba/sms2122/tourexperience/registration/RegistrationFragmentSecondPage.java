@@ -65,6 +65,7 @@ public class RegistrationFragmentSecondPage extends Fragment {
         String txtSurname = Objects.requireNonNull(surname.getText()).toString();
         String txtDate = Objects.requireNonNull(date.getText()).toString();
 
+        //Controllo su quello che è stato digitato dall'utente per nome, cognome e data di nascita
         CheckCredentials checker = mainActivity.getChecker();
         if (!checker.checkGenericStringGeneral("name", name,30,txtName,mainActivity)) return;
 

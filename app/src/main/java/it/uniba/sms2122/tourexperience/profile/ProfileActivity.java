@@ -252,7 +252,7 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * funzione che si occupa di aggiornare sul db i dati madoficati dall'utente
      *
-     * @param newProfileData
+     * @param newProfileData, map con i nuovi dati dell'utente
      */
     private void updateProfileData(Map<String, String> newProfileData) {
 
@@ -286,8 +286,8 @@ public class ProfileActivity extends AppCompatActivity {
     /**
      * funzione per mostrare un alertdialog per far inserire la password al fine di confermare i cambiamenti
      *
-     * @param title
-     * @param bodyText
+     * @param title     titolo dell'alertdialog
+     * @param bodyText  descrizione dell'alertdialog
      */
     public void showConfirmPasswordAlertDialog(String title, String bodyText) {
 

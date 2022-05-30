@@ -53,6 +53,7 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
         return stanzaList.size();
     }
 
+    // Binding data to the into specified position
     @Override
     public void onBindViewHolder(@NonNull StanzeAdpter.ViewHolder holder, int position) {
 
@@ -63,6 +64,9 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
         holder.itemView.setOnClickListener(view -> parent.getFgManagerOfPercorso().openQRScannerFragmentOfRoomSelection(stanzaList.get(indexOfStanzaList).getId()));
     }
 
+    /**
+     * Classe che rappresenta un elemento della lista.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final ImageView imageView;
         private final TextView textview;

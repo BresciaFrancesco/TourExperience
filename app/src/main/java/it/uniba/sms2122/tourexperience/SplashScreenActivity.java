@@ -28,10 +28,10 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         createLocalDirectoryIfNotExists(getFilesDir(), mainDirectory);
         options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
-        checkConnectivity();
+        manageLogicSplashScreenActivity();
     }
 
-    public void checkConnectivity() {
+    public void manageLogicSplashScreenActivity() {
         if (!NetworkConnectivity.check(getApplicationContext())) {
             Toast.makeText(SplashScreenActivity.this, getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
             startActivity(new Intent(this, FirstActivity.class));

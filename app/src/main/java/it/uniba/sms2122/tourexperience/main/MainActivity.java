@@ -5,8 +5,6 @@ import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -36,6 +34,7 @@ import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.listeners.FailureListener;
 import it.uniba.sms2122.tourexperience.utility.listeners.SuccessDataListener;
@@ -56,13 +55,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-         * Ottengo l'utente attualmente loggato.
-         */
+        //Ottengo l'utente attualmente loggato
         userHolder = UserHolder.getInstance();
         try {
             userHolder.getUser(
                     (user) -> {
+                        // Imposto il titolo del fragment col nome dell'utente e lo faccio
+                        // ogni volta che torno su questo fragment
                         String title = getString(R.string.hello, user.getName());
                         Objects.requireNonNull(getSupportActionBar()).setTitle(title);
                     },
@@ -228,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Funzione che serve a sostituire il precedente fragment con SceltaMuseiFragment
+     * Funzione che serve a sostituire l'attuale fragment con SceltaMuseiFragment al quale viene passato un bundle
      * @param bundle I dati da passare al fragment
      */
     public void replaceSceltaMuseiFragment(Bundle bundle){
@@ -246,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Effettua il replace del fragment attuale con quello relativo al ranking
+     * Funzione che serve a sostituire l'attuale fragment con RankingFragment al quale viene passato un bundle
      * @param bundle I dati da passare al fragment
      */
     public void replaceRankingFragment(Bundle bundle){
@@ -263,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Passa alla prossima activity e le fornisce il nome del museo selezionato.
+     * Funzione che serve per passare sll'activity PercorsoActivity passandogli il nome del museo selezionato come parametro.
      * @param nomeMuseo nome del museo selezionato, da passare alla prossima activity.
      */
     public void startPercorsoActivity(String nomeMuseo){
@@ -314,12 +313,11 @@ public class MainActivity extends AppCompatActivity {
         return statsFragment;
     }
 
-    public boolean checkConnectivityForRanking() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(MainActivity.CONNECTIVITY_SERVICE);
-        NetworkInfo ni = cm.getActiveNetworkInfo();
-        return ni!=null && ni.isAvailable() && ni.isConnected();
-    }
-
+    /**
+     * Permette di estarrre il nome del museo da una striga passata come paramtro
+     * @param child stinga generica contenente il nome del museo da estrarre
+     * @return      nome del museo
+     */
     private String getNomeMuseo(String child){
         String nome = null;
         if (child.contains("nome")) {
@@ -329,6 +327,11 @@ public class MainActivity extends AppCompatActivity {
         return nome;
     }
 
+    /**
+     * Permette di estarrre il nome del percorso da una striga passata come paramtro
+     * @param child stinga generica contenente il nome del percorso da estrarre
+     * @return      nome del percorso
+     */
     private String getNomePercorso(String child){
         String percorso = null;
         if (child.contains("Percorso_")) {
@@ -337,6 +340,11 @@ public class MainActivity extends AppCompatActivity {
         return percorso;
     }
 
+    /**
+     * Permette di estarrre la stringa dei voti espressi dagli utenti per un percorso a partire da una striga passata come paramtro
+     * @param child stinga generica contenente la string dei voti da estrarre
+     * @return      stinga dei voti
+     */
     private String getVoto(String child){
         String voto = null;
         if (child.contains("Voti")) {
@@ -345,6 +353,11 @@ public class MainActivity extends AppCompatActivity {
         return voto;
     }
 
+    /**
+     * Permette di estarrre il numero di avvii per un percorso a partire da una striga passata come paramtro
+     * @param child stinga generica contenente il numero di avvii da estrarre
+     * @return      numero di avvii
+     */
     private String getNumeroStarts(String child){
         String numeroStarts = null;
         if (child.contains("Numero_starts")) {
@@ -353,8 +366,14 @@ public class MainActivity extends AppCompatActivity {
         return numeroStarts;
     }
 
+    /**
+     * Funzione che si occupa di interpellare Firebase e recuperare tutte le informazioni da esso
+     * Più nello specifico nome museo, nome percorso, voti espressi dagli utenti e numero di avvii per ciascun percorso
+     * @param successListener, listener per quando è presente la connessione internet
+     * @param failureListener, listener per quando manca la connessione internet
+     */
     public void getMuseoDatabaseList(SuccessDataListener<List<MuseoDatabase>> successListener, FailureListener failureListener) {
-        if(checkConnectivityForRanking()) {
+        if(NetworkConnectivity.check(getApplicationContext())) {
             DatabaseReference db = FirebaseDatabase.getInstance().getReference("Museums");
             Task<DataSnapshot> snapshot = db.get();
             snapshot.addOnSuccessListener(dataSnapshot -> {

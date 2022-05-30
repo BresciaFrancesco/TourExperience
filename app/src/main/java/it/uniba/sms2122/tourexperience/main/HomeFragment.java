@@ -22,6 +22,7 @@ import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 
 /**
  * Fragment per la schermata Home
@@ -58,10 +59,10 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Imposto il titolo del fragment col nome dell'utente e lo faccio
-        // ogni volta che torno su questo fragment
         UserHolder.getInstance().getUser(
                 (user) -> {
+                    // Imposto il titolo del fragment col nome dell'utente e lo faccio
+                    // ogni volta che torno su questo fragment
                     String title = getString(R.string.hello, user.getName());
                     Objects.requireNonNull(((MainActivity)requireActivity()).getSupportActionBar()).setTitle(title);
                 },
@@ -69,8 +70,6 @@ public class HomeFragment extends Fragment {
         );
 
         autoCompleteTextView = view.findViewById(R.id.autocomplete);
-        // setThreshold() is used to specify the number of characters after which
-        // the dropdown with the autocomplete suggestions list would be displayed.
         autoCompleteTextView.setThreshold(1);
         reference = FirebaseDatabase.getInstance().getReference(TABLE_NAME);
 
@@ -81,9 +80,7 @@ public class HomeFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) { }
         };
         reference.addListenerForSingleValueEvent(eventListener);
 
@@ -91,7 +88,7 @@ public class HomeFragment extends Fragment {
         classificaVisitati = view.findViewById(R.id.classifica_visitai);
 
         classificaVoti.setOnClickListener(view1 -> {
-            if(((MainActivity)requireActivity()).checkConnectivityForRanking()){
+            if(NetworkConnectivity.check(requireContext())){
                 Bundle bundle = new Bundle();
                 bundle.putInt("ranking", 1);
                 ((MainActivity) requireActivity()).replaceRankingFragment(bundle);
@@ -99,7 +96,7 @@ public class HomeFragment extends Fragment {
         });
 
         classificaVisitati.setOnClickListener(view12 -> {
-            if(((MainActivity)requireActivity()).checkConnectivityForRanking()) {
+            if(NetworkConnectivity.check(requireContext())) {
                 Bundle bundle = new Bundle();
                 bundle.putInt("ranking", 2);
                 ((MainActivity) requireActivity()).replaceRankingFragment(bundle);
@@ -118,6 +115,7 @@ public class HomeFragment extends Fragment {
     private void museumsSearch(DataSnapshot snapshot) {
         ArrayList<String> arrayList = new ArrayList<>();
         if(snapshot.exists()){
+            //valorizzazione di arrayList
             for(DataSnapshot ds : snapshot.getChildren()){
                 String nome = ds.child("nome").getValue(String.class);
                 arrayList.add(nome);
@@ -128,7 +126,6 @@ public class HomeFragment extends Fragment {
             }
 
             SearchAdapter adapter = new SearchAdapter(requireContext(), arrayList);
-
             autoCompleteTextView.setAdapter(adapter);
 
             autoCompleteTextView.setOnItemClickListener((adapterView, view, i, l) -> {

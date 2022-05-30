@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Classe utile a contenere tutti i dati presenti sul Realtime Databese di Firebase
+ */
 public class MuseoDatabase {
 
     private String nomeMuseo;

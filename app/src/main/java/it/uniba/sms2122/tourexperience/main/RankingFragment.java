@@ -101,9 +101,13 @@ public class RankingFragment extends Fragment {
             title.setText(R.string.title_classifica_visitati);
 
         ((MainActivity) requireActivity()).getMuseoDatabaseList(
+                //Caso: connessione presente
                 (List<MuseoDatabase> museoDatabaseList) -> {
+                    //Conversione dell'hashmap in una lista, la quale sarà visualizzata all'interno della recycleview presente nel fragment
                     List<Map.Entry<String, String>> titleOrdered = new ArrayList<>(initializeTitle(museoDatabaseList, ranking).entrySet());
                     titleOrdered.sort(Comparator.comparing(Map.Entry<String, String>::getValue).reversed());
+
+                    //Creazione del file da condividere il quale conterrà la classifica
                     File txtsFolder = LocalFileManager.createLocalDirectoryIfNotExists(requireActivity().getFilesDir(), "txts");
                     File txt = new File (txtsFolder, "ranking.txt");
 
@@ -116,7 +120,7 @@ public class RankingFragment extends Fragment {
                         e.printStackTrace();
                     }
                     fileShare = new FileShare(txt);
-
+                    //Scrittura dei dite sul file
                     for(int i = 0; i < titleOrdered.size(); i++)
                         fileShare.writeToFile(getString(R.string.pos, String.valueOf(i+1)) + "\n" + titleOrdered.get(i).getKey() + titleOrdered.get(i).getValue() + "\n\n");
 
@@ -124,6 +128,7 @@ public class RankingFragment extends Fragment {
                     recyclerView.setAdapter(rankingAdapter);
                     progressBar.setVisibility(View.GONE);
                 },
+                //Caso: connessione assente
                 (String errorMsg) -> {
                     Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
@@ -132,6 +137,12 @@ public class RankingFragment extends Fragment {
         );
     }
 
+    /**
+     * Si occupa di valorizzare l'hashmap con i dati da visualizzare all'interno della classifica partendo dalla lista di MuseoDatabase
+     * @param museoDatabaseList lista contentente tutti gli MuseoDatabase ottenuti interpellando Firebase
+     * @param ranking           tipologia della classifica che l'utente ha chiesto di visualizzare
+     * @return Hashmap con i dati da visuaizzaree sotto il seguente formato "nome museo \n nome percorso \n" : valore,
+     */
     private HashMap<String, String> initializeTitle(List<MuseoDatabase> museoDatabaseList, int ranking) {
         HashMap<String, String> title = new HashMap<>();
         for (int i = 0; i < museoDatabaseList.size(); i++){

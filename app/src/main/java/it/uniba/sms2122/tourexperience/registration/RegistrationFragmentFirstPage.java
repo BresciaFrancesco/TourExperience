@@ -52,6 +52,7 @@ public class RegistrationFragmentFirstPage extends Fragment {
         String txtEmail = Objects.requireNonNull(email.getText()).toString();
         String txtPsw = Objects.requireNonNull(psw.getText()).toString();
 
+        //Controllo su quello che è stato digitato dall'utente per email e password
         CheckCredentials checker = mainActivity.getChecker();
         if (!checker.checkEmail(this.email, mainActivity)) return;
         if (!checker.checkPassword(psw, rPsw, mainActivity)) return;

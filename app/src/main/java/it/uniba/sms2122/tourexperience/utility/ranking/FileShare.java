@@ -5,6 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
+/**
+ * Classe utile per la gestione di tutte le operazioni legate al file che dovrà essere condiviso
+ */
 public class FileShare {
     private File txt;
 

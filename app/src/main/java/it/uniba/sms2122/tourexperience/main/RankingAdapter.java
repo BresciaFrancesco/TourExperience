@@ -37,6 +37,7 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.ViewHold
         return new ViewHolder(view);
     }
 
+    // Binding data to the into specified position
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.pos.setText(String.valueOf(position+1));
@@ -48,6 +49,9 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.ViewHold
         return titleOrdered.size();
     }
 
+    /**
+     * Classe che rappresenta un elemento della lista.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder{
         private TextView pos;
         private TextView title;

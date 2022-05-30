@@ -12,7 +12,7 @@ public class ProfileDataChangeValidation {
      *
      * @param viewToValidate, stringa da validare
      * @param regExp,         espressione regolare che deve essere rispettat
-     * @return
+     * @return true se la stringa rispetta l'espressione regolare, false altrimenti
      */
     private static boolean genericlValidator(EditText viewToValidate, String regExp, String errorTxt) {
 

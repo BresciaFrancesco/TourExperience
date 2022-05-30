@@ -10,8 +10,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
@@ -28,50 +26,44 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        NetworkConnectivity.init(this);
-
         createLocalDirectoryIfNotExists(getFilesDir(), mainDirectory);
         options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
         checkConnectivity();
     }
 
     public void checkConnectivity() {
-        NetworkConnectivity.check(isConnected -> {
-            if (!isConnected) {
-                Toast.makeText(SplashScreenActivity.this, getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, FirstActivity.class));
-                finish();
-                return;
-            }
-
-
-            FirebaseAuth.getInstance().getCurrentUser();
-            userHolder = UserHolder.getInstance();
-            userHolder.getUser(
-                //Caso: Utente è loggato
-                (user) -> {
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-                    finish(); // Non si può tornare indietro con il pulsane Back
-                },
-                //Caso: Utente non è loggato
-                (String errorMsg) -> {
-                    // Verifica se si tratta della prima apertura o no
-                    SharedPreferences prefs = getSharedPreferences(BuildConfig.SHARED_PREFS, MODE_PRIVATE);
-                    if(!prefs.contains(BuildConfig.SP_FIRST_OPENING)) {
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putBoolean(BuildConfig.SP_FIRST_OPENING, true);
-                        editor.apply();
-                    }
-
-                    if(prefs.getBoolean(BuildConfig.SP_FIRST_OPENING, true)) {
-                        startActivity(new Intent(this, WelcomeActivity.class));
-                    } else {
-                        startActivity(new Intent(this, FirstActivity.class));
-                    }
-                    finish();
+        if (!NetworkConnectivity.check(getApplicationContext())) {
+            Toast.makeText(SplashScreenActivity.this, getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, FirstActivity.class));
+            finish();
+            return;
+        }
+        userHolder = UserHolder.getInstance();
+        userHolder.getUser(
+            //Caso: Utente è loggato
+            (user) -> {
+                LoginActivity.addNewSessionUid(getApplicationContext());
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                finish(); // Non si può tornare indietro con il pulsane Back
+            },
+            //Caso: Utente non è loggato
+            (String errorMsg) -> {
+                // Verifica se si tratta della prima apertura o no
+                SharedPreferences prefs = getSharedPreferences(BuildConfig.SHARED_PREFS, MODE_PRIVATE);
+                if(!prefs.contains(BuildConfig.SP_FIRST_OPENING)) {
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putBoolean(BuildConfig.SP_FIRST_OPENING, true);
+                    editor.apply();
                 }
-            );
-        });
+
+                if(prefs.getBoolean(BuildConfig.SP_FIRST_OPENING, true)) {
+                    startActivity(new Intent(this, WelcomeActivity.class));
+                } else {
+                    startActivity(new Intent(this, FirstActivity.class));
+                }
+                finish();
+            }
+        );
     }
 }

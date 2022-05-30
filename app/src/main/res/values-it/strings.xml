@@ -94,6 +94,7 @@
     <string name="importa_msg">Vuoi davvero importare questo percorso del museo</string>
     <string name="SI">Si</string>
     <string name="NO">Annulla</string>
+    <string name="do_not_show_again_local_import" translatable="false">do_not_show_again</string>
     <string name="local_import_dialog_title">Spiegazione Importazione</string>
     <string name="local_import_message">
         È possibile importare solo file .zip e .json. I file zip devono essere strutturati secondo le regole di TourExperience.
@@ -192,4 +193,5 @@
     <string name="monotonous">Monotono</string>
 
     <string name="spot_the_difference_title_game">Trova le differenze</string>
+    <string name="uid_preferences" translatable="false">uid_preferences</string>
 </resources>

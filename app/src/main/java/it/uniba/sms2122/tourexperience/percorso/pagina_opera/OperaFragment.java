@@ -151,16 +151,16 @@ public class OperaFragment extends Fragment {
             }
             if (!localFileGamesManager.existsQuiz()) {
                 new AlertDialog.Builder(view2.getContext())
-                        .setTitle("Quiz")
-                        .setMessage(getString(R.string.quiz_import_request))
-                        .setPositiveButton(getString(R.string.importa_quiz),
-                                (dialog, whichButton) -> {
-                                    dialog.dismiss();
-                                    startImportQuiz(view2);
-                                })
-                        .setNeutralButton(view2.getContext().getString(R.string.NO),
-                                (dialog, whichButton) -> dialog.dismiss())
-                        .show();
+                    .setTitle("Quiz")
+                    .setMessage(getString(R.string.quiz_import_request))
+                    .setPositiveButton(getString(R.string.importa_quiz),
+                            (dialog, whichButton) -> {
+                                dialog.dismiss();
+                                startImportQuiz(view2);
+                            })
+                    .setNeutralButton(view2.getContext().getString(R.string.NO),
+                            (dialog, whichButton) -> dialog.dismiss())
+                    .show();
                 return;
             }
             try {

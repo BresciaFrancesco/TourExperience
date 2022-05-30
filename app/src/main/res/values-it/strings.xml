@@ -112,6 +112,7 @@
     <string name="area">Zona: %1$s</string>
     <string name="vote">Voto: %1$s</string>
     <string name="no_connection">Connessione internet assente</string>
+    <string name="no_connection_saved_score">Non c\'è connessione a Internet ma il punteggio è stato salvato</string>
     <string name="importing_ruote">Importazione percorso…</string>
     <string name="mime_type_error">Il file selezionato non è del tipo previsto</string>
     <string name="json_import_error">Percorso %1$s errato!</string>

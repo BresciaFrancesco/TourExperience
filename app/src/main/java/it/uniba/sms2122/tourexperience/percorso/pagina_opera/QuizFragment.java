@@ -2,6 +2,7 @@ package it.uniba.sms2122.tourexperience.percorso.pagina_opera;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,8 +36,10 @@ import com.google.gson.JsonParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.uniba.sms2122.tourexperience.BuildConfig;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.database.CacheGames;
+import it.uniba.sms2122.tourexperience.database.CacheScoreGames;
 import it.uniba.sms2122.tourexperience.database.GameTypes;
 import it.uniba.sms2122.tourexperience.games.quiz.ContainerRadioLinear;
 import it.uniba.sms2122.tourexperience.games.quiz.Domanda;
@@ -347,7 +350,13 @@ public class QuizFragment extends Fragment {
             }
             else { // Non c'è connessione
                 try {
-                    Toast.makeText(act.getApplicationContext(), getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
+                    // salvo il punteggio del quiz in locale nel caso manchi la connessione
+                    final SharedPreferences sp = requireContext().getSharedPreferences(BuildConfig.SHARED_PREFS, Context.MODE_PRIVATE);
+                    final String uid = sp.getString(getString(R.string.uid_preferences), null);
+                    final CacheScoreGames cacheScoreGames = new CacheScoreGames(requireContext());
+                    cacheScoreGames.saveOne(uid, GameTypes.QUIZ, (int)quiz.getPunteggioCorrente().value());
+
+                    Toast.makeText(act.getApplicationContext(), getString(R.string.no_connection_saved_score), Toast.LENGTH_SHORT).show();
                 } catch (NullPointerException e) { e.printStackTrace(); }
             }
 

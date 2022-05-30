@@ -25,7 +25,6 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.database.CacheGames;
@@ -208,7 +207,7 @@ public class OverviewPathFragment extends Fragment {
         ArrayList<String> lista = new ArrayList<>();
         for(Stanza stanza : stanze) {
             try{
-                lista.add(Objects.requireNonNull(stanza.getOpere().get(stanza.getId() + "0000")).getPercorsoImg());
+                lista.add(stanza.getOpere().get(stanza.getId() + "0000").getPercorsoImg());
             }catch (NullPointerException ignored){}
 
         }

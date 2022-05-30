@@ -3,6 +3,12 @@ package it.uniba.sms2122.tourexperience.percorso.pagina_opera;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,13 +18,6 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -30,8 +29,8 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.database.CacheGames;
 import it.uniba.sms2122.tourexperience.database.GameTypes;
 import it.uniba.sms2122.tourexperience.games.SpotDifference.SpotDifferences;
-import it.uniba.sms2122.tourexperience.percorso.ImageAndDescriptionFragment;
 import it.uniba.sms2122.tourexperience.model.Opera;
+import it.uniba.sms2122.tourexperience.percorso.ImageAndDescriptionFragment;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileGamesManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.DTO.OpenFileAndroidStorageDTO;
@@ -245,7 +244,6 @@ public class OperaFragment extends Fragment {
 
     /**
      * Ripristina i dati salvati da uno stato precedente se e solo se non sono nulli.
-     *
      * @param savedInstanceState bundle dello stato precedente.
      */
     private boolean ripristino(final Bundle savedInstanceState) {
@@ -280,6 +278,7 @@ public class OperaFragment extends Fragment {
     private void setActionBar(final String title) {
         try {
             final ActionBar actionBar = ((PercorsoActivity) requireActivity()).getSupportActionBar();
+            assert actionBar != null;
             actionBar.setDisplayHomeAsUpEnabled(true); // abilita il pulsante "back" nella action bar
             actionBar.setTitle(title);
         } catch (NullPointerException e) {

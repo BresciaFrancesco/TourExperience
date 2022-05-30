@@ -5,16 +5,14 @@ import static android.widget.Toast.LENGTH_LONG;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.icu.util.BuddhistCalendar;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
-import com.google.android.material.textfield.TextInputEditText;
 
-import java.util.Date;
+import com.google.android.material.textfield.TextInputEditText;
 
 import it.uniba.sms2122.tourexperience.R;
 
@@ -28,15 +26,14 @@ public class DatePickerDialogTheme extends DialogFragment implements DatePickerD
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        DatePickerDialog datepickerdialog = new DatePickerDialog(getActivity(),
-                AlertDialog.THEME_HOLO_LIGHT, this, year, month, day);
 
-        return datepickerdialog;
+        return new DatePickerDialog(getActivity(),
+                AlertDialog.THEME_HOLO_LIGHT, this, year, month, day);
     }
 
     @Override
     public void onDateSet(DatePicker view, int yearInput, int monthInput, int dayInput) {
-        TextInputEditText date = getActivity().findViewById(R.id.idEdtRegDateBirth);
+        TextInputEditText date = requireActivity().findViewById(R.id.idEdtRegDateBirth);
 
         Calendar calendarUser = Calendar.getInstance();
         calendarUser.set(yearInput,monthInput,dayInput);

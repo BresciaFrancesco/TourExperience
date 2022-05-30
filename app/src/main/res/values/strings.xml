@@ -30,6 +30,7 @@
     <string name="home" translatable="false">Home</string>
     <string name="visits_history">Routes history</string>
     <string name="museums">Museums</string>
+    <string name="stats">Games stats</string>
     <string name="museums_cloud_import">Select Path to import</string>
     <string name="game_statistics">Game statistics</string>
     <string name="search_hint">Rome, Egyptian museum, …</string>
@@ -180,6 +181,7 @@
     <string name="operas_close_to_you">Operas close to you</string>
     <string name="profile_pic_alert_title">Do you want to login or sign up?</string>
     <string name="profile_pic_alert_message">Log in or register on TourExperience to evaluate the routes you like best and access many exclusive features!</string>
+    <string name="question_end_path">This is the final room of the path, do you want to finish the path or continue?</string>
 
     <!--Domande e risposte relative al questionario finale-->
     <string name="question_1">Provide a review of the path</string>
@@ -198,4 +200,5 @@
 
     <string name="spot_the_difference_title_game">Trova le differenze</string>
     <string name="uid_preferences" translatable="false">uid_preferences</string>
+    <string name="description">Description...</string>
 </resources>

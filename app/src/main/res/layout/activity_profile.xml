@@ -45,7 +45,7 @@
                 android:layout_weight="1"
                 android:text="@string/emailLabelProfile"
                 android:textColor="@color/black"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/editFieldEmail"
@@ -57,7 +57,7 @@
                 android:enabled="false"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/black"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
         </TableRow>
 
@@ -80,7 +80,7 @@
                 android:layout_weight="1"
                 android:text="@string/nameLabelProfile"
                 android:textColor="@color/black"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/editFieldName"
@@ -93,7 +93,7 @@
                 android:inputType="textPersonName"
                 android:text="name"
                 android:textColor="@color/black"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
         </TableRow>
 
@@ -115,7 +115,7 @@
                 android:layout_weight="1"
                 android:text="@string/surnameLabelProfile"
                 android:textColor="@color/black"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/editFieldSurname"
@@ -128,7 +128,7 @@
                 android:inputType="textPersonName"
                 android:text="Name"
                 android:textColor="@color/black"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
         </TableRow>
 
@@ -150,7 +150,7 @@
                 android:layout_weight="1"
                 android:text="@string/birthLabelProfile"
                 android:textColor="@color/black"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -170,7 +170,7 @@
                     android:inputType="date"
                     android:text="Name"
                     android:textColor="@color/black"
-                    android:textSize="18dp" />
+                    android:textSize="18sp" />
 
                 <ImageView
                     android:id="@+id/profileDataPickerBtn"
@@ -235,7 +235,7 @@
                         android:text="@string/logout"
                         android:textColor="@color/main_red"
                         android:textAlignment="textStart"
-                        android:textSize="18dp"/>
+                        android:textSize="18sp"/>
                 </LinearLayout>
 
             </LinearLayout>

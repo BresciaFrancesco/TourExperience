@@ -27,7 +27,7 @@
                 android:text="@string/quiz_incompatibile"
                 android:textAlignment="center"
                 android:textColor="@color/main_blue"
-                android:textSize="25dp"
+                android:textSize="25sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -37,7 +37,7 @@
                 android:layout_marginBottom="20dp"
                 android:textAlignment="center"
                 android:textColor="@color/main_red"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <androidx.constraintlayout.widget.ConstraintLayout

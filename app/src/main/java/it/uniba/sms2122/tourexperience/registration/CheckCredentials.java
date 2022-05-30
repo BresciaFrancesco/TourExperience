@@ -7,6 +7,8 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Objects;
+
 import it.uniba.sms2122.tourexperience.R;
 
 /**
@@ -15,7 +17,6 @@ import it.uniba.sms2122.tourexperience.R;
  */
 public class CheckCredentials {
 
-    public static final int MAX_DATE = 15;
     public static final int MAX_PASSWORD = 30;
     public static final int MIN_PASSWORD = 8;
     public static final int SPACE = 32;
@@ -31,8 +32,8 @@ public class CheckCredentials {
      * @return true se la password inserita è corretta, altrimenti ritorna false
      */
     public boolean checkPassword(TextInputEditText firstPassword, TextInputEditText secondPassword, Activity activity) {
-        String txtPassword = firstPassword.getText().toString();
-        String txtSecondPassword = secondPassword.getText().toString();
+        String txtPassword = Objects.requireNonNull(firstPassword.getText()).toString();
+        String txtSecondPassword = Objects.requireNonNull(secondPassword.getText()).toString();
         if (!checkGenericStringGeneral("password", firstPassword, MAX_PASSWORD, txtPassword, activity))
             return false;
         final int len = txtPassword.length();
@@ -68,7 +69,7 @@ public class CheckCredentials {
      * @return true se la password inserita è corretta, altrimenti ritorna false
      */
     public boolean checkPassword(TextInputEditText firstPassword, Activity activity) {
-        String txtPassword = firstPassword.getText().toString();
+        String txtPassword = Objects.requireNonNull(firstPassword.getText()).toString();
         if (!checkGenericStringGeneral("password", firstPassword, MAX_PASSWORD, txtPassword, activity))
             return false;
         final int len = txtPassword.length();
@@ -99,7 +100,7 @@ public class CheckCredentials {
      */
     public boolean checkGenericStringGeneral(String tag, TextInputEditText string, int MAX, String txtString, Activity activity) {
         if (txtString == null) {
-            txtString = string.getText().toString().trim();
+            txtString = Objects.requireNonNull(string.getText()).toString().trim();
         }
         if (txtString.isEmpty()) {
             string.setError(activity.getString(R.string.field_empty, tag));
@@ -123,7 +124,7 @@ public class CheckCredentials {
      * @return true se l'email inserita è corretta, altrimenti ritorna false
      */
     public boolean checkEmail(TextInputEditText email, Activity activity) {
-        String txtEmail = email.getText().toString().trim();
+        String txtEmail = Objects.requireNonNull(email.getText()).toString().trim();
         if (!checkGenericStringGeneral("email", email, MAX_EMAIL, txtEmail,activity))
             return false;
         if (!Patterns.EMAIL_ADDRESS.matcher(txtEmail).matches()) {

@@ -1,19 +1,10 @@
 package it.uniba.sms2122.tourexperience.percorso.stanze;
 
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.*;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getMuseoByName;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,11 +14,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
@@ -78,13 +77,14 @@ public class SceltaStanzeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        parent = (PercorsoActivity) getActivity();
-        parent.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        parent = (PercorsoActivity) requireActivity();
+        assert parent != null;
+        Objects.requireNonNull(parent.getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
 
         if (savedInstanceState == null) {
             path = parent.getPath();
             nomeMuseo = parent.getNomeMuseo();
-            nomePercorso = parent.getNomePercorso();
+            nomePercorso = parent.getPath().getNomePercorso();
         } else {
             Gson gson = new GsonBuilder().create();
             this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
@@ -93,7 +93,7 @@ public class SceltaStanzeFragment extends Fragment {
 
                 path = parent.getPath();
                 nomeMuseo = parent.getNomeMuseo();
-                nomePercorso = parent.getNomePercorso();
+                nomePercorso = parent.getPath().getNomePercorso();
 
             } else {
 
@@ -103,12 +103,12 @@ public class SceltaStanzeFragment extends Fragment {
         }
 
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewRooms);
+        recyclerView = view.findViewById(R.id.recyclerViewRooms);
         // Setting the layout as linear layout for vertical orientation
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-        textView = (TextView) view.findViewById(R.id.nome_item_museo);
-        imageView = (ImageView) view.findViewById(R.id.icona_item_museo);
+        textView = view.findViewById(R.id.nome_item_museo);
+        imageView = view.findViewById(R.id.icona_item_museo);
 
         try{
             imageView.setImageURI(Uri.parse(getMuseoByName(nomeMuseo, view.getContext()).getFileUri()));
@@ -117,7 +117,7 @@ public class SceltaStanzeFragment extends Fragment {
         }
         listaStanze = new ArrayList<>();
         setActionBar(this.nomeMuseo + " - " + this.nomePercorso);
-        ((PercorsoActivity)requireActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        Objects.requireNonNull(((PercorsoActivity) requireActivity()).getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
     }
 
     @Override
@@ -128,11 +128,25 @@ public class SceltaStanzeFragment extends Fragment {
             listaStanze.add(path.getStanzaCorrente());
             textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
         } //Torna indietro o qr chiuso
-        else if (path.getIdStanzaCorrente().equals(path.getIdStanzaFinale()) && !path.getIdStanzaCorrente().equals(lastStanza)) {
-            ((PercorsoActivity) getActivity()).getFgManagerOfPercorso().nextFinePercorsoFragment();
+        else if (path.getIdStanzaCorrente().equals(path.getIdStanzaFinale()) && !path.getIdStanzaCorrente().equals(lastStanza) && path.getAdiacentNodes().size() == 0) {
+            ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFinePercorsoFragment();
         } else {
             listaStanze = path.getAdiacentNodes();
             textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.area, path.getStanzaCorrente().getNome()));
+            if(path.getIdStanzaCorrente().equals(path.getIdStanzaFinale()) && !path.getIdStanzaCorrente().equals(lastStanza)){
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage(R.string.question_end_path);
+                builder.setTitle(R.string.attention);
+                builder.setIcon(R.drawable.ic_baseline_error_24);
+
+                builder.setCancelable(false);
+                builder.setPositiveButton(R.string.SI, (dialogInterface, i) -> ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFinePercorsoFragment());
+
+                builder.setNegativeButton(R.string.NO, null);
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
         }
 
         lastStanza = path.getIdStanzaCorrente();
@@ -163,7 +177,7 @@ public class SceltaStanzeFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        parent.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(parent.getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -184,12 +198,7 @@ public class SceltaStanzeFragment extends Fragment {
                 builder.setIcon(R.drawable.ic_baseline_error_24);
 
                 builder.setCancelable(false);
-                builder.setPositiveButton(R.string.SI, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        parent.endPath();
-                    }
-                });
+                builder.setPositiveButton(R.string.SI, (dialogInterface, i) -> parent.endPath());
 
                 builder.setNegativeButton(R.string.NO, null);
 
@@ -223,6 +232,7 @@ public class SceltaStanzeFragment extends Fragment {
     private void setActionBar(final String title) {
         try {
             final ActionBar actionBar = ((PercorsoActivity) requireActivity()).getSupportActionBar();
+            assert actionBar != null;
             actionBar.setDisplayHomeAsUpEnabled(true); // abilita il pulsante "back" nella action bar
             actionBar.setTitle(title);
         } catch (NullPointerException e) {

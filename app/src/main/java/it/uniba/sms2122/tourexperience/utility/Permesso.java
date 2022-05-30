@@ -1,14 +1,11 @@
 package it.uniba.sms2122.tourexperience.utility;
 
-import android.app.AlertDialog; // è importante che sia android.app.AlertDialog e non androix, perché altrimenti non funziona il codice
-import android.content.Context;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 /**
  * Classe per richiedere e gestire permessi in modo generico

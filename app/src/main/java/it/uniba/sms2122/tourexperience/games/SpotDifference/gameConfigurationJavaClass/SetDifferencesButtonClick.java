@@ -1,6 +1,5 @@
 package it.uniba.sms2122.tourexperience.games.SpotDifference.gameConfigurationJavaClass;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -8,6 +7,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 
@@ -19,7 +19,7 @@ public class SetDifferencesButtonClick {
     public SetDifferencesButtonClick(AppCompatActivity activityToSet) {
 
         this.activityToSet = activityToSet;
-        allDifferencesView = new HashMap<String, ImageView>();
+        allDifferencesView = new HashMap<>();
 
         allDifferencesViewFillWithImage1ViewDifferences();//riempio l'hashmap con le differenze della prima immagine
         allDifferencesViewFillWithImage2ViewDifferences();//riempio l'hashmap con le differenze della seconda immagine
@@ -74,6 +74,7 @@ public class SetDifferencesButtonClick {
         allDifferencesView.forEach((key, value) -> {
 
             ImageView clickedView = allDifferencesView.get(key);
+            assert clickedView != null;
             clickedView.setOnClickListener(new CustomClickListerners(clickedView, key));
         });
     }
@@ -101,12 +102,12 @@ public class SetDifferencesButtonClick {
             if (hashMapKeyOfClickedView.contains("reflex_")) {
 
                 String newString = this.hashMapKeyOfClickedView.replace("reflex_", "");
-                allDifferencesView.get(newString).setBackground(activityToSet.getDrawable(R.drawable.find_difference_circle_button));
+                Objects.requireNonNull(allDifferencesView.get(newString)).setBackground(activityToSet.getDrawable(R.drawable.find_difference_circle_button));
 
             } else {
 
                 String newString = "reflex_" + this.hashMapKeyOfClickedView;
-                allDifferencesView.get(newString).setBackground(activityToSet.getDrawable(R.drawable.find_difference_circle_button));
+                Objects.requireNonNull(allDifferencesView.get(newString)).setBackground(activityToSet.getDrawable(R.drawable.find_difference_circle_button));
             }
 
 

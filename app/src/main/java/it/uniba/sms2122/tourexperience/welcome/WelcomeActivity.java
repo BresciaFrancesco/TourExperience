@@ -1,16 +1,16 @@
 package it.uniba.sms2122.tourexperience.welcome;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
-
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -24,7 +24,7 @@ import it.uniba.sms2122.tourexperience.R;
 public class WelcomeActivity extends FragmentActivity implements BottomWelcomeFragment.OnChangePageListener {
     private static final int NUM_PAGES = 4; // numero di pagine del welcome
     private ViewPager2 viewPager;
-    private final ArrayList<Drawable> images = new ArrayList<Drawable>(); // Le immagini da mostrare
+    private final ArrayList<Drawable> images = new ArrayList<>(); // Le immagini da mostrare
     private String[] descriptions;
     private BottomWelcomeFragment bottomWelcomeFragment;
 
@@ -37,16 +37,16 @@ public class WelcomeActivity extends FragmentActivity implements BottomWelcomeFr
         viewPager = findViewById(R.id.welcome_view_pager);
         viewPager.setAdapter(new WelcomePageAdapter(this)); // Fornisce le pagine al view pager
         viewPager.registerOnPageChangeCallback(new WelcomeOnPageChangeCallback());  // Registra il cambiamento di pagina
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.welcome_tab_layout);    // Layout per i punti
+        TabLayout tabLayout = findViewById(R.id.welcome_tab_layout);    // Layout per i punti
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> { }).attach();   // Collega il tab layout con il view pager
         bottomWelcomeFragment = (BottomWelcomeFragment) getSupportFragmentManager().findFragmentById(R.id.bottom_welcome_fragment_container);   // Fragment contenente i bottoni di navigazione
 
         // Inizializzazione delle risorse
         descriptions = getResources().getStringArray(R.array.welcome_descriptions);
-        images.add((Drawable) ContextCompat.getDrawable(this, R.drawable.ic_tour)); // Page 1
-        images.add((Drawable) ContextCompat.getDrawable(this, R.drawable.ic_qr));   // Page 2
-        images.add((Drawable) ContextCompat.getDrawable(this, R.drawable.ic_puzzle));   // Page 3
-        images.add((Drawable) ContextCompat.getDrawable(this, R.drawable.ic_museum));   // Page 4
+        images.add(ContextCompat.getDrawable(this, R.drawable.ic_tour)); // Page 1
+        images.add(ContextCompat.getDrawable(this, R.drawable.ic_qr));   // Page 2
+        images.add(ContextCompat.getDrawable(this, R.drawable.ic_puzzle));   // Page 3
+        images.add(ContextCompat.getDrawable(this, R.drawable.ic_museum));   // Page 4
     }
 
     @Override

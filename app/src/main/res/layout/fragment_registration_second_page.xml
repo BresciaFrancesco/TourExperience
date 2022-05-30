@@ -18,7 +18,7 @@
             android:id="@+id/phaseOne"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="120dp"
+            android:layout_marginStart="120dp"
             android:background="@drawable/textview_border"
             android:checkMarkTint="#B60D0D"
             android:foreground="@drawable/checkbox"
@@ -31,7 +31,7 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:paddingHorizontal="5dp"
             android:src="@drawable/next_black" />
 
@@ -39,7 +39,7 @@
             android:id="@+id/phaseTwo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:background="@drawable/textview_border"
             android:paddingHorizontal="5dp"
             android:text="2"

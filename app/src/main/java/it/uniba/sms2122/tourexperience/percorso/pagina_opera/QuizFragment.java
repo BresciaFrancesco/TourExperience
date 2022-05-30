@@ -25,8 +25,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -41,11 +39,11 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.database.CacheGames;
 import it.uniba.sms2122.tourexperience.database.GameTypes;
 import it.uniba.sms2122.tourexperience.games.quiz.ContainerRadioLinear;
-import it.uniba.sms2122.tourexperience.games.quiz.dto.QuizJson;
 import it.uniba.sms2122.tourexperience.games.quiz.Domanda;
 import it.uniba.sms2122.tourexperience.games.quiz.Quiz;
 import it.uniba.sms2122.tourexperience.games.quiz.Risposta;
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.Punteggio;
+import it.uniba.sms2122.tourexperience.games.quiz.dto.QuizJson;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 

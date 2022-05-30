@@ -38,12 +38,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.textview.setText(names.get(position));
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onItemClickListener.onClick(Integer.toString(holder.getAbsoluteAdapterPosition()));
-            }
-        });
+        holder.itemView.setOnClickListener(view -> onItemClickListener.onClick(Integer.toString(holder.getAbsoluteAdapterPosition())));
     }
 
     @Override

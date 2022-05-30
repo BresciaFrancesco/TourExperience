@@ -5,8 +5,6 @@ import static it.uniba.sms2122.tourexperience.utility.Validate.notBlank;
 import static it.uniba.sms2122.tourexperience.utility.Validate.notEmpty;
 import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
 
-import com.google.gson.annotations.Expose;
-
 import java.util.Map;
 import java.util.Set;
 

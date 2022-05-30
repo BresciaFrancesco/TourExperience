@@ -19,15 +19,15 @@ import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 
 public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> {
 
-    private Context context;
+    private final Context context;
     /**
      * lista di stanza da visualizzare
      */
-    private List<Stanza> stanzaList;
+    private final List<Stanza> stanzaList;
     /**
      * riferimento all'activity genitore PercorsoActivity
      */
-    private PercorsoActivity parent;
+    private final PercorsoActivity parent;
 
     public StanzeAdpter(Context context, List<Stanza> stanzaList, PercorsoActivity parent) {
         this.context = context;
@@ -42,10 +42,8 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
         // layout file into View object)
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
 
-        StanzeAdpter.ViewHolder vh = new StanzeAdpter.ViewHolder(view);
-
         // Passing view to ViewHolder
-        return vh;
+        return new StanzeAdpter.ViewHolder(view);
     }
 
     @Override
@@ -62,18 +60,13 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
         holder.textview.setText(stanzaList.get(position).getNome());
         holder.imageView.setImageResource(R.drawable.icon_stanza);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                parent.getFgManagerOfPercorso().openQRScannerFragmentOfRoomSelection(stanzaList.get(indexOfStanzaList).getId());
-            }
-        });
+        holder.itemView.setOnClickListener(view -> parent.getFgManagerOfPercorso().openQRScannerFragmentOfRoomSelection(stanzaList.get(indexOfStanzaList).getId()));
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imageView;
-        private TextView textview;
-        private Button deleteButton;
+        private final ImageView imageView;
+        private final TextView textview;
+        private final Button deleteButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

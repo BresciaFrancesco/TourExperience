@@ -50,13 +50,16 @@ public class FragmentManagerOfPercorsoActivity {
         }
     }
 
+    /**
+     * Funzione che serve a sostituire l'attuale fragment con FinePercorsoFragment
+     */
     public void nextFinePercorsoFragment() {
         FinePercorsoFragment finePercorsoFragment = new FinePercorsoFragment();
         createFragment(finePercorsoFragment, "finePercorsoFragment");
     }
 
     /**
-     * Funzione che serve a sostituire il precedente fragment con SceltaStanzeFragment
+     * Funzione che serve a sostituire l'attuale fragment con SceltaStanzeFragment
      */
     public void nextSceltaStanzeFragment() {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
@@ -176,7 +179,7 @@ public class FragmentManagerOfPercorsoActivity {
 
 
     /**
-     * Funzione che serve a sostituire il precedente fragment con StanzaFragment
+     * Funzione che serve a sostituire l'attuale fragment con StanzaFragment
      */
     public void nextStanzaFragment() {
         // Controllo dei permessi

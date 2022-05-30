@@ -112,6 +112,10 @@ public class OperaFragment extends Fragment {
         }
     }
 
+    /**
+     * Imposta la gestione del pulsante dello SpotTheDifferenceButton.
+     * @param spotDifferenceGameButton
+     */
     private void triggerSpotTheDifferenceButton(ConstraintLayout spotDifferenceGameButton) {
 
         ArrayList<String> artData = new ArrayList<String>();

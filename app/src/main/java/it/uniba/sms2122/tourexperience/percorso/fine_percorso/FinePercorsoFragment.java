@@ -139,6 +139,10 @@ public class FinePercorsoFragment extends Fragment {
         buttonSkipSetOnClickListener();
     }
 
+    /**
+     * Permette di determinare sei il questionario finale è stato completato o meno
+     * @return true se il quwestionario finale è stato completato, false altrimenti
+     */
     private boolean isQuizComplete() {
         boolean isQuizComplete = true;
 
@@ -188,6 +192,7 @@ public class FinePercorsoFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        //Creazione del file da condividere il quale dovrà contenere il questionario finale completato dall'utente
         File txtsFolder = LocalFileManager.createLocalDirectoryIfNotExists(requireActivity().getFilesDir(), "txts");
         File txt = new File (txtsFolder, "form.txt");
 
@@ -210,6 +215,9 @@ public class FinePercorsoFragment extends Fragment {
         }
     }
 
+    /**
+     * Funzione che si occupa di scrivere i dati sul file che dovrà essere poi condiviso
+     */
     private void writeFileShare() {
         String answer;
         fileShare.writeToFile(getString(R.string.museum, nomeMuseo) + " , " + getString(R.string.path, nomePercorso) + "\n\n");
@@ -260,6 +268,9 @@ public class FinePercorsoFragment extends Fragment {
         outState.putString("nomePercorso", this.nomePercorso);
     }
 
+    /**
+     * Gestione del pulsanete skip
+     */
     private void buttonSkipSetOnClickListener() {
         buttonSkip.setOnClickListener(view -> {
             parent.endPath();
@@ -267,7 +278,10 @@ public class FinePercorsoFragment extends Fragment {
                 increaseNumeroStarts();
         });
     }
-    
+
+    /**
+     * Gestione del pulsanete termina percorso
+     */
     private void buttonVoteSetOnClickListener() {
         buttonVote.setOnClickListener(view -> {
             if (!checkConnectivity()) {
@@ -312,6 +326,9 @@ public class FinePercorsoFragment extends Fragment {
         });
     }
 
+    /**
+     * Funzione che incrementa di uno il nomero di avvii su Firebase
+     */
     private void increaseNumeroStarts() {
         snapshotNumStarts.addOnSuccessListener(dataSnapshot -> {
             Integer numStarts = dataSnapshot.getValue(Integer.class);
@@ -320,6 +337,10 @@ public class FinePercorsoFragment extends Fragment {
         });
     }
 
+    /**
+     * Funzione che verifica la presenza o assenza della connessione a internet
+     * @return true in caso ci sia connessionie, false altrimenti
+     */
     public boolean checkConnectivity() {
         if (NetworkConnectivity.check(requireContext())) {
             db = FirebaseDatabase.getInstance().getReference("Museums").child(nomeMuseo).child(nomePercorso);

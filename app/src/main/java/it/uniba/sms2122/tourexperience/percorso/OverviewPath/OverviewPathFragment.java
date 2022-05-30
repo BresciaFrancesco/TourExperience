@@ -35,6 +35,8 @@ import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
+import it.uniba.sms2122.tourexperience.utility.listeners.FailureListener;
+import it.uniba.sms2122.tourexperience.utility.listeners.SuccessDataListener;
 import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
 
 public class OverviewPathFragment extends Fragment {
@@ -89,6 +91,9 @@ public class OverviewPathFragment extends Fragment {
         // Serve per caricare immediatamente le stanze e le opere
         localFilePercorsoManager = parent.getLocalFilePercorsoManager();
 
+        setDynamicValuesOnView();
+        triggerStartPathButton();
+
         // Durante la visita al grafo, il puntatore viene alla stanza corrente viene spostato,
         // quindi occorre ripristinarlo dopo la visita.
         stanze = new ArrayList<>();
@@ -100,8 +105,7 @@ public class OverviewPathFragment extends Fragment {
         RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(),getListaNomiStanze(),getListaOpereStanze());
         recyclerView.setAdapter(adapter);
 
-        setDynamicValuesOnView();
-        triggerStartPathButton();
+
     }
 
     /**
@@ -127,21 +131,20 @@ public class OverviewPathFragment extends Fragment {
         ratingBar = inflater.findViewById(R.id.scorePath);
         textRatingBar = inflater.findViewById(R.id.txtScorePath);
 
-        if(checkConnectivity()) {
-            snapshotVoti.addOnSuccessListener(dataSnapshot -> {
-                String voti = dataSnapshot.getValue(String.class);
-                VotiPercorsi votiPercorsi = new VotiPercorsi(voti);
-                float media = votiPercorsi.calcolaMedia();
-                if(media == -1){
-                    ratingBar.setVisibility(View.GONE);
-                } else {
-                    ratingBar.setRating(media);
-                    textRatingBar.setText(String.valueOf(Math.round(votiPercorsi.calcolaMedia() * 100.0) / 100.0));
-                }
-            });
-        } else {
+        getVotiDatabaseList(voti -> {
+            VotiPercorsi votiPercorsi = new VotiPercorsi(voti);
+            float media = votiPercorsi.calcolaMedia();
+            if(media == -1){
+                ratingBar.setVisibility(View.GONE);
+            } else {
+                ratingBar.setRating(media);
+                textRatingBar.setText(String.valueOf(Math.round(votiPercorsi.calcolaMedia() * 100.0) / 100.0));
+            }
+
+        }, errorMsg -> {
+            Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show();
             ratingBar.setVisibility(View.GONE);
-        }
+        });
     }
 
     private void setListaStanze() {
@@ -220,14 +223,16 @@ public class OverviewPathFragment extends Fragment {
         outState.putSerializable("path", gson.toJson(this.path));
     }
 
-    public boolean checkConnectivity() {
+    public void getVotiDatabaseList(SuccessDataListener<String> successListener, FailureListener failureListener) {
         if (NetworkConnectivity.check(requireContext())) {
             db = FirebaseDatabase.getInstance().getReference("Museums").child(path.getNomeMuseo()).child(path.getNomePercorso());
             snapshotVoti = db.child("Voti").get();
-            return true;
+            snapshotVoti.addOnSuccessListener(dataSnapshot -> {
+                String voti = dataSnapshot.getValue(String.class);
+                successListener.onSuccess(voti);
+            });
         } else {
-            Toast.makeText(getContext(), getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
-            return false;
+            failureListener.onFail(getString(R.string.no_connection));
         }
     }
 }

@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Domanda prova"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textColor="@color/black"
             android:layout_marginHorizontal="5dp"
             android:layout_marginTop="5dp"/>
@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Punti"
-            android:textSize="18dp"
+            android:textSize="18sp"
             android:textColor="@color/main_red"
             android:layout_marginHorizontal="5dp"
             android:layout_marginBottom="5dp"/>

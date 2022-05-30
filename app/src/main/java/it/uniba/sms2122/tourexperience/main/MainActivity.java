@@ -1,15 +1,9 @@
 package it.uniba.sms2122.tourexperience.main;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -19,9 +13,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
@@ -39,12 +36,11 @@ import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
+import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 import it.uniba.sms2122.tourexperience.utility.listeners.FailureListener;
 import it.uniba.sms2122.tourexperience.utility.listeners.SuccessDataListener;
-import it.uniba.sms2122.tourexperience.utility.listeners.SuccessListener;
 import it.uniba.sms2122.tourexperience.utility.ranking.MuseoDatabase;
 import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
-import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -52,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;
     private SceltaMuseiFragment sceltaMuseiFragment;
+    private StatsFragment statsFragment;
     private List<MuseoDatabase> museoDatabaseList;
 
     @Override
@@ -95,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
 
         sceltaMuseiFragment = new SceltaMuseiFragment();
+        statsFragment = new StatsFragment();
         museoDatabaseList = new ArrayList<>();
     }
 
@@ -109,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                     bottomNavigationView.setItemActiveIndicatorEnabled(true);
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
-                            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left)
+                            //.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.content_fragment_container_view, HomeFragment.class, null)
                             .commit();
                     return true;
@@ -117,14 +115,21 @@ public class MainActivity extends AppCompatActivity {
                     if (f instanceof SceltaMuseiFragment) return false;
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
-                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+                            //.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                             .replace(R.id.content_fragment_container_view, safeGetSceltaMuseiFragment(), null)
-                            .addToBackStack("SceltaMuseiFragment")
+                            .addToBackStack(null)
                             .commit();
                     Objects.requireNonNull(MainActivity.this.getSupportActionBar()).setTitle(R.string.museums);
                     return true;
                 case R.id.game_statistics:
-
+                    if (f instanceof StatsFragment) return false;
+                    fragmentManager.beginTransaction()
+                            .setReorderingAllowed(true)
+                            //.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_right, R.anim.slide_out_left)
+                            .replace(R.id.content_fragment_container_view, safeGetStatsFragment(), null)
+                            .addToBackStack(null)
+                            .commit();
+                    Objects.requireNonNull(MainActivity.this.getSupportActionBar()).setTitle(R.string.stats);
                     return true;
                 default:
                     return false;
@@ -205,15 +210,16 @@ public class MainActivity extends AppCompatActivity {
             bottomNavigationView.getMenu().getItem(0).setChecked(true);
         } else{
             String fragmentTag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 2).getName();
-            switch (fragmentTag){
+            switch (Objects.requireNonNull(fragmentTag)){
                 case "HomeFragment":
                     bottomNavigationView.getMenu().getItem(0).setChecked(true);
                     break;
                 case "SceltaMuseiFragment":
+                    bottomNavigationView.getMenu().getItem(1).setChecked(true);
+                    break;
+                case "StatsFragment":
                     bottomNavigationView.getMenu().getItem(2).setChecked(true);
                     break;
-
-                    //TODO da aggiornare lo switch con casi per i fragment riguardanti la history e le statistiche e verificare che funziona
             }
         }
 
@@ -229,11 +235,11 @@ public class MainActivity extends AppCompatActivity {
         SceltaMuseiFragment sceltaMuseiFragment = new SceltaMuseiFragment();
         sceltaMuseiFragment.setArguments(bundle);
 
-        bottomNavigationView.getMenu().getItem(2).setChecked(true);
+        bottomNavigationView.getMenu().getItem(1).setChecked(true);
         //passare al SceltaMuseiFragment
         fragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
-                .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
+                //.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
                 .replace(R.id.content_fragment_container_view, sceltaMuseiFragment)
                 .addToBackStack(null)
                 .commit();
@@ -250,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
         //passare al SceltaMuseiFragment
         fragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
-                .setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
+                //.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
                 .replace(R.id.content_fragment_container_view, rankingFragment)
                 .addToBackStack(null)
                 .commit();
@@ -296,6 +302,18 @@ public class MainActivity extends AppCompatActivity {
         return sceltaMuseiFragment;
     }
 
+    /**
+     * Ritorna il fragment statsFragment assicurandosi che non
+     * sia null, in tal caso crea un nuovo fragment.
+     * @return statsFragment, mai null.
+     */
+    private StatsFragment safeGetStatsFragment() {
+        if (statsFragment == null) {
+            statsFragment = new StatsFragment();
+        }
+        return statsFragment;
+    }
+
     public boolean checkConnectivityForRanking() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(MainActivity.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
@@ -339,35 +357,32 @@ public class MainActivity extends AppCompatActivity {
         if(checkConnectivityForRanking()) {
             DatabaseReference db = FirebaseDatabase.getInstance().getReference("Museums");
             Task<DataSnapshot> snapshot = db.get();
-            snapshot.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                @Override
-                public void onSuccess(DataSnapshot dataSnapshot) {
-                    String[] children = dataSnapshot.getValue().toString().split("tipologia=");
-                    for (int j = 0; j < children.length-1; j++){
-                        String[] child = children[j].split(",");
+            snapshot.addOnSuccessListener(dataSnapshot -> {
+                String[] children = Objects.requireNonNull(dataSnapshot.getValue()).toString().split("tipologia=");
+                for (int j = 0; j < children.length-1; j++){
+                    String[] child = children[j].split(",");
 
-                        MuseoDatabase museoDatabase = new MuseoDatabase();
-                        for (String s : child) {
-                            String nomeMuseo = getNomeMuseo(s);
-                            String percorso = getNomePercorso(s);
-                            String voto = getVoto(s);
-                            String numeroStarts = getNumeroStarts(s);
+                    MuseoDatabase museoDatabase = new MuseoDatabase();
+                    for (String s : child) {
+                        String nomeMuseo = getNomeMuseo(s);
+                        String percorso = getNomePercorso(s);
+                        String voto = getVoto(s);
+                        String numeroStarts = getNumeroStarts(s);
 
-                            if (nomeMuseo != null) {
-                                museoDatabase.setNomeMuseo(nomeMuseo);
-                            } else if (percorso != null) {
-                                museoDatabase.addNomePercorso(percorso);
-                                VotiPercorsi votiPercorsi = new VotiPercorsi(voto);
-                                museoDatabase.addVoti(votiPercorsi);
+                        if (nomeMuseo != null) {
+                            museoDatabase.setNomeMuseo(nomeMuseo);
+                        } else if (percorso != null) {
+                            museoDatabase.addNomePercorso(percorso);
+                            VotiPercorsi votiPercorsi = new VotiPercorsi(voto);
+                            museoDatabase.addVoti(votiPercorsi);
 
-                            } else if (numeroStarts != null) {
-                                museoDatabase.addNumeroStarts(numeroStarts);
-                            }
+                        } else if (numeroStarts != null) {
+                            museoDatabase.addNumeroStarts(numeroStarts);
                         }
-                        museoDatabaseList.add(museoDatabase);
                     }
-                    successListener.onSuccess(museoDatabaseList);
+                    museoDatabaseList.add(museoDatabase);
                 }
+                successListener.onSuccess(museoDatabaseList);
             });
         } else {
             failureListener.onFail(getString(R.string.no_connection));

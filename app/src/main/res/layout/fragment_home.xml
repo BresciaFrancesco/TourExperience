@@ -26,7 +26,7 @@
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
         android:singleLine="true"
-        android:drawableLeft="@android:drawable/ic_menu_search"
+        android:drawableStart="@android:drawable/ic_menu_search"
         android:hint="@string/search_hint"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -55,7 +55,7 @@
             android:text="@string/rankings"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:gravity="center"
             android:paddingTop="20dp"
             app:layout_constraintBaseline_toTopOf="parent"/>

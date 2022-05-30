@@ -3,17 +3,16 @@ package it.uniba.sms2122.tourexperience.percorso.pagina_museo;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getPercorsiByMuseo;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class MuseoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        this.nomeMuseo = ((PercorsoActivity)getActivity()).getNomeMuseo();
+        this.nomeMuseo = ((PercorsoActivity) requireActivity()).getNomeMuseo();
         return inflater.inflate(R.layout.fragment_museo, container, false);
     }
 
@@ -47,10 +46,10 @@ public class MuseoFragment extends Fragment {
         nomiPercorsi = new ArrayList<>();
 
         // Recupera le immagini con il metodo getMuseoImages()
-        immagini = ((PercorsoActivity)getActivity())
+        immagini = ((PercorsoActivity) requireActivity())
                 .getLocalFileMuseoManager().getMuseoImages(nomeMuseo);
 
-        viewPager = (ViewPager)view.findViewById(R.id.museum_viewpager);
+        viewPager = view.findViewById(R.id.museum_viewpager);
         // Passa la lista di immagini al viewPagerAdapter
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getContext(),immagini);
         viewPager.setAdapter(viewPagerAdapter);
@@ -72,9 +71,8 @@ public class MuseoFragment extends Fragment {
 
         adapter.notifyDataSetChanged();
         adapter.setOnItemClickListener(str -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("nome_percorso", nomiPercorsi.get(Integer.parseInt(str)));
-            ((PercorsoActivity) getActivity()).getFgManagerOfPercorso().nextPercorsoFragment(bundle);
+            ((PercorsoActivity) requireActivity()).setValuePath(nomiPercorsi.get(Integer.parseInt(str)));
+            ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextPercorsoFragment();
         });
     }
 
@@ -83,7 +81,8 @@ public class MuseoFragment extends Fragment {
      */
     private void setDynamicValues() throws IOException {
 
-        PercorsoActivity parent = (PercorsoActivity) getActivity();
+        PercorsoActivity parent = (PercorsoActivity) requireActivity();
+        assert parent != null;
         Museo museo = parent.getLocalFileMuseoManager().getMuseoByName(nomeMuseo);
 
         // Setta descrizione museo

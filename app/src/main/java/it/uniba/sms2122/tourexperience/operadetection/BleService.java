@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
-import java.util.TreeSet;
 
 import it.uniba.sms2122.tourexperience.model.Opera;
 
@@ -66,6 +64,7 @@ public class BleService extends IntentService {
                     queue = new LinkedList<>();
                     distanceRecordMap.put(operaId, queue);
                 }
+                assert queue != null;
                 queue.add(new DistanceRecord(opereInStanza.get(operaId), distance));
             }
         }
@@ -203,6 +202,7 @@ public class BleService extends IntentService {
             // Inserimento nel set
             double avg = avgDistance(queue);
             if(avg != -1 && avg <= MAX_DISTANCE) {
+                assert queue.peek() != null;
                 nearbyOperas.add(queue.peek().getOpera());
             }
         }

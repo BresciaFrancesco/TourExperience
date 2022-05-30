@@ -850,7 +850,7 @@ public class Validate {
         private static Object copyArrayGrow1(final Object array, final Class<?> newArrayComponentType) {
             if (array != null) {
                 final int arrayLength = Array.getLength(array);
-                final Object newArray = Array.newInstance(array.getClass().getComponentType(), arrayLength + 1);
+                final Object newArray = Array.newInstance(Objects.requireNonNull(array.getClass().getComponentType()), arrayLength + 1);
                 System.arraycopy(array, 0, newArray, 0, arrayLength);
                 return newArray;
             }
@@ -952,6 +952,7 @@ public class Validate {
                 return clone(array1);
             }
             final Class<?> type1 = array1.getClass().getComponentType();
+            assert type1 != null;
             @SuppressWarnings("unchecked") // OK, because array is of type T
             final T[] joinedArray = (T[]) Array.newInstance(type1, array1.length + array2.length);
             System.arraycopy(array1, 0, joinedArray, 0, array1.length);
@@ -965,6 +966,7 @@ public class Validate {
                  * - safer, in case check turns out to be too strict
                  */
                 final Class<?> type2 = array2.getClass().getComponentType();
+                assert type2 != null;
                 if (!type1.isAssignableFrom(type2)) {
                     throw new IllegalArgumentException("Cannot store " + type2.getName() + " in an array of "
                             + type1.getName(), ase);

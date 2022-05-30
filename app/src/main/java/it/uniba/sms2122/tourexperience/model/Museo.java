@@ -1,12 +1,15 @@
 package it.uniba.sms2122.tourexperience.model;
 
+import static it.uniba.sms2122.tourexperience.utility.Validate.isTrue;
+import static it.uniba.sms2122.tourexperience.utility.Validate.notBlank;
+import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
+
 import android.content.res.Resources;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import it.uniba.sms2122.tourexperience.R;
-import static it.uniba.sms2122.tourexperience.utility.Validate.*;
 
 public class Museo {
     private String nome;
@@ -66,6 +69,7 @@ public class Museo {
         this.fileUri = fileUri;
     }
 
+    @NonNull
     public String toString() {
         StringBuilder builder = new StringBuilder();
         return builder.append("Nome: ").append(this.nome)

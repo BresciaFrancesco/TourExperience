@@ -3,6 +3,15 @@ package it.uniba.sms2122.tourexperience.main;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,26 +19,14 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
@@ -62,7 +59,7 @@ public class RankingFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        ((MainActivity) getActivity()).setActionBarTitle(getString(R.string.rankings));
+        ((MainActivity) requireActivity()).setActionBarTitle(getString(R.string.rankings));
         menu.removeItem(R.id.profile_pic);
         inflater.inflate(R.menu.share, menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -74,7 +71,7 @@ public class RankingFragment extends Fragment {
 
         switch (itemId) {
             case R.id.shareItem:
-                Uri uri = FileProvider.getUriForFile(getContext(), "it.uniba.sms2122.tourexperience.fileprovider", fileShare.getTxt());
+                Uri uri = FileProvider.getUriForFile(requireContext(), "it.uniba.sms2122.tourexperience.fileprovider", fileShare.getTxt());
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_STREAM, uri);
@@ -92,21 +89,22 @@ public class RankingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        title = (TextView) view.findViewById(R.id.title_ranking);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewRankings);
+        title = view.findViewById(R.id.title_ranking);
+        recyclerView = view.findViewById(R.id.recyclerViewRankings);
         progressBar = view.findViewById(R.id.ranking_progress_bar);
 
         progressBar.setVisibility(View.VISIBLE);
 
+        assert getArguments() != null;
         int ranking = getArguments().getInt("ranking");
         if(ranking == 2)
             title.setText(R.string.title_classifica_visitati);
 
-        ((MainActivity) getActivity()).getMuseoDatabaseList(
+        ((MainActivity) requireActivity()).getMuseoDatabaseList(
                 (List<MuseoDatabase> museoDatabaseList) -> {
                     List<Map.Entry<String, String>> titleOrdered = new ArrayList<>(initializeTitle(museoDatabaseList, ranking).entrySet());
                     titleOrdered.sort(Comparator.comparing(Map.Entry<String, String>::getValue).reversed());
-                    File txtsFolder = LocalFileManager.createLocalDirectoryIfNotExists(getActivity().getFilesDir(), "txts");
+                    File txtsFolder = LocalFileManager.createLocalDirectoryIfNotExists(requireActivity().getFilesDir(), "txts");
                     File txt = new File (txtsFolder, "ranking.txt");
 
                     if(txt.exists())
@@ -139,7 +137,7 @@ public class RankingFragment extends Fragment {
         for (int i = 0; i < museoDatabaseList.size(); i++){
             if(ranking == 1) {
                 for (String key : museoDatabaseList.get(i).getVoti().keySet()) {
-                    String media = String.valueOf(Math.round(museoDatabaseList.get(i).getVoti().get(key).calcolaMedia()* 100.0) / 100.0);
+                    String media = String.valueOf(Math.round(Objects.requireNonNull(museoDatabaseList.get(i).getVoti().get(key)).calcolaMedia()* 100.0) / 100.0);
                     if(media.equals("-1.0"))
                         media = " " + getString(R.string.no_value);
                     title.put(museoDatabaseList.get(i).getNomeMuseo() + "\n" + key + "\n" + getString(R.string.value), media);

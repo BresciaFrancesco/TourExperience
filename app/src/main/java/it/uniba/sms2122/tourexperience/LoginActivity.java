@@ -3,7 +3,9 @@ package it.uniba.sms2122.tourexperience;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,6 +15,8 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.registration.CheckCredentials;
@@ -41,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         checker = new CheckCredentials();
 
         actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(R.string.login);
 
@@ -49,17 +54,17 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setOnClickListenerLoginBtn() {
         loginBtn.setOnClickListener(view -> {
-            String email = emailEdit.getText().toString();
-            String password = passwordEdit.getText().toString();
+            String email = Objects.requireNonNull(emailEdit.getText()).toString();
+            String password = Objects.requireNonNull(passwordEdit.getText()).toString();
 
             if(checker.checkEmail(emailEdit,LoginActivity.this) && checker.checkPassword(passwordEdit,LoginActivity.this)) {
                 progressBar.setVisibility(View.VISIBLE);
                 fAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
-
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(LoginActivity.this, R.string.logged_in, Toast.LENGTH_SHORT).show();
 
+                        addNewSessionUid(getApplicationContext());
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(i);
                         finishAffinity(); // Non si può tornare indietro con il pulsane Back
@@ -87,5 +92,15 @@ public class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+    }
+
+    /**
+     * Aggiunge al file sharedPreferences l'uid cloud dell'utente loggato.
+     * @param context
+     */
+    public static void addNewSessionUid(final Context context) {
+        final SharedPreferences.Editor editor = context.getSharedPreferences(BuildConfig.SHARED_PREFS, MODE_PRIVATE).edit();
+        editor.putString(context.getString(R.string.uid_preferences), FirebaseAuth.getInstance().getUid());
+        editor.apply();
     }
 }

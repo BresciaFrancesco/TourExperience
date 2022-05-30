@@ -1,17 +1,18 @@
 package it.uniba.sms2122.tourexperience.registration;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 
@@ -38,7 +39,7 @@ public class RegistrationFragmentFirstPage extends Fragment {
         psw = view.findViewById(R.id.idEdtRegPassword);
         rPsw = view.findViewById(R.id.idEdtRegPasswordTwo);
         btnNextPage = view.findViewById(R.id.idBtnRegFirstPage);
-        mainActivity = (RegistrationActivity) getActivity();
+        mainActivity = (RegistrationActivity) requireActivity();
 
         btnNextPage.setOnClickListener(this::nextFragment);
     }
@@ -48,8 +49,8 @@ public class RegistrationFragmentFirstPage extends Fragment {
      * @param view
      */
     private void nextFragment(View view) {
-        String txtEmail = email.getText().toString();
-        String txtPsw = psw.getText().toString();
+        String txtEmail = Objects.requireNonNull(email.getText()).toString();
+        String txtPsw = Objects.requireNonNull(psw.getText()).toString();
 
         CheckCredentials checker = mainActivity.getChecker();
         if (!checker.checkEmail(this.email, mainActivity)) return;

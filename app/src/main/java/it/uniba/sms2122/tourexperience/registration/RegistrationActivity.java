@@ -1,19 +1,14 @@
 package it.uniba.sms2122.tourexperience.registration;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.Toast;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.app.ActivityOptions;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.transition.Slide;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -21,7 +16,6 @@ import com.google.firebase.database.DatabaseReference;
 import it.uniba.sms2122.tourexperience.LoginActivity;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
-import it.uniba.sms2122.tourexperience.model.User;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -37,6 +31,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         checker = new CheckCredentials();
         actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true); // abilita il pulsante "back" nella action bar
         actionBar.setTitle(R.string.registration);
 

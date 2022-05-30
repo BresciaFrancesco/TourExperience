@@ -1,5 +1,13 @@
 package it.uniba.sms2122.tourexperience.musei.checkzip;
 
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
+
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -10,6 +18,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -20,14 +29,6 @@ import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.musei.checkzip.exception.ZipCheckerException;
 import it.uniba.sms2122.tourexperience.musei.checkzip.exception.ZipCheckerRunTimeException;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
-
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
-
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 
 public class CheckZipMuseum {
 
@@ -97,7 +98,7 @@ public class CheckZipMuseum {
         }
         Set<String> cachedPercorsi = cachePercorsiInLocale.get(museumName);
         for (String percorso : jsonPercorsi) {
-            if (!percorso.endsWith(".json") || percorsi.children.get(percorso).children != null)
+            if (!percorso.endsWith(".json") || Objects.requireNonNull(percorsi.children.get(percorso)).children != null)
                 throw new ZipCheckerException("I json dei percorsi sono errati");
             String p = percorso.substring(0, percorso.length()-5);
             if (cachedPercorsi != null && cachedPercorsi.contains(p)) {
@@ -113,6 +114,7 @@ public class CheckZipMuseum {
         Set<String> stanzeKey = stanze.children.keySet();
         for (String stanza : stanzeKey) {
             Tree s = stanze.children.get(stanza);
+            assert s != null;
             checkDim(s, 0, false);
             getIfExists(s, infoStanzaJson, true);
             // CHECK opere
@@ -133,6 +135,7 @@ public class CheckZipMuseum {
             throw new ZipCheckerException("La stanza " + stanza.value() + " non ha opere");
         for (String nomeOpera : opereKey) {
             Tree opera = stanza.children.get(nomeOpera);
+            assert opera != null;
             if (opera.children == null)
                 throw new ZipCheckerException(nomeOpera + " non è una directory oppure è vuota");
             getIfExists(opera, infoOperaJson, true);

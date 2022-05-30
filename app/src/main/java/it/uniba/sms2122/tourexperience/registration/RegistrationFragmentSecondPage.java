@@ -1,12 +1,6 @@
 package it.uniba.sms2122.tourexperience.registration;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +8,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 
@@ -45,14 +46,14 @@ public class RegistrationFragmentSecondPage extends Fragment {
         imgDate = view.findViewById(R.id.idImgSetDate);
         progressBar = view.findViewById(R.id.idProgressBarReg);
         btnEnd = view.findViewById(R.id.idBtnRegSecondPage);
-        mainActivity = (RegistrationActivity) getActivity();
+        mainActivity = (RegistrationActivity) requireActivity();
 
         imgDate.setOnClickListener(view1 -> {
             DialogFragment dialogFragment = new DatePickerDialogTheme();
             dialogFragment.show(getChildFragmentManager(), "MyTheme");
         });
 
-        btnEnd.setOnClickListener(view2 -> registration(view2));
+        btnEnd.setOnClickListener(this::registration);
     }
 
     /**
@@ -60,9 +61,9 @@ public class RegistrationFragmentSecondPage extends Fragment {
      * @param view
      */
     private void registration(View view) {
-        String txtName = name.getText().toString();
-        String txtSurname = surname.getText().toString();
-        String txtDate = date.getText().toString();
+        String txtName = Objects.requireNonNull(name.getText()).toString();
+        String txtSurname = Objects.requireNonNull(surname.getText()).toString();
+        String txtDate = Objects.requireNonNull(date.getText()).toString();
 
         CheckCredentials checker = mainActivity.getChecker();
         if (!checker.checkGenericStringGeneral("name", name,30,txtName,mainActivity)) return;
@@ -72,6 +73,7 @@ public class RegistrationFragmentSecondPage extends Fragment {
         if (!checker.checkGenericStringGeneral("date", date,30,txtDate,mainActivity)) return;
 
         Bundle bundle = getArguments();
+        assert bundle != null;
         bundle.putString("name", txtName);
         bundle.putString("surname", txtSurname);
         bundle.putString("dateBirth", txtDate);

@@ -2,30 +2,18 @@ package it.uniba.sms2122.tourexperience.QRscanner;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
-import com.budiyev.android.codescanner.DecodeCallback;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.zxing.Result;
-
-import java.util.zip.Inflater;
 
 import it.uniba.sms2122.tourexperience.R;
-import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
-import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
-import it.uniba.sms2122.tourexperience.percorso.pagina_stanza.StanzaFragment;
 
 public class QRScannerFragment extends Fragment {
 
@@ -51,36 +39,26 @@ public class QRScannerFragment extends Fragment {
         if(scannerDataManager == null){//è avvenuto un cambio di configurazione
 
             //chiudo lo scanner perche ho bisogno di farlo riaprire per caricare l'ggetto che gestisce la lettura del qr
-            getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+            requireActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
         }
 
         Fragment thisFragment = this;
-        final Activity parentActivity = getActivity();
+        final Activity parentActivity = requireActivity();
         View root = inflater.inflate(R.layout.qr_scanner_fragment, container, false);
         CodeScannerView scannerView = root.findViewById(R.id.scanner_view);
 
         triggerCloseScannerButton(root);
 
+        assert parentActivity != null;
         mCodeScanner = new CodeScanner(parentActivity, scannerView);
-        mCodeScanner.setDecodeCallback(new DecodeCallback() {
-            @Override
-            public void onDecoded(@NonNull final Result result) {
+        mCodeScanner.setDecodeCallback(result -> {
 
-                parentActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        scannerDataManager.onScannerDataRead(result.getText());//eseguo le operazione richieste una volta letto un codice qr
-                    }
-                });
-                getActivity().getSupportFragmentManager().beginTransaction().remove(thisFragment).commit();
-            }
+            parentActivity.runOnUiThread(() -> {
+                scannerDataManager.onScannerDataRead(result.getText());//eseguo le operazione richieste una volta letto un codice qr
+            });
+            requireActivity().getSupportFragmentManager().beginTransaction().remove(thisFragment).commit();
         });
-        scannerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCodeScanner.startPreview();
-            }
-        });
+        scannerView.setOnClickListener(view -> mCodeScanner.startPreview());
         return root;
     }
 
@@ -89,12 +67,7 @@ public class QRScannerFragment extends Fragment {
         Fragment thisFragment = this;
         Button closeScanneButton = root.findViewById(R.id.closeScannerButton);
 
-        closeScanneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                thisFragment.getActivity().getSupportFragmentManager().beginTransaction().remove(thisFragment).commit();
-            }
-        });
+        closeScanneButton.setOnClickListener(view -> thisFragment.requireActivity().getSupportFragmentManager().beginTransaction().remove(thisFragment).commit());
     }
 
 

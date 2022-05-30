@@ -42,7 +42,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.museum_image_view,null);
 
-        ImageView imageView = (ImageView)view.findViewById(R.id.museumImageView);
+        ImageView imageView = view.findViewById(R.id.museumImageView);
         imageView.setImageURI(Uri.parse(images.get(position)));
 
         ImageView ind1 = view.findViewById(R.id.ind1);
@@ -54,18 +54,8 @@ public class ViewPagerAdapter extends PagerAdapter {
 
         // Con i listener posso premere sulla freccia e cambiare immagine
         // Altrimenti posso solo scorrere per cambiare immagine
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MuseoFragment.viewPager.setCurrentItem(position-1);
-            }
-        });
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MuseoFragment.viewPager.setCurrentItem(position+1);
-            }
-        });
+        back.setOnClickListener(view1 -> MuseoFragment.viewPager.setCurrentItem(position-1));
+        next.setOnClickListener(view12 -> MuseoFragment.viewPager.setCurrentItem(position+1));
 
         switch (position) {
             case 0:

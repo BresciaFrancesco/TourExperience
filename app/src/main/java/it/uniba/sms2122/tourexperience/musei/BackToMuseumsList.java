@@ -1,5 +1,8 @@
 package it.uniba.sms2122.tourexperience.musei;
 
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cacheMuseums;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getAllCachedMuseums;
+
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -11,8 +14,6 @@ import java.util.Objects;
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.model.Museo;
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cacheMuseums;
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getAllCachedMuseums;
 
 
 public class BackToMuseumsList implements Back {
@@ -27,7 +28,7 @@ public class BackToMuseumsList implements Back {
     @Override
     public void back(View view) {
         try {
-            List<Museo> listaForAdapter = null;
+            List<Museo> listaForAdapter;
             if (cacheMuseums.isEmpty()) {
                 listaForAdapter = new ArrayList<>();
                 listaForAdapter.add(Museo.getMuseoVuoto(fragment.getResources()));

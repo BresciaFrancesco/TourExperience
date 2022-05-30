@@ -11,6 +11,7 @@ import static it.uniba.sms2122.tourexperience.database.CacheGames.COLUMN_GAME_TY
 
 import static it.uniba.sms2122.tourexperience.database.CacheScoreGames.CACHE_SCORE_TABLE;
 import static it.uniba.sms2122.tourexperience.database.CacheScoreGames.COLUMN_SCORE;
+import static it.uniba.sms2122.tourexperience.database.CacheScoreGames.COLUMN_UID;
 
 import androidx.annotation.Nullable;
 
@@ -20,9 +21,10 @@ import java.util.List;
 public class DBHelper extends SQLiteOpenHelper {
 
     private final static String DB_NAME = "tourexperience.db";
+    private final static int DB_VERSION = 2;
 
     public DBHelper(@Nullable Context context) {
-        super(context, DB_NAME, null, 1);
+        super(context, DB_NAME, null, DB_VERSION);
     }
 
     // Chiamato la prima volta che si accede ad un database.
@@ -35,8 +37,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_GAME_TYPE + " TEXT NOT NULL CHECK( "+COLUMN_GAME_TYPE+" IN ('"+ QUIZ +"', '"+DIFF+"') )," +
                 "PRIMARY KEY (" + COLUMN_NOME_OPERA + "," + COLUMN_GAME_TYPE + ") )");
         createTableList.add("CREATE TABLE " + CACHE_SCORE_TABLE + " (" +
-                COLUMN_GAME_TYPE + " TEXT NOT NULL CHECK( "+COLUMN_GAME_TYPE+" IN ('"+QUIZ+"', '"+DIFF+"') ) PRIMARY KEY," +
-                COLUMN_SCORE + " INTEGER NOT NULL )");
+                COLUMN_UID + " TEXT NOT NULL," +
+                COLUMN_GAME_TYPE + " TEXT NOT NULL CHECK( "+COLUMN_GAME_TYPE+" IN ('"+QUIZ+"', '"+DIFF+"') )," +
+                COLUMN_SCORE + " INTEGER NOT NULL," +
+                "PRIMARY KEY ("+COLUMN_UID+", "+COLUMN_GAME_TYPE+") )");
 
         for (String s : createTableList) {
             db.execSQL(s);

@@ -57,6 +57,15 @@ public class Opera implements Serializable {
         return Objects.hash(id);
     }
 
+    @Override
+    public String toString() {
+        return "Opera{" +
+                "id='" + id + '\'' +
+                ", nome='" + nome + '\'' +
+                ", percorsoImg='" + percorsoImg + '\'' +
+                ", descrizione='" + descrizione + '\'' +
+                '}';
+    }
 
     /**
      * Controlla un oggetto Opera arbitrario secondo tale contratto:

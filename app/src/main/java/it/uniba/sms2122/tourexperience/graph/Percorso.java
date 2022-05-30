@@ -5,6 +5,7 @@ import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
@@ -92,11 +93,12 @@ public class Percorso {
     public Stanza moveTo(String idProssimaStanza) throws GraphException, GraphRunTimeException {
         Vertex currVertex = mappaStanze.get(idStanzaCorrente);
         try {
+            assert currVertex != null;
             if ((!currVertex.containsEdge(idProssimaStanza) ) && (!idProssimaStanza.equals(idStanzaIniziale))  && (!idProssimaStanza.equals(idStanzaCorrente))) {
                 throw new GraphException("La stanza con ID: " + idProssimaStanza
                         + " non è collegata alla stanza corrente o è inesistente.");
             }
-            Stanza stanza = mappaStanze.get(idProssimaStanza).getStanza();
+            Stanza stanza = Objects.requireNonNull(mappaStanze.get(idProssimaStanza)).getStanza();
             idStanzaCorrente = idProssimaStanza;
             if(idStanzaIniziale == null)
                 idStanzaIniziale = idStanzaCorrente;
@@ -114,11 +116,12 @@ public class Percorso {
     public List<Stanza> getAdiacentNodes() throws GraphRunTimeException {
         try {
             Vertex v = mappaStanze.get(idStanzaCorrente);
+            assert v != null;
             Set<String> archi = v.getEdges();
             List<Stanza> stanzeAdiacenti = new ArrayList<>(archi.size());
             int i = 0;
             for (String idS : archi) {
-                stanzeAdiacenti.add(i++, mappaStanze.get(idS).getStanza());
+                stanzeAdiacenti.add(i++, Objects.requireNonNull(mappaStanze.get(idS)).getStanza());
             }
             return stanzeAdiacenti;
         }
@@ -128,7 +131,7 @@ public class Percorso {
     }
 
     public Stanza getStanzaCorrente() {
-        return mappaStanze.get(idStanzaCorrente).getStanza();
+        return Objects.requireNonNull(mappaStanze.get(idStanzaCorrente)).getStanza();
     }
 
 

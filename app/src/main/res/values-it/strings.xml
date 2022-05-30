@@ -29,6 +29,7 @@
     <string name="home" translatable="false">Home</string>
     <string name="visits_history">Cronologia percorsi</string>
     <string name="museums">Musei</string>
+    <string name="stats">Statistiche giochi</string>
     <string name="museums_cloud_import">Scegli Percorso da importare</string>
     <string name="game_statistics">Statistiche giochi</string>
     <string name="search_hint">Roma, Museo egizio, …</string>
@@ -94,6 +95,7 @@
     <string name="importa_msg">Vuoi davvero importare questo percorso del museo</string>
     <string name="SI">Si</string>
     <string name="NO">Annulla</string>
+    <string name="do_not_show_again_local_import" translatable="false">do_not_show_again</string>
     <string name="local_import_dialog_title">Spiegazione Importazione</string>
     <string name="local_import_message">
         È possibile importare solo file .zip e .json. I file zip devono essere strutturati secondo le regole di TourExperience.
@@ -110,6 +112,7 @@
     <string name="area">Zona: %1$s</string>
     <string name="vote">Voto: %1$s</string>
     <string name="no_connection">Connessione internet assente</string>
+    <string name="no_connection_saved_score">Non c\'è connessione a Internet ma il punteggio è stato salvato</string>
     <string name="importing_ruote">Importazione percorso…</string>
     <string name="mime_type_error">Il file selezionato non è del tipo previsto</string>
     <string name="json_import_error">Percorso %1$s errato!</string>
@@ -135,7 +138,7 @@
     <string name="msg_share">Hey, guarda che percorso ho fatto</string>
     <string name="try_again">Riprova</string>
     <string name="attention">Attenzione !</string>
-    <string name="msg_attention">Non è stato possibile registrare la tua votazione poichè non è presente connessione ad internet</string>
+    <string name="msg_attention">Non è stato possibile registrare la tua votazione poiché non è presente connessione ad internet</string>
     <string name="title_classifica_voti">Migliori percorsi</string>
     <string name="description_classifica_voti">Classifica dei percorsi presenti all\'interno dell\'applicazione che hanno avuto una migliore recensione da parte dei vari utenti che li hanno svolti</string>
     <string name="title_classifica_visitati">Percorsi più visitati</string>
@@ -169,11 +172,13 @@
     <string name="file_json_importato">File json importato correttamente</string>
     <string name="quiz_import_request">Non è presente nessun quiz per questa opera. Vuoi importare un quiz?</string>
     <string name="importa_quiz">Importa quiz</string>
+    <string name="quiz_svolto">Hai già completato questo Quiz in questo Percorso</string>
     <string name="errore_apertura_quiz">Errore nell\'apertura del quiz</string>
     <string name="scan_qr_code_opera">Scansiona il codice qr di un\'opera</string>
     <string name="operas_close_to_you">Opere vicino a te</string>
     <string name="profile_pic_alert_title">Vuoi accedere o registrarti?</string>
     <string name="profile_pic_alert_message">Accedi o registrati a TourExperience per valutare i percorsi che più ti piacciono e accedere a tante funzionalità esclusive!</string>
+    <string name="question_end_path">Questa è la stanza finale del percorso, vuoi terminare il percorso o continuare?</string>
 
     <!--Domande e risposte relative al questionario finale-->
     <string name="question_1">Dai una valutazione al percorso</string>
@@ -191,4 +196,6 @@
     <string name="monotonous">Monotono</string>
 
     <string name="spot_the_difference_title_game">Trova le differenze</string>
+    <string name="uid_preferences" translatable="false">uid_preferences</string>
+    <string name="description">Descrizione...</string>
 </resources>

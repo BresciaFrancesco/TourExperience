@@ -9,10 +9,6 @@ import android.os.Bundle;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-import com.google.android.material.textfield.TextInputEditText;
-
-import java.util.Date;
-
 import it.uniba.sms2122.tourexperience.R;
 
 public class ProfileDataPicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {

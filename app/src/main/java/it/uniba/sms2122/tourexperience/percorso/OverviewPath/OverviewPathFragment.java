@@ -1,10 +1,7 @@
 package it.uniba.sms2122.tourexperience.percorso.OverviewPath;
 
 
-import android.icu.util.ULocale;
 import android.os.Bundle;
-import android.util.ArraySet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +12,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -28,31 +22,24 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.database.CacheGames;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
-import it.uniba.sms2122.tourexperience.graph.exception.GraphException;
 import it.uniba.sms2122.tourexperience.model.Stanza;
-import it.uniba.sms2122.tourexperience.percorso.OverviewPath.RecycleViewAdapter;
-import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
-import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
+import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
 
 public class OverviewPathFragment extends Fragment {
 
     Percorso path;
     ArrayList<Stanza> stanze;
+    ArrayList<String> opere;
     View inflater;
 
     RecyclerView recyclerView;
@@ -78,8 +65,10 @@ public class OverviewPathFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
+        PercorsoActivity parent = (PercorsoActivity) requireActivity();
+
         if (savedInstanceState == null) {
-            path = ((PercorsoActivity)getActivity()).getPath();
+            path = parent.getPath();
 
         } else {
             Gson gson = new GsonBuilder().create();
@@ -87,23 +76,32 @@ public class OverviewPathFragment extends Fragment {
 
             if (this.path == null) {//lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui comunque viene ricreato da 0 e non ha valori inzializzati
 
-                path = ((PercorsoActivity)getActivity()).getPath();
+                path = parent.getPath();
             }
         }
+        // Elimino tutti i dati da questa cache,
+        // ovvero elimino tutti i minigiochi già svolti,
+        // affinché possa svolgerli ancora
+        final CacheGames cacheGames = new CacheGames(view.getContext());
+        cacheGames.deleteAll();
 
         // Serve per caricare immediatamente le stanze e le opere
-        localFilePercorsoManager = ((PercorsoActivity) getActivity()).getLocalFilePercorsoManager();
+        localFilePercorsoManager = parent.getLocalFilePercorsoManager();
 
-        // Durante la visita al grafo, il puntatore viene alla stanza corrente viene spostato,
-        // quindi occorre ripristinarlo dopo la visita.
         stanze = new ArrayList<>();
+        opere = new ArrayList<>();
+
+        // Visita del grafo, caricamento stanze e opere negli array
         String idStanzaCorrente = path.getIdStanzaCorrente();
         setListaStanze();
-        path.setIdStanzaCorrente(idStanzaCorrente);
 
         recyclerView = view.findViewById(R.id.rooms_recycle_view);
         RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(),getListaNomiStanze(),getListaOpereStanze());
         recyclerView.setAdapter(adapter);
+
+        // Durante la visita al grafo, il puntatore alla stanza corrente viene spostato,
+        // quindi occorre ripristinarlo dopo la visita.
+        path.setIdStanzaCorrente(idStanzaCorrente);
 
         setDynamicValuesOnView();
         triggerStartPathButton();
@@ -115,17 +113,13 @@ public class OverviewPathFragment extends Fragment {
     private void triggerStartPathButton() {
 
         startPathButton = inflater.findViewById(R.id.startPathButton);
-        startPathButton.setOnClickListener(view -> ((PercorsoActivity)getActivity()).getFgManagerOfPercorso().nextSceltaStanzeFragment());
+        startPathButton.setOnClickListener(view -> ((PercorsoActivity)requireActivity()).getFgManagerOfPercorso().nextSceltaStanzeFragment());
     }
-
 
     /**
      * Funzione che si occupa di settare i reali valori dinamici delle viste che formano questa fragment
      */
     private void setDynamicValuesOnView() {
-
-        PercorsoActivity parent = (PercorsoActivity) getActivity();
-
         pathNameTextView = inflater.findViewById(R.id.pathName);
         pathNameTextView.setText(path.getNomePercorso());
 
@@ -136,18 +130,15 @@ public class OverviewPathFragment extends Fragment {
         textRatingBar = inflater.findViewById(R.id.txtScorePath);
 
         if(checkConnectivity()) {
-            snapshotVoti.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                @Override
-                public void onSuccess(DataSnapshot dataSnapshot) {
-                    String voti = dataSnapshot.getValue(String.class);
-                    VotiPercorsi votiPercorsi = new VotiPercorsi(voti);
-                    Float media = votiPercorsi.calcolaMedia();
-                    if(media == -1){
-                        ratingBar.setVisibility(View.GONE);
-                    } else {
-                        ratingBar.setRating(media);
-                        textRatingBar.setText(String.valueOf(Math.round(votiPercorsi.calcolaMedia() * 100.0) / 100.0));
-                    }
+            snapshotVoti.addOnSuccessListener(dataSnapshot -> {
+                String voti = dataSnapshot.getValue(String.class);
+                VotiPercorsi votiPercorsi = new VotiPercorsi(voti);
+                float media = votiPercorsi.calcolaMedia();
+                if(media == -1){
+                    ratingBar.setVisibility(View.GONE);
+                } else {
+                    ratingBar.setRating(media);
+                    textRatingBar.setText(String.valueOf(Math.round(votiPercorsi.calcolaMedia() * 100.0) / 100.0));
                 }
             });
         } else {
@@ -169,15 +160,15 @@ public class OverviewPathFragment extends Fragment {
 
         while(!coda.isEmpty()) {
             // Rimuovo la stanza corrente dalla coda
+
             corrente = coda.pop();
             int correnteID = getStanzaID(corrente);
 
             // Sposto il puntatore sul nodo adiacente
             try {
                 path.moveTo(corrente.getId());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                localFilePercorsoManager.createStanzeAndOpereInThisAndNextStanze(path);
+            } catch (Exception ignored) {}
 
             if(!visitato[correnteID]) {
                 // Segno il nodo come visitato
@@ -215,8 +206,10 @@ public class OverviewPathFragment extends Fragment {
     private ArrayList<String> getListaOpereStanze() {
         ArrayList<String> lista = new ArrayList<>();
         for(Stanza stanza : stanze) {
-            Log.v("DEBUG",stanza.toString());
-            lista.add(stanza.getOpere().get(stanza.getId() + "0000").getPercorsoImg());
+            try{
+                lista.add(stanza.getOpere().get(stanza.getId() + "0000").getPercorsoImg());
+            }catch (NullPointerException ignored){}
+
         }
         return lista;
     }
@@ -230,7 +223,7 @@ public class OverviewPathFragment extends Fragment {
     }
 
     public boolean checkConnectivity() {
-        if (NetworkConnectivity.check(getContext())) {
+        if (NetworkConnectivity.check(requireContext())) {
             db = FirebaseDatabase.getInstance().getReference("Museums").child(path.getNomeMuseo()).child(path.getNomePercorso());
             snapshotVoti = db.child("Voti").get();
             return true;

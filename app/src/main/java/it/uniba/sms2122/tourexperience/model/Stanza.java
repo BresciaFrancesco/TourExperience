@@ -5,8 +5,6 @@ import static it.uniba.sms2122.tourexperience.utility.Validate.notBlank;
 import static it.uniba.sms2122.tourexperience.utility.Validate.notEmpty;
 import static it.uniba.sms2122.tourexperience.utility.Validate.notNull;
 
-import com.google.gson.annotations.Expose;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -64,6 +62,16 @@ public class Stanza {
     public Opera getOperaByID(final String idOpera) {
         notBlank(idOpera);
         return notNull(opere.get(idOpera));
+    }
+
+    @Override
+    public String toString() {
+        return "Stanza{" +
+                "id='" + id + '\'' +
+                ", nome='" + nome + '\'' +
+                ", descrizione='" + descrizione + '\'' +
+                ", opere=" + opere +
+                '}';
     }
 
     /**

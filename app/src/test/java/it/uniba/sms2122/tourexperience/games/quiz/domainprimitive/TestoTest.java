@@ -25,21 +25,15 @@ public class TestoTest {
         matchesPattern(value, pattern);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void isPatternNotCorrectForString_withFirstCharLowerCase() throws Exception {
+    @Test
+    public void isPatternCorrectForString_withFirstCharLowerCase() throws Exception {
         String value = "prova";
         matchesPattern(value, pattern);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void isPatternNotCorrectForString_withSpanishInterrogation_and_FirstCharLowerCase() throws Exception {
+    @Test
+    public void isPatternCorrectForString_withSpanishInterrogation_and_FirstCharLowerCase() throws Exception {
         String value = "¿como estas?";
-        matchesPattern(value, pattern);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void isPatternNotCorrectForString_withSpanishInterrogation_and_FirstCharSpace() throws Exception {
-        String value = "¿ Como estas?";
         matchesPattern(value, pattern);
     }
 

@@ -2,7 +2,6 @@ package it.uniba.sms2122.tourexperience.percorso.OverviewPath;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -208,8 +207,10 @@ public class OverviewPathFragment extends Fragment {
     private ArrayList<String> getListaOpereStanze() {
         ArrayList<String> lista = new ArrayList<>();
         for(Stanza stanza : stanze) {
-            //Log.v("DEBUG",stanza.toString());
-            lista.add(Objects.requireNonNull(stanza.getOpere().get(stanza.getId() + "0000")).getPercorsoImg());
+            try{
+                lista.add(Objects.requireNonNull(stanza.getOpere().get(stanza.getId() + "0000")).getPercorsoImg());
+            }catch (NullPointerException ignored){}
+
         }
         return lista;
     }

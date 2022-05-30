@@ -61,13 +61,15 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageView
+        <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:text="spot difference"
+            android:layout_height="wrap_content"
+            android:text="spot the 3 difference"
+            android:textColor="@color/black"
             android:textAlignment="center"
-            android:background="@color/cardview_light_background"/>
+            android:padding="2.5dp"
+            android:background="@color/cardview_light_background" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/image2Container"

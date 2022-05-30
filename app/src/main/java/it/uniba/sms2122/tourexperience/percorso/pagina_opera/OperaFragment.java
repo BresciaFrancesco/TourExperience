@@ -102,7 +102,6 @@ public class OperaFragment extends Fragment {
 
         if (localFileGamesManager.existsSpotTheDifference()) {
 
-
             //faccio visualizzare la card
             CardView spotDifferenceGameCard = view.findViewById(R.id.spotTheDifference_card);
             spotDifferenceGameCard.setVisibility(View.VISIBLE);

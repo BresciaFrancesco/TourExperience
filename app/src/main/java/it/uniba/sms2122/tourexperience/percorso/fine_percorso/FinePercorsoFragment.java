@@ -90,7 +90,6 @@ public class FinePercorsoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         parent = (PercorsoActivity) requireActivity();
-        assert parent != null;
         Objects.requireNonNull(parent.getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
 
         radioGroupQuestion2 = view.findViewById(R.id.radio_group_question_2);
@@ -270,9 +269,9 @@ public class FinePercorsoFragment extends Fragment {
     }
     
     private void buttonVoteSetOnClickListener() {
-        buttonVote.setOnClickListener(view -> NetworkConnectivity.check(isConnected -> {
-            if (!isConnected) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        buttonVote.setOnClickListener(view -> {
+            if (!checkConnectivity()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(FinePercorsoFragment.this.getContext());
                 builder.setMessage(R.string.msg_attention);
                 builder.setTitle(R.string.attention);
                 builder.setIcon(R.drawable.ic_baseline_error_24);
@@ -285,8 +284,8 @@ public class FinePercorsoFragment extends Fragment {
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
 
-            }else {
-                if (isQuizComplete()){
+            } else {
+                if (FinePercorsoFragment.this.isQuizComplete()) {
                     String result = String.valueOf(ratingBar.getRating());
                     snapshotVoti.addOnSuccessListener(dataSnapshot -> {
                         String voti = dataSnapshot.getValue(String.class);
@@ -298,19 +297,19 @@ public class FinePercorsoFragment extends Fragment {
                             voti = voti.concat(";" + result);
                         db.child("Voti").setValue(voti).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(getContext(), R.string.path_end_success, Toast.LENGTH_LONG).show();
+                                Toast.makeText(FinePercorsoFragment.this.getContext(), R.string.path_end_success, Toast.LENGTH_LONG).show();
                                 parent.endPath();
                             } else {
-                                Toast.makeText(getContext(), R.string.path_end_fail, Toast.LENGTH_LONG).show();
+                                Toast.makeText(FinePercorsoFragment.this.getContext(), R.string.path_end_fail, Toast.LENGTH_LONG).show();
                             }
                         });
                     });
-                    increaseNumeroStarts();
+                    FinePercorsoFragment.this.increaseNumeroStarts();
                 } else {
-                    Toast.makeText(getContext(), requireContext().getString(R.string.quiz_non_completato), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FinePercorsoFragment.this.getContext(), FinePercorsoFragment.this.requireContext().getString(R.string.quiz_non_completato), Toast.LENGTH_SHORT).show();
                 }
             }
-        }));
+        });
     }
 
     private void increaseNumeroStarts() {

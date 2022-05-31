@@ -41,6 +41,7 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.database.CacheGames;
 import it.uniba.sms2122.tourexperience.database.CacheScoreGames;
 import it.uniba.sms2122.tourexperience.database.GameTypes;
+import it.uniba.sms2122.tourexperience.games.SaveScore;
 import it.uniba.sms2122.tourexperience.games.quiz.ContainerRadioLinear;
 import it.uniba.sms2122.tourexperience.games.quiz.Domanda;
 import it.uniba.sms2122.tourexperience.games.quiz.Quiz;
@@ -335,101 +336,14 @@ public class QuizFragment extends Fragment {
      */
     private void terminaQuiz(View view) {
         try {
-            final Activity act = getActivity();
-            // Controllo connessione internet
-            if (NetworkConnectivity.check(view.getContext())) {
-
-                final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (currentUser != null) {
-                    getAndSaveOnCloud(currentUser, act);
-                } else {
-                    try {
-                        Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_guest_user), Toast.LENGTH_SHORT).show();
-                    } catch (NullPointerException e) { e.printStackTrace(); }
-                }
-            }
-            else { // Non c'è connessione
-                try {
-                    // salvo il punteggio del quiz in locale nel caso manchi la connessione
-                    final SharedPreferences sp = requireContext().getSharedPreferences(BuildConfig.SHARED_PREFS, Context.MODE_PRIVATE);
-                    final String uid = sp.getString(getString(R.string.uid_preferences), null);
-                    if (uid != null) {
-                        final CacheScoreGames cacheScoreGames = new CacheScoreGames(requireContext());
-                        cacheScoreGames.saveOne(uid, GameTypes.QUIZ, (int)quiz.getPunteggioCorrente().value());
-                    }
-                    Toast.makeText(act.getApplicationContext(),
-                        (uid != null)
-                            ? getString(R.string.no_connection_saved_score)
-                            : getString(R.string.no_connection),
-                        Toast.LENGTH_LONG).show();
-                }
-                catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-            }
-            // Salvo nel db locale lo svolgimento di questo quiz durante questo percorso
-            final CacheGames cacheGames = new CacheGames(view.getContext());
-            if (!cacheGames.addOne(nomeOpera, GameTypes.QUIZ)) {
-                Log.e("Salvataggio svolgimento quiz", "cacheGames.addOne ha ritornato false");
-            }
-
+            SaveScore sv = new SaveScore(getActivity(), GameTypes.QUIZ, quiz.getPunteggioCorrente().value());
+            sv.save(view, nomeOpera);
             // Torno al fragment precedente dell'Opera, eliminando questo del Quiz
             requireActivity().getSupportFragmentManager().popBackStack();
         }
         catch (NullPointerException | IllegalStateException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Ottiene lo score (se presente) dal Cloud e lo somma al nuovo score ottenuto.
-     * Se non è presente nessuno score, inserisce direttamente il nuovo score ottenuto.
-     * @param currentUser utente correntemente loggato in Cloud.
-     * @param act Activity principale di questo fragment.
-     */
-    private void getAndSaveOnCloud(final FirebaseUser currentUser, final Activity act) {
-        final DatabaseReference dbUser = FirebaseDatabase.getInstance()
-                .getReference("Users")
-                .child(currentUser.getUid())
-                .child("score_quiz");
-        dbUser.get().addOnCompleteListener(taskGet -> {
-            if (taskGet.isSuccessful()) {
-                final double totalUserScore = ((taskGet.getResult().getValue() != null)
-                        ? Double.parseDouble(taskGet.getResult().getValue().toString())
-                        : 0.0)
-                        + quiz.getPunteggioCorrente().value();
-                saveScoreOnCloud(dbUser, act, totalUserScore);
-            } else {
-                try {
-                    Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
-                    taskGet.getException().printStackTrace();
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    /**
-     * Salva il nuovo score in cloud.
-     * @param dbUser Reference del database in cloud allo score del quiz.
-     * @param act Activity principale di questo fragment.
-     * @param totalUserScore Nuovo score totale da salvare in Cloud.
-     */
-    private void saveScoreOnCloud(final DatabaseReference dbUser, final Activity act,
-                                  final double totalUserScore) {
-        dbUser.setValue(totalUserScore).addOnCompleteListener(task -> {
-            try {
-                if (task.isSuccessful()) {
-                    Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_saved), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(act.getApplicationContext(), getString(R.string.quiz_score_not_saved), Toast.LENGTH_SHORT).show();
-                    task.getException().printStackTrace();
-                }
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            }
-        });
     }
 
     /**

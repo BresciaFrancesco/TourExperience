@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
@@ -42,7 +44,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         userHolder.getUser(
             //Caso: Utente è loggato
             (user) -> {
-                LoginActivity.addNewSessionUid(getApplicationContext());
+                LoginActivity.addNewSessionUid(getApplicationContext(), FirebaseAuth.getInstance().getUid());
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish(); // Non si può tornare indietro con il pulsane Back

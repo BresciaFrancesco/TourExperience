@@ -353,13 +353,20 @@ public class QuizFragment extends Fragment {
                     // salvo il punteggio del quiz in locale nel caso manchi la connessione
                     final SharedPreferences sp = requireContext().getSharedPreferences(BuildConfig.SHARED_PREFS, Context.MODE_PRIVATE);
                     final String uid = sp.getString(getString(R.string.uid_preferences), null);
-                    final CacheScoreGames cacheScoreGames = new CacheScoreGames(requireContext());
-                    cacheScoreGames.saveOne(uid, GameTypes.QUIZ, (int)quiz.getPunteggioCorrente().value());
-
-                    Toast.makeText(act.getApplicationContext(), getString(R.string.no_connection_saved_score), Toast.LENGTH_SHORT).show();
-                } catch (NullPointerException e) { e.printStackTrace(); }
+                    if (uid != null) {
+                        final CacheScoreGames cacheScoreGames = new CacheScoreGames(requireContext());
+                        cacheScoreGames.saveOne(uid, GameTypes.QUIZ, (int)quiz.getPunteggioCorrente().value());
+                    }
+                    Toast.makeText(act.getApplicationContext(),
+                        (uid != null)
+                            ? getString(R.string.no_connection_saved_score)
+                            : getString(R.string.no_connection),
+                        Toast.LENGTH_LONG).show();
+                }
+                catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
             }
-
             // Salvo nel db locale lo svolgimento di questo quiz durante questo percorso
             final CacheGames cacheGames = new CacheGames(view.getContext());
             if (!cacheGames.addOne(nomeOpera, GameTypes.QUIZ)) {

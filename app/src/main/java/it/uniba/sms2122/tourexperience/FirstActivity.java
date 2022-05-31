@@ -65,6 +65,7 @@ public class FirstActivity extends AppCompatActivity {
      */
     private void setOnClickListenerTextViewGuest() {
         textViewGuest.setOnClickListener(view -> {
+            LoginActivity.addNewSessionUid(getApplicationContext(), null);
             Intent intent = new Intent(FirstActivity.this, MainActivity.class);
             startActivity(intent, options.toBundle());
             finish();

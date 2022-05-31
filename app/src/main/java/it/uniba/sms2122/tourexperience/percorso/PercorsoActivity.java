@@ -81,6 +81,10 @@ public class PercorsoActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Funzione che verifica se l'utimo fragment presente nel back stack è SceltaStanzeFragment
+     * @return true in caso affermativo, false altrimenti
+     */
     private boolean lastFragmentIsSceltaStanzeFragment() {
         boolean flag = false;
         try {
@@ -97,6 +101,10 @@ public class PercorsoActivity extends AppCompatActivity {
         return flag;
     }
 
+    /**
+     * Funzione che verifica se l'utimo fragment presente nel back stack è FinePercorsoFragment
+     * @return true in caso affermativo, false altrimenti
+     */
     private boolean lastFragmentIsFinePercorsoFragment() {
         boolean flag = false;
         try {
@@ -125,7 +133,7 @@ public class PercorsoActivity extends AppCompatActivity {
     }
 
     /**
-     * Funzione che serve a ritornare alla home
+     * Funzione che serve per terminare il percorso e ritornare alla home
      */
     public void endPath() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -134,14 +142,17 @@ public class PercorsoActivity extends AppCompatActivity {
         finish();
     }
 
-    //TODO quando l'utente termina il percorso bisogna settare l'id della stanza corrente all'id della stanza iniziale
-
+    /**
+     * Funzione che gestiste il funzionamento del tasto back
+     */
     @Override
     public void onBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container_fragments_route);
 
         if(!lastFragmentIsFinePercorsoFragment()){
+            //Caso: l'ultimo fragment non è un FinePercorsoFragment
             if(!lastFragmentIsSceltaStanzeFragment()){
+                //Caso: l'ultimo fragment non è un SceltaStanzeFragment
                 if (fragment instanceof StanzaFragment) {
                     ((StanzaFragment) fragment).unBindService();
                 }
@@ -151,6 +162,7 @@ public class PercorsoActivity extends AppCompatActivity {
                 super.onBackPressed();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             } else {
+                //Interruzione anticipata del percorso
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(R.string.interrupt);
                 builder.setTitle(R.string.attention);

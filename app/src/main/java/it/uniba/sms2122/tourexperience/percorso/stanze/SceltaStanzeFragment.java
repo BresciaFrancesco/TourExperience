@@ -124,13 +124,16 @@ public class SceltaStanzeFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (lastStanza == null) { //Primo avvio del fragment
+        if (lastStanza == null) {
+            //Caso: primo avvio del fragment
             listaStanze.add(path.getStanzaCorrente());
             textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
-        } //Torna indietro o qr chiuso
+        }
         else if (path.getIdStanzaCorrente().equals(path.getIdStanzaFinale()) && !path.getIdStanzaCorrente().equals(lastStanza) && path.getAdiacentNodes().size() == 0) {
+            //Caso: l'utente è arrivato alla stanza finale e non può tornare indietro
             ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFinePercorsoFragment();
         } else {
+            //Caso: l'utente non ha raggiunto la stanza finale, oppure ha raggiunto la stanza finale ma può tornare indietro
             listaStanze = path.getAdiacentNodes();
             textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.area, path.getStanzaCorrente().getNome()));
             if(path.getIdStanzaCorrente().equals(path.getIdStanzaFinale()) && !path.getIdStanzaCorrente().equals(lastStanza)){

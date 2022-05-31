@@ -35,6 +35,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         return new MyViewHolder(view);
     }
 
+    // Binding data to the into specified position
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.textview.setText(names.get(position));
@@ -46,6 +47,9 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
         return names.size();
     }
 
+    /**
+     * Classe che rappresenta un elemento della lista.
+     */
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView textview;

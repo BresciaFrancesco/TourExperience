@@ -26,9 +26,7 @@ public class GameConfiguration {
     ConstraintLayout image2Container;
 
     SetDifferencesButtonCordinates setDifferencesButtonCordinates;
-
     SetDifferencesButtonClick setAllClickOfDifferencesBtn;
-    //SetDifferenceBtnCordinates setAllCordinatesOfDifferencesBtn;
 
     public GameConfiguration(AppCompatActivity activityToConfig, LocalFileGamesManager gameFileManager, String artNameToConfig) throws IOException {
 
@@ -76,10 +74,4 @@ public class GameConfiguration {
         Drawable image2Drawable = new BitmapDrawable(image2);//converto la bitmap in risorsa drawable
         image2Container.setBackground(image2Drawable);
     }
-
-
-
-
-
-
 }

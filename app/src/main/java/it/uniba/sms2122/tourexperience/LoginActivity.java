@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(LoginActivity.this, R.string.logged_in, Toast.LENGTH_SHORT).show();
 
-                        addNewSessionUid(getApplicationContext());
+                        addNewSessionUid(getApplicationContext(), FirebaseAuth.getInstance().getUid());
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(i);
                         finishAffinity(); // Non si può tornare indietro con il pulsane Back
@@ -96,11 +96,12 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Aggiunge al file sharedPreferences l'uid cloud dell'utente loggato.
-     * @param context
+     * @param context contesto app android.
+     * @param uid user id da inserire.
      */
-    public static void addNewSessionUid(final Context context) {
+    public static void addNewSessionUid(final Context context, final String uid) {
         final SharedPreferences.Editor editor = context.getSharedPreferences(BuildConfig.SHARED_PREFS, MODE_PRIVATE).edit();
-        editor.putString(context.getString(R.string.uid_preferences), FirebaseAuth.getInstance().getUid());
+        editor.putString(context.getString(R.string.uid_preferences), uid);
         editor.apply();
     }
 }

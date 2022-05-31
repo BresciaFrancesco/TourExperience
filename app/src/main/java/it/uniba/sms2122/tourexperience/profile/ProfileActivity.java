@@ -1,6 +1,7 @@
 package it.uniba.sms2122.tourexperience.profile;
 
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,9 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +30,9 @@ import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.model.User;
 
 public class ProfileActivity extends AppCompatActivity {
+    private static final String MODIFY_BTN_TEXT_TAG = "modifyButtonText";
+    private static final String OLD_DATA_GUI = "oldDataGui";
+
     private UserHolder userHolder;
     private User userIstance;
     Map<String, String> oldDataGui;
@@ -44,6 +50,30 @@ public class ProfileActivity extends AppCompatActivity {
         setClickListenerOnLogoutButton();
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putCharSequence(MODIFY_BTN_TEXT_TAG, profileDataModifyButton.getText());
+        outState.putSerializable(OLD_DATA_GUI, (Serializable) oldDataGui);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        CharSequence modifyBtnText = savedInstanceState.getCharSequence(MODIFY_BTN_TEXT_TAG);
+        Map<String, String> oldDataGui = (Map<String, String>) savedInstanceState.getSerializable(OLD_DATA_GUI);
+
+        if(modifyBtnText != null && oldDataGui != null) {
+            if(!oldDataGui.isEmpty()) {
+
+            }
+            if(modifyBtnText.toString().equals(getString(R.string.confirmModifyProfile))) {
+                profileDataModifyButton.setText(modifyBtnText);
+                setProfileDataFieldEnable();
+            }
+        }
+    }
 
     /**
      * funzione per inizializzare i reali dati utente quindi farli visualizzare sull'activity
@@ -316,6 +346,8 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+
+        alert.setOnDismissListener(dialogInterface -> restoreOldDataGui());
 
 
         alert.show();

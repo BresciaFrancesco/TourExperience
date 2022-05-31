@@ -64,6 +64,9 @@ public class SpotDifferences extends AppCompatActivity {
 
     }
 
+    /**
+     * funzione che si occupa di incrementare il punteggio ottenuto nel minigioco
+     */
     public void incraseGameScore() {
         this.gameScore++;
 
@@ -72,6 +75,10 @@ public class SpotDifferences extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * funzione che si occupa di gestire la chiusura del gioco se questo è stato completato quindi presenta un punteggio da salvare
+     */
     public void closeGameAndSaveScore(){
 
         SaveScore saveScore = new SaveScore(this, GameTypes.DIFF, (double)gameScore);
@@ -87,11 +94,11 @@ public class SpotDifferences extends AppCompatActivity {
                         thisActivity.finish();
                     }
                 }).show();
-
-
-
     }
 
+    /**
+     * funzione che si occupa di gestire la chiusura del gioco se questo non è stato completato
+     */
     public void quitGame(){
 
         AppCompatActivity thisActivity = this;
@@ -112,11 +119,6 @@ public class SpotDifferences extends AppCompatActivity {
         }).show();
     }
 
-    /*@Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        quitGame();
-    }*/
 
     public boolean onOptionsItemSelected(MenuItem item){
         this.quitGame();

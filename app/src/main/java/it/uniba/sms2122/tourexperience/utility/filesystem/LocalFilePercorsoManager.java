@@ -38,7 +38,7 @@ public class LocalFilePercorsoManager extends LocalFileManager {
      * @return oggetto Percorso caricato da locale.
      */
     public Percorso getPercorso(final String nomeMuseo, final String nomePercorso) throws IllegalArgumentException {
-        File filePercorso = Paths.get(generalPath, nomeMuseo, "Percorsi", nomePercorso+".json").toFile();
+        File filePercorso = buildGeneralPath(generalPath, new String[] {nomeMuseo, "Percorsi", nomePercorso+".json"}).toFile();
         Percorso percorso;
         try ( Reader reader = new FileReader(filePercorso) ) {
             percorso = notNull(gson.fromJson(reader, Percorso.class));
@@ -90,9 +90,9 @@ public class LocalFilePercorsoManager extends LocalFileManager {
      * @param stanza stanza del museo di cui ottenere le opere.
      */
     private void loadOpere(final String nomeMuseo, final Stanza stanza) {
-        String pathOpere = String.format("%s%s/Stanze/%s",
-                generalPath, nomeMuseo, stanza.getNome());
-        try ( DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(pathOpere)) ) {
+        try ( DirectoryStream<Path> stream = Files.newDirectoryStream(
+            buildGeneralPath(generalPath, new String[] {nomeMuseo, "Stanze", stanza.getNome()}))
+        ) {
             Map<String, Opera> newOpereForStanza = new HashMap<>();
             for (Path path : stream) {
                 if (!Files.isDirectory(path)) continue;
@@ -100,13 +100,11 @@ public class LocalFilePercorsoManager extends LocalFileManager {
                 try ( Reader reader = new FileReader(fileOpera) ) {
                     Opera opera = gson.fromJson(reader, Opera.class);
                     opera.setPercorsoImg(
-                        Paths.get(generalPath,
-                                nomeMuseo,
-                                "Stanze",
-                                stanza.getNome(),
-                                path.getFileName().toString(),
-                                path.getFileName().toString()+IMG_EXTENSION
-                        ).toString());
+                        buildGeneralPath(generalPath, new String[] {
+                                nomeMuseo, "Stanze", stanza.getNome(),
+                                opera.getNome(), opera.getNome()+IMG_EXTENSION
+                        }).toString()
+                    );
                     newOpereForStanza.put(opera.getId(), opera);
                 }
             }
@@ -121,14 +119,13 @@ public class LocalFilePercorsoManager extends LocalFileManager {
         Stanza stanza = new Stanza();
         try (
                 DirectoryStream<Path> stream =
-                        Files.newDirectoryStream(Paths.get(generalPath, nomeMuseo, "Stanze"));
+                        Files.newDirectoryStream(buildGeneralPath(generalPath, new String[] {nomeMuseo, "Stanze"}))
         ) {
             for (Path path : stream) {
                 try ( Reader reader = new FileReader(Paths.get(path.toString(), "Info_stanza.json").toString()) )
                 {
-                    if(path.equals(Paths.get(generalPath, nomeMuseo, "Stanze", nomeStanza))) {
+                    if(path.equals(buildGeneralPath(generalPath, new String[] {nomeMuseo, "Stanze", nomeStanza}))) {
                         stanza = gson.fromJson(reader , Stanza.class);
-                        //Log.v("STANZA",stanza.toString());
                     }
                 }
             }

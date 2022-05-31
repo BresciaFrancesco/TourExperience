@@ -32,13 +32,14 @@ public class LocalFileGamesManager extends LocalFilePercorsoManager {
     public LocalFileGamesManager(final String path, String nomeMuseo,
                                  String nomeStanza, String nomeOpera) {
         super(path);
-        // Capitalizzo le stringhe
-        nomeMuseo = nomeMuseo.substring(0,1).toUpperCase() + nomeMuseo.substring(1).toLowerCase();
-        nomeStanza = nomeStanza.substring(0,1).toUpperCase() + nomeStanza.substring(1).toLowerCase();
-        nomeOpera = nomeOpera.substring(0,1).toUpperCase() + nomeOpera.substring(1).toLowerCase();
-        pathOperaForGames = Paths.get(generalPath, nomeMuseo, "Stanze", nomeStanza, nomeOpera);
+        pathOperaForGames = buildGeneralPath(generalPath, new String[] {nomeMuseo, "Stanze", nomeStanza, nomeOpera});
     }
 
+    /**
+     * Controlla se esiste la cartella Quiz nel path dell'opera e successivamente
+     * il file json di configurazione Config.json.
+     * @return true se esiste tutto, false altrimenti.
+     */
     public boolean existsQuiz() {
         final File quizDir = new File(Paths.get(pathOperaForGames.toString(), "Quiz").toString());
         if (quizDir.exists()) {
@@ -48,6 +49,11 @@ public class LocalFileGamesManager extends LocalFilePercorsoManager {
         return false;
     }
 
+    /**
+     * Legge un file json riga per riga e lo converte in una stringa.
+     * @return stringa rappresentante l'intero file json letto.
+     * @throws IOException
+     */
     public String loadQuizJson() throws IOException {
         List<String> stringhe = Files.readAllLines(Paths.get(pathOperaForGames.toString(), "Quiz", "Config.json"));
         StringBuilder sb = new StringBuilder();
@@ -57,6 +63,11 @@ public class LocalFileGamesManager extends LocalFilePercorsoManager {
         return sb.toString();
     }
 
+    /**
+     * Crea la cartella Quiz nel path dell'opera. Se la cartella esiste già,
+     * non la crea e restituisce true.
+     * @return true se l'ha creata o già esisteva, false altrimenti.
+     */
     public boolean createQuizDir() {
         final File quizDir = Paths.get(pathOperaForGames.toString(), "Quiz").toFile();
         if (!quizDir.exists()) {

@@ -56,11 +56,11 @@ public class LocalFileMuseoManager extends LocalFileManager {
             throws IOException, JsonSyntaxException, JsonIOException {
         try (
                 Reader reader = new
-                    FileReader(Paths.get(generalPath, nomeMuseo, "Info.json").toFile())
+                    FileReader(buildGeneralPath(generalPath, new String[] {nomeMuseo, "Info.json"}).toFile())
         ) {
             Museo museo = new Gson().fromJson(reader, Museo.class);
             museo.setFileUri(
-                Paths.get(generalPath, nomeMuseo, nomeMuseo + IMG_EXTENSION).toString()
+                buildGeneralPath(generalPath, new String[] {nomeMuseo, nomeMuseo + IMG_EXTENSION}).toString()
             );
             return museo;
         }
@@ -74,12 +74,11 @@ public class LocalFileMuseoManager extends LocalFileManager {
      */
     public List<String> getMuseoImages(String nomeMuseo)
     {
-        String img1 = Paths.get(generalPath, nomeMuseo, "Immagine_1" + IMG_EXTENSION).toString();
-        String img2 = Paths.get(generalPath, nomeMuseo, "Immagine_2" + IMG_EXTENSION).toString();
-        String img3 = Paths.get(generalPath, nomeMuseo, "Immagine_3" + IMG_EXTENSION).toString();
+        String img1 = buildGeneralPath(generalPath, new String[] {nomeMuseo, "Immagine_1" + IMG_EXTENSION}).toString();
+        String img2 = buildGeneralPath(generalPath, new String[] {nomeMuseo, "Immagine_2" + IMG_EXTENSION}).toString();
+        String img3 = buildGeneralPath(generalPath, new String[] {nomeMuseo, "Immagine_3" + IMG_EXTENSION}).toString();
 
-        List<String> lista = Arrays.asList(img1,img2,img3);
-        return lista;
+        return Arrays.asList(img1,img2,img3);
     }
 
     /**
@@ -102,7 +101,7 @@ public class LocalFileMuseoManager extends LocalFileManager {
                 try ( Reader reader = new FileReader(Paths.get(path.toString(), "Info.json").toString()) )
                 {
                     Museo museo = gson.fromJson(reader , Museo.class);
-                    museo.setFileUri(Paths.get(generalPath, museo.getNome(), museo.getNome()+IMG_EXTENSION).toString());
+                    museo.setFileUri(buildGeneralPath(generalPath, new String[] {museo.getNome(), museo.getNome()+IMG_EXTENSION}).toString());
                     listaMusei.add(museo);
                 }
                 catch (IOException | JsonSyntaxException | JsonIOException e) {
@@ -194,7 +193,7 @@ public class LocalFileMuseoManager extends LocalFileManager {
      */
     public void deleteMuseo(final String nomeMuseo) {
         try {
-            deleteDir(Paths.get(generalPath, nomeMuseo).toFile());
+            deleteDir(buildGeneralPath(generalPath, new String[] {nomeMuseo}).toFile());
         } catch (IOException e) {
             e.printStackTrace();
         }

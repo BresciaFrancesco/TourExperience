@@ -45,6 +45,16 @@ public class LocalFileMuseoManager extends LocalFileManager {
     }
 
     /**
+     * Controlla che la directory di un museo esista o no.
+     * @param nomeMuseo nome della directory del museo di cui controllare l'esistenza.
+     * @return true se la directory esiste, false altrimenti.
+     */
+    public boolean existsMuseo(final String nomeMuseo) {
+        final File f = buildGeneralPath(generalPath, new String[] {nomeMuseo}).toFile();
+        return f.exists() && f.isDirectory();
+    }
+
+    /**
      * Ottiene il file di info json del museo scelto e ne ritorna un oggetto Museo.
      * @param nomeMuseo nome del museo da ottenere.
      * @return oggetto Museo scelto.
@@ -167,7 +177,7 @@ public class LocalFileMuseoManager extends LocalFileManager {
             else if (mimeType.equals(ZIP.mimeType())) {
                 final String nomeMuseo = fileName.substring(0, fileName.length()-4);
                 final Zip zip = new Zip(this);
-                if (!zip.startUnzip(fileName, dto, frag))
+                if (!zip.startUnzip(fileName, dto))
                     return context.getString(R.string.zip_import_error, fileName);
                 final List<Object> bool0_hashSet1 = CheckZipMuseum.checkAllJson(generalPath, nomeMuseo);
                 if (!((Boolean)bool0_hashSet1.get(0))) {

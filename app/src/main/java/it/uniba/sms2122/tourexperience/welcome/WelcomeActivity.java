@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import it.uniba.sms2122.tourexperience.BuildConfig;
 import it.uniba.sms2122.tourexperience.FirstActivity;
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.ThreadManager;
 
 public class WelcomeActivity extends FragmentActivity implements BottomWelcomeFragment.OnChangePageListener {
     private static final int NUM_PAGES = 4; // numero di pagine del welcome
@@ -74,6 +76,13 @@ public class WelcomeActivity extends FragmentActivity implements BottomWelcomeFr
     @Override
     public void goToMain() {
         changeSharedPrefs();
+        try {
+            // join del thread che effettua l'unzip della directory di TEST
+            ThreadManager.joinThread();
+        } catch (InterruptedException e) {
+            Log.e("joinThread", "Thread interrotto");
+            e.printStackTrace();
+        }
         Intent toLogin = new Intent(this, FirstActivity.class);
         startActivity(toLogin);
         finish();

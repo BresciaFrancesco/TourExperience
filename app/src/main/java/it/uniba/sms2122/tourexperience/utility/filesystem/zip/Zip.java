@@ -57,10 +57,9 @@ public class Zip {
      * @param zipName nome del file .zip con l'estensione .zip integrata.
      * @param of oggetto che implementa l'interfaccia OpenFile, per
      *           poter aprire il file .zip in lettura.
-     * @param frag fragment dalla quale è chiamato questo metodo
      * @return true se l'unzip è andato a buon fine, false altrimenti.
      */
-    public boolean startUnzip(final String zipName, final OpenFile of, final SceltaMuseiFragment frag) {
+    public boolean startUnzip(final String zipName, final OpenFile of) {
         try {
             checker.start(of, zipName);
         }

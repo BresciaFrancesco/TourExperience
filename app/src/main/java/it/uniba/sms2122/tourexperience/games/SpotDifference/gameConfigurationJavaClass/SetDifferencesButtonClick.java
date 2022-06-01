@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.games.SpotDifference.SpotDifferences;
 
 public class SetDifferencesButtonClick {
 
@@ -110,7 +111,7 @@ public class SetDifferencesButtonClick {
                 Objects.requireNonNull(allDifferencesView.get(newString)).setBackground(activityToSet.getDrawable(R.drawable.find_difference_circle_button));
             }
 
-
+           ((SpotDifferences) activityToSet).incraseGameScore();
         }
     }
 }

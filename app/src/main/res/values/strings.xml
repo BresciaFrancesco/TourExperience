@@ -199,7 +199,10 @@
     <string name="lively">Lively</string>
     <string name="monotonous">Monotonous</string>
 
-    <string name="spot_the_difference_title_game">Trova le differenze</string>
+    <string name="spot_the_difference_title_game">Spot the difference</string>
+    <string name="spot_the_difference_is_done">You have already completed this mini game in this Path</string>
+    <string name="spot_the_difference_close_message">compliments! you have found all the differences.</string>
+    <string name="spot_the_difference_quit_message">by exiting the game you will lose all progress made. Are you sure?</string>
     <string name="uid_preferences" translatable="false">uid_preferences</string>
     <string name="description">Description...</string>
 </resources>

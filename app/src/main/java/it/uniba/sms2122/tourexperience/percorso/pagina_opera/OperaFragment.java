@@ -114,6 +114,7 @@ public class OperaFragment extends Fragment {
 
     /**
      * Imposta la gestione del pulsante dello SpotTheDifferenceButton.
+     *
      * @param spotDifferenceGameButton
      */
     private void triggerSpotTheDifferenceButton(ConstraintLayout spotDifferenceGameButton) {
@@ -127,11 +128,20 @@ public class OperaFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(getActivity(), SpotDifferences.class);
-                intent.putExtra("museumName", nomeMuseo);
-                intent.putExtra("roomName", nomeStanza);
-                intent.putExtra("artName", opera.getNome());
-                startActivity(intent);
+                final CacheGames cacheGames = new CacheGames(view.getContext());
+
+                if (cacheGames.exists(opera.getNome(), GameTypes.DIFF)) {
+                    new AlertDialog.Builder(view.getContext()).setTitle(getString(R.string.spot_the_difference_title_game))
+                            .setMessage(getString(R.string.spot_the_difference_is_done))
+                            .setPositiveButton("OK", null).show();
+                } else {
+
+                    Intent intent = new Intent(getActivity(), SpotDifferences.class);
+                    intent.putExtra("museumName", nomeMuseo);
+                    intent.putExtra("roomName", nomeStanza);
+                    intent.putExtra("artName", opera.getNome());
+                    startActivity(intent);
+                }
 
             }
         });
@@ -139,6 +149,7 @@ public class OperaFragment extends Fragment {
 
     /**
      * Imposta la gestione del pulsante del Quiz.
+     *
      * @param view
      */
     private void triggerQuizButton(@NonNull View view) {
@@ -147,29 +158,28 @@ public class OperaFragment extends Fragment {
             final CacheGames cacheGames = new CacheGames(view.getContext());
             if (cacheGames.exists(opera.getNome(), GameTypes.QUIZ)) {
                 new AlertDialog.Builder(view2.getContext()).setTitle("Quiz")
-                    .setMessage(getString(R.string.quiz_svolto))
-                    .setPositiveButton("OK", null).show();
+                        .setMessage(getString(R.string.quiz_svolto))
+                        .setPositiveButton("OK", null).show();
                 return;
             }
             if (!localFileGamesManager.existsQuiz()) {
                 new AlertDialog.Builder(view2.getContext())
-                    .setTitle("Quiz")
-                    .setMessage(getString(R.string.quiz_import_request))
-                    .setPositiveButton(getString(R.string.importa_quiz),
-                            (dialog, whichButton) -> {
-                                dialog.dismiss();
-                                startImportQuiz(view2);
-                            })
-                    .setNeutralButton(view2.getContext().getString(R.string.NO),
-                            (dialog, whichButton) -> dialog.dismiss())
-                    .show();
+                        .setTitle("Quiz")
+                        .setMessage(getString(R.string.quiz_import_request))
+                        .setPositiveButton(getString(R.string.importa_quiz),
+                                (dialog, whichButton) -> {
+                                    dialog.dismiss();
+                                    startImportQuiz(view2);
+                                })
+                        .setNeutralButton(view2.getContext().getString(R.string.NO),
+                                (dialog, whichButton) -> dialog.dismiss())
+                        .show();
                 return;
             }
             try {
                 String json = localFileGamesManager.loadQuizJson();
                 ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFragmentQuiz(json, opera.getNome());
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 Toast.makeText(view.getContext(), getString(R.string.errore_apertura_quiz), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
@@ -181,6 +191,7 @@ public class OperaFragment extends Fragment {
 
     /**
      * Gestisce il pulsante di importazione del Quiz.
+     *
      * @param view
      */
     private void startImportQuiz(final View view) {
@@ -247,6 +258,7 @@ public class OperaFragment extends Fragment {
 
     /**
      * Ripristina i dati salvati da uno stato precedente se e solo se non sono nulli.
+     *
      * @param savedInstanceState bundle dello stato precedente.
      */
     private boolean ripristino(final Bundle savedInstanceState) {

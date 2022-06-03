@@ -7,7 +7,6 @@
     tools:context=".profile.ProfileActivity">
 
     <TextView
-        android:id="@+id/heading_profile_text_view"
         style="@style/heading_text_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,235 +15,231 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
+    <TableLayout
+        android:id="@+id/tableLayoutProfileActivity"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/heading_profile_text_view"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginTop="50dp"
+        android:paddingTop="25dp"
+        android:translationY="5dp"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
 
-        <TableLayout
-            android:id="@+id/tableLayoutProfileActivity"
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            tools:layout_editor_absoluteX="1dp"
-            tools:layout_editor_absoluteY="1dp">
+            android:layout_height="match_parent"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1.0"
+            android:clipChildren="true"
+            android:gravity="center">
 
-            <!-- Email -->
-            <TableRow
+            <TextView
+                android:id="@+id/labelEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:text="@string/emailLabelProfile"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/editFieldEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1.0"
+            android:clipChildren="true"
+            android:gravity="center"
+            android:textColor="@color/black">
+
+            <TextView
+                android:id="@+id/labelName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:text="@string/nameLabelProfile"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/editFieldName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:inputType="textPersonName"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1.0"
+            android:clipChildren="true"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/labelSurname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:text="@string/surnameLabelProfile"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+            <EditText
+                android:id="@+id/editFieldSurname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:inputType="textPersonName"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1.0"
+            android:clipChildren="true"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/labelBirth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:text="@string/birthLabelProfile"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="25dp"
-                android:layout_weight="1.0"
-                android:clipChildren="true"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/labelEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
-                    android:text="@string/emailLabelProfile"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
-
-                <EditText
-                    android:id="@+id/editFieldEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
-                    android:enabled="false"
-                    android:inputType="textEmailAddress"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
-
-            </TableRow>
-
-            <!-- Name -->
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="25dp"
-                android:layout_weight="1.0"
-                android:clipChildren="true"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:textColor="@color/black">
-
-                <TextView
-                    android:id="@+id/labelName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
-                    android:text="@string/nameLabelProfile"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
+                android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/editFieldName"
+                    android:id="@+id/editFieldBirth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:enabled="false"
-                    android:inputType="textPersonName"
-                    android:text="name"
+                    android:inputType="date"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18dp" />
 
-            </TableRow>
-
-            <!-- Surname -->
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="25dp"
-                android:layout_weight="1.0"
-                android:clipChildren="true"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/labelSurname"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
-                    android:text="@string/surnameLabelProfile"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
-
-                <EditText
-                    android:id="@+id/editFieldSurname"
+                <ImageView
+                    android:id="@+id/profileDataPickerBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:layout_weight="1"
-                    android:enabled="false"
-                    android:inputType="textPersonName"
-                    android:text="Name"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    app:srcCompat="@drawable/calendar" />
 
-            </TableRow>
+            </LinearLayout>
 
-            <!-- Date of birth -->
-            <TableRow
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1.0"
+            android:clipChildren="true"
+            android:gravity="center">
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1.0"
-                android:clipChildren="true"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:paddingTop="25dp"
-                android:paddingBottom="25dp">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/labelBirth"
+                <Button
+                    android:id="@+id/btnModify"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
-                    android:text="@string/birthLabelProfile"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/button_shape"
+                    android:text="@string/modifyProfile"
+                    android:translationY="-15dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal">
 
-                    <EditText
-                        android:id="@+id/editFieldBirth"
+
+                    <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="2"
-                        android:enabled="false"
-                        android:inputType="date"
-                        android:text="Name"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"/>
-
-                    <ImageView
-                        android:id="@+id/profileDataPickerBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/calendar"/>
-
-                </LinearLayout>
-
-            </TableRow>
-
-            <!-- Button -->
-            <TableRow
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:clipChildren="true"
-                android:layout_weight="1.0"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="25dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <Button
-                        android:id="@+id/btnModify"
-                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:background="@drawable/button_shape"
-                        android:text="@string/modifyProfile" />
+                        android:layout_weight="1"
+                        android:text="@string/string_or"
+                        android:textAlignment="textEnd"/>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/btnLogout"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal">
-
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginRight="8dp"
-                            android:layout_weight="1"
-                            android:text="@string/string_or"
-                            android:textAlignment="textEnd"/>
-
-                        <TextView
-                            android:id="@+id/btnLogout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="8dp"
-                            android:layout_marginRight="8dp"
-                            android:layout_weight="1"
-                            android:text="@string/logout"
-                            android:textColor="@color/main_red"
-                            android:textAlignment="textStart"
-                            android:textSize="18sp"/>
-                    </LinearLayout>
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_weight="1"
+                        android:text="@string/logout"
+                        android:textColor="@color/main_red"
+                        android:textAlignment="textStart"
+                        android:textSize="18dp"/>
                 </LinearLayout>
-            </TableRow>
 
-        </TableLayout>
+            </LinearLayout>
 
-    </ScrollView>
+
+        </TableRow>
+
+    </TableLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

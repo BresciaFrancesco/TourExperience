@@ -104,6 +104,11 @@ public class LocalFileManager {
         return str.substring(0,1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
+    /**
+     * Metodo per restituire il path relativo ai percorsi di un determinato museo.
+     * @param nomeMuseo Il museo da cui prendere il path
+     * @return Il path dei percorsi
+     */
     public String getPercorsiPath(String nomeMuseo) {
         return getGeneralPath() + nomeMuseo + "/Percorsi/";
     }

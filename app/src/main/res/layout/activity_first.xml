@@ -18,8 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/idImgLogo"
-        android:layout_marginTop="70dp"
         android:layout_marginStart="25dp"
+        android:layout_marginTop="70dp"
         android:layout_marginEnd="25dp"
         android:background="@drawable/button_shape"
         android:text="@string/login"
@@ -30,8 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/idBtnMainLogin"
-        android:layout_marginTop="30dp"
         android:layout_marginStart="25dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="25dp"
         android:background="@drawable/button_shape"
         android:text="@string/registration"
@@ -39,15 +39,38 @@
 
     <TextView
         android:id="@+id/idTextViewGuest"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/idBtnMainRegistration"
+        android:layout_marginStart="35dp"
         android:layout_marginTop="30dp"
+        android:layout_marginEnd="25dp"
         android:padding="10dp"
         android:text="@string/login_guest"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/heading_gray"
         android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/idBtnLogin_test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idBtnMainRegistration"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="25dp"
+        android:layout_toEndOf="@id/idTextViewGuest"
+        android:background="@drawable/button_shape"
+        android:text="@string/login_test"
+        android:textAllCaps="true" />
+
+    <ProgressBar
+        android:id="@+id/pb_login_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/idTextViewGuest"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>

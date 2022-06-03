@@ -201,4 +201,5 @@
     <string name="spot_the_difference_quit_message">uscendo dal gioco perderai tutti i progressi fatti. Sei Sicuro?</string>
     <string name="uid_preferences" translatable="false">uid_preferences</string>
     <string name="description">Descrizione...</string>
+    <string name="login_test">TEST ACCESSO</string>
 </resources>

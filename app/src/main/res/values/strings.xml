@@ -205,4 +205,5 @@
     <string name="spot_the_difference_quit_message">by exiting the game you will lose all progress made. Are you sure?</string>
     <string name="uid_preferences" translatable="false">uid_preferences</string>
     <string name="description">Description...</string>
+    <string name="login_test">TEST LOGIN</string>
 </resources>

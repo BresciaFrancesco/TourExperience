@@ -3,14 +3,20 @@ package it.uniba.sms2122.tourexperience;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.registration.RegistrationActivity;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 
 public class FirstActivity extends AppCompatActivity {
 
@@ -18,6 +24,8 @@ public class FirstActivity extends AppCompatActivity {
     private Button btnRegistration;
     private TextView textViewGuest;
     private ActionBar actionBar;
+    private Button btnLoginTest;
+    private ProgressBar progressBarLoginTest;
 
     private ActivityOptions options;
 
@@ -29,16 +37,20 @@ public class FirstActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.idBtnMainLogin);
         btnRegistration = findViewById(R.id.idBtnMainRegistration);
         textViewGuest = findViewById(R.id.idTextViewGuest);
+        btnLoginTest = findViewById(R.id.idBtnLogin_test);
+        progressBarLoginTest = findViewById(R.id.pb_login_test);
 
         setOnClickListenerBtnLogin();
         setOnClickListenerBtnRegistration();
         setOnClickListenerTextViewGuest();
+        setOnClickListenerBtnLoginTest();
 
         options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
         actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setTitle("Tour Experience");
     }
+
 
     /**
      * Funzione che fa partire l'activity LoginActivity
@@ -71,4 +83,36 @@ public class FirstActivity extends AppCompatActivity {
             finish();
         });
     }
+
+    /**
+     * Funzione che fa partire il Login Automatico con Credenziali di Test
+     */
+    private void setOnClickListenerBtnLoginTest() {
+        btnLoginTest.setOnClickListener(view -> {
+            final String email = "utenteditest@email.com";
+            final String password = "Test123456";
+            if (!NetworkConnectivity.check(getApplicationContext())) {
+                Toast.makeText(FirstActivity.this, R.string.no_connection, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            final FirebaseAuth fAuth = FirebaseAuth.getInstance();
+            progressBarLoginTest.setVisibility(View.VISIBLE);
+            fAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
+                if(task.isSuccessful()) {
+                    progressBarLoginTest.setVisibility(View.GONE);
+                    Toast.makeText(FirstActivity.this, R.string.logged_in, Toast.LENGTH_SHORT).show();
+
+                    LoginActivity.addNewSessionUid(getApplicationContext(), fAuth.getUid());
+                    Intent i = new Intent(FirstActivity.this, MainActivity.class);
+                    startActivity(i);
+                    finishAffinity(); // Non si può tornare indietro con il pulsane Back
+                }
+                else {
+                    progressBarLoginTest.setVisibility(View.GONE);
+                    Toast.makeText(FirstActivity.this, R.string.failed_to_log, Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+    }
+
 }

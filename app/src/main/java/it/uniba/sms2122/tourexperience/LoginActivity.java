@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.registration.CheckCredentials;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -58,6 +59,10 @@ public class LoginActivity extends AppCompatActivity {
             String password = Objects.requireNonNull(passwordEdit.getText()).toString();
 
             if(checker.checkEmail(emailEdit,LoginActivity.this) && checker.checkPassword(passwordEdit,LoginActivity.this)) {
+                if (!NetworkConnectivity.check(getApplicationContext())) {
+                    Toast.makeText(LoginActivity.this, R.string.no_connection, Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 progressBar.setVisibility(View.VISIBLE);
                 fAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {

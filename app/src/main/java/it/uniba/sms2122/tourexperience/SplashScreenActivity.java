@@ -101,7 +101,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             final Zip zipManager = new Zip(fileManager);
             zipManager.unzip(() -> is);
             if (fileManager.existsMuseo(ASSET_FILE))
-                Log.e("getAssetZipMuseum", "Unzip avvenuto con successo");
+                Log.v("getAssetZipMuseum", "Unzip avvenuto con successo");
             else
                 Log.e("getAssetZipMuseum", "Unzip fallito");
         }

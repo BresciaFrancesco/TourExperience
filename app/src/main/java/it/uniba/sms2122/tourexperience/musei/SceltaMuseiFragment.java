@@ -1,6 +1,7 @@
 package it.uniba.sms2122.tourexperience.musei;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cacheMuseums;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getAllCachedMuseums;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.replaceMuseumsInCache;
 
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.ThreadManager;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
@@ -75,7 +77,8 @@ public class SceltaMuseiFragment extends Fragment {
     /**
      * Istanzia la lista dei musei, recuperando i musei dal filesystem
      * locale o dalla cache. Se recuperati dal filesystem, vengono
-     * inseriti nella cache.
+     * inseriti nella cache. Inoltre riempie la cache dei percorsi
+     * in locale se vuota, prendendoli sempre dal filesystem.
      * @throws IOException
      */
     private void createListMuseums() throws IOException {
@@ -95,6 +98,13 @@ public class SceltaMuseiFragment extends Fragment {
                 listaMusei = getAllCachedMuseums();
             }
         } else Log.v("CACHE_MUSEI", "musei già presenti in memoria");
+
+        // Riempio la cache dei percorsi in locale
+        try {
+            ThreadManager.joinThread();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 

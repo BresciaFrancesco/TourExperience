@@ -4,6 +4,13 @@ import android.util.Log;
 
 /**
  * Classe di gestione di un singolo thread statico. Permette solo una gestione semplice del thread.
+ * I casi di uso di questo Thread devono essere solo 2:
+ *  - Unzip del museo di test al primo accesso all'applicazione.
+ *  - Riempimento della cache cachePercorsiInLocale.
+ *
+ * ***************** ATTENZIONE! *****************
+ * L'uso di questa classe in altri casi inoltre quelli già elencati, potrebbe portare
+ * ad errori inaspettati.
  */
 public class ThreadManager {
     private static Thread thread;

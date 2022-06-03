@@ -1,5 +1,7 @@
 package it.uniba.sms2122.tourexperience.main;
 
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
+
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
@@ -25,11 +27,13 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.FirstActivity;
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.ThreadManager;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.musei.SceltaMuseiFragment;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
@@ -78,17 +82,17 @@ public class MainActivity extends AppCompatActivity {
          * Ottiene i percorsi salvati in locale (solo museo e nome del percorso),
          * salvandoli in un'apposita cache.
          */
-        new Thread(() -> {
+        ThreadManager.setThread(() -> {
             Log.v("THREAD_Cache_Percorsi_Locale", "chiamato il thread");
             try {
+                if (!cachePercorsiInLocale.isEmpty()) return;
                 new LocalFileMuseoManager(getFilesDir().toString()).getPercorsiInLocale();
             }
             catch (IOException e) {
-                Log.e("THREAD_Cache_Percorsi_Locale",
-                        "Problemi nella lettura dei file o delle cartelle");
                 e.printStackTrace();
             }
-        }).start();
+        });
+        ThreadManager.startThread();
 
         sceltaMuseiFragment = new SceltaMuseiFragment();
         statsFragment = new StatsFragment();

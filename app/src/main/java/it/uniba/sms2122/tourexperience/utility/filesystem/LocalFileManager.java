@@ -104,4 +104,8 @@ public class LocalFileManager {
         return str.substring(0,1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
+    public String getPercorsiPath(String nomeMuseo) {
+        return getGeneralPath() + nomeMuseo + "/Percorsi/";
+    }
+
 }

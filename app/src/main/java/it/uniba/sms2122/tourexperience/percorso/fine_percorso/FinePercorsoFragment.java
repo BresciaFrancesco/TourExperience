@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,6 +43,7 @@ import it.uniba.sms2122.tourexperience.cache.CacheMuseums;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
+import it.uniba.sms2122.tourexperience.utility.filesystem.zip.Zip;
 import it.uniba.sms2122.tourexperience.utility.ranking.FileShare;
 
 /**
@@ -170,6 +172,7 @@ public class FinePercorsoFragment extends Fragment {
         switch (itemId) {
             case R.id.shareItem:
                 if(isQuizComplete()){
+                    /*
                     writeFileShare();
                     Uri uri = FileProvider.getUriForFile(requireContext(), "it.uniba.sms2122.tourexperience.fileprovider", fileShare.getTxt());
                     Intent sendIntent = new Intent();
@@ -178,7 +181,24 @@ public class FinePercorsoFragment extends Fragment {
                     sendIntent.setType("text/plain");
 
                     Intent shareIntent = Intent.createChooser(sendIntent, null);
-                    startActivity(shareIntent);
+                    startActivity(shareIntent);*/
+                    File file = new File(parent.getLocalFilePercorsoManager().getPercorsiPath(nomeMuseo) + nomePercorso + ".json");
+
+                    if(file.exists()) {
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, "Guarda che bel percorso");
+                        sendIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(
+                                parent,
+                                "it.uniba.sms2122.tourexperience.fileprovider",
+                                file
+                        ));
+                        sendIntent.setType("application/json");
+                        startActivity(Intent.createChooser(sendIntent, null));
+                    } else {
+                        Log.e("FinePercorsoFragment", "onOptionsItemSelected: export error");
+                        Toast.makeText(parent, "Non è stato possibile condividere lo zip", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(getContext(), requireContext().getString(R.string.quiz_non_completato), Toast.LENGTH_SHORT).show();
                 }

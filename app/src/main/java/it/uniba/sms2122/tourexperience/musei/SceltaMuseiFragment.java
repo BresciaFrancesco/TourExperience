@@ -286,8 +286,6 @@ public class SceltaMuseiFragment extends Fragment {
                         OpenFile dto = new OpenFileAndroidStorageDTO(requireContext(), returnUri);
                         String resultMessage = localFileManager.saveImport(fileName, mimeType, dto, this);
                         Toast.makeText(getContext(), resultMessage, Toast.LENGTH_SHORT).show();
-                        Back backToMuseumsList = new BackToMuseumsList(this, mAddFab);
-                        backToMuseumsList.back(getView());
                     }
                     catch (NullPointerException | IllegalStateException e) {
                         Log.e("SceltaMuseiFragment.onActivityResult", "qualcosa è null, guardare lo Stack Trace");

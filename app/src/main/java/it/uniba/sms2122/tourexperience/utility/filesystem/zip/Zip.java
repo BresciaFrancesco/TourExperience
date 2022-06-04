@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -129,9 +130,10 @@ public class Zip {
 
     /**
      * Aggiorna la UI, aggiornando prima di tutto le cache.
-     * @param nomeMuseo nome del museo
-     * @param nomiPercorsi Set contenete il nome di percorsi aggiunti
-     * @param frag fragment da aggiornare
+     * @param nomeMuseo nome del museo.
+     * @param nomiPercorsi Set contenete il nome di percorsi aggiunti.
+     * @param frag fragment da aggiornare.
+     * @param localFileManager file manager per recuperare il museo da locale.
      * @throws IOException
      * @throws JsonSyntaxException
      * @throws JsonIOException
@@ -142,19 +144,18 @@ public class Zip {
                             final LocalFileMuseoManager localFileManager)
             throws IOException, JsonSyntaxException, JsonIOException
     {
-        Museo museo = localFileManager.getMuseoByName(nomeMuseo);
-        if (getMuseoByName(nomeMuseo, frag.getContext()) == null) {
-            cacheMuseums.put(nomeMuseo, museo);
-            List<Museo> listaPrincipale = frag.getListaMusei();
-            if (frag.isListaMuseiEmpty()) {
-                listaPrincipale.clear();
-            }
-            listaPrincipale.add(museo);
-
-            frag.attachNewAdapter(new MuseiAdapter(frag, listaPrincipale, true));
-
-            updateFirebase(nomeMuseo, museo);
+        final Museo museo = localFileManager.getMuseoByName(nomeMuseo);
+        if (museo == null) {
+            Log.e("updateUI", "museo null");
+            return;
         }
+        cacheMuseums.put(nomeMuseo, museo);
+        final List<Museo> listaPrincipale = frag.getListaMusei();
+        listaPrincipale.add(museo);
+
+        frag.attachNewAdapter(new MuseiAdapter(frag, listaPrincipale, true));
+
+        updateFirebase(nomeMuseo, museo, nomiPercorsi);
         if (cachePercorsiInLocale.get(nomeMuseo) == null) {
             cachePercorsiInLocale.put(nomeMuseo, nomiPercorsi);
         } else {
@@ -166,32 +167,35 @@ public class Zip {
 
     /**
      * Esegue l'update del realtime database di firebase, aggiungendo quello che serve del
-     * nuovo museo alla lista di musei usata per la ricerca. Se in quella lista esiste
-     * @param nuovoNomeMuseo
-     * @param nuovoMuseo
+     * nuovo museo alla lista di musei usata per la ricerca. Se in quella lista esiste.
+     * @param nuovoNomeMuseo nome del nuovo museo da inserire.
+     * @param nuovoMuseo nuovo museo da inserire.
      */
-    private static void updateFirebase(final String nuovoNomeMuseo, final Museo nuovoMuseo) {
+    private static void updateFirebase(final String nuovoNomeMuseo, final Museo nuovoMuseo,
+                                       final Set<String> nomiPercorsi) {
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Museums");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) return;
-                int indice = 0;
                 if (snapshot.hasChildren()) {
-                    for (DataSnapshot snap : snapshot.getChildren()) {
-                        String nomeDiUnMuseo = snap.child("nome").getValue(String.class);
-                        if (nuovoNomeMuseo.equals(nomeDiUnMuseo))
-                            return;
-                        indice++;
+                    if (snapshot.hasChild(nuovoNomeMuseo)) {
+                        return;
                     }
                 }
                 // Il nuovo museo non esiste su firebase, allora lo aggiungiamo
-                Map<String, String> mappa = new HashMap<>();
+                final Map<String, Object> mappa = new HashMap<>();
                 mappa.put("citta", nuovoMuseo.getCitta());
                 mappa.put("nome", nuovoMuseo.getNome());
                 mappa.put("tipologia", nuovoMuseo.getTipologia());
+                for (final String percorso : nomiPercorsi) {
+                    final Map<String, Object> m = new HashMap<>();
+                    m.put("Numero_starts", 0);
+                    m.put("Voti", "-1");
+                    mappa.put(percorso, m);
+                }
 
-                final DatabaseReference r = ref.child(Integer.toString(indice));
+                final DatabaseReference r = ref.child(nuovoNomeMuseo);
                 r.setValue(mappa)
                 .addOnSuccessListener(snap -> Log.v("FIREBASE_MUSEUM_IMPORT", "Museo aggiunto correttamente"))
                 .addOnFailureListener(err -> Log.e("FIREBASE_MUSEUM_IMPORT", err.getMessage()));

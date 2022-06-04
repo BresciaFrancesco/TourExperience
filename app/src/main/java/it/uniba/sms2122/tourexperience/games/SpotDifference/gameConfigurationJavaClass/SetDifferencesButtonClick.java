@@ -97,21 +97,24 @@ public class SetDifferencesButtonClick {
         @Override
         public void onClick(View view) {
 
-            clickedView.setBackground(activityToSet.getDrawable(R.drawable.find_difference_circle_button));//triggero l'image view cliccata
+            if (clickedView.getBackground() == null) {
 
-            //setto il background anche per l'imageview della foto opposta
-            if (hashMapKeyOfClickedView.contains("reflex_")) {
+                clickedView.setBackground(activityToSet.getDrawable(R.drawable.find_difference_circle_button));//triggero l'image view cliccata
 
-                String newString = this.hashMapKeyOfClickedView.replace("reflex_", "");
-                Objects.requireNonNull(allDifferencesView.get(newString)).setBackground(activityToSet.getDrawable(R.drawable.find_difference_circle_button));
+                //setto il background anche per l'imageview della foto opposta
+                if (hashMapKeyOfClickedView.contains("reflex_")) {
 
-            } else {
+                    String newString = this.hashMapKeyOfClickedView.replace("reflex_", "");
+                    Objects.requireNonNull(allDifferencesView.get(newString)).setBackground(activityToSet.getDrawable(R.drawable.find_difference_circle_button));
 
-                String newString = "reflex_" + this.hashMapKeyOfClickedView;
-                Objects.requireNonNull(allDifferencesView.get(newString)).setBackground(activityToSet.getDrawable(R.drawable.find_difference_circle_button));
+                } else {
+
+                    String newString = "reflex_" + this.hashMapKeyOfClickedView;
+                    Objects.requireNonNull(allDifferencesView.get(newString)).setBackground(activityToSet.getDrawable(R.drawable.find_difference_circle_button));
+                }
+
+                ((SpotDifferences) activityToSet).incraseGameScore();
             }
-
-           ((SpotDifferences) activityToSet).incraseGameScore();
         }
     }
 }

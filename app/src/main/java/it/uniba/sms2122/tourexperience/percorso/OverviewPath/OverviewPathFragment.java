@@ -2,6 +2,7 @@ package it.uniba.sms2122.tourexperience.percorso.OverviewPath;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.database.CacheGames;
@@ -94,6 +96,10 @@ public class OverviewPathFragment extends Fragment {
         // Visita del grafo, caricamento stanze e opere negli array
         String idStanzaCorrente = path.getIdStanzaCorrente();
         setListaStanze();
+
+        // Durante la visita al grafo, il puntatore alla stanza corrente viene spostato,
+        // quindi occorre ripristinarlo dopo la visita.
+        path.setIdStanzaCorrente(idStanzaCorrente);
 
         recyclerView = view.findViewById(R.id.rooms_recycle_view);
         RecycleViewAdapter adapter = new RecycleViewAdapter(getContext(),getListaNomiStanze(),getListaOpereStanze());

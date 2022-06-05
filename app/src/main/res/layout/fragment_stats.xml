@@ -1,93 +1,312 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".main.StatsFragment">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/spotDifference"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:text="Spot the differences:"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/quiz" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".main.StatsFragment">
 
-    <SeekBar
-        android:id="@+id/seekBar2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/spotDifference"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+        <TextView
+            android:id="@+id/livello"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@id/livello"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/livello"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="Livello"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/punti_totali"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/livello"
+            app:layout_constraintBottom_toTopOf="@id/divider"/>
 
-    <TextView
-        android:id="@+id/punti_totali"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Punti totali"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/livello" />
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/punti_totali" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="409dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="28dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/punti_totali" />
+        <!--  Quiz  -->
 
-    <SeekBar
-        android:id="@+id/seekBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
-        app:layout_constraintBottom_toTopOf="@+id/seekBar2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+        <TextView
+            android:id="@+id/quiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Quiz:"
+            android:textSize="25sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/guideline4" />
 
-    <TextView
-        android:id="@+id/quiz"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
-        android:text="Quiz:"
-        app:layout_constraintBottom_toTopOf="@id/spotDifference"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+        <ProgressBar
+            android:id="@+id/progressQuiz"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/circle_shape"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circle_progress_bar"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/quiz"
+            app:layout_constraintVertical_bias="0.0" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="170dp" />
+        <TextView
+            android:id="@+id/punti_quiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="--"
+            android:textColor="@color/main_red"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/progressQuiz"
+            app:layout_constraintEnd_toEndOf="@+id/progressQuiz"
+            app:layout_constraintStart_toStartOf="@+id/progressQuiz"
+            app:layout_constraintTop_toTopOf="@+id/progressQuiz" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/yourMedals_quiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your medals:"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/progressQuiz"
+            app:layout_constraintTop_toTopOf="@+id/guideline4"
+            app:layout_constraintVertical_bias="0.25" />
+
+        <ImageView
+            android:id="@+id/bronzoQuiz"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toTopOf="@id/nextMedals_quiz"
+            app:layout_constraintEnd_toEndOf="@id/argentoQuiz"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/yourMedals_quiz"
+            app:layout_constraintTop_toBottomOf="@id/yourMedals_quiz"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/argentoQuiz"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toTopOf="@id/nextMedals_quiz"
+            app:layout_constraintEnd_toStartOf="@id/oroQuiz"
+            app:layout_constraintStart_toEndOf="@id/bronzoQuiz"
+            app:layout_constraintTop_toBottomOf="@id/yourMedals_quiz"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/oroQuiz"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toTopOf="@id/nextMedals_quiz"
+            app:layout_constraintStart_toEndOf="@id/argentoQuiz"
+            app:layout_constraintTop_toBottomOf="@id/yourMedals_quiz"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/nextMedals_quiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next medals:"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/progressQuiz"
+            app:layout_constraintTop_toBottomOf="@+id/yourMedals_quiz"
+            app:layout_constraintVertical_bias="0.36" />
+
+        <ImageView
+            android:id="@+id/nextMedal_quiz"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toTopOf="@id/guideline3"
+            app:layout_constraintStart_toStartOf="@id/nextMedals_quiz"
+            app:layout_constraintTop_toBottomOf="@id/nextMedals_quiz"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <!--  Spot the differences  -->
+
+        <TextView
+            android:id="@+id/spotDifference"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Differences:"
+            android:textSize="25sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/guideline3" />
+
+        <ProgressBar
+            android:id="@+id/progressDiff"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/circle_shape"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circle_progress_bar"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spotDifference"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/punti_diff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="--"
+            android:textColor="@color/main_red"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/progressDiff"
+            app:layout_constraintEnd_toEndOf="@+id/progressDiff"
+            app:layout_constraintStart_toStartOf="@+id/progressDiff"
+            app:layout_constraintTop_toTopOf="@+id/progressDiff" />
+
+        <TextView
+            android:id="@+id/yourMedals_diff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your medals:"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/progressDiff"
+            app:layout_constraintTop_toTopOf="@+id/guideline3"
+            app:layout_constraintVertical_bias="0.25" />
+
+        <ImageView
+            android:id="@+id/bronzoDiff"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toTopOf="@id/nextMedals_diff"
+            app:layout_constraintEnd_toEndOf="@id/argentoDiff"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/yourMedals_diff"
+            app:layout_constraintTop_toBottomOf="@id/yourMedals_diff"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/argentoDiff"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toTopOf="@id/nextMedals_diff"
+            app:layout_constraintEnd_toStartOf="@id/oroDiff"
+            app:layout_constraintStart_toEndOf="@id/bronzoDiff"
+            app:layout_constraintTop_toBottomOf="@id/yourMedals_diff"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/oroDiff"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            app:layout_constraintBottom_toTopOf="@id/nextMedals_diff"
+            app:layout_constraintStart_toEndOf="@id/argentoDiff"
+            app:layout_constraintTop_toBottomOf="@id/yourMedals_diff"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/nextMedals_diff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next medals:"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/progressDiff"
+            app:layout_constraintTop_toBottomOf="@+id/yourMedals_diff"
+            app:layout_constraintVertical_bias="0.36" />
+
+        <ImageView
+            android:id="@+id/nextMedal_diff"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/nextMedals_diff"
+            app:layout_constraintTop_toBottomOf="@id/nextMedals_diff"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <!--  Guidelines  -->
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="432dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="790dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="115dp" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="365dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.158" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

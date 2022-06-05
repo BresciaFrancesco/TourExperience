@@ -2,6 +2,7 @@ package it.uniba.sms2122.tourexperience.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class CacheScoreGames {
     public final static String CACHE_SCORE_TABLE = "CACHE_SCORE";
@@ -40,7 +41,7 @@ public class CacheScoreGames {
      * @throws IllegalArgumentException se lo score non esiste o è minore di 0.
      */
     public int getScore(final String uid, final GameTypes gameType) throws IllegalArgumentException {
-        final SQLiteDatabase db = dbHelper.getWritableDatabase();
+        final SQLiteDatabase db = dbHelper.getReadableDatabase();
         final int result = query.getScore(db, gameType, uid);
         db.close();
         if (result < 0)

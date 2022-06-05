@@ -81,6 +81,7 @@
     <string name="import_paths_from_internet">Import from Internet</string>
     <string name="import_paths_from_local">Import from local</string>
     <string name="camera_permission_required">Camera permission is require for scann a qr code</string>
+    <string name="game_stats_not_available">Game stats not available. Login first.</string>
 
     <!-- Modificare le scritte -->
     <string name="permission_required_title">Richiesta permesso</string>
@@ -199,6 +200,7 @@
     <string name="lively">Lively</string>
     <string name="monotonous">Monotonous</string>
 
+    <string name="quiz_game">Quiz</string>
     <string name="spot_the_difference_title_game">Spot the difference</string>
     <string name="spot_the_difference_is_done">You have already completed this mini game in this Path</string>
     <string name="spot_the_difference_close_message">compliments! you have found all the differences.</string>

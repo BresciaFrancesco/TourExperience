@@ -78,6 +78,7 @@
     <string name="import_paths_from_internet">Importa da Internet</string>
     <string name="import_paths_from_local">Importa da locale</string>
     <string name="camera_permission_required">È necessario accedere alla camera per scannerizzare il codice QR</string>
+    <string name="game_stats_not_available">Statistiche di gioco non disponibili. Effettuare il login.</string>
 
     <!-- Modificare le scritte -->
     <string name="permission_required_title">Richiesta permesso</string>
@@ -195,6 +196,7 @@
     <string name="lively">Vivace</string>
     <string name="monotonous">Monotono</string>
 
+    <string name="quiz_game">Quiz</string>
     <string name="spot_the_difference_title_game">Trova le differenze</string>
     <string name="spot_the_difference_is_done">Hai già completato questo mini gioco in questo Percorso</string>
     <string name="spot_the_difference_close_message">complimenti! hai trovato tutte le differenze.</string>

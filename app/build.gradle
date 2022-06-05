@@ -18,6 +18,8 @@ android {
         // Custom field
         buildConfigField("String", "SHARED_PREFS", "\"tour_experience_shared_preferences\"")
         buildConfigField("String", "SP_FIRST_OPENING", "\"isFirstOpening\"")
+
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -61,6 +63,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    //dipendendenze per lo scanner qr
+    // Dipendenze per lo scanner qr
     implementation 'com.github.yuriy-budiyev:code-scanner:2.1.2'
 }

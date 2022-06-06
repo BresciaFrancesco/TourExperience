@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Funzione utile a nascondere la tastiera una volta che un fragment è stata sostituito con un altro
-     * @param ctx
+     * @param ctx, context di riferimento all'interno di cui si vuole nascondere la tastiera
      */
     public static void hideKeyboard(Context ctx) {
         InputMethodManager inputManager = (InputMethodManager) ctx
@@ -328,8 +328,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private String getNomePercorso(String child){
         String percorso = null;
-        if (child.contains("Percorso_")) {
-            percorso = "Percorso_" + child.substring((child.indexOf("_") + 1), (child.lastIndexOf("{") - 1));
+        if (child.contains("Nome_percorso")) {
+            percorso = child.substring((child.lastIndexOf("=") + 1));
         }
         return percorso;
     }
@@ -341,6 +341,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private String getVoto(String child){
         String voto = null;
+        System.out.println("COME " + child);
         if (child.contains("Voti")) {
             voto = child.substring(child.lastIndexOf("=") + 1);
         }
@@ -378,19 +379,24 @@ public class MainActivity extends AppCompatActivity {
                     MuseoDatabase museoDatabase = new MuseoDatabase();
                     for (String s : child) {
                         String nomeMuseo = getNomeMuseo(s);
-                        String percorso = getNomePercorso(s);
-                        String voto = getVoto(s);
-                        String numeroStarts = getNumeroStarts(s);
-
                         if (nomeMuseo != null) {
                             museoDatabase.setNomeMuseo(nomeMuseo);
-                        } else if (percorso != null) {
-                            museoDatabase.addNomePercorso(percorso);
-                            VotiPercorsi votiPercorsi = new VotiPercorsi(voto);
-                            museoDatabase.addVoti(votiPercorsi);
-
-                        } else if (numeroStarts != null) {
-                            museoDatabase.addNumeroStarts(numeroStarts);
+                        } else {
+                            String percorso = getNomePercorso(s);
+                            if (percorso != null) {
+                                museoDatabase.addNomePercorso(percorso);
+                            } else {
+                                String voto = getVoto(s);
+                                if (voto != null){
+                                    VotiPercorsi votiPercorsi = new VotiPercorsi(voto);
+                                    museoDatabase.addVoti(votiPercorsi);
+                                } else {
+                                    String numeroStarts = getNumeroStarts(s);
+                                    if (numeroStarts != null) {
+                                        museoDatabase.addNumeroStarts(numeroStarts);
+                                    }
+                                }
+                            }
                         }
                     }
                     museoDatabaseList.add(museoDatabase);

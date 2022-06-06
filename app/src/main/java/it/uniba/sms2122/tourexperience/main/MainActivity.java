@@ -27,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -191,10 +190,8 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-        if(!getTopFragment())
-            super.onBackPressed();
+        getTopFragment();
+        super.onBackPressed();
 
         overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
     }
@@ -205,16 +202,12 @@ public class MainActivity extends AppCompatActivity {
      * Altrimenti verifica quale sia il penultimo fragment attivato e ne attiva l'icona corrispondente
      * @return Restuisce false se non ci sono entry, altrimenti esegue le varie operazioni e restituisce true
      */
-    private boolean getTopFragment() {
-        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            return false;
-        }
-
-        if(getSupportFragmentManager().getBackStackEntryCount() == 1){
+    private void getTopFragment() {
+        if(getSupportFragmentManager().getBackStackEntryCount() <= 1){
             bottomNavigationView.getMenu().getItem(0).setChecked(true);
-        } else{
+        } else {
             String fragmentTag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 2).getName();
-            switch (Objects.requireNonNull(fragmentTag)){
+            switch (Objects.requireNonNull(fragmentTag)) {
                 case "HomeFragment":
                     bottomNavigationView.getMenu().getItem(0).setChecked(true);
                     break;
@@ -226,9 +219,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }
-
-        return true;
-
     }
 
     /**
@@ -245,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                 .setReorderingAllowed(true)
                 //.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
                 .replace(R.id.content_fragment_container_view, sceltaMuseiFragment)
-                .addToBackStack(null)
+                .addToBackStack("SceltaMuseiFragment")
                 .commit();
     }
 

@@ -36,6 +36,7 @@ public class CacheScoreGamesQuery {
 
     /**
      * Ritorna lo score di un game.
+     * @param db connessione al database già aperta.
      * @param gameType tipo di game.
      * @param uid user id alla quale associare questo score.
      * @return lo score del game;
@@ -60,6 +61,16 @@ public class CacheScoreGamesQuery {
      */
     public boolean deleteAll(final SQLiteDatabase db) {
         return db.delete(CACHE_SCORE_TABLE, "1", null) != 0;
+    }
+
+    /**
+     * Elimina un utente dal suo uid dalla tabella.
+     * @param db connessione al database già aperta.
+     * @param uid user id associato ai records da eliminare.
+     * @return true se l'eliminazione è andata a buon fine, false altrimenti.
+     */
+    public boolean deleteByUid(final SQLiteDatabase db, final String uid) {
+        return db.delete(CACHE_SCORE_TABLE, COLUMN_UID+"=?", new String[] {uid}) != 0;
     }
 
 }

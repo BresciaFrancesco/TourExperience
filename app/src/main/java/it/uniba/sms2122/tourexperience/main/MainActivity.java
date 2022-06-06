@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
                             .setReorderingAllowed(true)
                             //.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.content_fragment_container_view, HomeFragment.class, null)
+                            .addToBackStack("HomeFragment")
                             .commit();
                     return true;
                 case R.id.museums:
@@ -120,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                             .setReorderingAllowed(true)
                             //.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                             .replace(R.id.content_fragment_container_view, safeGetSceltaMuseiFragment(), null)
-                            .addToBackStack(null)
+                            .addToBackStack("SceltaMuseiFragment")
                             .commit();
                     Objects.requireNonNull(MainActivity.this.getSupportActionBar()).setTitle(R.string.museums);
                     return true;
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                             .setReorderingAllowed(true)
                             //.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.content_fragment_container_view, safeGetStatsFragment(), null)
-                            .addToBackStack(null)
+                            .addToBackStack("StatsFragment")
                             .commit();
                     Objects.requireNonNull(MainActivity.this.getSupportActionBar()).setTitle(R.string.stats);
                     return true;

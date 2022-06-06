@@ -34,19 +34,16 @@ public class CacheScoreGames {
     }
 
     /**
-     * Ritorna lo score di un game.
+     * Ritorna lo score di un game o 0 se non trova il game nel db.
      * @param uid user id alla quale associare questo score.
      * @param gameType tipo di game.
-     * @return lo score del game;
-     * @throws IllegalArgumentException se lo score non esiste o è minore di 0.
+     * @return lo score del game o 0 se non trova niente.
      */
     public int getScore(final String uid, final GameTypes gameType) throws IllegalArgumentException {
         final SQLiteDatabase db = dbHelper.getReadableDatabase();
-        final int result = query.getScore(db, gameType, uid);
+        int result = query.getScore(db, gameType, uid);
         db.close();
-        if (result < 0)
-            throw new IllegalArgumentException("CacheScoreGames.getScore ha ritornato -1");
-        return result;
+        return Math.max(result, 0);
     }
 
     /**
@@ -56,6 +53,17 @@ public class CacheScoreGames {
     public boolean deleteAll() {
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         final boolean result = query.deleteAll(db);
+        db.close();
+        return result;
+    }
+
+    /**
+     * Elimina un utente dal suo uid dalla tabella.
+     * @return true se l'eliminazione è andata a buon fine, false altrimenti.
+     */
+    public boolean deleteByUid(final String uid) {
+        final SQLiteDatabase db = dbHelper.getWritableDatabase();
+        final boolean result = query.deleteByUid(db, uid);
         db.close();
         return result;
     }

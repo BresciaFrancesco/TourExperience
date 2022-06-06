@@ -101,6 +101,23 @@ public class CacheScoreGamesQueryTest {
         assertEquals(-1, cacheScoreGames.getScore(db, GameTypes.QUIZ, uid));
     }
 
+    @Test
+    public void addAndDeleteOneUserShouldReturnTrue() throws Exception {
+        final String uid = "abc123";
+        cacheScoreGames.saveOne(db, uid, GameTypes.QUIZ, 10);
+
+        assertTrue(cacheScoreGames.deleteByUid(db, uid));
+    }
+
+    @Test
+    public void addAndDeleteOneUserShouldReturnMinusOneInGetScore() throws Exception {
+        final String uid = "abc123";
+        cacheScoreGames.saveOne(db, uid, GameTypes.QUIZ, 10);
+        cacheScoreGames.deleteByUid(db, uid);
+
+        assertEquals(-1, cacheScoreGames.getScore(db, GameTypes.QUIZ, uid));
+    }
+
 
     @After
     public void teardownForMethods() {

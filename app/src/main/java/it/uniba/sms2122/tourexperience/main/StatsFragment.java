@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -21,7 +24,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.database.CacheGames;
+import it.uniba.sms2122.tourexperience.database.CacheScoreGames;
+import it.uniba.sms2122.tourexperience.database.GameTypes;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
 
 public class StatsFragment extends Fragment {
@@ -108,11 +117,17 @@ public class StatsFragment extends Fragment {
 
                     // Recupero i dati da Firebase
                     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                    String userid = firebaseUser.getUid();
+                    final String userid = firebaseUser.getUid();
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+
+                    // Ottengo i punti salvati in locale quando l'app era offline
+                    CacheScoreGames db = new CacheScoreGames(requireContext());
+                    final int quizLS = db.getScore(userid, GameTypes.QUIZ);
+                    final int diffLS = db.getScore(userid, GameTypes.DIFF);
+
                     reference.child(userid).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             // Recupero gli score dell'utente
                             Object tempQuiz = dataSnapshot.child("score_quiz").getValue();
                             Object tempDiff = dataSnapshot.child("score_diff").getValue();
@@ -122,6 +137,28 @@ public class StatsFragment extends Fragment {
                             // Calcolo punti totali utente
                             int scoreQuizInt = Integer.parseInt(scoreQuiz[0]);
                             int scoreDiffInt = Integer.parseInt(scoreDiff[0]);
+
+                            if (quizLS > 0 || diffLS > 0) {
+                                // aggiungo il punteggio salvato in locale a quello ottenuto da cloud
+                                scoreQuizInt += quizLS;
+                                scoreDiffInt += diffLS;
+
+                                // salvo i nuovi punteggi in cloud
+                                final Map<String, Object> mappa = new HashMap<>();
+                                mappa.put("dateBirth", dataSnapshot.child("dateBirth").getValue());
+                                mappa.put("name", dataSnapshot.child("name").getValue());
+                                mappa.put("surname", dataSnapshot.child("surname").getValue());
+                                mappa.put("score_quiz", scoreQuizInt);
+                                mappa.put("score_diff", scoreDiffInt);
+                                reference.child(userid).setValue(mappa).addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        // Elimino i punti salvati in locale associati all'utente correntemente loggato
+                                        db.deleteByUid(userid);
+                                    } else {
+                                        Log.e("StatsFragment", "dati non salvati -> exception: " + task.getException());
+                                    }
+                                });
+                            }
 
                             int punti_totali = scoreQuizInt + scoreDiffInt;
                             puntiTotali.setText("Punteggio totale: " + Integer.toString(punti_totali));

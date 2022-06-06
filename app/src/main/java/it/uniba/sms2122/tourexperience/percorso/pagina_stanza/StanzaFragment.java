@@ -87,6 +87,7 @@ public class StanzaFragment extends Fragment {
             }
     );
 
+    // Realizzazione dell'interfaccia che gestisce la connessione con il service
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -211,6 +212,9 @@ public class StanzaFragment extends Fragment {
 
     }
 
+    /**
+     * Metodo per controllare lo stato dei sensori ed eventualmente attivare il Bluetooth, il GPS ed il service.
+     */
     private void checkSensorsStateAndStartService() {
         BluetoothAdapter bluetoothAdapter = ((BluetoothManager) percorsoActivity.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
         LocationManager locationManager = ((LocationManager) percorsoActivity.getSystemService(Context.LOCATION_SERVICE));
@@ -224,7 +228,7 @@ public class StanzaFragment extends Fragment {
             Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             btActivityResultLauncher.launch(enableBluetooth);
         }
-        else if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && !locationManager.isLocationEnabled()) || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        else if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !locationManager.isLocationEnabled()) || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Intent enableGps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             locationActivityResultLauncher.launch(enableGps);
         }

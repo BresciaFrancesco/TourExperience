@@ -200,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
      * Funzione utile a individuare se ci sono entry all'interno del backstack
      * Se c'è solo una entry setta il focus sull'icona della home
      * Altrimenti verifica quale sia il penultimo fragment attivato e ne attiva l'icona corrispondente
-     * @return Restuisce false se non ci sono entry, altrimenti esegue le varie operazioni e restituisce true
      */
     private void getTopFragment() {
         if(getSupportFragmentManager().getBackStackEntryCount() <= 1){

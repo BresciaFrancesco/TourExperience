@@ -259,7 +259,11 @@ public class QuizFragment extends Fragment {
                     try {
                         punteggio = punteggio.add(new Punteggio(tmpPunteggio.value() - (totalChecked - countTrue)));
                     } catch (IllegalArgumentException e) {
-                        punteggio = new Punteggio(0.0);
+                        // tmpPunteggio risulta sicuramente 0, quindi nessuna risposta selezionata era giusta.
+                        // Sottraggo direttamente il numero di risposte selezionate al punteggio, perché
+                        // sicuramente tutte le risposte selezionate erano sbagliate.
+                        punteggio = new Punteggio(punteggio.value() - totalChecked);
+                        e.printStackTrace();
                     }
                     cardLinearLayoutList.get(i).setBackgroundColor(view.getContext().getColor(R.color.error_red_card));
                 }

@@ -1,13 +1,21 @@
 package it.uniba.sms2122.tourexperience.musei.checkzip;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
+import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getPercorsiByMuseo;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,12 +23,16 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 import static it.uniba.sms2122.tourexperience.utility.Validate.*;
+
+import androidx.annotation.NonNull;
 
 /**
  * Esegue controlli sui file .json dei percorsi da importare.
@@ -29,10 +41,14 @@ public class CheckJsonPercorso {
 
     private final OpenFile dto;
     private final LocalFileManager localFileManager;
+    private final Context context;
+    private String nomeMuseo = null;
+    private String nomePercorso = null;
 
-    public CheckJsonPercorso(final OpenFile dto, final LocalFileManager localFileManager) {
+    public CheckJsonPercorso(final OpenFile dto, final LocalFileManager localFileManager, final Context context) {
         this.dto = notNull(dto);
         this.localFileManager = notNull(localFileManager);
+        this.context = context;
     }
 
     /**
@@ -74,10 +90,10 @@ public class CheckJsonPercorso {
         notNull(p, "Percorso vuoto");
         notNull(gson, "Gson vuoto");
 
-        File filePercorsoJson = Paths.get(localFileManager.getGeneralPath(),
-                p.getNomeMuseo(), "Percorsi", p.getNomePercorso()).toFile();
+        final File filePercorsoJson = LocalFileManager.buildGeneralPath(localFileManager.getGeneralPath(),
+                new String[] {p.getNomeMuseo(), "Percorsi", p.getNomePercorso()+".json"}).toFile();
 
-        notNull(cachePercorsiInLocale.get(p.getNomeMuseo()),
+        notNull(getPercorsiByMuseo(p.getNomeMuseo(), context),
                 "La cache dei percorsi in locale non ha il museo %s",
                 p.getNomeMuseo())
         .add(p.getNomePercorso());
@@ -85,12 +101,47 @@ public class CheckJsonPercorso {
         isTrue(!filePercorsoJson.exists(), "File percorso o già esistente in locale");
         isTrue(filePercorsoJson.createNewFile());
 
-        Writer targetFileWriter = new FileWriter(filePercorsoJson);
+        final BufferedWriter targetFileWriter = new BufferedWriter(new FileWriter(filePercorsoJson));
         targetFileWriter.write(gson.toJson(p));
         targetFileWriter.close();
 
-        Log.v("LOCAL_IMPORT_JSON", "Json Percorso" + p.getNomePercorso() + " salvato correttamente");
+        Log.v("LOCAL_IMPORT_JSON", "Json Percorso " + p.getNomePercorso() + " salvato correttamente");
+        this.nomeMuseo = p.getNomeMuseo();
+        this.nomePercorso = p.getNomePercorso();
         return true;
+    }
+
+    /**
+     * Salva i dati del percorso su firebase se esso non è già presente.
+     */
+    public void updateFirebase() {
+        if (nomeMuseo == null || nomePercorso == null) {
+            Log.e("CheckJsonPercorso.updateFirebase", "nomeMuseo e/o nomePercorso null");
+            return;
+        }
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Museums/" + nomeMuseo);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) return;
+                if (snapshot.hasChildren()) {
+                    if (snapshot.hasChild(nomePercorso)) {
+                        return;
+                    }
+                }
+                final Map<String, Object> mappa = new HashMap<>();
+                mappa.put("Numero_starts", 0);
+                mappa.put("Voti", "-1");
+
+                final DatabaseReference r = ref.child(nomePercorso);
+                r.setValue(mappa)
+                .addOnSuccessListener(snap -> Log.v("FIREBASE_JSON_IMPORT", "Dati del Percorso aggiunti su firebase correttamente"))
+                .addOnFailureListener(err -> Log.e("FIREBASE_JSON_IMPORT", err.getMessage()));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
     }
 
 }

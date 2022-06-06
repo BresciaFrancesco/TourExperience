@@ -1,25 +1,18 @@
 package it.uniba.sms2122.tourexperience.main;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.anton46.stepsview.StepsView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,17 +21,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
-import it.uniba.sms2122.tourexperience.FirstActivity;
 import it.uniba.sms2122.tourexperience.R;
-import it.uniba.sms2122.tourexperience.database.CacheScoreGames;
-import it.uniba.sms2122.tourexperience.database.CacheScoreGamesQuery;
-import it.uniba.sms2122.tourexperience.database.DBHelper;
-import it.uniba.sms2122.tourexperience.database.GameTypes;
-import it.uniba.sms2122.tourexperience.databinding.ActivityMainBinding;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
-import it.uniba.sms2122.tourexperience.profile.ProfileActivity;
 
 public class StatsFragment extends Fragment {
 

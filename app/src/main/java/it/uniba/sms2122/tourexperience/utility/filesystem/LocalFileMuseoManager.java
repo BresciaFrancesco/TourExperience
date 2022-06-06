@@ -169,10 +169,13 @@ public class LocalFileMuseoManager extends LocalFileManager {
             String resultMessage = context.getString(R.string.mime_type_error);
 
             if (mimeType.equals(JSON.mimeType())) {
-                CheckJsonPercorso cjp = new CheckJsonPercorso(dto, this);
+                CheckJsonPercorso cjp = new CheckJsonPercorso(dto, this, context);
                 resultMessage = (cjp.check())
                         ? context.getString(R.string.json_import_success, fileName)
                         : context.getString(R.string.json_import_error, fileName);
+                if (resultMessage.equals(context.getString(R.string.json_import_success, fileName))) {
+                    cjp.updateFirebase();
+                }
             }
             else if (mimeType.equals(ZIP.mimeType())) {
                 final String nomeMuseo = fileName.substring(0, fileName.length()-4);

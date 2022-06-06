@@ -99,7 +99,7 @@ public class Stanza {
         notNull(s, erroreNull, "stanza");
         notBlank(s.getId(), erroreBlank, "id");
         notBlank(s.getNome(), erroreBlank, "nome");
-        notBlank(s.getDescrizione(), erroreBlank, "descrizione");
+        //notBlank(s.getDescrizione(), erroreBlank, "descrizione");
         final Map<String, Opera> opereTmp = notEmpty(s.getOpere(), erroreEmpty, "opere");
         final Set<String> keySet = opereTmp.keySet();
         for (final String key : keySet) {

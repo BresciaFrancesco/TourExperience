@@ -32,6 +32,7 @@ import it.uniba.sms2122.tourexperience.database.CacheGames;
 import it.uniba.sms2122.tourexperience.database.CacheScoreGames;
 import it.uniba.sms2122.tourexperience.database.GameTypes;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
+import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 
 public class StatsFragment extends Fragment {
 
@@ -62,7 +63,7 @@ public class StatsFragment extends Fragment {
     private ImageView oroDiff;
     private ImageView nextMedDiff;
 
-    int[] medals = {R.drawable.ic_gold_medal,R.drawable.ic_silver_medal,R.drawable.ic_bronze_medal};
+    int[] medals = {R.drawable.ic_bronze_medal,R.drawable.ic_silver_medal,R.drawable.ic_gold_medal};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,6 +101,27 @@ public class StatsFragment extends Fragment {
 
         divider1 = view.findViewById(R.id.divider);
         divider2 = view.findViewById(R.id.divider2);
+
+        // Check connessione
+        if(!NetworkConnectivity.check(getContext())) {
+            livello.setText(R.string.no_connection);
+
+            quiz.setVisibility(View.GONE);
+            spotDiff.setVisibility(View.GONE);
+            puntiQuiz.setVisibility(View.GONE);
+            puntiDiff.setVisibility(View.GONE);
+            progress_quiz.setVisibility(View.GONE);
+            progress_diff.setVisibility(View.GONE);
+
+            yourMedQuiz_text.setVisibility(View.GONE);
+            yourMedDiff_text.setVisibility(View.GONE);
+            nextMedQuiz_text.setVisibility(View.GONE);
+            nextMedDiff_text.setVisibility(View.GONE);
+
+            divider1.setVisibility(View.GONE);
+            divider2.setVisibility(View.GONE);
+            return;
+        }
 
         // TODO stringhe punteggio, livello e medaglie tradotte
         // Controllo se l'utente è loggato con la classe UserHolder
@@ -174,10 +196,10 @@ public class StatsFragment extends Fragment {
                             int livelloQuiz = scoreQuizInt/100;
                             int livelloDiff = scoreDiffInt/100;
 
-                            puntiQuiz.setText("" + scoreQuizInt%100);
-                            progress_quiz.setProgress(scoreQuizInt);
-                            puntiDiff.setText("" + scoreDiffInt%100);
-                            progress_diff.setProgress(scoreDiffInt);
+                            puntiQuiz.setText("" + scoreQuizInt);
+                            progress_quiz.setProgress((scoreQuizInt >= 300) ? 100 : (scoreQuizInt%100));
+                            puntiDiff.setText("" + scoreDiffInt);
+                            progress_diff.setProgress((scoreDiffInt >= 300) ? 100 : (scoreDiffInt%100));
 
                             setMedals(livelloQuiz, livelloDiff);
                         }

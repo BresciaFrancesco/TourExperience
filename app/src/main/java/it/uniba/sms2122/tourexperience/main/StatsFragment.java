@@ -123,7 +123,6 @@ public class StatsFragment extends Fragment {
             return;
         }
 
-        // TODO stringhe punteggio, livello e medaglie tradotte
         // Controllo se l'utente è loggato con la classe UserHolder
         userHolder = UserHolder.getInstance();
         userHolder.getUser(
@@ -183,8 +182,8 @@ public class StatsFragment extends Fragment {
                             }
 
                             int punti_totali = scoreQuizInt + scoreDiffInt;
-                            puntiTotali.setText("Punteggio totale: " + Integer.toString(punti_totali));
-                            livello.setText("Livello: " + Integer.toString(punti_totali/10));
+                            puntiTotali.setText(getString(R.string.total_score) + " " + Integer.toString(punti_totali));
+                            livello.setText(getString(R.string.level) + " " + Integer.toString(punti_totali/10));
 
                             /* Sistema medaglie
                              *   Bronzo:  100 punti

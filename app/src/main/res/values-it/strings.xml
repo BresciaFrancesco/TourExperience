@@ -204,4 +204,8 @@
     <string name="uid_preferences" translatable="false">uid_preferences</string>
     <string name="description">Descrizione...</string>
     <string name="login_test">TEST ACCESSO</string>
+    <string name="your_medals">Le tue medaglie:</string>
+    <string name="next_medal">Prossima medaglia:</string>
+    <string name="total_score">Punteggio totale: </string>
+    <string name="level">Livello: </string>
 </resources>

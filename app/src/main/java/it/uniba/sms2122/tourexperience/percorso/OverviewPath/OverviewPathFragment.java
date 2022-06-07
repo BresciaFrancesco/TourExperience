@@ -213,9 +213,9 @@ public class OverviewPathFragment extends Fragment {
         ArrayList<String> lista = new ArrayList<>();
         for(Stanza stanza : stanze) {
             try{
-                lista.add(stanza.getOpere().get(stanza.getId() + "0000").getPercorsoImg());
+                //Log.v("DEBUG",stanza.getOpere().get(stanza.getId() + "0001").getPercorsoImg());
+                lista.add(stanza.getOpere().get(stanza.getId() + "0001").getPercorsoImg());
             }catch (NullPointerException ignored){}
-
         }
         return lista;
     }

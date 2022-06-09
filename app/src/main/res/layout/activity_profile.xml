@@ -208,38 +208,27 @@
                     android:translationY="-15dp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal">
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_weight="1"
-                        android:text="@string/string_or"
-                        android:textAlignment="textEnd"/>
 
                     <TextView
                         android:id="@+id/btnLogout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:layout_weight="1"
                         android:text="@string/logout"
+                        android:textStyle="bold"
                         android:textColor="@color/main_red"
                         android:textAlignment="textStart"
-                        android:textSize="18dp"/>
+                        android:textSize="25dp"/>
                 </LinearLayout>
 
             </LinearLayout>
-
-
         </TableRow>
-
     </TableLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

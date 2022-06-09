@@ -2,6 +2,7 @@ package it.uniba.sms2122.tourexperience;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +23,7 @@ public class FirstActivity extends AppCompatActivity {
 
     private Button btnLogin;
     private Button btnRegistration;
-    private TextView textViewGuest;
+    private Button textViewGuest;
     private ActionBar actionBar;
     private Button btnLoginTest;
     private ProgressBar progressBarLoginTest;
@@ -114,5 +115,4 @@ public class FirstActivity extends AppCompatActivity {
             });
         });
     }
-
 }

@@ -94,11 +94,13 @@ public class SceltaStanzeFragment extends Fragment {
                 path = parent.getPath();
                 nomeMuseo = parent.getNomeMuseo();
                 nomePercorso = parent.getPath().getNomePercorso();
+                lastStanza = path.getIdStanzaCorrente();
 
             } else {
 
                 this.nomePercorso = savedInstanceState.getString("nomePercorso");
                 this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
+                this.lastStanza = savedInstanceState.getString("lastStanza");
             }
         }
 
@@ -226,6 +228,7 @@ public class SceltaStanzeFragment extends Fragment {
         outState.putSerializable("museumn", gson.toJson(this.museumn));
         outState.putString("nomePercorso", this.nomePercorso);
         outState.putString("nomeMuseo", this.nomeMuseo);
+        outState.putString("lastStanza", this.lastStanza);
     }
 
     /**

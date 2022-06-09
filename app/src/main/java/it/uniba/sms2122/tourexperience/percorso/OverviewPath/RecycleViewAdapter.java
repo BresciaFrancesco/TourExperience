@@ -2,6 +2,7 @@ package it.uniba.sms2122.tourexperience.percorso.OverviewPath;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,8 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.textview.setText(names.get(position));
         try{
+            if(position >= images.size())
+                throw new NullPointerException();
             holder.imageView.setImageURI(Uri.parse(images.get(position)));
         }catch (NullPointerException e){
             e.printStackTrace();

@@ -151,6 +151,9 @@ public class Zip {
         }
         cacheMuseums.put(nomeMuseo, museo);
         final List<Museo> listaPrincipale = frag.getListaMusei();
+        if (frag.isListaMuseiEmpty()) {
+            listaPrincipale.clear();
+        }
         listaPrincipale.add(museo);
 
         frag.attachNewAdapter(new MuseiAdapter(frag, listaPrincipale, true));
@@ -190,6 +193,7 @@ public class Zip {
                 mappa.put("tipologia", nuovoMuseo.getTipologia());
                 for (final String percorso : nomiPercorsi) {
                     final Map<String, Object> m = new HashMap<>();
+                    m.put("Nome_percorso", percorso);
                     m.put("Numero_starts", 0);
                     m.put("Voti", "-1");
                     mappa.put(percorso, m);

@@ -130,6 +130,7 @@ public class CheckJsonPercorso {
                     }
                 }
                 final Map<String, Object> mappa = new HashMap<>();
+                mappa.put("Nome_percorso", nomePercorso);
                 mappa.put("Numero_starts", 0);
                 mappa.put("Voti", "-1");
 

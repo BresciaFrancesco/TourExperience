@@ -24,9 +24,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.database.CacheGames;
@@ -40,7 +42,7 @@ import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
 public class OverviewPathFragment extends Fragment {
 
     Percorso path;
-    ArrayList<Stanza> stanze;
+    Set<Stanza> stanze;
     ArrayList<String> opere;
     View inflater;
 
@@ -76,8 +78,9 @@ public class OverviewPathFragment extends Fragment {
             Gson gson = new GsonBuilder().create();
             this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
 
-            if (this.path == null) {//lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui comunque viene ricreato da 0 e non ha valori inzializzati
-
+            // Lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui
+            // comunque viene ricreato da 0 e non ha valori inzializzati
+            if (this.path == null) {
                 path = parent.getPath();
             }
         }
@@ -90,7 +93,7 @@ public class OverviewPathFragment extends Fragment {
         // Serve per caricare immediatamente le stanze e le opere
         localFilePercorsoManager = parent.getLocalFilePercorsoManager();
 
-        stanze = new ArrayList<>();
+        stanze = new HashSet<>();
         opere = new ArrayList<>();
 
         // Visita del grafo, caricamento stanze e opere negli array
@@ -166,7 +169,6 @@ public class OverviewPathFragment extends Fragment {
 
         while(!coda.isEmpty()) {
             // Rimuovo la stanza corrente dalla coda
-
             corrente = coda.pop();
             int correnteID = getStanzaID(corrente);
 
@@ -174,7 +176,9 @@ public class OverviewPathFragment extends Fragment {
             try {
                 path.moveTo(corrente.getId());
                 localFilePercorsoManager.createStanzeAndOpereInThisAndNextStanze(path);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                continue;
+            }
 
             if(!visitato[correnteID]) {
                 // Segno il nodo come visitato
@@ -184,6 +188,15 @@ public class OverviewPathFragment extends Fragment {
                 // Recupero la lista dei nodi adiacenti a aggiungo alla coda quelli non ancora visitati
                 List<Stanza> nodiAdiacenti = path.getAdiacentNodes();
                 for(Stanza stanza : nodiAdiacenti) {
+                    // Sposto il puntatore sul nodo adiacente per caricare le opere e poi torno indietro
+                    try {
+                        path.moveTo(stanza.getId());
+                        localFilePercorsoManager.createStanzeAndOpereInThisAndNextStanze(path);
+                        path.moveTo(corrente.getId());
+                        stanze.add(stanza);
+                    } catch (Exception ignored) {}
+
+                    // Aggiungo le stanze non visitate alla coda
                     int stanzaID = getStanzaID(stanza);
                     if(!visitato[stanzaID])
                         coda.add(stanza);
@@ -214,7 +227,7 @@ public class OverviewPathFragment extends Fragment {
         for(Stanza stanza : stanze) {
             try{
                 //Log.v("DEBUG",stanza.getOpere().get(stanza.getId() + "0000").getPercorsoImg());
-                lista.add(stanza.getOpere().get(stanza.getId() + "0000").getPercorsoImg());
+                lista.add(stanza.getOpere().get(stanza.getId() + "0001").getPercorsoImg());
             }catch (NullPointerException ignored){}
         }
         return lista;

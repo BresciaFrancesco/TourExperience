@@ -208,4 +208,6 @@
     <string name="next_medal">Prossima medaglia:</string>
     <string name="total_score">Punteggio totale: </string>
     <string name="level">Livello: </string>
+    <string name="spot_the_3_difference">Trova le 3 differenze</string>
+    <string name="punti">Punti</string>
 </resources>

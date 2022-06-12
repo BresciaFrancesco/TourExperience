@@ -65,7 +65,7 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="spot the 3 difference"
+            android:text="@string/spot_the_3_difference"
             android:textColor="@color/black"
             android:textAlignment="center"
             android:padding="2.5dp"

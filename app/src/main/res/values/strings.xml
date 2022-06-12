@@ -212,4 +212,6 @@
     <string name="next_medal">Next medal:</string>
     <string name="total_score">Total score: </string>
     <string name="level">Level: </string>
+    <string name="spot_the_3_difference">Spot the 3 differences</string>
+    <string name="punti">Score</string>
 </resources>

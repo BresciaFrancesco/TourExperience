@@ -33,7 +33,7 @@
             android:id="@+id/punti_txtview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Punti"
+            android:text="@string/punti"
             android:textSize="18sp"
             android:textColor="@color/main_red"
             android:layout_marginHorizontal="5dp"

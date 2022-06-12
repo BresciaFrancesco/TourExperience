@@ -34,8 +34,8 @@
     <string name="museums_cloud_import">Select Path to import</string>
     <string name="game_statistics">Game statistics</string>
     <string name="search_hint">Rome, Egyptian museum, …</string>
-    <string name="search_museums">Search by name or city...</string>
-    <string name="search_paths">Search by name or museum...</string>
+    <string name="search_museums">Search by name or city…</string>
+    <string name="search_paths">Search by name or museum…</string>
     <string name="find_cultural_site">Find a cultural site</string>
     <string name="search_description">Discover and follow the routes\nyou like best!</string>
     <string name="modifyProfile">Modify</string>
@@ -76,24 +76,23 @@
     <string name="insert_password_for_confirm_body">Insert password for confirm your change</string>
     <string name="insert_password_for_confirm_button">Confirm</string>
     <string name="no_result_1">Click the + button to</string>
-    <string name="no_result_2">import a museum route</string>
-    <string name="empty_phrase" translatable="false"></string>
+    <string name="no_result_2">Import a museum route</string>
+    <string name="empty_phrase" translatable="false" />
     <string name="import_paths_from_internet">Import from Internet</string>
     <string name="import_paths_from_local">Import from local</string>
-    <string name="camera_permission_required">Camera permission is require for scann a qr code</string>
+    <string name="camera_permission_required">Camera permission is require for scan a qr code</string>
     <string name="game_stats_not_available">Game stats not available. Login first.</string>
 
-    <!-- Modificare le scritte -->
-    <string name="permission_required_title">Richiesta permesso</string>
+    <string name="permission_required_title">Permission request</string>
     <string name="permission_required_body">
-        Gentile utente, il permesso serve per forza perché si,
-        dammelo o non potrai usare questa funzionalità, grazie.
+        Dear user, you must grant this permission
+        to continue using this feature.
     </string>
-    <string name="permission_denied_title">Permesso negato</string>
+    <string name="permission_denied_title">Permission denied</string>
     <string name="permission_denied_body">
-        Gentile utente, avendo negato il permesso all\'applicazione
-        non potrai accedere a questa funzionalità, ma potrai continuare
-        comunque ad utilizzare le altre funzionalità
+        Dear user, having denied permission to the application
+        you won’t be able to access this feature, but you can continue
+        however to use the other features.
     </string>
     <string name="importa">Import</string>
     <string name="importa_msg">Do you really want to import this path of the museum</string>
@@ -132,17 +131,17 @@
     <string name="error_room_body">The clicked room does not correspond to the next expected room on the selected route</string>
     <string name="error_opera_body">The clicked opera does not correspond to any opera in this room</string>
     <string name="path_end">End of the path</string>
-    <string name="rate_path">End Path\n Give a vote!!!</string>
+    <string name="rate_path">End path\n Give a vote!!!</string>
     <string name="path_end_success">End path success</string>
     <string name="path_end_fail">End path fail</string>
     <string name="bluetooth_permission_title" translatable="false">Bluetooth Low Energy</string>
     <string name="bluetooth_permission_body">Accepting this permission you can use Bluetooth Low Energy to detect the operas nearest you! Don\'t worry, we don\'t use any data related your position.</string>
-    <string name="download_in_progress">Download in progress, please wait...</string>
+    <string name="download_in_progress">Download in progress, please wait…</string>
     <string name="download_successful">%1$s, from the %2$s museum, downloaded successfully!</string>
     <string name="download_failed">Download failed</string>
     <string name="msg_share">Hey, look what path I made</string>
     <string name="try_again">Try again</string>
-    <string name="attention">Attention !</string>
+    <string name="attention">Attention!</string>
     <string name="msg_attention">It was not possible register your vote because there is no internet connection</string>
     <string name="title_classifica_voti">Best paths</string>
     <string name="description_classifica_voti">Ranking of the paths present in the app that had a better review by the different users who made them</string>
@@ -154,7 +153,7 @@
     <string name="pos">Position: %1$s</string>
     <string name="share">Share</string>
     <string name="interrupt">Do you really want to interrupt the path?</string>
-    <string name="end_path">End Path</string>
+    <string name="end_path">End path</string>
 
     <string name="quiz_incompatibile">Incompatible quiz</string>
     <string name="termina">Finish</string>
@@ -201,10 +200,10 @@
     <string name="monotonous">Monotonous</string>
 
     <string name="quiz_game">Quiz</string>
-    <string name="spot_the_difference_title_game">Spot the difference</string>
-    <string name="spot_the_difference_is_done">You have already completed this mini game in this Path</string>
-    <string name="spot_the_difference_close_message">compliments! you have found all the differences.</string>
-    <string name="spot_the_difference_quit_message">by exiting the game you will lose all progress made. Are you sure?</string>
+    <string name="spot_the_difference_title_game">Spot the differences</string>
+    <string name="spot_the_difference_is_done">You have already completed this mini game in this path</string>
+    <string name="spot_the_difference_close_message">Compliments! You have found all the differences.</string>
+    <string name="spot_the_difference_quit_message">By exiting the game you will lose all progress made. Are you sure?</string>
     <string name="uid_preferences" translatable="false">uid_preferences</string>
     <string name="description">Description...</string>
     <string name="login_test">TEST LOGIN</string>

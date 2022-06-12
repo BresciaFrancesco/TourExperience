@@ -80,17 +80,16 @@
     <string name="camera_permission_required">È necessario accedere alla camera per scannerizzare il codice QR</string>
     <string name="game_stats_not_available">Statistiche di gioco non disponibili. Effettuare il login.</string>
 
-    <!-- Modificare le scritte -->
     <string name="permission_required_title">Richiesta permesso</string>
     <string name="permission_required_body">
-        Gentile utente, il permesso serve per forza perché si,
-        dammelo o non potrai usare questa funzionalità, grazie.
+        Gentile utente, è necessario concedere questo permesso
+        per continuare ad utilizzare questa funzionalità.
     </string>
     <string name="permission_denied_title">Permesso negato</string>
     <string name="permission_denied_body">
         Gentile utente, avendo negato il permesso all\'applicazione
         non potrai accedere a questa funzionalità, ma potrai continuare
-        comunque ad utilizzare le altre funzionalità
+        comunque ad utilizzare le altre funzionalità.
     </string>
     <string name="importa">Importa</string>
     <string name="importa_msg">Vuoi davvero importare questo percorso del museo</string>
@@ -133,7 +132,7 @@
     <string name="path_end_success">Percorso terminato con successo</string>
     <string name="path_end_fail">Percorso terminato senza successo</string>
     <string name="bluetooth_permission_body">Accettando questo permesso potrai usare il Bluetooth Low Energy per rilevare le opere più vicine a te! Non preoccuparti, non useremo alcun dato relativo alla tua posizione.</string>
-    <string name="download_in_progress">Download in corso, per favore attendere...</string>
+    <string name="download_in_progress">Download in corso, per favore attendere…</string>
     <string name="download_successful">%1$s, del museo %2$s, scaricato correttamente!</string>
     <string name="download_failed">Download fallito</string>
     <string name="msg_share">Hey, guarda che percorso ho fatto</string>
@@ -199,8 +198,8 @@
     <string name="quiz_game">Quiz</string>
     <string name="spot_the_difference_title_game">Trova le differenze</string>
     <string name="spot_the_difference_is_done">Hai già completato questo mini gioco in questo Percorso</string>
-    <string name="spot_the_difference_close_message">complimenti! hai trovato tutte le differenze.</string>
-    <string name="spot_the_difference_quit_message">uscendo dal gioco perderai tutti i progressi fatti. Sei Sicuro?</string>
+    <string name="spot_the_difference_close_message">Complimenti! Hai trovato tutte le differenze.</string>
+    <string name="spot_the_difference_quit_message">Uscendo dal gioco perderai tutti i progressi fatti. Sei Sicuro?</string>
     <string name="uid_preferences" translatable="false">uid_preferences</string>
     <string name="description">Descrizione...</string>
     <string name="login_test">TEST ACCESSO</string>

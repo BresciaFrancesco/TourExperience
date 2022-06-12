@@ -16,7 +16,7 @@ public class Punteggio {
     public Punteggio(final Double punteggio) {
         notNull(punteggio);
         notNaN(punteggio);
-        inclusiveBetween(0, 100, punteggio.intValue());
+        inclusiveBetween(0, 150, punteggio.intValue());
         value = punteggio;
     }
 

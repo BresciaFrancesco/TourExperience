@@ -16,7 +16,7 @@ public class Testo {
 
     public Testo(final String testo) {
         notBlank(testo);
-        inclusiveBetween(1, 100, testo.length());
+        inclusiveBetween(1, 500, testo.length());
         matchesPattern(testo, REGEX_PATTERN, "Il testo non è accettato dal pattern " + REGEX_PATTERN);
         value = testo;
     }

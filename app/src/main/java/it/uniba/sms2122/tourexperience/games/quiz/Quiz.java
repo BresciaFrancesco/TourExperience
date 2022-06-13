@@ -46,18 +46,34 @@ public class Quiz {
         this.punteggioCorrente = new Punteggio(0.0);
     }
 
+    /**
+     * Ritorna il titolo del Quiz.
+     * @return titolo del Quiz.
+     */
     public Titolo getTitolo() {
         return titolo;
     }
 
+    /**
+     * Ritorna il massimo punteggio raggiungibile per questo quiz.
+     * @return il massimo punteggio raggiungibile.
+     */
     public Punteggio getValoreTotale() {
         return valoreTotale;
     }
 
+    /**
+     * Ritorna le domande del quiz.
+     * @return le domande del quiz.
+     */
     public List<Domanda> getDomande() {
         return domande.stream().collect(Collectors.toList());
     }
 
+    /**
+     * Ritorna il punteggio corrente del quiz (può variare a runtime).
+     * @return il punteggio corrente del quiz.
+     */
     public Punteggio getPunteggioCorrente() {
         return punteggioCorrente;
     }
@@ -78,6 +94,9 @@ public class Quiz {
         punteggioCorrente = p;
     }
 
+    /**
+     * Azzera il punteggio corrente, ponendolo a 0.0 .
+     */
     public void resetPunteggio() {
         punteggioCorrente = new Punteggio(0.0);
     }

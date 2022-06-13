@@ -36,8 +36,6 @@ public class FragmentManagerOfPercorsoActivity {
 
     /**
      * Funzione che serve a sostituire il precedente fragment con OverviewPathFragment
-     *
-     * @param bundle, contiene il nome del percorso di cui si deve visualizzare la descrizione
      */
     public void nextPercorsoFragment() {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
@@ -95,14 +93,9 @@ public class FragmentManagerOfPercorsoActivity {
             if (scanResult.equals(idClickedRoom)) {
                 try {
 
-                    if (idClickedRoom.equals(percorsoActivity.getPath().getIdStanzaIniziale())) {
-                        //path.setIdStanzaCorrente(idClickedRoom);
-                        percorsoActivity.getPath().moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
-                        nextStanzaFragment();
-                    } else {
-                        percorsoActivity.getPath().moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
-                        nextStanzaFragment();
-                    }
+                    //aggiorno il grafo sull'id della stanza in cui si sta entrando
+                    percorsoActivity.getPath().moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
+                    nextStanzaFragment();
 
                 } catch (GraphException e) {
                     Log.e("excpetion", e.getMessage());

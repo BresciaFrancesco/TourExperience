@@ -1,88 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
-    <!-- EditText username -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/idTILUserName"
-        style="@style/LoginTextInputLayoutStyle"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="140dp"
-        android:layout_marginEnd="20dp"
-        android:hint="@string/email_address"
-        android:padding="5dp"
-        android:textColorHint="@color/heading_gray"
-        app:hintTextColor="@color/heading_gray">
+        android:layout_height="wrap_content">
+        <!-- EditText username -->
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/idEdtUserName"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/idTILUserName"
+            style="@style/LoginTextInputLayoutStyle"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ems="10"
-            android:importantForAutofill="no"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/heading_gray"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="140dp"
+            android:layout_marginEnd="20dp"
+            android:hint="@string/email_address"
+            android:padding="5dp"
             android:textColorHint="@color/heading_gray"
-            android:textSize="14sp" />
-    </com.google.android.material.textfield.TextInputLayout>
+            app:hintTextColor="@color/heading_gray">
 
-    <!-- EditText password -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/idTILPassword"
-        style="@style/LoginTextInputLayoutStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/idTILUserName"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="20dp"
-        android:hint="@string/password"
-        app:passwordToggleEnabled="true"
-        android:padding="5dp"
-        android:textColorHint="@color/heading_gray"
-        app:hintTextColor="@color/heading_gray">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/idEdtUserName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:importantForAutofill="no"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/heading_gray"
+                android:textColorHint="@color/heading_gray"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/idEdtPassword"
+        <!-- EditText password -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/idTILPassword"
+            style="@style/LoginTextInputLayoutStyle"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ems="10"
-            android:importantForAutofill="no"
-            android:inputType="textPassword"
-            android:textColor="@color/heading_gray"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idTILUserName"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="20dp"
+            android:hint="@string/password"
+            app:passwordToggleEnabled="true"
+            android:padding="5dp"
             android:textColorHint="@color/heading_gray"
-            android:textSize="14sp" />
-    </com.google.android.material.textfield.TextInputLayout>
+            app:hintTextColor="@color/heading_gray">
 
-    <!-- Bottone Login -->
-    <Button
-        android:id="@+id/idBtnLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/idTILPassword"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="25dp"
-        android:background="@drawable/button_shape"
-        android:text="@string/login"
-        android:textAllCaps="true" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/idEdtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                android:textColor="@color/heading_gray"
+                android:textColorHint="@color/heading_gray"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- ProgressBar -->
-    <ProgressBar
-        android:id="@+id/idPBLoading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/idBtnLogin"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:indeterminate="true"
-        android:indeterminateDrawable="@drawable/progress_back"
-        android:visibility="gone" />
+        <!-- Bottone Login -->
+        <Button
+            android:id="@+id/idBtnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idTILPassword"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="25dp"
+            android:background="@drawable/button_shape"
+            android:text="@string/login"
+            android:textAllCaps="true" />
 
-</RelativeLayout>
+        <!-- ProgressBar -->
+        <ProgressBar
+            android:id="@+id/idPBLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idBtnLogin"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:indeterminate="true"
+            android:indeterminateDrawable="@drawable/progress_back"
+            android:visibility="gone" />
+    </RelativeLayout>
+</ScrollView>

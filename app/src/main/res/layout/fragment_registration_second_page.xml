@@ -1,172 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".registration.RegistrationFragmentSecondPage">
 
-    <LinearLayout
-        android:id="@+id/registrationPhase"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="20dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/phaseOne"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/registrationPhase"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="120dp"
-            android:background="@drawable/textview_border"
-            android:checkMarkTint="#B60D0D"
-            android:foreground="@drawable/checkbox"
-            android:paddingHorizontal="5dp"
-            android:text="  "
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            android:textSize="22sp" />
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="80dp"
+            android:layout_marginEnd="20dp">
+
+            <TextView
+                android:id="@+id/phaseOne"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="120dp"
+                android:background="@drawable/textview_border"
+                android:checkMarkTint="#B60D0D"
+                android:foreground="@drawable/checkbox"
+                android:paddingHorizontal="5dp"
+                android:text="  "
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="22sp" />
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:paddingHorizontal="5dp"
+                android:src="@drawable/next_black" />
+
+            <TextView
+                android:id="@+id/phaseTwo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/textview_border"
+                android:paddingHorizontal="5dp"
+                android:text="2"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/idTILRegName"
+            style="@style/RegistrationTextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/registrationPhase"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="20dp"
+            android:hint="@string/enter_name"
+            android:padding="5dp"
+            android:textColorHint="@color/black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/idEdtRegName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/idTILRegSurname"
+            style="@style/RegistrationTextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idTILRegName"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="20dp"
+            android:hint="@string/enter_surname"
+            android:padding="5dp"
+            android:textColorHint="@color/black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/idEdtRegSurname"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/idTILRegDateBirth"
+            style="@style/RegistrationTextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idTILRegSurname"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="20dp"
+            android:hint="@string/enter_date_birth"
+            android:padding="5dp"
+            android:textColorHint="@color/black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/idEdtRegDateBirth"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="90dp"
+                android:clickable="false"
+                android:ems="10"
+                android:enabled="false"
+                android:importantForAutofill="no"
+                android:inputType="date"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="20dp"
-            android:paddingHorizontal="5dp"
-            android:src="@drawable/next_black" />
+            android:id="@+id/idImgSetDate"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_below="@id/idTILRegSurname"
+            android:layout_alignEnd="@id/idTILRegDateBirth"
+            android:layout_marginTop="41dp"
+            android:layout_marginEnd="10dp"
+            android:foreground="@drawable/calendar"/>
 
-        <TextView
-            android:id="@+id/phaseTwo"
+        <ProgressBar
+            android:id="@+id/idProgressBarReg"
+            style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/textview_border"
-            android:paddingHorizontal="5dp"
-            android:text="2"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            android:textSize="22sp" />
+            android:layout_above="@id/background_button"
+            android:layout_below="@id/idTILRegDateBirth"
+            android:layout_centerHorizontal="true"
+            android:indeterminate="true"
+            android:visibility="gone" />
 
-    </LinearLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/idTILRegName"
-        style="@style/RegistrationTextInputLayoutStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/registrationPhase"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="20dp"
-        android:hint="@string/enter_name"
-        android:padding="5dp"
-        android:textColorHint="@color/black">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/idEdtRegName"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ems="10"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            android:textSize="14sp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/idTILRegSurname"
-        style="@style/RegistrationTextInputLayoutStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/idTILRegName"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="20dp"
-        android:hint="@string/enter_surname"
-        android:padding="5dp"
-        android:textColorHint="@color/black">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/idEdtRegSurname"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ems="10"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            android:textSize="14sp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/idTILRegDateBirth"
-        style="@style/RegistrationTextInputLayoutStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/idTILRegSurname"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="20dp"
-        android:hint="@string/enter_date_birth"
-        android:padding="5dp"
-        android:textColorHint="@color/black">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/idEdtRegDateBirth"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="90dp"
-            android:clickable="false"
-            android:ems="10"
-            android:enabled="false"
-            android:importantForAutofill="no"
-            android:inputType="date"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
-            android:textSize="14sp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <ImageView
-        android:id="@+id/idImgSetDate"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_below="@id/idTILRegSurname"
-        android:layout_alignEnd="@id/idTILRegDateBirth"
-        android:layout_marginTop="41dp"
-        android:layout_marginEnd="10dp"
-        android:foreground="@drawable/calendar"/>
-
-    <ProgressBar
-        android:id="@+id/idProgressBarReg"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/background_button"
-        android:layout_below="@id/idTILRegDateBirth"
-        android:layout_centerHorizontal="true"
-        android:indeterminate="true"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/background_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom"
-        android:gravity="bottom"
-        android:orientation="vertical"
-        android:paddingHorizontal="45dp">
-
-        <Button
-            android:id="@+id/idBtnRegSecondPage"
+        <LinearLayout
+            android:id="@+id/background_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp"
-            android:layout_marginBottom="@dimen/button_margin"
-            android:background="@drawable/button_shape"
-            android:text="@string/sign_up"
-            android:textAllCaps="true" />
-    </LinearLayout>
-</RelativeLayout>
+            android:layout_below="@id/idTILRegDateBirth"
+            android:orientation="vertical"
+            android:paddingHorizontal="45dp"
+            android:layout_marginTop="40dp">
+
+            <Button
+                android:id="@+id/idBtnRegSecondPage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="25dp"
+                android:background="@drawable/button_shape"
+                android:text="@string/sign_up"
+                android:textAllCaps="true" />
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>

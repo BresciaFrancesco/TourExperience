@@ -55,7 +55,7 @@ public class SceltaStanzeFragment extends Fragment {
     private String nomePercorso;
 
     private PercorsoActivity parent;
-    private String lastStanza;
+    private String firstStanza;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,13 +78,13 @@ public class SceltaStanzeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         parent = (PercorsoActivity) requireActivity();
-        assert parent != null;
         Objects.requireNonNull(parent.getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
 
         if (savedInstanceState == null) {
             path = parent.getPath();
             nomeMuseo = parent.getNomeMuseo();
             nomePercorso = parent.getPath().getNomePercorso();
+            firstStanza = path.getIdStanzaCorrente();
         } else {
             Gson gson = new GsonBuilder().create();
             this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
@@ -94,16 +94,15 @@ public class SceltaStanzeFragment extends Fragment {
                 path = parent.getPath();
                 nomeMuseo = parent.getNomeMuseo();
                 nomePercorso = parent.getPath().getNomePercorso();
-                lastStanza = path.getIdStanzaCorrente();
+                firstStanza = path.getIdStanzaCorrente();
 
             } else {
 
                 this.nomePercorso = savedInstanceState.getString("nomePercorso");
                 this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
-                this.lastStanza = savedInstanceState.getString("lastStanza");
+                this.firstStanza = savedInstanceState.getString("firstStanza");
             }
         }
-
 
         recyclerView = view.findViewById(R.id.recyclerViewRooms);
         // Setting the layout as linear layout for vertical orientation
@@ -126,19 +125,19 @@ public class SceltaStanzeFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (lastStanza == null) {
+        if (firstStanza.equals(path.getIdStanzaCorrente())) {
             //Caso: primo avvio del fragment
             listaStanze.add(path.getStanzaCorrente());
             textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
         }
-        else if (path.getIdStanzaCorrente().equals(path.getIdStanzaFinale()) && !path.getIdStanzaCorrente().equals(lastStanza) && path.getAdiacentNodes().size() == 0) {
+        else if (path.getIdStanzaCorrente().equals(path.getIdStanzaFinale()) && path.getAdiacentNodes().size() == 0) {
             //Caso: l'utente è arrivato alla stanza finale e non può tornare indietro
             ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFinePercorsoFragment();
         } else {
             //Caso: l'utente non ha raggiunto la stanza finale, oppure ha raggiunto la stanza finale ma può tornare indietro
             listaStanze = path.getAdiacentNodes();
             textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.area, path.getStanzaCorrente().getNome()));
-            if(path.getIdStanzaCorrente().equals(path.getIdStanzaFinale()) && !path.getIdStanzaCorrente().equals(lastStanza)){
+            if(path.getIdStanzaCorrente().equals(path.getIdStanzaFinale())){
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setMessage(R.string.question_end_path);
                 builder.setTitle(R.string.attention);
@@ -153,8 +152,6 @@ public class SceltaStanzeFragment extends Fragment {
                 alertDialog.show();
             }
         }
-
-        lastStanza = path.getIdStanzaCorrente();
 
         if (savedInstanceState == null) {
             museumn = getMuseoByName(nomeMuseo, getContext());
@@ -228,7 +225,7 @@ public class SceltaStanzeFragment extends Fragment {
         outState.putSerializable("museumn", gson.toJson(this.museumn));
         outState.putString("nomePercorso", this.nomePercorso);
         outState.putString("nomeMuseo", this.nomeMuseo);
-        outState.putString("lastStanza", this.lastStanza);
+        outState.putString("firstStanza", this.firstStanza);
     }
 
     /**

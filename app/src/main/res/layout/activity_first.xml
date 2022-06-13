@@ -1,75 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FirstActivity">
 
-    <ImageView
-        android:id="@+id/idImgLogo"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="50dp"
-        android:src="@mipmap/tourexperience" />
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/idBtnMainLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/idImgLogo"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="25dp"
-        android:background="@drawable/button_shape"
-        android:text="@string/login"
-        android:textAllCaps="true" />
+        <ImageView
+            android:id="@+id/idImgLogo"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="50dp"
+            android:src="@mipmap/tourexperience" />
 
-    <Button
-        android:id="@+id/idBtnMainRegistration"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/idBtnMainLogin"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="25dp"
-        android:background="@drawable/button_shape"
-        android:text="@string/registration"
-        android:textAllCaps="true" />
+        <Button
+            android:id="@+id/idBtnMainLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/idImgLogo"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="25dp"
+            android:background="@drawable/button_shape"
+            android:text="@string/login"
+            android:textAllCaps="true" />
 
-    <Button
-        android:id="@+id/idTextViewGuest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/idBtnMainRegistration"
-        android:layout_alignStart="@+id/idBtnMainRegistration"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/button_shape_v2"
-        android:padding="10dp"
-        android:text="@string/login_guest"
-        android:textAlignment="center"
-        android:textAllCaps="true" />
+        <Button
+            android:id="@+id/idBtnMainRegistration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idBtnMainLogin"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="25dp"
+            android:background="@drawable/button_shape"
+            android:text="@string/registration"
+            android:textAllCaps="true" />
 
-    <Button
-        android:id="@+id/idBtnLogin_test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/idBtnMainRegistration"
-        android:layout_alignEnd="@+id/idBtnMainRegistration"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="20dp"
-        android:layout_toEndOf="@+id/idTextViewGuest"
-        android:background="@drawable/button_shape_v2"
-        android:padding="10dp"
-        android:text="@string/login_test"
-        android:textAllCaps="true" />
+        <Button
+            android:id="@+id/idTextViewGuest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idBtnMainRegistration"
+            android:layout_alignStart="@+id/idBtnMainRegistration"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/button_shape_v2"
+            android:padding="10dp"
+            android:text="@string/login_guest"
+            android:textAlignment="center"
+            android:textAllCaps="true" />
 
-    <ProgressBar
-        android:id="@+id/pb_login_test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/idTextViewGuest"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"/>
+        <Button
+            android:id="@+id/idBtnLogin_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/idBtnMainRegistration"
+            android:layout_alignEnd="@+id/idBtnMainRegistration"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@+id/idTextViewGuest"
+            android:background="@drawable/button_shape_v2"
+            android:padding="10dp"
+            android:text="@string/login_test"
+            android:textAllCaps="true" />
 
-</RelativeLayout>
+        <ProgressBar
+            android:id="@+id/pb_login_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idTextViewGuest"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
+</ScrollView>

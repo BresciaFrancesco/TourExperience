@@ -124,6 +124,7 @@ public class SceltaStanzeFragment extends Fragment {
 
         if (parent.isFirstStanza()) {
             //Caso: primo avvio del fragment
+            listaStanze.clear();
             listaStanze.add(path.getStanzaCorrente());
             textView.setText(getString(R.string.museum, nomeMuseo) + "\n" + getString(R.string.path, nomePercorso));
         }

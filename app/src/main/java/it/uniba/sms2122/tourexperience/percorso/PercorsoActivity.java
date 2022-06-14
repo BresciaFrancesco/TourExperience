@@ -35,6 +35,7 @@ public class PercorsoActivity extends AppCompatActivity {
     private PermissionGrantedManager actionPerfom;
 
     private String nomeMuseo;
+    private boolean firstStanza;
 
     protected LocalFilePercorsoManager localFilePercorsoManager;
     private LocalFileMuseoManager localFileMuseoManager;
@@ -77,6 +78,7 @@ public class PercorsoActivity extends AppCompatActivity {
             Fragment firstPage = new MuseoFragment();
             fgManagerOfPercorso.createFragment(firstPage, "museoFragment");
             nomeMuseo = getIntent().getStringExtra("nome_museo");
+            firstStanza = true;
         }
 
     }
@@ -225,6 +227,7 @@ public class PercorsoActivity extends AppCompatActivity {
 
         outState.putSerializable("path", gson.toJson(this.path));
         outState.putString("nomeMuseo", this.nomeMuseo);
+        outState.putBoolean("firstStanza", this.firstStanza);
     }
 
     /**
@@ -237,11 +240,24 @@ public class PercorsoActivity extends AppCompatActivity {
             return false;
         final Percorso tmpPath = new Gson().fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
         final String tmpNomeMuseo = savedInstanceState.getString("nomeMuseo");
+        final boolean tmpFirstStanza = savedInstanceState.getBoolean("firstStanza");
+        System.out.println("1 " +tmpNomeMuseo);
+        System.out.println("2 " +tmpFirstStanza);
+        System.out.println("3 " +tmpPath);
         if (tmpNomeMuseo == null || tmpNomeMuseo.isEmpty() || tmpPath == null )
             return false;
         path = tmpPath;
         nomeMuseo = tmpNomeMuseo;
+        firstStanza = tmpFirstStanza;
         return true;
+    }
+
+    public boolean isFirstStanza() {
+        return firstStanza;
+    }
+
+    public void setFirstStanza(boolean firstStanza) {
+        this.firstStanza = firstStanza;
     }
 
 

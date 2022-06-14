@@ -62,7 +62,6 @@ public class FragmentManagerOfPercorsoActivity {
     public void nextSceltaStanzeFragment() {
         //TODO instanziare il fragment contenente l'immagine e descrizione del percorso
         Fragment thirdPage = new SceltaStanzeFragment();
-
         createFragment(thirdPage, "sceltaStanzeFragment");
     }
 
@@ -95,6 +94,8 @@ public class FragmentManagerOfPercorsoActivity {
 
                     //aggiorno il grafo sull'id della stanza in cui si sta entrando
                     percorsoActivity.getPath().moveTo(idClickedRoom);//aggiorno il grafo sull'id della stanza in cui si sta entrando
+                    if(percorsoActivity.isFirstStanza())
+                        percorsoActivity.setFirstStanza(false);
                     nextStanzaFragment();
 
                 } catch (GraphException e) {

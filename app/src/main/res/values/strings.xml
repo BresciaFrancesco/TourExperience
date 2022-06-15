@@ -180,6 +180,7 @@
     <string name="errore_apertura_quiz">Error opening the quiz</string>
     <string name="scan_qr_code_opera">Scan the QR code of an opera</string>
     <string name="operas_close_to_you">Operas close to you</string>
+    <string name="operas_you_will_find">Operas you will find</string>
     <string name="profile_pic_alert_title">Do you want to login or sign up?</string>
     <string name="profile_pic_alert_message">Log in or register on TourExperience to evaluate the routes you like best and access many exclusive features!</string>
     <string name="question_end_path">This is the final room of the path, do you want to finish the path or continue?</string>

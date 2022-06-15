@@ -25,14 +25,10 @@
                 android:text="Title"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:gravity="center_vertical"
+                android:layout_marginStart="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/delete_button"
-                app:layout_constraintHorizontal_bias="0.1"
                 app:layout_constraintStart_toEndOf="@+id/icona_item_lista"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_editor_absoluteX="95dp"
-                app:layout_editor_absoluteY="15dp" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/icona_item_lista"

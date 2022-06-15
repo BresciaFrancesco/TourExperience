@@ -33,6 +33,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import it.uniba.sms2122.tourexperience.R;
@@ -47,8 +49,7 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManag
 public class StanzaFragment extends Fragment {
     private static final String TAG = "StanzaFragment";
 
-    private TextView descriptionTextView;
-    private TextView nameTextView;
+    private TextView descriptionTextView, nameTextView, operasTextView;
     private RecyclerView recycleView;
     private Permesso permission;
     private NearbyOperasAdapter adapter;
@@ -122,6 +123,11 @@ public class StanzaFragment extends Fragment {
         percorsoActivity = (PercorsoActivity) requireActivity();
         permission = new Permesso(percorsoActivity);
         localFilePercorsoManager = new LocalFilePercorsoManager(requireContext().getFilesDir().toString());
+        descriptionTextView = view.findViewById(R.id.stanza_description);
+        nameTextView = view.findViewById(R.id.stanza_name);
+        recycleView = view.findViewById(R.id.opere_recycle_view);
+        operasTextView = view.findViewById(R.id.opere_title);
+        nearbyOperasScrollView = view.findViewById(R.id.nearby_operas_scroll_view);
 
         if(savedInstanceState == null){
             path = percorsoActivity.getPath();}
@@ -134,11 +140,6 @@ public class StanzaFragment extends Fragment {
                 path = percorsoActivity.getPath();
             }
         }
-
-        descriptionTextView = view.findViewById(R.id.stanza_description);
-        nameTextView = view.findViewById(R.id.stanza_name);
-        recycleView = view.findViewById(R.id.opere_recycle_view);
-        nearbyOperasScrollView = view.findViewById(R.id.nearby_operas_scroll_view);
 
         /* Caricamento delle opere */
         String idStanzaCorrente = path.getIdStanzaCorrente();
@@ -162,8 +163,8 @@ public class StanzaFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
 
         // Check dei permessi
         String[] permessi;
@@ -177,10 +178,11 @@ public class StanzaFragment extends Fragment {
             /*
              * Se i permessi sono stati accettati, vengono abilitati i sensori
              */
-            if(permission.hasPermissions(permessi)) {
+            boolean hasPermission = permission.hasPermissions(permessi);
+            if(hasPermission) {
                 checkSensorsStateAndStartService();
-                nearbyOperasScrollView.setVisibility(View.VISIBLE);
             }
+            setVisibilityOfNearbyOperas(hasPermission);
         }
     }
 
@@ -194,6 +196,22 @@ public class StanzaFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         unBindService();
+    }
+
+    /**
+     * Metodo per visualizzare tutte le opere in una stanza se non bisogna mostrare le opere vicine.
+     * @param visible Visibilità delle opere vicine
+     */
+    private void setVisibilityOfNearbyOperas(boolean visible) {
+        if(!visible) {
+            ArrayList<Opera> operas = new ArrayList<>(stanza.getOpere().values());
+            operasTextView.setText(getString(R.string.operas_you_will_find));
+            adapter.addOperas(operas);
+            adapter.notifyDataSetChanged();
+        } else {
+            operasTextView.setText(getString(R.string.operas_close_to_you));
+            adapter.clear();
+        }
     }
 
     /**

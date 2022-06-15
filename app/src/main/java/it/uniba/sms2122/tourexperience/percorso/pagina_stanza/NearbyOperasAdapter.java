@@ -18,6 +18,7 @@ import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.Opera;
 
 public class NearbyOperasAdapter extends RecyclerView.Adapter<NearbyOperasAdapter.MyViewHolder> {
+    private static final int MAX_LETTERS_VISIBLE = 15;
 
     private Context context;
     private ArrayList<Opera> nearbyOperas;
@@ -39,7 +40,8 @@ public class NearbyOperasAdapter extends RecyclerView.Adapter<NearbyOperasAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.textview.setText(nearbyOperas.get(position).getNome());
+        String name = getAdaptedString(nearbyOperas.get(position).getNome());
+        holder.textview.setText(name);
         holder.imageView.setImageURI(Uri.parse(nearbyOperas.get(position).getPercorsoImg()));
     }
 
@@ -63,6 +65,44 @@ public class NearbyOperasAdapter extends RecyclerView.Adapter<NearbyOperasAdapte
     public void clear() {
         nearbyOperas.clear();
     }
+
+    /**
+     * Adatta la stringa presa in input alle dimensioni dell'item in modo da poterla visualizzare correttamente
+     * @param s La stringa da adattare
+     * @return La stringa adattata
+     */
+    private static String getAdaptedString(String s) {
+        if(s==null)
+            return null;
+        if(s.isEmpty() || s.length() < 15)
+            return s;
+
+        String[] splitted = s.split(" ");
+        if(splitted.length == 1)
+            return s;
+
+        StringBuilder builder = new StringBuilder();
+        int letterCount = 0;
+
+        for(String word : splitted) {
+            if(letterCount==0) {
+                builder.append(word);
+                letterCount += word.length();
+            }
+            else if(letterCount >= MAX_LETTERS_VISIBLE) {
+                builder.append("\n");
+                builder.append(word);
+                letterCount = word.length();    // ricomincia una nuova riga
+            }
+            else {
+                builder.append(" ");
+                builder.append(word);
+                letterCount += word.length();
+            }
+        }
+        return builder.toString();
+    }
+
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 

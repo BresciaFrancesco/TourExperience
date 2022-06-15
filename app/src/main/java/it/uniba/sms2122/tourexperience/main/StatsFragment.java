@@ -143,8 +143,8 @@ public class StatsFragment extends Fragment {
 
                     // Ottengo i punti salvati in locale quando l'app era offline
                     CacheScoreGames db = new CacheScoreGames(requireContext());
-                    final int quizLS = db.getScore(userid, GameTypes.QUIZ);
-                    final int diffLS = db.getScore(userid, GameTypes.DIFF);
+                    final double quizLS = db.getScore(userid, GameTypes.QUIZ);
+                    final double diffLS = db.getScore(userid, GameTypes.DIFF);
 
                     reference.child(userid).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -156,8 +156,8 @@ public class StatsFragment extends Fragment {
                             if (tempDiff != null) scoreDiff[0] = tempDiff.toString();
 
                             // Calcolo punti totali utente
-                            int scoreQuizInt = Integer.parseInt(scoreQuiz[0]);
-                            int scoreDiffInt = Integer.parseInt(scoreDiff[0]);
+                            int scoreQuizInt = (int)Double.parseDouble(scoreQuiz[0]);
+                            int scoreDiffInt = (int)Double.parseDouble(scoreDiff[0]);
 
                             if (quizLS > 0 || diffLS > 0) {
                                 // aggiungo il punteggio salvato in locale a quello ottenuto da cloud
@@ -181,7 +181,7 @@ public class StatsFragment extends Fragment {
                                 });
                             }
 
-                            int punti_totali = scoreQuizInt + scoreDiffInt;
+                            int punti_totali = (int)(scoreQuizInt+scoreDiffInt);
                             puntiTotali.setText(getString(R.string.total_score) + " " + Integer.toString(punti_totali));
                             livello.setText(getString(R.string.level) + " " + Integer.toString(punti_totali/10));
 
@@ -192,13 +192,13 @@ public class StatsFragment extends Fragment {
                              */
 
                             // Il livello può essere: 0,1,2,3
-                            int livelloQuiz = scoreQuizInt/100;
-                            int livelloDiff = scoreDiffInt/100;
+                            int livelloQuiz = (int)scoreQuizInt/100;
+                            int livelloDiff = (int)scoreDiffInt/100;
 
                             puntiQuiz.setText("" + scoreQuizInt);
-                            progress_quiz.setProgress((scoreQuizInt >= 300) ? 100 : (scoreQuizInt%100));
+                            progress_quiz.setProgress((int)((scoreQuizInt >= 300) ? 100 : (scoreQuizInt%100)));
                             puntiDiff.setText("" + scoreDiffInt);
-                            progress_diff.setProgress((scoreDiffInt >= 300) ? 100 : (scoreDiffInt%100));
+                            progress_diff.setProgress((int)((scoreDiffInt >= 300) ? 100 : (scoreDiffInt%100)));
 
                             setMedals(livelloQuiz, livelloDiff);
                         }

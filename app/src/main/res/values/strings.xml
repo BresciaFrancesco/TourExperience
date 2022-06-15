@@ -213,4 +213,7 @@
     <string name="level">Level: </string>
     <string name="spot_the_3_difference">Spot the 3 differences</string>
     <string name="punti">Score</string>
+    <string name="share_review">Share review</string>
+    <string name="share_path">Share path</string>
+    <string name="share_path_error">Is not possible to share the path</string>
 </resources>

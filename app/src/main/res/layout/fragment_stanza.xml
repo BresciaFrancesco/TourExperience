@@ -8,6 +8,15 @@
     tools:context=".percorso.pagina_stanza.StanzaFragment">
 
     <TextView
+        android:id="@+id/stanza_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/heading_text_style" />
+
+    <TextView
         android:id="@+id/stanza_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,7 +29,7 @@
         app:layout_constraintBottom_toTopOf="@id/scansione_opera_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/stanza_name" />
 
     <!-- Bottone per scannerizzare il qr delle opere -->
     <androidx.cardview.widget.CardView

@@ -47,7 +47,8 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManag
 public class StanzaFragment extends Fragment {
     private static final String TAG = "StanzaFragment";
 
-    private TextView textView;
+    private TextView descriptionTextView;
+    private TextView nameTextView;
     private RecyclerView recycleView;
     private Permesso permission;
     private NearbyOperasAdapter adapter;
@@ -134,7 +135,8 @@ public class StanzaFragment extends Fragment {
             }
         }
 
-        textView = view.findViewById(R.id.stanza_description);
+        descriptionTextView = view.findViewById(R.id.stanza_description);
+        nameTextView = view.findViewById(R.id.stanza_name);
         recycleView = view.findViewById(R.id.opere_recycle_view);
         nearbyOperasScrollView = view.findViewById(R.id.nearby_operas_scroll_view);
 
@@ -150,7 +152,8 @@ public class StanzaFragment extends Fragment {
 
         stanza = path.getStanzaCorrente();
         opereInStanza = stanza.getOpere();
-        textView.setText(stanza.getDescrizione());
+        nameTextView.setText(stanza.getNome());
+        descriptionTextView.setText(stanza.getDescrizione());
 
         adapter = new NearbyOperasAdapter(getContext());
         recycleView.setAdapter(adapter);

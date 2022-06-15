@@ -80,11 +80,10 @@ public class PercorsoActivity extends AppCompatActivity {
             nomeMuseo = getIntent().getStringExtra("nome_museo");
             firstStanza = true;
         }
-
     }
 
     /**
-     * Funzione che verifica se l'utimo fragment presente nel back stack è SceltaStanzeFragment
+     * Funzione che verifica se l'ultimo fragment presente nel back stack è SceltaStanzeFragment
      * @return true in caso affermativo, false altrimenti
      */
     private boolean lastFragmentIsSceltaStanzeFragment() {
@@ -232,7 +231,7 @@ public class PercorsoActivity extends AppCompatActivity {
 
     /**
      * Ripristina i dati dopo la distruzione dell'istanza da parte di android.
-     * @param savedInstanceState, bundle per il ripristiono dello stato
+     * @param savedInstanceState bundle per il ripristino dello stato.
      * @return true se il ripristino è stato eseguito, false altrimenti.
      */
     private boolean ripristino(final Bundle savedInstanceState) {
@@ -241,10 +240,7 @@ public class PercorsoActivity extends AppCompatActivity {
         final Percorso tmpPath = new Gson().fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
         final String tmpNomeMuseo = savedInstanceState.getString("nomeMuseo");
         final boolean tmpFirstStanza = savedInstanceState.getBoolean("firstStanza");
-        System.out.println("1 " +tmpNomeMuseo);
-        System.out.println("2 " +tmpFirstStanza);
-        System.out.println("3 " +tmpPath);
-        if (tmpNomeMuseo == null || tmpNomeMuseo.isEmpty() || tmpPath == null )
+        if (tmpNomeMuseo == null || tmpNomeMuseo.isEmpty())
             return false;
         path = tmpPath;
         nomeMuseo = tmpNomeMuseo;

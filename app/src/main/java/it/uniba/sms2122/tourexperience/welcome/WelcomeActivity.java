@@ -26,7 +26,7 @@ import it.uniba.sms2122.tourexperience.ThreadManager;
 public class WelcomeActivity extends FragmentActivity implements BottomWelcomeFragment.OnChangePageListener {
     private static final int NUM_PAGES = 4; // numero di pagine del welcome
     private ViewPager2 viewPager;
-    private final ArrayList<Drawable> images = new ArrayList<>(); // Le immagini da mostrare
+    private final ArrayList<Integer> images = new ArrayList<>(); // Le immagini da mostrare
     private String[] descriptions;
     private BottomWelcomeFragment bottomWelcomeFragment;
 
@@ -45,10 +45,10 @@ public class WelcomeActivity extends FragmentActivity implements BottomWelcomeFr
 
         // Inizializzazione delle risorse
         descriptions = getResources().getStringArray(R.array.welcome_descriptions);
-        images.add(ContextCompat.getDrawable(this, R.drawable.ic_tour)); // Page 1
-        images.add(ContextCompat.getDrawable(this, R.drawable.ic_qr));   // Page 2
-        images.add(ContextCompat.getDrawable(this, R.drawable.ic_puzzle));   // Page 3
-        images.add(ContextCompat.getDrawable(this, R.drawable.ic_museum));   // Page 4
+        images.add(R.drawable.ic_tour); // Page 1
+        images.add(R.drawable.ic_qr);   // Page 2
+        images.add(R.drawable.ic_puzzle);   // Page 3
+        images.add(R.drawable.ic_museum);   // Page 4
     }
 
     @Override
@@ -106,7 +106,7 @@ public class WelcomeActivity extends FragmentActivity implements BottomWelcomeFr
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            return new WelcomeFragment(images.get(position), descriptions[position]);
+            return WelcomeFragment.newInstance(images.get(position), descriptions[position]);
         }
 
         @Override

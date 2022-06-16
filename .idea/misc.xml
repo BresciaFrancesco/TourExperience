@@ -89,6 +89,9 @@
         <entry key="app/src/main/res/drawable/rounded_drawable.xml" value="0.1175" />
         <entry key="app/src/main/res/drawable/selected_dot.xml" value="0.123" />
         <entry key="app/src/main/res/drawable/top_rounded.xml" value="0.184" />
+        <entry key="app/src/main/res/layout-land/activity_welcome.xml" value="0.22" />
+        <entry key="app/src/main/res/layout-land/fragment_bottom_welcome.xml" value="0.30158730158730157" />
+        <entry key="app/src/main/res/layout-land/fragment_welcome.xml" value="0.30158730158730157" />
         <entry key="app/src/main/res/layout/activity_first.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.33" />
@@ -114,6 +117,7 @@
         <entry key="app/src/main/res/layout/fragment_scelta_musei.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/layout/fragment_scelta_stanze.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_stanza.xml" value="0.3260416666666667" />
+        <entry key="app/src/main/res/layout/fragment_welcome.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_welcome1.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/image_item.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/layout/item_recycle_view.xml" value="0.3260416666666667" />

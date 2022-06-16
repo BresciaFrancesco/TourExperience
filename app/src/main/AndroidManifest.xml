@@ -28,7 +28,8 @@
         android:theme="@style/Theme.TourExperience">
         <activity
             android:name=".games.SpotDifference.SpotDifferences"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SplashScreenActivity"
             android:exported="true"
@@ -68,7 +69,8 @@
             android:name=".profile.ProfileActivity"
             android:exported="false"
             android:parentActivityName=".main.MainActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing"/>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".main.MainActivity"
             android:exported="true"

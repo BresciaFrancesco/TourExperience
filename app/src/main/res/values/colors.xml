@@ -12,7 +12,7 @@
     <!--TourExperience color-->
     <color name="main_blue">#FF4348A7</color>
     <color name="secondary_purple">#FF784BA6</color>
-    <color name="main_blue_variant">#FF163D67</color>
+    <color name="main_blue_variant">#002176</color>
     <color name="heading_gray">#293133</color>
     <color name="main_red">#FFA01E2B</color>
     <color name="rating_star_on">#FFC107</color>

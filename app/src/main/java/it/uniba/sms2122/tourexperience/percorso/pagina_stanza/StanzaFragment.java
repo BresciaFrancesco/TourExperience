@@ -130,8 +130,8 @@ public class StanzaFragment extends Fragment {
         nearbyOperasScrollView = view.findViewById(R.id.nearby_operas_scroll_view);
 
         if(savedInstanceState == null){
-            path = percorsoActivity.getPath();}
-        else{
+            path = percorsoActivity.getPath();
+        } else{
             Gson gson = new GsonBuilder().create();
             this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
 

@@ -5,6 +5,7 @@ import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getMuseoByName;
 import android.app.AlertDialog;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -78,26 +79,14 @@ public class SceltaStanzeFragment extends Fragment {
 
         parent = (PercorsoActivity) requireActivity();
         Objects.requireNonNull(parent.getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
+        path = parent.getPath();
 
         if (savedInstanceState == null) {
-            path = parent.getPath();
             nomeMuseo = parent.getNomeMuseo();
             nomePercorso = parent.getPath().getNomePercorso();
         } else {
-            Gson gson = new GsonBuilder().create();
-            this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
-
-            if (this.path == null) {//lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui comunque viene ricreato da 0 e non ha valori inzializzati
-
-                path = parent.getPath();
-                nomeMuseo = parent.getNomeMuseo();
-                nomePercorso = parent.getPath().getNomePercorso();
-
-            } else {
-
-                this.nomePercorso = savedInstanceState.getString("nomePercorso");
-                this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
-            }
+            this.nomePercorso = savedInstanceState.getString("nomePercorso");
+            this.nomeMuseo = savedInstanceState.getString("nomeMuseo");
         }
 
 
@@ -142,7 +131,7 @@ public class SceltaStanzeFragment extends Fragment {
                 builder.setIcon(R.drawable.ic_baseline_error_24);
 
                 builder.setCancelable(false);
-                builder.setPositiveButton(R.string.SI, (dialogInterface, i) -> ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFinePercorsoFragment());
+                builder.setPositiveButton(R.string.Continue, (dialogInterface, i) -> ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFinePercorsoFragment());
 
                 builder.setNegativeButton(R.string.NO, null);
 

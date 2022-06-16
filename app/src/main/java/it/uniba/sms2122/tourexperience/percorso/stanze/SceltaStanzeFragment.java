@@ -81,9 +81,9 @@ public class SceltaStanzeFragment extends Fragment {
         Objects.requireNonNull(parent.getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
         path = parent.getPath();
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null || savedInstanceState.getString("nomePercorso") == null) {
             nomeMuseo = parent.getNomeMuseo();
-            nomePercorso = parent.getPath().getNomePercorso();
+            nomePercorso = path.getNomePercorso();
         } else {
             this.nomePercorso = savedInstanceState.getString("nomePercorso");
             this.nomeMuseo = savedInstanceState.getString("nomeMuseo");

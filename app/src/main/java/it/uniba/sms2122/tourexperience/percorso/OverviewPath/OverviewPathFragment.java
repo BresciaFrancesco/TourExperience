@@ -49,7 +49,7 @@ public class OverviewPathFragment extends Fragment {
     TextView pathDescriptionTextView;
     Button startPathButton;
     RatingBar ratingBar;
-    TextView textRatingBar;
+    TextView textRatingBar, textNoRating;
 
     DatabaseReference db;
     Task<DataSnapshot> snapshotVoti;
@@ -135,6 +135,7 @@ public class OverviewPathFragment extends Fragment {
 
         ratingBar = inflater.findViewById(R.id.scorePath);
         textRatingBar = inflater.findViewById(R.id.txtScorePath);
+        textNoRating = inflater.findViewById(R.id.no_rating_text);
 
         if(checkConnectivity()) {
             snapshotVoti.addOnSuccessListener(dataSnapshot -> {
@@ -142,7 +143,8 @@ public class OverviewPathFragment extends Fragment {
                 VotiPercorsi votiPercorsi = new VotiPercorsi(voti);
                 float media = votiPercorsi.calcolaMedia();
                 if(media == -1){
-                    textRatingBar.setText(R.string.no_value);
+                    textRatingBar.setText("0");
+                    textNoRating.setVisibility(View.VISIBLE);
                 } else {
                     ratingBar.setRating(media);
                     textRatingBar.setText(String.valueOf(Math.round(votiPercorsi.calcolaMedia() * 100.0) / 100.0));

@@ -150,6 +150,7 @@
     <string name="rankings">Rankings</string>
     <string name="value">Value:</string>
     <string name="no_value">No value</string>
+    <string name="no_rating">No rating</string>
     <string name="pos">Position: %1$s</string>
     <string name="share">Share</string>
     <string name="interrupt">Do you really want to interrupt the path?</string>

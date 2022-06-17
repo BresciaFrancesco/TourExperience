@@ -67,7 +67,7 @@
     <string name="login_guest">Accedi come guest</string>
     <string name="unacceptable_date_birth">Data di nascita non accettabile (min 12 anni)</string>
     <string name="email_already_use">Email già usata da un altro account</string>
-    <string name="string_or">o</string>
+    <string name="string_or">oppure</string>
     <string name="profile_change_success">Cambiamento avvenuto con successo</string>
     <string name="profile_change_error">Errore durante i cambiamenti</string>
     <string name="insert_password_for_confirm_title">Inserire password</string>

@@ -9,20 +9,31 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <!-- EditText username -->
 
+        <ImageView
+            android:id="@+id/logo_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:src="@mipmap/tourexperience_adaptive_fore"
+            tools:ignore="contentDescription"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"/>
+
+
+        <!-- EditText username -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/idTILUserName"
             style="@style/LoginTextInputLayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="140dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:hint="@string/email_address"
             android:padding="5dp"
             android:textColorHint="@color/heading_gray"
-            app:hintTextColor="@color/heading_gray">
+            app:hintTextColor="@color/heading_gray"
+            android:layout_below="@id/logo_image">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/idEdtUserName"

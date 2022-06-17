@@ -218,7 +218,14 @@ public class QuizFragment extends Fragment {
         for (int i = 0; i < domande.size(); i++) {
             final ContainerRadioLinear container = risposteRadioLinear.get(i);
             if (container.isRadioGroup()) {
-                final int radioCheckedId = ((RadioGroup) container.getView()).getCheckedRadioButtonId();
+
+                // disabilito i pulsanti
+                final RadioGroup tmpRadioGroup = ((RadioGroup) container.getView());
+                for (int rb = 0; rb < tmpRadioGroup.getChildCount(); rb++) {
+                    tmpRadioGroup.getChildAt(rb).setClickable(false);
+                }
+
+                final int radioCheckedId = tmpRadioGroup.getCheckedRadioButtonId();
                 for (final Risposta risposta : domande.get(i).getRisposte()) {
                     if (radioCheckedId != risposta.getId().value()) continue;
                     if (risposta.isTrue().value()) {
@@ -236,6 +243,7 @@ public class QuizFragment extends Fragment {
                 Punteggio tmpPunteggio = new Punteggio(0.0);
                 for (int j = 0; j < domande.get(i).getRisposte().size(); j++) {
                     final CheckBox cb =  (CheckBox) ll.getChildAt(j);
+                    cb.setClickable(false); // disabilito il pulsante
                     if (!cb.isChecked()) continue;
                     totalChecked++;
                     for (final Risposta risposta : domande.get(i).getRisposte()) {
@@ -321,12 +329,18 @@ public class QuizFragment extends Fragment {
         for (int i = 0; i < risposteRadioLinear.size(); i++) {
             final ContainerRadioLinear container = risposteRadioLinear.get(i);
             if (container.isRadioGroup()) {
-                ((RadioGroup) container.getView()).clearCheck();
+                final RadioGroup tmpRadioGroup = ((RadioGroup) container.getView());
+                tmpRadioGroup.clearCheck();
+                // abilito i pulsanti
+                for (int rb = 0; rb < tmpRadioGroup.getChildCount(); rb++) {
+                    tmpRadioGroup.getChildAt(rb).setClickable(true);
+                }
             } else {
                 final LinearLayout ll = (LinearLayout) container.getView();
                 final int size = quiz.getDomande().get(i).getRisposte().size();
                 for (int j = 0; j < size; j++) {
                     final CheckBox cb = (CheckBox) ll.getChildAt(j);
+                    cb.setClickable(true); // abilito il pulsante
                     cb.setChecked(false);
                     cb.setTextColor(Color.BLACK);
                 }
@@ -369,12 +383,12 @@ public class QuizFragment extends Fragment {
         button.setId(risposta.getId().value());
         button.setText(risposta.getRisposta().value());
         button.setTextSize(18);
-        RadioGroup.LayoutParams radioButtonParams = new RadioGroup.LayoutParams(
+        RadioGroup.LayoutParams buttonParams = new RadioGroup.LayoutParams(
                 RadioGroup.LayoutParams.MATCH_PARENT,
                 RadioGroup.LayoutParams.WRAP_CONTENT
         );
-        radioButtonParams.setMargins(0,15,0,20);
-        button.setLayoutParams(radioButtonParams);
+        buttonParams.setMargins(0,15,0,20);
+        button.setLayoutParams(buttonParams);
         return button;
     }
 

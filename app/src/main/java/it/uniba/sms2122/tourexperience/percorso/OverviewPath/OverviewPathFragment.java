@@ -2,7 +2,6 @@ package it.uniba.sms2122.tourexperience.percorso.OverviewPath;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import it.uniba.sms2122.tourexperience.R;
@@ -144,7 +142,7 @@ public class OverviewPathFragment extends Fragment {
                 VotiPercorsi votiPercorsi = new VotiPercorsi(voti);
                 float media = votiPercorsi.calcolaMedia();
                 if(media == -1){
-                    ratingBar.setVisibility(View.GONE);
+                    textRatingBar.setText(R.string.no_value);
                 } else {
                     ratingBar.setRating(media);
                     textRatingBar.setText(String.valueOf(Math.round(votiPercorsi.calcolaMedia() * 100.0) / 100.0));

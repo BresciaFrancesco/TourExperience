@@ -5,7 +5,6 @@ import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getMuseoByName;
 import android.app.AlertDialog;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -131,9 +130,9 @@ public class SceltaStanzeFragment extends Fragment {
                 builder.setIcon(R.drawable.ic_baseline_error_24);
 
                 builder.setCancelable(false);
-                builder.setPositiveButton(R.string.Continue, (dialogInterface, i) -> ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFinePercorsoFragment());
+                builder.setPositiveButton(R.string.termina, (dialogInterface, i) -> ((PercorsoActivity) requireActivity()).getFgManagerOfPercorso().nextFinePercorsoFragment());
 
-                builder.setNegativeButton(R.string.NO, null);
+                builder.setNegativeButton(R.string.Continue, null);
 
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();

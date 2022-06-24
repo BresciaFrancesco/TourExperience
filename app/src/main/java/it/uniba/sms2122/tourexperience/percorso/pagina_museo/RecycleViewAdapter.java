@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.utility.StringUtility;
 
 public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.MyViewHolder> {
 
@@ -38,7 +39,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
     // Binding data to the into specified position
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.textview.setText(names.get(position));
+        holder.textview.setText(StringUtility.safeViewing(names.get(position)));
         holder.itemView.setOnClickListener(view -> onItemClickListener.onClick(Integer.toString(holder.getAbsoluteAdapterPosition())));
     }
 

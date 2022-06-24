@@ -57,24 +57,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         setContentView(R.layout.activity_main);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         //Ottengo l'utente attualmente loggato
         userHolder = UserHolder.getInstance();
-        try {
-            userHolder.getUser(
-                    (user) -> {
-                        // Imposto il titolo del fragment col nome dell'utente e lo faccio
-                        // ogni volta che torno su questo fragment
-                        String title = getString(R.string.hello, user.getName());
-                        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
-                    },
-                    (String errorMsg) -> {}
-            );
-        }
-        catch(NullPointerException ex) {
-            ex.printStackTrace();
-        }
-        bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
         /*
          * Riempio una cache apposita con i nomi dei percorsi presenti in locale.
@@ -101,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment f = fragmentManager.findFragmentById(R.id.content_fragment_container_view);
             switch (item.getItemId()) {
@@ -213,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                     case "SceltaMuseiFragment":
                         bottomNavigationView.getMenu().getItem(1).setChecked(true);
                         break;
-                    case "StatsFragment":
+                    case "StatsFragment": ;
                         bottomNavigationView.getMenu().getItem(2).setChecked(true);
                         break;
                 }

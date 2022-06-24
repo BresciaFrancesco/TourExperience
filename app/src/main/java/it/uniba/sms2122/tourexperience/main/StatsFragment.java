@@ -1,11 +1,6 @@
 package it.uniba.sms2122.tourexperience.main;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +9,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,9 +23,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import it.uniba.sms2122.tourexperience.R;
-import it.uniba.sms2122.tourexperience.database.CacheGames;
 import it.uniba.sms2122.tourexperience.database.CacheScoreGames;
 import it.uniba.sms2122.tourexperience.database.GameTypes;
 import it.uniba.sms2122.tourexperience.holders.UserHolder;
@@ -74,6 +71,8 @@ public class StatsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Objects.requireNonNull(((MainActivity)requireActivity()).getSupportActionBar()).setTitle(getString(R.string.stats));
 
         livello = view.findViewById(R.id.livello);
         puntiTotali = view.findViewById(R.id.punti_totali);

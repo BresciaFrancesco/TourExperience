@@ -63,10 +63,11 @@ public class HomeFragment extends Fragment {
                 (user) -> {
                     // Imposto il titolo del fragment col nome dell'utente e lo faccio
                     // ogni volta che torno su questo fragment
-                    String title = getString(R.string.hello, user.getName());
-                    Objects.requireNonNull(((MainActivity)requireActivity()).getSupportActionBar()).setTitle(title);
+                    Objects.requireNonNull(((MainActivity)requireActivity()).getSupportActionBar()).setTitle(getString(R.string.hello, user.getName()));
                 },
-                (String errorMsg) -> {}
+                (String errorMsg) -> {
+                    Objects.requireNonNull(((MainActivity)requireActivity()).getSupportActionBar()).setTitle(getString(R.string.hello, "guest"));
+                }
         );
 
         autoCompleteTextView = view.findViewById(R.id.autocomplete);

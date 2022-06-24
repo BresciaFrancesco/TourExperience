@@ -1,7 +1,6 @@
 package it.uniba.sms2122.tourexperience.musei;
 
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cacheMuseums;
-import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getAllCachedMuseums;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.replaceMuseumsInCache;
 
@@ -139,6 +138,8 @@ public class SceltaMuseiFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ripristino(savedInstanceState);
+
+        Objects.requireNonNull(((MainActivity)requireActivity()).getSupportActionBar()).setTitle(getString(R.string.museums));
 
         File filesDir = view.getContext().getFilesDir();
         localFileManager = new LocalFileMuseoManager(filesDir.toString());

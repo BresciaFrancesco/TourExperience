@@ -62,7 +62,7 @@ public class PercorsoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         setContentView(R.layout.activity_percorso);
         try {
             Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -161,7 +161,7 @@ public class PercorsoActivity extends AppCompatActivity {
                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
                 super.onBackPressed();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             } else {
                 //Interruzione anticipata del percorso
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);

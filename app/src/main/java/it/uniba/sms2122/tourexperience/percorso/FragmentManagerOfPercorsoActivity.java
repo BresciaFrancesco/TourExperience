@@ -216,7 +216,7 @@ public class FragmentManagerOfPercorsoActivity {
     protected void createFragment(Fragment fragment, String fragmentName) {
         FragmentTransaction transaction = percorsoActivity.getSupportFragmentManager().beginTransaction();
         transaction.setReorderingAllowed(true);
-        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
+        transaction.setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out);
         transaction.replace(R.id.container_fragments_route, fragment, fragmentName);
         transaction.addToBackStack(fragmentName);
         transaction.commit();

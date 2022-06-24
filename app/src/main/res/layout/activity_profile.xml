@@ -216,15 +216,15 @@
                         android:id="@+id/btnLogout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
                         android:layout_marginLeft="8dp"
+                        android:layout_marginTop="20dp"
                         android:layout_marginRight="8dp"
                         android:layout_weight="1"
                         android:text="@string/logout"
-                        android:textStyle="bold"
-                        android:textColor="@color/main_red"
                         android:textAlignment="textStart"
-                        android:textSize="25dp"/>
+                        android:textColor="@color/main_red"
+                        android:textSize="25dp"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
             </LinearLayout>

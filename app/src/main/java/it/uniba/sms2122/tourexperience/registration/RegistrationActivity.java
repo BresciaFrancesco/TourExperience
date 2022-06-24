@@ -27,6 +27,7 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         setContentView(R.layout.activity_registration);
 
         checker = new CheckCredentials();
@@ -67,7 +68,7 @@ public class RegistrationActivity extends AppCompatActivity {
         secondPage.setArguments(bundle);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setReorderingAllowed(true);
-        transaction.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right);
+        transaction.setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out);
         transaction.replace(R.id.container_fragments_registration, secondPage);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -105,7 +106,7 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     public CheckCredentials getChecker() {

@@ -2,7 +2,6 @@ package it.uniba.sms2122.tourexperience;
 
 import static it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileManager.createLocalDirectoryIfNotExists;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,14 +19,12 @@ import it.uniba.sms2122.tourexperience.holders.UserHolder;
 import it.uniba.sms2122.tourexperience.main.MainActivity;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFileMuseoManager;
-import it.uniba.sms2122.tourexperience.utility.filesystem.zip.OpenFile;
 import it.uniba.sms2122.tourexperience.utility.filesystem.zip.Zip;
 import it.uniba.sms2122.tourexperience.welcome.WelcomeActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
     private UserHolder userHolder;
-    private ActivityOptions options;
     private static final String MAIN_DIRECTORY = "Museums";
     private static final String ASSET_FILE = "Louvre";
     private static final String ASSET_FILE_EXTENSION = ".zip";
@@ -38,7 +35,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         createLocalDirectoryIfNotExists(getFilesDir(), MAIN_DIRECTORY);
-        options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
         manageLogicSplashScreenActivity();
     }
 

@@ -75,8 +75,8 @@
     <string name="insert_password_for_confirm_title">Insert password</string>
     <string name="insert_password_for_confirm_body">Insert password for confirm your change</string>
     <string name="insert_password_for_confirm_button">Confirm</string>
-    <string name="no_result_1">Click the + button to</string>
-    <string name="no_result_2">Import a museum route</string>
+    <string name="no_result_1">Click the + button in museums</string>
+    <string name="no_result_2">to import a new museum route</string>
     <string name="empty_phrase" translatable="false" />
     <string name="import_paths_from_internet">Import from Internet</string>
     <string name="import_paths_from_local">Import from local</string>

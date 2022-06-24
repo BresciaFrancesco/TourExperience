@@ -1,7 +1,6 @@
 package it.uniba.sms2122.tourexperience.profile;
 
 import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -41,7 +40,10 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         setContentView(R.layout.activity_profile);
+
+
 
         initUserProfileData();
 
@@ -380,4 +382,9 @@ public class ProfileActivity extends AppCompatActivity {
         profileDataPickerBtn.setEnabled(false);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
 }

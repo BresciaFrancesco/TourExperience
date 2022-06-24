@@ -1,13 +1,10 @@
 package it.uniba.sms2122.tourexperience;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -28,8 +25,6 @@ public class FirstActivity extends AppCompatActivity {
     private Button btnLoginTest;
     private ProgressBar progressBarLoginTest;
 
-    private ActivityOptions options;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +41,6 @@ public class FirstActivity extends AppCompatActivity {
         setOnClickListenerTextViewGuest();
         setOnClickListenerBtnLoginTest();
 
-        options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
         actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setTitle("Tour Experience");
@@ -59,7 +53,7 @@ public class FirstActivity extends AppCompatActivity {
     private void setOnClickListenerBtnLogin() {
         btnLogin.setOnClickListener(view -> {
             Intent intent = new Intent(FirstActivity.this, LoginActivity.class);
-            startActivity(intent, options.toBundle());
+            startActivity(intent);
         });
     }
 
@@ -69,7 +63,7 @@ public class FirstActivity extends AppCompatActivity {
     private void setOnClickListenerBtnRegistration() {
         btnRegistration.setOnClickListener(view -> {
             Intent intent = new Intent(FirstActivity.this, RegistrationActivity.class);
-            startActivity(intent, options.toBundle());
+            startActivity(intent);
         });
     }
 
@@ -80,7 +74,7 @@ public class FirstActivity extends AppCompatActivity {
         textViewGuest.setOnClickListener(view -> {
             LoginActivity.addNewSessionUid(getApplicationContext(), null);
             Intent intent = new Intent(FirstActivity.this, MainActivity.class);
-            startActivity(intent, options.toBundle());
+            startActivity(intent);
             finish();
         });
     }

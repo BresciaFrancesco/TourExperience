@@ -3,7 +3,6 @@ package it.uniba.sms2122.tourexperience.main;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cachePercorsiInLocale;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -56,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         setContentView(R.layout.activity_main);
 
         //Ottengo l'utente attualmente loggato
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     bottomNavigationView.setItemActiveIndicatorEnabled(true);
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
-                            //.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left)
+                            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
                             .replace(R.id.content_fragment_container_view, HomeFragment.class, null)
                             .addToBackStack("HomeFragment")
                             .commit();
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     if (f instanceof SceltaMuseiFragment) return false;
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
-                            //.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+                            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
                             .replace(R.id.content_fragment_container_view, safeGetSceltaMuseiFragment(), null)
                             .addToBackStack("SceltaMuseiFragment")
                             .commit();
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                     if (f instanceof StatsFragment) return false;
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
-                            //.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_right, R.anim.slide_out_left)
+                            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
                             .replace(R.id.content_fragment_container_view, safeGetStatsFragment(), null)
                             .addToBackStack("StatsFragment")
                             .commit();
@@ -192,8 +192,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         getTopFragment();
         super.onBackPressed();
-
-        overridePendingTransition(R.anim.slide_in_left,R.anim.slide_out_right);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     /**
@@ -206,17 +205,19 @@ public class MainActivity extends AppCompatActivity {
             bottomNavigationView.getMenu().getItem(0).setChecked(true);
         } else {
             String fragmentTag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 2).getName();
-            switch (Objects.requireNonNull(fragmentTag)) {
-                case "HomeFragment":
-                    bottomNavigationView.getMenu().getItem(0).setChecked(true);
-                    break;
-                case "SceltaMuseiFragment":
-                    bottomNavigationView.getMenu().getItem(1).setChecked(true);
-                    break;
-                case "StatsFragment":
-                    bottomNavigationView.getMenu().getItem(2).setChecked(true);
-                    break;
-            }
+            try {
+                switch (Objects.requireNonNull(fragmentTag)) {
+                    case "HomeFragment":
+                        bottomNavigationView.getMenu().getItem(0).setChecked(true);
+                        break;
+                    case "SceltaMuseiFragment":
+                        bottomNavigationView.getMenu().getItem(1).setChecked(true);
+                        break;
+                    case "StatsFragment":
+                        bottomNavigationView.getMenu().getItem(2).setChecked(true);
+                        break;
+                }
+            } catch (NullPointerException ignored) {}
         }
     }
 
@@ -232,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
         //passare al SceltaMuseiFragment
         fragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
-                //.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
+                .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
                 .replace(R.id.content_fragment_container_view, sceltaMuseiFragment)
                 .addToBackStack("SceltaMuseiFragment")
                 .commit();
@@ -249,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
         //passare al SceltaMuseiFragment
         fragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
-                //.setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left,R.anim.slide_in_left,R.anim.slide_out_right)
+                .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
                 .replace(R.id.content_fragment_container_view, rankingFragment)
                 .addToBackStack(null)
                 .commit();
@@ -260,11 +261,9 @@ public class MainActivity extends AppCompatActivity {
      * @param nomeMuseo nome del museo selezionato, da passare alla prossima activity.
      */
     public void startPercorsoActivity(String nomeMuseo){
-        ActivityOptions options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_in_right, R.anim.slide_out_left);
-
         Intent intent = new Intent(this, PercorsoActivity.class);
         intent.putExtra("nome_museo", nomeMuseo);
-        startActivity(intent, options.toBundle());
+        startActivity(intent);
     }
 
     /**
@@ -341,7 +340,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private String getVoto(String child){
         String voto = null;
-        System.out.println("COME " + child);
         if (child.contains("Voti")) {
             voto = child.substring(child.lastIndexOf("=") + 1);
         }

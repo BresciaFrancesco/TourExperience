@@ -43,7 +43,6 @@
             app:layout_constraintTop_toBottomOf="@+id/punti_totali" />
 
         <!--  Quiz  -->
-
         <TextView
             android:id="@+id/quiz"
             android:layout_width="wrap_content"
@@ -51,7 +50,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:text="Quiz:"
-            android:textSize="25sp"
+            style="@style/heading_text_style"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/guideline4" />
 
@@ -90,14 +89,15 @@
 
         <TextView
             android:id="@+id/yourMedals_quiz"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/your_medals"
             android:textSize="20sp"
+            android:maxLines="2"
             app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintStart_toEndOf="@id/progressQuiz"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.1"
-            app:layout_constraintStart_toEndOf="@+id/progressQuiz"
             app:layout_constraintTop_toTopOf="@+id/guideline4"
             app:layout_constraintVertical_bias="0.255" />
 
@@ -138,9 +138,10 @@
 
         <TextView
             android:id="@+id/nextMedals_quiz"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/next_medal"
+            android:maxLines="2"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/guideline3"
             app:layout_constraintEnd_toEndOf="parent"
@@ -159,8 +160,8 @@
             app:layout_constraintTop_toBottomOf="@id/nextMedals_quiz"
             app:layout_constraintVertical_bias="0.0" />
 
-        <!--  Spot the differences  -->
 
+        <!--  Spot the differences  -->
         <TextView
             android:id="@+id/spotDifference"
             android:layout_width="wrap_content"
@@ -168,7 +169,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:text="Differences:"
-            android:textSize="25sp"
+            style="@style/heading_text_style"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/guideline3" />
 
@@ -207,9 +208,10 @@
 
         <TextView
             android:id="@+id/yourMedals_diff"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/your_medals"
+            android:maxLines="2"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -255,9 +257,10 @@
 
         <TextView
             android:id="@+id/nextMedals_diff"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/next_medal"
+            android:maxLines="2"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

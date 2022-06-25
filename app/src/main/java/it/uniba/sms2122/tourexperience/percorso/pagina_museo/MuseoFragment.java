@@ -3,6 +3,7 @@ package it.uniba.sms2122.tourexperience.percorso.pagina_museo;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getPercorsiByMuseo;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.sms2122.tourexperience.R;
 import it.uniba.sms2122.tourexperience.model.Museo;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
+import it.uniba.sms2122.tourexperience.utility.StringUtility;
 
 public class MuseoFragment extends Fragment {
 
@@ -86,6 +90,6 @@ public class MuseoFragment extends Fragment {
         Museo museo = parent.getLocalFileMuseoManager().getMuseoByName(nomeMuseo);
 
         // Setta descrizione museo
-        textView.setText(museo.getDescrizione());
+        textView.setText(StringUtility.decodeUTF8(museo.getDescrizione()));
     }
 }

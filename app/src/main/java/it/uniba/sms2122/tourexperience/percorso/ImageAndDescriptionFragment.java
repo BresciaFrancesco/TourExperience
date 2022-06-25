@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import it.uniba.sms2122.tourexperience.R;
+import it.uniba.sms2122.tourexperience.utility.StringUtility;
 
 /**
  * Fragment per racchiudere quella parte di UI che mostra una serie di immagini e una descrizione associata
@@ -60,7 +61,7 @@ public class ImageAndDescriptionFragment extends Fragment {
 
         // Inizializzo la descrizione
         descriptionTextView = view.findViewById(R.id.description);
-        descriptionTextView.setText(description);
+        descriptionTextView.setText(StringUtility.decodeUTF8(description));
 
         // Inizializzo l'immagine
         image = view.findViewById(R.id.image);

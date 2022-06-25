@@ -1,5 +1,7 @@
 package it.uniba.sms2122.tourexperience.utility;
 
+import android.util.Log;
+
 /**
  * Classe per processare le stringhe da visualizzare all'interno di un'activity o di un fragment
  */
@@ -39,5 +41,23 @@ public class StringUtility {
         }
 
         return stringBuilder.toString();
+    }
+
+    /**
+     * Decodifica manuale dei caratteri in UTF-8 contenuti nei JSON .
+     * @param input Stringa da decodificare
+     * @return Stringa decodificata
+     */
+    public static String decodeUTF8(String input) {
+        String temp = input.replaceAll("&agrave","à");
+        temp = temp.replaceAll("&igrave","ì");
+        temp = temp.replaceAll("&ograve","ò");
+        temp = temp.replaceAll("&ugrave","ù");
+
+        temp = temp.replaceAll("&eacute","é");
+        temp = temp.replaceAll("&egrave","è");
+        temp = temp.replaceAll("&Eacute","É");
+        temp = temp.replaceAll("&Egrave","È");
+        return temp;
     }
 }

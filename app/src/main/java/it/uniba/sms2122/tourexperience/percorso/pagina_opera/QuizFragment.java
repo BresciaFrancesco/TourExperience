@@ -49,6 +49,7 @@ import it.uniba.sms2122.tourexperience.games.quiz.Risposta;
 import it.uniba.sms2122.tourexperience.games.quiz.domainprimitive.Punteggio;
 import it.uniba.sms2122.tourexperience.games.quiz.dto.QuizJson;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
+import it.uniba.sms2122.tourexperience.utility.StringUtility;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 
 /**
@@ -150,7 +151,7 @@ public class QuizFragment extends Fragment {
             int i = 0;
 
             title.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
-            title.setText(quiz.getTitolo().value());
+            title.setText(StringUtility.decodeUTF8(quiz.getTitolo().value()));
             points.setText(context.getString(R.string.quiz_total, (int)quiz.getValoreTotale().value()));
             for (final Domanda domanda : quiz.getDomande()) {
 
@@ -381,7 +382,7 @@ public class QuizFragment extends Fragment {
      */
     private static <T extends CompoundButton> T createButton(final T button, final Risposta risposta) {
         button.setId(risposta.getId().value());
-        button.setText(risposta.getRisposta().value());
+        button.setText(StringUtility.decodeUTF8(risposta.getRisposta().value()));
         button.setTextSize(18);
         RadioGroup.LayoutParams buttonParams = new RadioGroup.LayoutParams(
                 RadioGroup.LayoutParams.MATCH_PARENT,

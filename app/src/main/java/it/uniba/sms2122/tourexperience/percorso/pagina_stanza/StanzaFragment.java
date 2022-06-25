@@ -44,6 +44,7 @@ import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.operadetection.BleService;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
 import it.uniba.sms2122.tourexperience.utility.Permesso;
+import it.uniba.sms2122.tourexperience.utility.StringUtility;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 
 public class StanzaFragment extends Fragment {
@@ -153,8 +154,8 @@ public class StanzaFragment extends Fragment {
 
         stanza = path.getStanzaCorrente();
         opereInStanza = stanza.getOpere();
-        nameTextView.setText(stanza.getNome());
-        descriptionTextView.setText(stanza.getDescrizione());
+        nameTextView.setText(StringUtility.decodeUTF8(stanza.getNome()));
+        descriptionTextView.setText(StringUtility.decodeUTF8(stanza.getDescrizione()));
 
         adapter = new NearbyOperasAdapter(getContext());
         recycleView.setAdapter(adapter);

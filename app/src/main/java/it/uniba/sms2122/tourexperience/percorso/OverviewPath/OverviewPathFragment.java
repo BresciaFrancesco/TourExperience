@@ -33,6 +33,7 @@ import it.uniba.sms2122.tourexperience.database.CacheGames;
 import it.uniba.sms2122.tourexperience.graph.Percorso;
 import it.uniba.sms2122.tourexperience.model.Stanza;
 import it.uniba.sms2122.tourexperience.percorso.PercorsoActivity;
+import it.uniba.sms2122.tourexperience.utility.StringUtility;
 import it.uniba.sms2122.tourexperience.utility.connection.NetworkConnectivity;
 import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManager;
 import it.uniba.sms2122.tourexperience.utility.ranking.VotiPercorsi;
@@ -131,7 +132,7 @@ public class OverviewPathFragment extends Fragment {
         pathNameTextView.setText(path.getNomePercorso());
 
         pathDescriptionTextView = inflater.findViewById(R.id.pathDescription);
-        pathDescriptionTextView.setText(path.getDescrizionePercorso());
+        pathDescriptionTextView.setText(StringUtility.decodeUTF8(path.getDescrizionePercorso()));
 
         ratingBar = inflater.findViewById(R.id.scorePath);
         textRatingBar = inflater.findViewById(R.id.txtScorePath);

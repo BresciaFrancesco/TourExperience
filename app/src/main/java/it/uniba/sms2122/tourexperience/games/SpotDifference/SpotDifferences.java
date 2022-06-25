@@ -39,7 +39,7 @@ public class SpotDifferences extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         setContentView(R.layout.activity_spot_differences);
 
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         setContentView(R.layout.activity_main);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                     bottomNavigationView.setItemActiveIndicatorEnabled(true);
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
-                            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                             .replace(R.id.content_fragment_container_view, HomeFragment.class, null)
                             .addToBackStack("HomeFragment")
                             .commit();
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                     if (f instanceof SceltaMuseiFragment) return false;
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
-                            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                             .replace(R.id.content_fragment_container_view, safeGetSceltaMuseiFragment(), null)
                             .addToBackStack("SceltaMuseiFragment")
                             .commit();
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                     if (f instanceof StatsFragment) return false;
                     fragmentManager.beginTransaction()
                             .setReorderingAllowed(true)
-                            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                             .replace(R.id.content_fragment_container_view, safeGetStatsFragment(), null)
                             .addToBackStack("StatsFragment")
                             .commit();
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         getTopFragment();
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     /**
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
         //passare al SceltaMuseiFragment
         fragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
-                .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(R.id.content_fragment_container_view, sceltaMuseiFragment)
                 .addToBackStack("SceltaMuseiFragment")
                 .commit();
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
         //passare al SceltaMuseiFragment
         fragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
-                .setCustomAnimations(R.anim.slide_in, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out)
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(R.id.content_fragment_container_view, rankingFragment)
                 .addToBackStack(null)
                 .commit();

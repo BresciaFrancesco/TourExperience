@@ -84,7 +84,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/divider_text"
             android:layout_alignStart="@+id/idBtnMainRegistration"
-            android:layout_alignEnd="@+id/idBtnMainRegistration"
             android:layout_marginTop="30dp"
             android:background="@drawable/secondary_button_shape"
             android:padding="15dp"
@@ -97,15 +96,15 @@
             android:id="@+id/idBtnLogin_test"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/idTextViewGuest"
-            android:layout_alignStart="@+id/idBtnMainRegistration"
+            android:layout_below="@+id/divider_text"
             android:layout_alignEnd="@+id/idBtnMainRegistration"
             android:layout_marginTop="30dp"
+            android:layout_marginStart="20dp"
             android:background="@drawable/secondary_button_shape"
             android:padding="15dp"
             android:text="@string/login_test"
             android:textAllCaps="true"
-            android:textColor="@color/main_blue" />
+            android:textColor="@color/main_blue"/>
 
         <ProgressBar
             android:id="@+id/pb_login_test"

@@ -59,7 +59,7 @@ public class StanzeAdpter extends RecyclerView.Adapter<StanzeAdpter.ViewHolder> 
     public void onBindViewHolder(@NonNull StanzeAdpter.ViewHolder holder, int position) {
 
         int indexOfStanzaList = position;
-        holder.textview.setText(StringUtility.safeViewing(stanzaList.get(position).getNome()));
+        holder.textview.setText(stanzaList.get(position).getNome());
         holder.imageView.setImageResource(R.drawable.icon_stanza);
 
         holder.itemView.setOnClickListener(view -> parent.getFgManagerOfPercorso().openQRScannerFragmentOfRoomSelection(stanzaList.get(indexOfStanzaList).getId()));

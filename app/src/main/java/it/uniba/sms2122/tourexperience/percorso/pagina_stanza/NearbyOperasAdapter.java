@@ -41,7 +41,7 @@ public class NearbyOperasAdapter extends RecyclerView.Adapter<NearbyOperasAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        String name = StringUtility.safeViewing(nearbyOperas.get(position).getNome());
+        String name = nearbyOperas.get(position).getNome();
         holder.textview.setText(name);
         holder.imageView.setImageURI(Uri.parse(nearbyOperas.get(position).getPercorsoImg()));
     }

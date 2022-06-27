@@ -19,14 +19,14 @@
 
             <TextView
                 android:id="@+id/nome_item_lista"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
                 android:text="Title"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:layout_marginStart="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/delete_button"
                 app:layout_constraintStart_toEndOf="@+id/icona_item_lista"
                 app:layout_constraintTop_toTopOf="parent" />
 

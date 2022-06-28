@@ -224,8 +224,13 @@ public class StanzaFragment extends Fragment {
         super.onPause();
         adapter.clear();
 
-        percorsoActivity.unregisterReceiver(btBroadcastReceiver);
-        percorsoActivity.unregisterReceiver(gpsBroadcastReceiver);
+        try {
+            percorsoActivity.unregisterReceiver(btBroadcastReceiver);
+            percorsoActivity.unregisterReceiver(gpsBroadcastReceiver);
+        }
+        catch(IllegalArgumentException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

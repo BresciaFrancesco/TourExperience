@@ -4,12 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../../../layout/custom_preview.xml" value="0.17291666666666666" />
+        <entry key="../../../../layout/custom_preview.xml" value="0.16606714628297362" />
         <entry key="..\:/TourExperience/app/src/main/res/drawable-anydpi/logo.xml" value="0.2135" />
         <entry key="..\:/TourExperience/app/src/main/res/drawable/button_shape.xml" value="0.2975" />
         <entry key="..\:/TourExperience/app/src/main/res/drawable/progress_bg.xml" value="0.121" />
         <entry key="..\:/TourExperience/app/src/main/res/drawable/textview_circle_border.xml" value="0.1965" />
         <entry key="..\:/TourExperience/app/src/main/res/drawable/top_rounded.xml" value="0.264" />
-        <entry key="..\:/TourExperience/app/src/main/res/layout/activity_first.xml" value="0.16799999999999998" />
+        <entry key="..\:/TourExperience/app/src/main/res/layout/activity_first.xml" value="0.10989583333333333" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/activity_login.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/activity_main.xml" value="0.3625" />
         <entry key="..\:/TourExperience/app/src/main/res/layout/activity_museo.xml" value="0.3625" />
@@ -74,28 +75,34 @@
         <entry key="app/src/main/res/drawable-anydpi/start.xml" value="0.2255" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.249" />
         <entry key="app/src/main/res/drawable-xhdpi/ic_baseline_add_to_home_screen_24.xml" value="0.31" />
+        <entry key="app/src/main/res/drawable/all_rounded.xml" value="0.277" />
+        <entry key="app/src/main/res/drawable/baseline_logout_24.xml" value="0.277" />
         <entry key="app/src/main/res/drawable/bg_label.xml" value="0.14" />
         <entry key="app/src/main/res/drawable/button_back.xml" value="0.1175" />
-        <entry key="app/src/main/res/drawable/button_shape.xml" value="0.2345" />
-        <entry key="app/src/main/res/drawable/button_shape_v2.xml" value="0.2345" />
         <entry key="app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.12" />
         <entry key="app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.1655" />
         <entry key="app/src/main/res/drawable/ic_baseline_cloud_download_24.xml" value="0.1655" />
         <entry key="app/src/main/res/drawable/ic_baseline_delete_forever_24.xml" value="0.294" />
+        <entry key="app/src/main/res/drawable/ic_baseline_error_24.xml" value="0.277" />
         <entry key="app/src/main/res/drawable/ic_baseline_favorite_128.xml" value="0.1655" />
         <entry key="app/src/main/res/drawable/ic_baseline_museum_24.xml" value="0.1655" />
         <entry key="app/src/main/res/drawable/ic_baseline_qr_code_scanner_24.xml" value="0.123" />
         <entry key="app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.294" />
+        <entry key="app/src/main/res/drawable/ic_before_arrow.xml" value="0.277" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.17" />
+        <entry key="app/src/main/res/drawable/ic_logout.xml" value="0.277" />
         <entry key="app/src/main/res/drawable/ic_museum.xml" value="0.168" />
+        <entry key="app/src/main/res/drawable/ic_next_arrow.xml" value="0.277" />
+        <entry key="app/src/main/res/drawable/ic_path.xml" value="0.277" />
+        <entry key="app/src/main/res/drawable/progress_back.xml" value="0.277" />
         <entry key="app/src/main/res/drawable/rounded_drawable.xml" value="0.1175" />
-        <entry key="app/src/main/res/drawable/secondary_button_shape.xml" value="0.2345" />
         <entry key="app/src/main/res/drawable/selected_dot.xml" value="0.123" />
+        <entry key="app/src/main/res/drawable/tab_selector.xml" value="0.277" />
         <entry key="app/src/main/res/drawable/top_rounded.xml" value="0.184" />
         <entry key="app/src/main/res/layout-land/activity_welcome.xml" value="0.22" />
         <entry key="app/src/main/res/layout-land/fragment_bottom_welcome.xml" value="0.30158730158730157" />
         <entry key="app/src/main/res/layout-land/fragment_welcome.xml" value="0.30158730158730157" />
-        <entry key="app/src/main/res/layout/activity_first.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_first.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35625" />
@@ -120,7 +127,6 @@
         <entry key="app/src/main/res/layout/fragment_scelta_musei.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/layout/fragment_scelta_stanze.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_stanza.xml" value="0.3260416666666667" />
-        <entry key="app/src/main/res/layout/fragment_stats.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_welcome.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_welcome1.xml" value="0.24375" />
         <entry key="app/src/main/res/layout/image_item.xml" value="0.3260416666666667" />
@@ -133,7 +139,6 @@
         <entry key="app/src/main/res/layout/overview_path_fragment.xml" value="0.33" />
         <entry key="app/src/main/res/layout/prova.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/layout/quiz_card.xml" value="0.3260416666666667" />
-        <entry key="app/src/main/res/layout/ranking_item.xml" value="0.35625" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.24375" />
         <entry key="app/src/main/res/menu/bottom_nav_view.xml" value="0.24375" />
         <entry key="app/src/main/res/menu/home.xml" value="0.25" />

@@ -4,6 +4,7 @@ import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.cacheMuseums;
 import static it.uniba.sms2122.tourexperience.cache.CacheMuseums.getAllCachedMuseums;
 
 import android.view.View;
+import android.widget.Button;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -18,10 +19,14 @@ import it.uniba.sms2122.tourexperience.model.Museo;
 
 public class BackToMuseumsList implements Back {
     private final SceltaMuseiFragment fragment;
+    private final Button backCloudButton;
     private final FloatingActionButton fab;
 
-    public BackToMuseumsList(final SceltaMuseiFragment fragment, final FloatingActionButton fab) {
+    public BackToMuseumsList(final SceltaMuseiFragment fragment,
+                             final Button backCloudButton,
+                             final FloatingActionButton fab) {
         this.fragment = fragment;
+        this.backCloudButton = backCloudButton;
         this.fab = fab;
     }
 
@@ -37,10 +42,15 @@ public class BackToMuseumsList implements Back {
             }
             fragment.setListaMusei(listaForAdapter);
 
-            fragment.attachNewAdapter(new MuseiAdapter(fragment, fragment.getListaMusei(), true));
-            fab.setImageResource(R.drawable.ic_baseline_add_24);
-            fab.setOnClickListener(fragment::listenerFabMusei);
-            Objects.requireNonNull(((MainActivity) fragment.requireActivity()).getSupportActionBar()).setTitle(R.string.museums);
+            fragment.attachNewAdapter(new MuseiAdapter(
+                    fragment,
+                    fragment.getListaMusei(),
+                    true
+            ));
+            backCloudButton.setVisibility(View.GONE);
+            fab.setVisibility(View.VISIBLE);
+            Objects.requireNonNull(((MainActivity) fragment.requireActivity())
+                    .getSupportActionBar()).setTitle(R.string.museums);
         }
         catch (NullPointerException | IllegalStateException e) {
             e.printStackTrace();

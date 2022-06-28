@@ -75,7 +75,6 @@ public class LocalFilePercorsoManager extends LocalFileManager {
      * @param grafo percorso nella quale creare le opere.
      */
     // Supposto che si abbiano già gli oggetti stanza completi
-    // TODO non ancora testato: da testare prima dell'uso
     public void createStanzeAndOpereOnlyInNextStanze(final Percorso grafo) {
         List<Stanza> stanzeAdiacenti = grafo.getAdiacentNodes();
         for (int i = 0; i < stanzeAdiacenti.size(); i++) {

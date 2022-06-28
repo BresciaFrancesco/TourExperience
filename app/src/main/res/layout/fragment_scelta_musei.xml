@@ -20,11 +20,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--This will be the parent Floating Action Button-->
-    <!--After the implementation the Floating Action Button
-         at the bottom right corner-->
-    <!--After clicking the above button the following two buttons
-        will pop up. So this button is considered as parent FAB-->
     <!--minHeight="800dp": when the items in the list are few, the
         FrameLayout adapt his height to the number of the items.
         This isn't good for the layout, so I set the minimum height
@@ -44,6 +39,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/searchviewMusei"
         app:layout_constraintVertical_bias="1.0">
+
+        <Button
+            android:id="@+id/back_cloud_button"
+            android:layout_width="50dp"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/main_blue_variant"
+            android:foreground="@drawable/ic_before_arrow"
+            android:foregroundTint="@color/white"
+            android:layout_marginStart="35dp"
+            android:visibility="gone" />
 
         <!--RecyclerView: contiene la lista dei musei-->
         <androidx.recyclerview.widget.RecyclerView
@@ -85,6 +90,7 @@
         android:layout_marginBottom="24dp"
         app:fabSize="normal"
         app:maxImageSize="30dp"
+        app:fabCustomSize="48dp"
         app:layout_constraintBottom_toTopOf="@+id/add_fab"
         app:layout_constraintEnd_toEndOf="@+id/add_fab"
         app:layout_constraintStart_toStartOf="@+id/add_fab"
@@ -117,6 +123,7 @@
         android:layout_marginBottom="24dp"
         app:fabSize="normal"
         app:maxImageSize="30dp"
+        app:fabCustomSize="48dp"
         app:layout_constraintBottom_toTopOf="@+id/fab_import_from_localstorage"
         app:layout_constraintEnd_toEndOf="@+id/fab_import_from_localstorage"
         app:layout_constraintStart_toStartOf="@+id/fab_import_from_localstorage"

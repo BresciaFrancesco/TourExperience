@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -56,7 +57,6 @@ public class SceltaMuseiFragment extends Fragment {
     private static final String TIPOLOGIE_MUSEI = "tipologie_musei";
     private static final String IMMAGINI_MUSEI = "immagini_musei";
 
-
     private SearchView searchView;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
@@ -71,6 +71,7 @@ public class SceltaMuseiFragment extends Fragment {
     private TextView localStorageTxtView, cloudTxtView;
     // to check whether sub FAB buttons are visible or not.
     private Boolean isAllFabsVisible;
+    private Button backCloudButton;
 
 
     /**
@@ -105,7 +106,6 @@ public class SceltaMuseiFragment extends Fragment {
             e.printStackTrace();
         }
     }
-
 
     /**
      * Collega un listener alla barra di ricerca. In particolare
@@ -183,11 +183,13 @@ public class SceltaMuseiFragment extends Fragment {
             } else openFileExplorer.run();
         });
 
+        // ToDo sistemare
         cloudFab.setOnClickListener(view2 -> {
             if (NetworkConnectivity.check(view2.getContext())) {
                 recyclerView.setAdapter(null);
+                mAddFab.setVisibility(View.INVISIBLE);
                 hideFabOptions();
-                mAddFab.setImageResource(R.drawable.ic_baseline_close_24);
+                backCloudButton.setVisibility(View.VISIBLE);
                 try {
                     MainActivity activity = (MainActivity) requireActivity();
                     Objects.requireNonNull(activity.getSupportActionBar()).setTitle(R.string.museums_cloud_import);
@@ -196,9 +198,9 @@ public class SceltaMuseiFragment extends Fragment {
                     Log.e("SceltaMuseiFragment", "Set title impossibile");
                     e.printStackTrace();
                 }
-                Back backToMuseumsList = new BackToMuseumsList(this, mAddFab);
+                Back backToMuseumsList = new BackToMuseumsList(this, backCloudButton, mAddFab);
                 // Il FAB torna allo stato iniziale e la lista di musei torna a contenere i musei presenti in cache
-                mAddFab.setOnClickListener((view3) -> {
+                backCloudButton.setOnClickListener((view3) -> {
                     searchView.setQueryHint(getString(R.string.search_museums));
                     backToMuseumsList.back(view3);
                 });
@@ -253,6 +255,7 @@ public class SceltaMuseiFragment extends Fragment {
             cloudFab.show();
             cloudTxtView.setVisibility(View.VISIBLE);
             localStorageTxtView.setVisibility(View.VISIBLE);
+            mAddFab.setImageResource(R.drawable.ic_baseline_close_24);
             // make the boolean variable true as we have set the sub FABs
             // visibility to GONE
             isAllFabsVisible = true;
@@ -269,6 +272,7 @@ public class SceltaMuseiFragment extends Fragment {
         cloudFab.hide();
         cloudTxtView.setVisibility(View.GONE);
         localStorageTxtView.setVisibility(View.GONE);
+        mAddFab.setImageResource(R.drawable.ic_baseline_add_24);
         isAllFabsVisible = false;
     }
 
@@ -333,6 +337,8 @@ public class SceltaMuseiFragment extends Fragment {
         // make the boolean variable as false, as all the
         // action name texts and all the sub FABs are invisible
         isAllFabsVisible = false;
+
+        backCloudButton = view.findViewById(R.id.back_cloud_button);
     }
 
 

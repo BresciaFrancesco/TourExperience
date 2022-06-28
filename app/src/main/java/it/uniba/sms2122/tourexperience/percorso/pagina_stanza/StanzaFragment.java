@@ -1,19 +1,21 @@
 package it.uniba.sms2122.tourexperience.percorso.pagina_stanza;
 
 import android.Manifest;
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +23,6 @@ import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -34,7 +34,6 @@ import com.google.gson.GsonBuilder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 import it.uniba.sms2122.tourexperience.R;
@@ -49,6 +48,7 @@ import it.uniba.sms2122.tourexperience.utility.filesystem.LocalFilePercorsoManag
 
 public class StanzaFragment extends Fragment {
     private static final String TAG = "StanzaFragment";
+    private static final String CAN_SHOW_ALERT_BT_ON = "doNotShowAgainBtOnAlert";
 
     private TextView descriptionTextView, nameTextView, operasTextView;
     private RecyclerView recycleView;
@@ -60,35 +60,54 @@ public class StanzaFragment extends Fragment {
     private Stanza stanza;
     private Map<String, Opera> opereInStanza;
     private BleService service;
-    private boolean canScanWithBluetooh = false;
+    private boolean btEnabled, gpsEnabled;
     private View inflater;
     private ScrollView nearbyOperasScrollView;
 
-    // Gestione del risultato dell'attivazione del bluetooth
-    private final ActivityResultLauncher<Intent> btActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if(result.getResultCode() == Activity.RESULT_OK) {
-                    Log.d("Bluetooth", "Acceso");
-                    checkSensorsStateAndStartService();
-                } else {
-                    Log.d("Bluetooth", "Non acceso");
-                }
-            }
-    );
+    /**
+     * Controllo dell'evento dell'accensione o spegnimento del bluetooth
+     */
+    private final BroadcastReceiver btBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
 
-    // Gestione del risultato dell'attivazione del gps
-    private final ActivityResultLauncher<Intent> locationActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if(result.getResultCode() != Activity.RESULT_OK) {
-                    Log.d("GPS", "Acceso");
-                    checkSensorsStateAndStartService();
-                } else {
-                    Log.d("GPS", "Non acceso");
+                if(state == BluetoothAdapter.STATE_ON) {
+                    btEnabled = true;
+                    if(gpsEnabled)
+                        bindService();
+                }
+
+                if(state == BluetoothAdapter.STATE_OFF) {
+                    btEnabled = false;
+                    unBindService();
                 }
             }
-    );
+        }
+    };
+
+    /**
+     * Controllo dell'evento dell'accensione o spegnimento del gps
+     */
+    private final BroadcastReceiver gpsBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(LocationManager.PROVIDERS_CHANGED_ACTION)) {
+                LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+                boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+                if(isGpsEnabled || isNetworkEnabled) {
+                    gpsEnabled = true;
+                    if(btEnabled)
+                        bindService();
+                } else {
+                    gpsEnabled = false;
+                }
+            }
+        }
+    };
 
     // Realizzazione dell'interfaccia che gestisce la connessione con il service
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -137,7 +156,6 @@ public class StanzaFragment extends Fragment {
             this.path = gson.fromJson(savedInstanceState.getSerializable("path").toString(), Percorso.class);
 
             if (this.path == null) {//lo stato non è nullo ma il fragment è stato riaperto attraverso onBackPressed per cui comunque viene ricreato da 0 e non ha valori inzializzati
-
                 path = percorsoActivity.getPath();
             }
         }
@@ -167,6 +185,9 @@ public class StanzaFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        // Check dei sensori
+        checkSensorState();
+
         // Check dei permessi
         String[] permessi;
         if(percorsoActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -177,11 +198,22 @@ public class StanzaFragment extends Fragment {
             }
 
             /*
-             * Se i permessi sono stati accettati, vengono abilitati i sensori
+             * Se i permessi sono stati accettati, vengono registrati gli intent filter per catturare l'evento di accensione o spegnimento di bluetooth o gps
              */
             boolean hasPermission = permission.hasPermissions(permessi);
             if(hasPermission) {
-                checkSensorsStateAndStartService();
+                IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+                intentFilter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION);
+
+                percorsoActivity.registerReceiver(gpsBroadcastReceiver, intentFilter);
+                percorsoActivity.registerReceiver(btBroadcastReceiver, intentFilter);
+
+                if(btEnabled && gpsEnabled) {
+                    bindService();
+                } else {
+                    showAlertDialog();
+                }
             }
             setVisibilityOfNearbyOperas(hasPermission);
         }
@@ -191,12 +223,47 @@ public class StanzaFragment extends Fragment {
     public void onPause() {
         super.onPause();
         adapter.clear();
+
+        percorsoActivity.unregisterReceiver(btBroadcastReceiver);
+        percorsoActivity.unregisterReceiver(gpsBroadcastReceiver);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         unBindService();
+    }
+
+    /**
+     * Controlla lo stato dei sensori.
+     */
+    private void checkSensorState() {
+        BluetoothAdapter bluetoothAdapter = ((BluetoothManager) percorsoActivity.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+        LocationManager locationManager = (LocationManager) percorsoActivity.getSystemService(Context.LOCATION_SERVICE);
+
+        btEnabled = bluetoothAdapter != null && bluetoothAdapter.isEnabled();
+        gpsEnabled = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && locationManager.isLocationEnabled()) || locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    /**
+     * Mostra un messaggio per avvisare l'utente di avviare il bluetooth ed il gps.
+     */
+    private void showAlertDialog() {
+        SharedPreferences sharedPreferences = percorsoActivity.getPreferences(Context.MODE_PRIVATE);
+        boolean canShowAlert = sharedPreferences.getBoolean(CAN_SHOW_ALERT_BT_ON, true);
+
+        if(canShowAlert) {
+            new AlertDialog.Builder(percorsoActivity)
+                    .setTitle(R.string.bt_and_gps_on)
+                    .setMessage(R.string.bt_and_gps_on_msg)
+                    .setPositiveButton("Ok", null)
+                    .setNeutralButton(R.string.do_not_show_again, (dialogInterface, i) -> {
+                        sharedPreferences.edit()
+                                .putBoolean(CAN_SHOW_ALERT_BT_ON, false)
+                                .apply();
+                    })
+                    .show();
+        }
     }
 
     /**
@@ -232,37 +299,6 @@ public class StanzaFragment extends Fragment {
             }
         });
 
-    }
-
-    /**
-     * Metodo per controllare lo stato dei sensori ed eventualmente attivare il Bluetooth, il GPS ed il service.
-     */
-    private void checkSensorsStateAndStartService() {
-        BluetoothAdapter bluetoothAdapter = ((BluetoothManager) percorsoActivity.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-        LocationManager locationManager = ((LocationManager) percorsoActivity.getSystemService(Context.LOCATION_SERVICE));
-
-        /*
-         * In questo caso uso un costrutto if-else if per fare in modo che le chiamate alle activity di attivazione
-         * dei sensori siano fatte in ordine.
-         * Solo se le condizioni sono soddisfatte entrambe contemporeaneamente viene startato il service
-         */
-        if(!bluetoothAdapter.isEnabled()) {
-            Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            btActivityResultLauncher.launch(enableBluetooth);
-        }
-        else if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !locationManager.isLocationEnabled()) || !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            Intent enableGps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            locationActivityResultLauncher.launch(enableGps);
-        }
-        else if(bluetoothAdapter.isEnabled() &&
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && locationManager.isLocationEnabled()) || locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            try {
-                bindService();
-            }
-            catch(NullPointerException ex) {
-                Log.e(TAG, "checkSensorsStateAndStartService: " + ex.getMessage());
-            }
-        }
     }
 
     /**

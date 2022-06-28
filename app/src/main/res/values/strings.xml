@@ -219,4 +219,6 @@
     <string name="share_review">Share review</string>
     <string name="share_path">Share path</string>
     <string name="share_path_error">Is not possible to share the path</string>
+    <string name="bt_and_gps_on">Turn on bluetooth and localization</string>
+    <string name="bt_and_gps_on_msg">To know which operas are near to you, turn on the bluetooth and the localitation</string>
 </resources>

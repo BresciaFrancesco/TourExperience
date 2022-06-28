@@ -215,4 +215,6 @@
     <string name="share_review">Condividi la valutazione</string>
     <string name="share_path">Condividi il percorso</string>
     <string name="share_path_error">Non è possibile condividere il percorso</string>
+    <string name="bt_and_gps_on">Attiva bluetooth e localizzazione</string>
+    <string name="bt_and_gps_on_msg">Per sapere quali sono le opere vicine a te, accendi il bluetooth e la localizzazione</string>
 </resources>

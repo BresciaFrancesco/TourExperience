@@ -101,6 +101,7 @@ public class BleService extends IntentService {
     public void onDestroy() {
         super.onDestroy();
         stopLeScan();
+        bound = false;
     }
 
     /**
@@ -171,7 +172,7 @@ public class BleService extends IntentService {
         for(DistanceRecord record : queue)
             sum += record.getDistance();
 
-        return (double) sum/ queue.size();
+        return (double) sum / queue.size();
     }
 
     @Override

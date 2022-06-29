@@ -255,6 +255,9 @@ public class BleService extends IntentService {
         return (double) sum / queue.size();
     }
 
+    /**
+     * Verifica lo stato dei sensori
+     */
     private void checkSensorState() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 

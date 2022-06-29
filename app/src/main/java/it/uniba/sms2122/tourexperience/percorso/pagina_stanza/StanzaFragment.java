@@ -60,7 +60,6 @@ public class StanzaFragment extends Fragment {
     private Stanza stanza;
     private Map<String, Opera> opereInStanza;
     private BleService service;
-    private boolean btEnabled, gpsEnabled;
     private View inflater;
     private ScrollView nearbyOperasScrollView;
 
@@ -155,6 +154,10 @@ public class StanzaFragment extends Fragment {
             boolean hasPermission = permission.hasPermissions(permessi);
             if(hasPermission) {
                 bindService();
+
+                if(!areBtAndGpsEnabled()) {
+                    showAlertDialog();
+                }
             }
             setVisibilityOfNearbyOperas(hasPermission);
         }
@@ -170,6 +173,21 @@ public class StanzaFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         unBindService();
+    }
+
+    /**
+     * Controlla che i sensori bluetooth e gps siano accesi.
+     * @return Vero se entrambi i sensori sono accesi, falso altrimenti.
+     */
+    private boolean areBtAndGpsEnabled() {
+        BluetoothAdapter bluetoothAdapter = ((BluetoothManager) percorsoActivity.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+        LocationManager locationManager = (LocationManager) percorsoActivity.getSystemService(Context.LOCATION_SERVICE);
+        boolean btEnabled, gpsEnabled;
+
+        btEnabled = bluetoothAdapter != null && bluetoothAdapter.isEnabled();
+        gpsEnabled = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && locationManager.isLocationEnabled()) || locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        return btEnabled && gpsEnabled;
     }
 
     /**

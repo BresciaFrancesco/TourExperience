@@ -42,6 +42,7 @@ public class BleService extends IntentService {
     private BluetoothLeScanner scanner;
     private Map<String, Opera> opereInStanza;
     private boolean btEnabled, gpsEnabled;
+    private ScanCallback scanCallback;
 
     private static final int RSSI_CALIBRATION = 210;    // Valore per calibrare l'rssi restituito dal bluetooth per calcolare una distanza più precisa
     private static final String TAG = "BleService";
@@ -93,33 +94,6 @@ public class BleService extends IntentService {
                 } else {
                     gpsEnabled = false;
                 }
-            }
-        }
-    };
-
-    /**
-     * Contiene il metodo di callback chiamato quando è stato trovato un risultato.
-     */
-    private final ScanCallback scanCallback = new ScanCallback() {
-        @Override
-        public void onScanResult(int callbackType, ScanResult result) {
-            super.onScanResult(callbackType, result);
-
-            // Ottenimento dei dati
-            String operaId = getRawData(result).substring(16, 56);
-            double distance = estimateDistance(result.getRssi(), result.getTxPower());
-
-            // Inserimento dei dati nella mappa
-            if(opereInStanza.containsKey(operaId)) {    // Se il dispositivo ble trovato è un'opera nella stanza
-                Queue<DistanceRecord> queue;
-                if(distanceRecordMap.containsKey(operaId)) {
-                    queue = distanceRecordMap.get(operaId);
-                } else {
-                    queue = new LinkedList<>();
-                    distanceRecordMap.put(operaId, queue);
-                }
-                assert queue != null;
-                queue.add(new DistanceRecord(opereInStanza.get(operaId), distance));
             }
         }
     };
@@ -189,6 +163,31 @@ public class BleService extends IntentService {
             return;
         }
 
+        ScanCallback scanCallback = new ScanCallback() {
+            @Override
+            public void onScanResult(int callbackType, ScanResult result) {
+                super.onScanResult(callbackType, result);
+
+                // Ottenimento dei dati
+                String operaId = getRawData(result).substring(16, 56);
+                double distance = estimateDistance(result.getRssi(), result.getTxPower());
+
+                // Inserimento dei dati nella mappa
+                if(opereInStanza.containsKey(operaId)) {    // Se il dispositivo ble trovato è un'opera nella stanza
+                    Queue<DistanceRecord> queue;
+                    if(distanceRecordMap.containsKey(operaId)) {
+                        queue = distanceRecordMap.get(operaId);
+                    } else {
+                        queue = new LinkedList<>();
+                        distanceRecordMap.put(operaId, queue);
+                    }
+                    assert queue != null;
+                    queue.add(new DistanceRecord(opereInStanza.get(operaId), distance));
+                }
+            }
+        };
+
+        this.scanCallback = scanCallback;
         scanner.startScan(scanCallback);
         Log.d(TAG, "startLeScan: scan started");
     }

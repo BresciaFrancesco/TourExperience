@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -27,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
@@ -61,7 +63,7 @@ public class StanzaFragment extends Fragment {
     private Map<String, Opera> opereInStanza;
     private BleService service;
     private View inflater;
-    private ScrollView nearbyOperasScrollView;
+    private LinearLayout nearbyOperasLayout;
 
     // Realizzazione dell'interfaccia che gestisce la connessione con il service
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -101,7 +103,7 @@ public class StanzaFragment extends Fragment {
         nameTextView = view.findViewById(R.id.stanza_name);
         recycleView = view.findViewById(R.id.opere_recycle_view);
         operasTextView = view.findViewById(R.id.opere_title);
-        nearbyOperasScrollView = view.findViewById(R.id.nearby_operas_scroll_view);
+        nearbyOperasLayout = view.findViewById(R.id.opere_layout);
 
         if(savedInstanceState == null){
             path = percorsoActivity.getPath();

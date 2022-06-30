@@ -1,129 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".percorso.pagina_stanza.StanzaFragment"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_height="match_parent">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragment_stanza">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/stanza_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            style="@style/heading_text_style" />
-
-        <TextView
-            android:id="@+id/stanza_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:fontFamily="sans-serif-light"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@id/scansione_opera_card"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/stanza_name" />
-
-        <!-- Bottone per scannerizzare il qr delle opere -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/scansione_opera_card"
-            android:layout_width="380dp"
-            android:layout_height="wrap_content"
-            android:elevation="5dp"
-            app:cardCornerRadius="8dp"
-            app:cardMaxElevation="8dp"
-            app:cardUseCompatPadding="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/stanza_description">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/operaScanButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#E0E2EF">
-
-                <TextView
-                    android:id="@+id/qr_scan_description"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="@string/scan_qr_code_opera"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/qr_scan_button"
-                    app:layout_constraintHorizontal_bias="0.1"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_editor_absoluteX="95dp"
-                    app:layout_editor_absoluteY="15dp" />
-
-                <Button
-                    android:id="@+id/qr_scan_button"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/ic_baseline_qr_code_scanner_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Opere vicine -->
-        <LinearLayout
-            android:id="@+id/opere_layout"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:minHeight="600dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/scansione_opera_card"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@drawable/top_rounded">
+            android:id="@+id/fragment_stanza">
 
             <TextView
-                android:id="@+id/opere_title"
-                style="@style/heading_text_style"
+                android:id="@+id/stanza_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center|top"
-                android:text="@string/operas_close_to_you"
-                android:textColor="@color/white" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                style="@style/heading_text_style" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/opere_recycle_view"
+            <TextView
+                android:id="@+id/stanza_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="sans-serif-light"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@id/scansione_opera_card"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/stanza_name" />
+
+            <!-- Bottone per scannerizzare il qr delle opere -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/scansione_opera_card"
+                android:layout_width="380dp"
+                android:layout_height="wrap_content"
+                android:elevation="5dp"
+                app:cardCornerRadius="8dp"
+                app:cardMaxElevation="8dp"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/stanza_description">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/operaScanButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#E0E2EF">
+
+                    <TextView
+                        android:id="@+id/qr_scan_description"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/scan_qr_code_opera"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/qr_scan_button"
+                        app:layout_constraintHorizontal_bias="0.1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_editor_absoluteX="95dp"
+                        app:layout_editor_absoluteY="15dp" />
+
+                    <Button
+                        android:id="@+id/qr_scan_button"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/ic_baseline_qr_code_scanner_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Opere vicine -->
+            <LinearLayout
+                android:id="@+id/opere_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
+                android:minHeight="600dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="vertical"
-                android:padding="16dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-        </LinearLayout>
+                app:layout_constraintTop_toBottomOf="@id/scansione_opera_card"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/top_rounded">
 
-        <!-- Fragment container view dello scanner qr -->
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/scannerFrag"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginBottom="65dp"
-            android:elevation="100dp"
-            />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+                <TextView
+                    android:id="@+id/opere_title"
+                    style="@style/heading_text_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|top"
+                    android:text="@string/operas_close_to_you"
+                    android:textColor="@color/white" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/opere_recycle_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <!-- Fragment container view dello scanner qr -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/scannerFrag"
+        android:layout_width="match_parent"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:minHeight="600dp"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="10dp"
+        android:elevation="100dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -27,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
@@ -60,54 +62,8 @@ public class StanzaFragment extends Fragment {
     private Stanza stanza;
     private Map<String, Opera> opereInStanza;
     private BleService service;
-    private boolean btEnabled, gpsEnabled;
     private View inflater;
-    private ScrollView nearbyOperasScrollView;
-
-    /**
-     * Controllo dell'evento dell'accensione o spegnimento del bluetooth
-     */
-    private final BroadcastReceiver btBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-
-                if(state == BluetoothAdapter.STATE_ON) {
-                    btEnabled = true;
-                    if(gpsEnabled)
-                        bindService();
-                }
-
-                if(state == BluetoothAdapter.STATE_OFF) {
-                    btEnabled = false;
-                    unBindService();
-                }
-            }
-        }
-    };
-
-    /**
-     * Controllo dell'evento dell'accensione o spegnimento del gps
-     */
-    private final BroadcastReceiver gpsBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(LocationManager.PROVIDERS_CHANGED_ACTION)) {
-                LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-                boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-                if(isGpsEnabled || isNetworkEnabled) {
-                    gpsEnabled = true;
-                    if(btEnabled)
-                        bindService();
-                } else {
-                    gpsEnabled = false;
-                }
-            }
-        }
-    };
+    private LinearLayout nearbyOperasLayout;
 
     // Realizzazione dell'interfaccia che gestisce la connessione con il service
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -147,7 +103,7 @@ public class StanzaFragment extends Fragment {
         nameTextView = view.findViewById(R.id.stanza_name);
         recycleView = view.findViewById(R.id.opere_recycle_view);
         operasTextView = view.findViewById(R.id.opere_title);
-        nearbyOperasScrollView = view.findViewById(R.id.nearby_operas_scroll_view);
+        nearbyOperasLayout = view.findViewById(R.id.opere_layout);
 
         if(savedInstanceState == null){
             path = percorsoActivity.getPath();
@@ -185,9 +141,6 @@ public class StanzaFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        // Check dei sensori
-        checkSensorState();
-
         // Check dei permessi
         String[] permessi;
         if(percorsoActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -202,16 +155,9 @@ public class StanzaFragment extends Fragment {
              */
             boolean hasPermission = permission.hasPermissions(permessi);
             if(hasPermission) {
-                IntentFilter intentFilter = new IntentFilter();
-                intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-                intentFilter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION);
+                bindService();
 
-                percorsoActivity.registerReceiver(gpsBroadcastReceiver, intentFilter);
-                percorsoActivity.registerReceiver(btBroadcastReceiver, intentFilter);
-
-                if(btEnabled && gpsEnabled) {
-                    bindService();
-                } else {
+                if(!areBtAndGpsEnabled()) {
                     showAlertDialog();
                 }
             }
@@ -223,14 +169,6 @@ public class StanzaFragment extends Fragment {
     public void onPause() {
         super.onPause();
         adapter.clear();
-
-        try {
-            percorsoActivity.unregisterReceiver(btBroadcastReceiver);
-            percorsoActivity.unregisterReceiver(gpsBroadcastReceiver);
-        }
-        catch(IllegalArgumentException ex) {
-            ex.printStackTrace();
-        }
     }
 
     @Override
@@ -240,14 +178,18 @@ public class StanzaFragment extends Fragment {
     }
 
     /**
-     * Controlla lo stato dei sensori.
+     * Controlla che i sensori bluetooth e gps siano accesi.
+     * @return Vero se entrambi i sensori sono accesi, falso altrimenti.
      */
-    private void checkSensorState() {
+    private boolean areBtAndGpsEnabled() {
         BluetoothAdapter bluetoothAdapter = ((BluetoothManager) percorsoActivity.getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
         LocationManager locationManager = (LocationManager) percorsoActivity.getSystemService(Context.LOCATION_SERVICE);
+        boolean btEnabled, gpsEnabled;
 
         btEnabled = bluetoothAdapter != null && bluetoothAdapter.isEnabled();
         gpsEnabled = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && locationManager.isLocationEnabled()) || locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        return btEnabled && gpsEnabled;
     }
 
     /**

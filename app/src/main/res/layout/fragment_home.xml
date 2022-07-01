@@ -54,7 +54,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:minHeight="600dp">
 
                 <TextView
                     android:id="@+id/title_ranking"
@@ -97,7 +98,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:text="@string/description_classifica_voti"
-                            android:textSize="20sp"
+                            android:textSize="18sp"
                             android:textStyle="italic" />
 
                     </LinearLayout>
@@ -133,7 +134,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:text="@string/description_classifica_visitati"
-                            android:textSize="20sp"
+                            android:textSize="18sp"
                             android:textStyle="italic" />
 
                     </LinearLayout>

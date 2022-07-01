@@ -7,9 +7,12 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -38,6 +41,8 @@ public class BleService extends IntentService {
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothLeScanner scanner;
     private Map<String, Opera> opereInStanza;
+    private boolean btEnabled, gpsEnabled;
+    private ScanCallback scanCallback;
 
     private static final int RSSI_CALIBRATION = 210;    // Valore per calibrare l'rssi restituito dal bluetooth per calcolare una distanza più precisa
     private static final String TAG = "BleService";
@@ -45,28 +50,50 @@ public class BleService extends IntentService {
     public static final int SECONDS_FOR_DETECTION = 4;
 
     /**
-     * Contiene il metodo di callback chiamato quando è stato trovato un risultato.
+     * Controllo dell'evento dell'accensione o spegnimento del bluetooth
      */
-    private final ScanCallback scanCallback = new ScanCallback() {
+    private final BroadcastReceiver btBroadcastReceiver = new BroadcastReceiver() {
         @Override
-        public void onScanResult(int callbackType, ScanResult result) {
-            super.onScanResult(callbackType, result);
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
 
-            // Ottenimento dei dati
-            String operaId = getRawData(result).substring(16, 56);
-            double distance = estimateDistance(result.getRssi(), result.getTxPower());
+                if(state == BluetoothAdapter.STATE_ON) {
+                    btEnabled = true;
 
-            // Inserimento dei dati nella mappa
-            if(opereInStanza.containsKey(operaId)) {    // Se il dispositivo ble trovato è un'opera nella stanza
-                Queue<DistanceRecord> queue;
-                if(distanceRecordMap.containsKey(operaId)) {
-                    queue = distanceRecordMap.get(operaId);
-                } else {
-                    queue = new LinkedList<>();
-                    distanceRecordMap.put(operaId, queue);
+                    if(scanner == null)
+                        scanner = bluetoothAdapter.getBluetoothLeScanner();
+
+                    if(gpsEnabled)
+                        startLeScan();
                 }
-                assert queue != null;
-                queue.add(new DistanceRecord(opereInStanza.get(operaId), distance));
+
+                if(state == BluetoothAdapter.STATE_TURNING_OFF) {
+                    btEnabled = false;
+                    stopLeScan();
+                }
+            }
+        }
+    };
+
+    /**
+     * Controllo dell'evento dell'accensione o spegnimento del gps
+     */
+    private final BroadcastReceiver gpsBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(LocationManager.PROVIDERS_CHANGED_ACTION)) {
+                LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+                boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+                if(isGpsEnabled || isNetworkEnabled) {
+                    gpsEnabled = true;
+                    if(btEnabled)
+                        startLeScan();
+                } else {
+                    gpsEnabled = false;
+                }
             }
         }
     };
@@ -80,12 +107,26 @@ public class BleService extends IntentService {
     public IBinder onBind(Intent intent) {
         opereInStanza = (HashMap<String, Opera>) intent.getSerializableExtra("opere");
         bluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+
+        checkSensorState();
+
         if(bluetoothAdapter != null) {
-            scanner = bluetoothAdapter.getBluetoothLeScanner();
-            startLeScan();
+            if(btEnabled) {
+                scanner = bluetoothAdapter.getBluetoothLeScanner();
+                if(gpsEnabled)
+                    startLeScan();
+            }
+
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+            intentFilter.addAction(LocationManager.PROVIDERS_CHANGED_ACTION);
+
+            registerReceiver(gpsBroadcastReceiver, intentFilter);
+            registerReceiver(btBroadcastReceiver, intentFilter);
         } else {
             Log.e(TAG, "onBind: bluetoothAdapter is null");
         }
+
         bound = true;
         return binder;
     }
@@ -94,6 +135,15 @@ public class BleService extends IntentService {
     public boolean onUnbind(Intent intent) {
         stopLeScan();
         bound = false;
+
+        try {
+            unregisterReceiver(btBroadcastReceiver);
+            unregisterReceiver(gpsBroadcastReceiver);
+        }
+        catch(IllegalArgumentException ex) {
+            ex.printStackTrace();
+        }
+
         return super.onUnbind(intent);
     }
 
@@ -112,6 +162,32 @@ public class BleService extends IntentService {
             Log.e(TAG, "startLeScan: permission error");
             return;
         }
+
+        ScanCallback scanCallback = new ScanCallback() {
+            @Override
+            public void onScanResult(int callbackType, ScanResult result) {
+                super.onScanResult(callbackType, result);
+
+                // Ottenimento dei dati
+                String operaId = getRawData(result).substring(16, 56);
+                double distance = estimateDistance(result.getRssi(), result.getTxPower());
+
+                // Inserimento dei dati nella mappa
+                if(opereInStanza.containsKey(operaId)) {    // Se il dispositivo ble trovato è un'opera nella stanza
+                    Queue<DistanceRecord> queue;
+                    if(distanceRecordMap.containsKey(operaId)) {
+                        queue = distanceRecordMap.get(operaId);
+                    } else {
+                        queue = new LinkedList<>();
+                        distanceRecordMap.put(operaId, queue);
+                    }
+                    assert queue != null;
+                    queue.add(new DistanceRecord(opereInStanza.get(operaId), distance));
+                }
+            }
+        };
+
+        this.scanCallback = scanCallback;
         scanner.startScan(scanCallback);
         Log.d(TAG, "startLeScan: scan started");
     }
@@ -124,7 +200,11 @@ public class BleService extends IntentService {
             Log.e(TAG, "stopLeScan: permission error");
             return;
         }
-        scanner.stopScan(scanCallback);
+
+        if(bluetoothAdapter.isEnabled()) {
+            scanner.stopScan(scanCallback);
+        }
+
         Log.d(TAG, "stopLeScan: scan stopped");
     }
 
@@ -173,6 +253,16 @@ public class BleService extends IntentService {
             sum += record.getDistance();
 
         return (double) sum / queue.size();
+    }
+
+    /**
+     * Verifica lo stato dei sensori
+     */
+    private void checkSensorState() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        btEnabled = bluetoothAdapter != null && bluetoothAdapter.isEnabled();
+        gpsEnabled = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && locationManager.isLocationEnabled()) || locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     @Override

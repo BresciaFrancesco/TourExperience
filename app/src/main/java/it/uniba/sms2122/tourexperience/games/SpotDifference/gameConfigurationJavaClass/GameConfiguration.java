@@ -3,7 +3,9 @@ package it.uniba.sms2122.tourexperience.games.SpotDifference.gameConfigurationJa
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -41,6 +43,7 @@ public class GameConfiguration {
         setDifferencesButtonCordinates = new SetDifferencesButtonCordinates(image1Container, image2Container, setConfigFile());
         setAllClickOfDifferencesBtn = new SetDifferencesButtonClick(activityToConfig);
 
+        setClickonNotDifference();
     }
 
 
@@ -74,4 +77,30 @@ public class GameConfiguration {
         Drawable image2Drawable = new BitmapDrawable(image2);//converto la bitmap in risorsa drawable
         image2Container.setBackground(image2Drawable);
     }
+
+    /**
+     * Funzione usata per triggerare con una vibrazione eventuali click su un punto dell'immagine
+     * dove non sono presenti differenze
+     * cosi da poter dare un feedback all'utente relativi a click erreti
+     */
+    private void setClickonNotDifference() {
+
+        activityToConfig.findViewById(R.id.image1Container).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Vibrator v = (Vibrator) activityToConfig.getSystemService(activityToConfig.VIBRATOR_SERVICE);
+                v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+            }
+        });
+
+        activityToConfig.findViewById(R.id.image2Container).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Vibrator v = (Vibrator) activityToConfig.getSystemService(activityToConfig.VIBRATOR_SERVICE);
+                v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+            }
+        });
+    }
+
+
 }

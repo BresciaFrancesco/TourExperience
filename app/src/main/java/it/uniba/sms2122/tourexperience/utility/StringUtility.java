@@ -60,4 +60,23 @@ public class StringUtility {
         temp = temp.replaceAll("&Egrave","È");
         return temp;
     }
+
+    /**
+     * Controlla se una sequenza di char è vyota (""), null o solo whitespace.
+     *
+     * @param cs la sequenza di char da controllare.
+     * @return true se la sequenza di char è null, vuota or solo whitespace, false altrimenti.
+     */
+    public static boolean isBlank(final CharSequence cs) {
+        final int strLen = (cs == null) ? 0 : cs.length();
+        if (strLen == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if (!Character.isWhitespace(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
